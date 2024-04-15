@@ -1,27 +1,31 @@
-# CentinelaApplicationFrontend
+# Acerca del proyecto
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.3.
+TODO:
 
-## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+# Instalacion
+## Requerimientos
+- Docker Desktop
+## Comandos
+### Importante: Estos comandos se deben ejecutar en el directiorio raiz de la aplicacion
 
-## Code scaffolding
+Primero se construye la imagen de docker.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`
+docker compose build
+`
 
-## Build
+Posteriormente iniciamos el contenedor de Docker.
+ 
+ `docker compose up`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Para instalar cualquier dependencia
+Ejecutar `docker ps` e identificar el id del contenedor.
 
-## Running unit tests
+Para acceder al contenedor:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+`docker exec -it <id_cotenedor> /bin/sh`
 
-## Running end-to-end tests
+Una vez dentro instalar cualquier dependencia necesaria
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Importante: despues de hacer cada instalacion, no olvidar hacer el build del contenedor
