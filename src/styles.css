@@ -3,5 +3,11 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+.auth_bg {
+    background-color: black;
+    background-image: url('/assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+}
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
