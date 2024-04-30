@@ -13,6 +13,14 @@ const routes: Routes = [
   },
   {
     path: 'profile', component: ProfileComponent
+  },
+  {
+    path:'home',
+    loadChildren:() => import('src/app/search-engine/presentation/home-page/home-page.module').then(m => m.HomePageModule)
+  },
+  {
+    path:'**', // Redirects to home when the route is not correct
+    redirectTo:'home'
   }
 ];
 
@@ -20,4 +28,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
+
 export class AppRoutingModule { }
