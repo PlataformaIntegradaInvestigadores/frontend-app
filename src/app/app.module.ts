@@ -3,8 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GroupModule } from './group/group.module';
-import { GroupPageRoutingModule } from './group/group-page-routing.module';
 
 import { HomePageRoutingModule } from './search-engine/presentation/home-page/home-page-rounting.module';
 import { HomePageComponent } from './search-engine/presentation/home-page/pages/home-page/home-page.component';
@@ -16,6 +14,8 @@ import { ProfilePageModule } from './profile/presentation/profile-page/profile-p
 import { ProfilePageRoutingModule } from './profile/presentation/profile-page/profile-page-routing.module';
 import { LoginComponent } from './auth/presentation/login/login.component';
 import { RegisterComponent } from './auth/presentation/register/register.component';
+import { CardGroupComponent } from './profile/presentation/components/card-group/card-group.component';
+import { ListGroupComponent } from './profile/presentation/components/list-group/list-group.component';
 
 
 @NgModule({
@@ -27,7 +27,6 @@ import { RegisterComponent } from './auth/presentation/register/register.compone
   imports: [
     BrowserModule,
     AppRoutingModule,
-    GroupModule,
     HomePageRoutingModule,
     SharedModule,
     BrowserAnimationsModule,
