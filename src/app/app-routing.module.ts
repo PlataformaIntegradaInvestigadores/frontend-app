@@ -21,10 +21,13 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('src/app/search-engine/presentation/home-page/home-page.module').then(m => m.HomePageModule)
   },
+  
+
+  /* Siempre al ultimo */
   {
     path: '**', // Redirects to home when the route is not correct
     redirectTo: 'home'
-  }
+  },
 ];
 
 @NgModule({

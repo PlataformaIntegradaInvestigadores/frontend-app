@@ -14,6 +14,8 @@ import { ProfilePageModule } from './profile/presentation/profile-page/profile-p
 import { ProfilePageRoutingModule } from './profile/presentation/profile-page/profile-page-routing.module';
 import { LoginComponent } from './auth/presentation/login/login.component';
 import { RegisterComponent } from './auth/presentation/register/register.component';
+import { CardGroupComponent } from './profile/presentation/components/card-group/card-group.component';
+import { ListGroupComponent } from './profile/presentation/components/list-group/list-group.component';
 
 
 @NgModule({
