@@ -28,6 +28,6 @@ Para acceder al contenedor:
 
 Una vez dentro instalar cualquier dependencia necesaria
 
-'npm install @types/angular'
+`npm install @types/angular`
 
 ## Importante: despues de hacer cada instalacion, no olvidar hacer el build del contenedor
