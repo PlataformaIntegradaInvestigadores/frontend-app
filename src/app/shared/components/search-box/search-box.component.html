@@ -1,1 +1,44 @@
-<p>search-box works!</p>
+<div class="btn-group search-container">
+  <div class="btn-group" ngbDropdown role="group">
+    <button type="button" class="btn btn-danger btn-select" ngbDropdownToggle>
+      <fa-icon [icon]="selectedOption.icon"></fa-icon>
+      <div class="d-none d-md-block">
+        {{selectedOption.label}}
+      </div>
+    </button>
+    <div class="dropdown-menu" ngbDropdownMenu>
+      <button ngbDropdownItem class="btn-option" *ngFor="let option of searchOptions"
+              (click)="setOption(option)">
+        <fa-icon [icon]="option.icon"></fa-icon>
+        {{option.label}}
+      </button>
+    </div>
+  </div>
+
+  <label for="inputQuery" class="sr-only">Search</label>
+  <input id="inputQuery"
+         class="form-control"
+         list="datalistOptions"
+         placeholder="{{selectedOption.placeholder}}" [(ngModel)]="inputValue"
+         (keyup)="onEnter($event)">
+  <datalist id="datalistOptions">
+    <option *ngFor="let item of randItems"
+            [value]="item.value">
+  </datalist>
+
+
+  <button type="button" class="btn btn-primary btn-search" (click)="this.search.emit({
+      option: this.selectedOption.code,
+      query: this.inputValue
+    })" [disabled]="isLoading">
+    <div *ngIf="isLoading; else normal">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <span class="sr-only">Buscando...</span>
+    </div>
+
+    <ng-template #normal>
+      <fa-icon [icon]="faSearch"></fa-icon>
+    </ng-template>
+    <div class="d-none d-md-block">Buscar</div>
+  </button>
+</div>
