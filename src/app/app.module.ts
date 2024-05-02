@@ -16,6 +16,11 @@ import { LoginComponent } from './auth/presentation/login/login.component';
 import { RegisterComponent } from './auth/presentation/register/register.component';
 import { CardGroupComponent } from './profile/presentation/components/card-group/card-group.component';
 import { ListGroupComponent } from './profile/presentation/components/list-group/list-group.component';
+import { AboutmeComponent } from './profile/presentation/components/aboutme/aboutme.component';
+import { NetworkComponent } from './profile/presentation/components/network/network.component';
+import { ContactComponent } from './profile/presentation/components/contact/contact.component';
+import { ArticleComponent } from './profile/presentation/components/article/article.component';
+import { FingerprintComponent } from './profile/presentation/components/fingerprint/fingerprint.component';
 
 
 @NgModule({
@@ -23,6 +28,11 @@ import { ListGroupComponent } from './profile/presentation/components/list-group
     AppComponent,
     LoginComponent,
     RegisterComponent,
+    AboutmeComponent,
+    NetworkComponent,
+    ContactComponent,
+    ArticleComponent,
+    FingerprintComponent,
   ],
   imports: [
     BrowserModule,
