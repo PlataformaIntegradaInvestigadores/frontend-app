@@ -1,13 +1,8 @@
-<div>
-    <div class="text-xl font-bold p-4">Head</div>
-    <div class="bg-gray-200 p-2">Navbar</div>
-</div>
-
 <!-- Visibilidad de la lista -->
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 ">
+<div class="container mx-auto max-w-screen-xl px-3 mt-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 ">
     <div class="col-span-12 md:col-span-12">
         <div id="accordion-flush" data-accordion="collapse" data-active-classes="text-gray-500 dark:text-gray-400" data-inactive-classes="text-gray-500 dark:text-gray-400">
-            <h2 id="accordion-flush-heading-1">
+            <h2  id="accordion-flush-heading-1">
             <button type="button" class="flex items-center justify-between w-full py-5 font-medium rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3" data-accordion-target="#accordion-flush-body-1" aria-expanded="true" aria-controls="accordion-flush-body-1">
                 <span>My Groups</span>
                 <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -16,12 +11,13 @@
             </button>
             </h2>
         <div id="accordion-flush-body-1" class="hidden" aria-labelledby="accordion-flush-heading-1">
-        <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+        <div class="border-b border-gray-200 dark:border-gray-700">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <btn-create-group></btn-create-group>
                 <card-group></card-group>
                 <card-group></card-group>
                 <card-group></card-group>
-                <card-group></card-group>
+                <card-group></card-group>    
             </div>
         </div>
         </div>

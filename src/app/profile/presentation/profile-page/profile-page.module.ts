@@ -6,6 +6,7 @@ import { ProfileDataComponent } from './components/profile-data/profile-data.com
 import { DataNavComponent } from './components/data-nav/data-nav.component';
 import { CardGroupComponent } from '../components/card-group/card-group.component';
 import { ListGroupComponent } from '../components/list-group/list-group.component';
+import { BtnCreateGroupComponent } from '../components/btn-create-group/btn-create-group.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { ListGroupComponent } from '../components/list-group/list-group.componen
     ProfileDataComponent,
     DataNavComponent,
     CardGroupComponent,
-    ListGroupComponent
+    ListGroupComponent,
+    BtnCreateGroupComponent
   ],
   providers: [],
 })
