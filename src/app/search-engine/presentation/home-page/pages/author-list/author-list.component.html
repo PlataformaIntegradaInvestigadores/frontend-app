@@ -1,7 +1,16 @@
-<div class="flex flex-col md:flex-row items-center justify-center">
+<div class="flex">
+  <div class="hidden md:block md:h-full w-2/6">
 
-  <div class="w-full md:w-3/6 md:m-3 border-black border-4 rounded-2xl flex ">
-    <app-author-information></app-author-information>
-    <app-author-topics></app-author-topics>
   </div>
-</div>
+
+
+    <div class="flex flex-wrap">
+      <div *ngFor="let author of authors" class="flex flex-col md:flex-row items-center rounded-2xl  border-2 justify-center m-4">
+        <app-author-information  class="m-4 md:border-r-2 md:border-r-gray-400 md:border-b-0 border-b-2 border-b-gray-400 w-[200px] h-[150px]" [author]="author"></app-author-information>
+        <app-author-topics [topics]="author.topics" ></app-author-topics>
+      </div>
+    </div>
+  </div>
+
+
+
