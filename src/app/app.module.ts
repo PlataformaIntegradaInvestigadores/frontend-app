@@ -5,8 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { HomePageRoutingModule } from './search-engine/presentation/home-page/home-page-rounting.module';
+import { HomePageComponent } from './search-engine/presentation/home-page/pages/home-page/home-page.component';
+import { SearchBoxComponent } from './shared/components/search-box/search-box.component';
 import { SharedModule } from './shared/shared.module';
-
+import { HeaderComponent } from './search-engine/presentation/home-page/components/header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProfilePageModule } from './profile/presentation/profile-page/profile-page.module';
 import { ProfilePageRoutingModule } from './profile/presentation/profile-page/profile-page-routing.module';
@@ -20,6 +22,8 @@ import { ContactComponent } from './profile/presentation/components/contact/cont
 import { ArticleComponent } from './profile/presentation/components/article/article.component';
 import { FingerprintComponent } from './profile/presentation/components/fingerprint/fingerprint.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
+
 
 @NgModule({
   declarations: [
@@ -39,7 +43,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SharedModule,
     BrowserAnimationsModule,
     ProfilePageRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
