@@ -7,15 +7,10 @@ import { NavigationEnd, Router } from '@angular/router';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-  showHomeButton: boolean = false;
+
 
   constructor(private router: Router) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        const url = event.urlAfterRedirects || event.url;
-        this.showHomeButton = url.endsWith('analitica') || url.endsWith('author-list');
-      }
-    });
+
   }
 
   toggleMobileMenu() {
