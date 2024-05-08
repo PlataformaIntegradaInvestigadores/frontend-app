@@ -1,0 +1,9 @@
+.active {
+    background-color: #000;
+    padding-left: 12px;
+    padding-right: 12px;
+    color: #fff;
+    svg {
+        fill: #fff;
+    }
+}
