@@ -22,10 +22,6 @@ const routes: Routes = [
         component: NetworkComponent
       },
       {
-        path: 'contact',
-        component: ContactComponent
-      },
-      {
         path: 'article',
         component: ArticleComponent
       },
@@ -37,14 +33,14 @@ const routes: Routes = [
         path: 'my-groups',
         component: ListGroupComponent
       },
-      { 
-        path: '', 
-        redirectTo: 'about-me', 
-        pathMatch: 'full' 
+      {
+        path: '',
+        redirectTo: 'about-me',
+        pathMatch: 'full'
       },
-      { 
-        path: '**', 
-        redirectTo: 'about-me', 
+      {
+        path: '**',
+        redirectTo: 'about-me',
       }
     ]
   },
