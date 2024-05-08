@@ -11,7 +11,7 @@ import { BtnCreateGroupComponent } from '../components/btn-create-group/btn-crea
 
 @NgModule({
   imports: [ProfilePageRoutingModule],
-  exports: [],
+  exports: [HeaderComponent, ProfileDataComponent],
   declarations: [
     ProfileComponent,
     HeaderComponent,
