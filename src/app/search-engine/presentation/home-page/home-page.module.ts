@@ -5,20 +5,23 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { HeaderComponent } from './components/header/header.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'
 import { SharedModule } from 'src/app/shared/shared.module';
+import {AuthorInformationComponent} from "./components/author-information/author-information.component";
+import {AuthorTopicsComponent} from "./components/author-topics/author-topics.component";
+import {CommonModule, NgForOf} from "@angular/common";
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AnaliticaComponent } from './components/analitica/analitica.component';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
 
 @NgModule({
-  imports: [HomePageRoutingModule, MatSlideToggleModule, SharedModule, RouterModule, CommonModule],
+    imports: [HomePageRoutingModule, MatSlideToggleModule, SharedModule, CommonModule],
   exports: [],
   declarations: [
     AuthorListComponent,
     HomePageComponent,
     HeaderComponent,
     NavbarComponent,
-    AnaliticaComponent
+    AnaliticaComponent,
+    AuthorInformationComponent,
+    AuthorTopicsComponent
   ],
   providers: [],
 })
