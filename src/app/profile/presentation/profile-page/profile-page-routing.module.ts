@@ -48,14 +48,14 @@ const routes: Routes = [
     path: 'my-groups/:id',
     loadChildren: () => import('src/app/consensus/consensus.module').then(m => m.ConsensusModule)
   },
-  { 
-    path: '', 
-    redirectTo: 'about-me', 
-    pathMatch: 'full' 
+  {
+    path: '',
+    redirectTo: 'about-me',
+    pathMatch: 'full'
   },
-  { 
-    path: '**', 
-    redirectTo: 'about-me', 
+  {
+    path: '**',
+    redirectTo: 'about-me',
   }
 ]
 
