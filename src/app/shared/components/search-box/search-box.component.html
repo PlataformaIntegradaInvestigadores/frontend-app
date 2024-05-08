@@ -1,44 +1,57 @@
-<div class="btn-group search-container">
-  <div class="btn-group" ngbDropdown role="group">
-    <button type="button" class="btn btn-danger btn-select" ngbDropdownToggle>
-      <fa-icon [icon]="selectedOption.icon"></fa-icon>
-      <div class="d-none d-md-block">
-        {{selectedOption.label}}
-      </div>
-    </button>
-    <div class="dropdown-menu" ngbDropdownMenu>
-      <button ngbDropdownItem class="btn-option" *ngFor="let option of searchOptions"
-              (click)="setOption(option)">
-        <fa-icon [icon]="option.icon"></fa-icon>
-        {{option.label}}
+<div class="relative flex w-full h-full justify-center items-center overflow-hidden">
+  <img src="assets/img.png" class="min-h-[369px] object-cover">
+  <div class="absolute p-12 flex flex-col  items-center justify-center  bg-black bg-opacity-70  rounded-md">
+    <h1 class="text-white ">WELCOME TO CENTINELA EPN</h1>
+    <div class="flex">
+      <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+              class="h-[36px] text-white bg-red-800 hover:bg-red-900 rounded-l-lg text-sm p-2 flex text-center items-center justify-center md:min-w-[200px]"
+              type="button">
+        <div class="flex flex-grow justify-center">
+        <fa-icon [icon]="selectedOption.icon" ></fa-icon>
+        <div class="hidden md:block pl-2">
+          {{ selectedOption.label }}
+        </div>
+        </div>
+        <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+             viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+        </svg>
       </button>
-    </div>
-  </div>
-
-  <label for="inputQuery" class="sr-only">Search</label>
-  <input id="inputQuery"
-         class="form-control"
-         list="datalistOptions"
-         placeholder="{{selectedOption.placeholder}}" [(ngModel)]="inputValue"
-         (keyup)="onEnter($event)">
-  <datalist id="datalistOptions">
-    <option *ngFor="let item of randItems"
-            [value]="item.value">
-  </datalist>
-
-
-  <button type="button" class="btn btn-primary btn-search" (click)="this.search.emit({
+      <button id="dropdown" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow">
+        <div class="text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton"
+             *ngFor="let option of searchOptions">
+          <div [ngClass]="{'hidden':selectedOption === option,'p-2':selectedOption!==option}"
+               (click)="setOption(option)">
+            <fa-icon [icon]="option.icon"></fa-icon>
+            {{ option.label }}
+          </div>
+        </div>
+      </button>
+      <div class="flex items-center">
+        <label for="inputQuery" class="sr-only">Search</label>
+        <input id="inputQuery"
+               class="form-control text-sm p-2"
+               placeholder="{{selectedOption.placeholder}}" [(ngModel)]="inputValue"
+               (keyup)="onEnter($event)">
+        <datalist id="datalistOptions">
+          <option *ngFor="let item of randItems" [value]="item.value"></option>
+        </datalist>
+        <button type="button"
+                class="flex items-center justify-center space-x-2 p-2 bg-red-800 text-white rounded-r-lg h-[36px] hover:bg-red-900"
+                (click)="this.search.emit({
       option: this.selectedOption.code,
       query: this.inputValue
     })" [disabled]="isLoading">
-    <div *ngIf="isLoading; else normal">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      <span class="sr-only">Buscando...</span>
+          <div *ngIf="isLoading; else normal">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="sr-only">Buscando...</span>
+          </div>
+          <ng-template #normal>
+            <fa-icon [icon]="faSearch"></fa-icon>
+          </ng-template>
+          <div class="hidden md:block">Buscar</div>
+        </button>
+      </div>
     </div>
-
-    <ng-template #normal>
-      <fa-icon [icon]="faSearch"></fa-icon>
-    </ng-template>
-    <div class="d-none d-md-block">Buscar</div>
-  </button>
+  </div>
 </div>
