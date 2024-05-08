@@ -1,0 +1,22 @@
+/* navbar.component.css */
+
+/* Estilos generales */
+nav {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el botón de menú en dispositivos móviles */
+#mobile-menu-toggle svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Estilos para los enlaces de navegación */
+a {
+  transition: color 0.3s ease;
+}
+
+/* Hover en los enlaces de navegación */
+a:hover {
+  color: #ffffff;
+}
