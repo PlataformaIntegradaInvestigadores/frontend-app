@@ -12,35 +12,35 @@ export class AuthorListComponent {
       name: "Autor 1",
       email: "autor1@example.com",
       affiliation: "Afiliación 1",
-      numero_articulos: 10,
+      num_articles: 10,
       topics: [{ name: "Tema 1" }, { name: "Tema 2" }]
     },
     {
       name: "Autor 2",
       email: "autor2@example.com",
       affiliation: "Afiliación 2",
-      numero_articulos: 5,
+      num_articles: 5,
       topics: [{ name: "Tema 3" }, { name: "Tema 4" }]
     },
     {
       name: "Autor 3",
       email: "autor3@example.com",
       affiliation: "Afiliación 3",
-      numero_articulos: 8,
+      num_articles: 8,
       topics: [{ name: "Tema 5" }, { name: "Tema 6" }]
     },
     {
       name: "Autor 4",
       email: "autor4@example.com",
       affiliation: "Afiliación 4",
-      numero_articulos: 12,
+      num_articles: 12,
       topics: [{ name: "Tema 7" }, { name: "Tema 8" }]
     },
     {
       name: "Autor 5",
       email: "autor5@example.com",
       affiliation: "Afiliación 5",
-      numero_articulos: 7,
+      num_articles: 7,
       topics: [{ name: "Tema 9" }, { name: "Tema 10" }]
     }
   ];
