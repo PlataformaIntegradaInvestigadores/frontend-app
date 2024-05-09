@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { ProfileComponent } from './pages/profile/profile.component';
+import { ProfileComponent } from './presentation/pages/profile-page/profile.component';
 import { RouterModule, Routes } from '@angular/router';
-import { ListGroupComponent } from '../components/list-group/list-group.component';
-import { AboutmeComponent } from '../components/aboutme/aboutme.component';
-import { NetworkComponent } from '../components/network/network.component';
-import { ContactComponent } from '../components/contact/contact.component';
-import { ArticleComponent } from '../components/article/article.component';
-import { FingerprintComponent } from '../components/fingerprint/fingerprint.component';
+import { ListGroupComponent } from './presentation/components/list-group/list-group.component';
+import { AboutmeComponent } from './presentation/components/aboutme/aboutme.component';
+import { NetworkComponent } from './presentation/components/network/network.component';
+import { ContactComponent } from './presentation/components/contact/contact.component';
+import { ArticleComponent } from './presentation/components/article/article.component';
+import { FingerprintComponent } from './presentation/components/fingerprint/fingerprint.component';
 
 const routes: Routes = [
   {
@@ -22,10 +22,6 @@ const routes: Routes = [
         component: NetworkComponent
       },
       {
-        path: 'contact',
-        component: ContactComponent
-      },
-      {
         path: 'article',
         component: ArticleComponent
       },
@@ -37,20 +33,29 @@ const routes: Routes = [
         path: 'my-groups',
         component: ListGroupComponent
       },
+      {
+        path: '',
+        redirectTo: 'about-me',
+        pathMatch: 'full'
+      },
+      {
+        path: '**',
+        redirectTo: 'about-me',
+      }
     ]
   },
   {
     path: 'my-groups/:idGroup',
     loadChildren: () => import('src/app/consensus/consensus.module').then(m => m.ConsensusModule)
   },
-  { 
-    path: '', 
-    redirectTo: 'about-me', 
-    pathMatch: 'full' 
+  {
+    path: '',
+    redirectTo: 'about-me',
+    pathMatch: 'full'
   },
-  { 
-    path: '**', 
-    redirectTo: 'about-me', 
+  {
+    path: '**',
+    redirectTo: 'about-me',
   }
 ]
 

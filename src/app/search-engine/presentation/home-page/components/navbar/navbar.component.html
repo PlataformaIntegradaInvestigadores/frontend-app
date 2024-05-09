@@ -1,0 +1,39 @@
+<nav class="bg-gradient-to-r from-blue-500 to-purple-600 p-4">
+  <div class="flex justify-between items-center">
+      <!-- Botón de Home -->
+      <div >
+          <a routerLink="" class="text-white font-bold text-lg">Home</a>
+      </div>
+
+      <!-- Links para Autores y Análitica -->
+      <div class="hidden md:flex space-x-4">
+          <a routerLink="author-list" class="text-white hover:text-gray-200 transition duration-300">Autores</a>
+          <a routerLink="analitica" class="text-white hover:text-gray-200 transition duration-300">Análitica</a>
+      </div>
+
+      <!-- Botón de Iniciar Sesión -->
+      <div>
+          <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+              Iniciar sesión
+          </button>
+      </div>
+
+      <!-- Botón para el menú móvil -->
+      <div class="md:hidden">
+          <button (click)="toggleMobileMenu()" class="text-white focus:outline-none">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+              </svg>
+          </button>
+      </div>
+  </div>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="hidden md:hidden mt-2">
+      <a routerLink="author-list" class="block text-white my-2 hover:text-gray-200 transition duration-300">Autores</a>
+      <a routerLink="analitica" class="block text-white my-2 hover:text-gray-200 transition duration-300">Análitica</a>
+      <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full mt-4 transition duration-300">
+          Iniciar sesión
+      </button>
+  </div>
+</nav>
