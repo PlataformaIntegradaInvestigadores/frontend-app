@@ -21,13 +21,8 @@ import { NetworkComponent } from './profile/presentation/components/network/netw
 import { ContactComponent } from './profile/presentation/components/contact/contact.component';
 import { ArticleComponent } from './profile/presentation/components/article/article.component';
 import { FingerprintComponent } from './profile/presentation/components/fingerprint/fingerprint.component';
-<<<<<<< HEAD
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-=======
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-
->>>>>>> 44b1b5ecef0860ecb59762b816bc2e537e46377b
 
 @NgModule({
   declarations: [
@@ -48,10 +43,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     BrowserAnimationsModule,
     ProfilePageRoutingModule,
     FontAwesomeModule,
-<<<<<<< HEAD
-
-=======
->>>>>>> 44b1b5ecef0860ecb59762b816bc2e537e46377b
   ],
   providers: [],
   bootstrap: [AppComponent]
