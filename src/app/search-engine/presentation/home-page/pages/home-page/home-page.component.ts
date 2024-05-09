@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
@@ -6,16 +6,26 @@ import { NavigationEnd, Router } from '@angular/router';
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css']
 })
-export class HomePageComponent {
-  showSearchBox: boolean = true;
+export class HomePageComponent implements AfterViewInit {
+  showSearchBox: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.updateSearchBoxVisibility();
+    });
+  }
+
+  private updateSearchBoxVisibility(): void {
+    const url = this.router.url;
+    this.showSearchBox = !url.endsWith('analitica') && !url.endsWith('list');
+  }
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        const url = event.urlAfterRedirects || event.url;
-        this.showSearchBox = !url.endsWith('analitica') && !url.endsWith('list')
+        this.updateSearchBoxVisibility();
       }
     });
   }

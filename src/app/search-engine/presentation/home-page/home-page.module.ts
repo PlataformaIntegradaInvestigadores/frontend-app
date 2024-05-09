@@ -10,6 +10,7 @@ import { AuthorTopicsComponent } from "./components/author-topics/author-topics.
 import { CommonModule, NgForOf } from "@angular/common";
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AnaliticaComponent } from './components/analitica/analitica.component';
+import { AuthorRetrieveComponent } from './components/author-retrieve/author-retrieve.component';
 
 @NgModule({
   imports: [HomePageRoutingModule, MatSlideToggleModule, SharedModule, CommonModule],
@@ -21,7 +22,8 @@ import { AnaliticaComponent } from './components/analitica/analitica.component';
     NavbarComponent,
     AnaliticaComponent,
     AuthorInformationComponent,
-    AuthorTopicsComponent
+    AuthorTopicsComponent,
+    AuthorRetrieveComponent
   ],
   providers: [],
 })
