@@ -3,7 +3,7 @@ import { RecommendTopicsPageComponent } from './presentation/pages/recommend-top
 import { ValuationPageComponent } from './presentation/pages/valuation-page/valuation-page.component';
 import { DecisionPageComponent } from './presentation/pages/decision-page/decision-page.component';
 import { ConsensusRoutingModule } from "./consensus-routing.module";
-import { ProfilePageModule } from "../profile/presentation/profile-page.module";
+import { ProfilePageModule } from "../profile/profile-page.module";
 
 @NgModule({
     declarations: [
