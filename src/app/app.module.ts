@@ -23,7 +23,6 @@ import { ArticleComponent } from './profile/presentation/components/article/arti
 import { FingerprintComponent } from './profile/presentation/components/fingerprint/fingerprint.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,6 +42,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     BrowserAnimationsModule,
     ProfilePageRoutingModule,
     FontAwesomeModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]

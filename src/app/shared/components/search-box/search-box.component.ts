@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 import {
   faNewspaper,
   faSearch,
@@ -6,13 +6,15 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { SearchOption, Search, RandItem} from '../../interfaces/search-type.interface';
+import {Dropdown, DropdownOptions, initFlowbite} from "flowbite";
 
 @Component({
   selector: 'app-search-box',
   templateUrl: './search-box.component.html',
   styleUrls: ['./search-box.component.css'],
 })
-export class SearchBoxComponent {
+export class SearchBoxComponent implements OnInit{
+
   faSearch = faSearch
 
   searchOptions: SearchOption[] = [
@@ -31,9 +33,16 @@ export class SearchBoxComponent {
 
   randItems!: RandItem[];
 
+
   constructor() {
     this.setOption(this.searchOptions[0])
+
   }
+
+  ngOnInit(): void {
+    initFlowbite();
+
+    }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['setSearch']?.currentValue) {
@@ -69,5 +78,4 @@ export class SearchBoxComponent {
 
     }
   }
-
 }
