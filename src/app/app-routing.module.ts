@@ -15,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'profile',
-    loadChildren: () => import('src/app/profile/presentation/profile-page/profile-page.module').then(m => m.ProfilePageModule)
+    loadChildren: () => import('src/app/profile/presentation/profile-page.module').then(m => m.ProfilePageModule)
   },
   {
     path: 'home',
