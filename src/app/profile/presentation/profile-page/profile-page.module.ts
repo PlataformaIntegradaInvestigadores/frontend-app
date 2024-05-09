@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ProfilePageRoutingModule } from './profile-page-routing.module';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { HeaderComponent } from './components/header/header.component';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { ProfileDataComponent } from './components/profile-data/profile-data.component';
 import { DataNavComponent } from './components/data-nav/data-nav.component';
 import { CardGroupComponent } from '../components/card-group/card-group.component';

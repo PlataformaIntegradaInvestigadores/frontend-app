@@ -21,8 +21,7 @@ import { NetworkComponent } from './profile/presentation/components/network/netw
 import { ContactComponent } from './profile/presentation/components/contact/contact.component';
 import { ArticleComponent } from './profile/presentation/components/article/article.component';
 import { FingerprintComponent } from './profile/presentation/components/fingerprint/fingerprint.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 
 @NgModule({
