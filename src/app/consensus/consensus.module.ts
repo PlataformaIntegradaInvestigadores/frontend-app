@@ -10,6 +10,7 @@ import { NavbarConsensusComponent } from './presentation/components/navbar-conse
 import { Phase1ConsensusNotificationComponent } from './presentation/components/phase1-consensus-notification/phase1-consensus-notification.component';
 import { MembersConsensusComponent } from './presentation/components/members-consensus/members-consensus.component';
 import { ProfilePageModule } from "../profile/profile-page.module";
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
     declarations: [
@@ -24,8 +25,9 @@ import { ProfilePageModule } from "../profile/profile-page.module";
     MembersConsensusComponent,
     
   ],
-    imports: [ConsensusRoutingModule, ProfilePageModule],
-    exports: []
+    imports: [ConsensusRoutingModule, ProfilePageModule, ],
+    exports: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ConsensusModule {
 }

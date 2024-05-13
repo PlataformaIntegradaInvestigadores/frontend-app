@@ -8,6 +8,7 @@ import { ContactComponent } from './presentation/components/contact/contact.comp
 import { ArticleComponent } from './presentation/components/article/article.component';
 import { FingerprintComponent } from './presentation/components/fingerprint/fingerprint.component';
 
+
 const routes: Routes = [
   {
     path: "",
@@ -33,19 +34,10 @@ const routes: Routes = [
         path: 'my-groups',
         component: ListGroupComponent
       },
-      {
-        path: '',
-        redirectTo: 'about-me',
-        pathMatch: 'full'
-      },
-      {
-        path: '**',
-        redirectTo: 'about-me',
-      }
     ]
   },
   {
-    path: 'my-groups/:idGroup',
+    path: 'my-groups/:id',
     loadChildren: () => import('src/app/consensus/consensus.module').then(m => m.ConsensusModule)
   },
   {
@@ -61,7 +53,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
   exports: [
     RouterModule

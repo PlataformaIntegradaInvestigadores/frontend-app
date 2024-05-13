@@ -8,7 +8,6 @@ import { CardGroupComponent } from './presentation/components/card-group/card-gr
 import { ListGroupComponent } from './presentation/components/list-group/list-group.component';
 import { BtnCreateGroupComponent } from './presentation/components/btn-create-group/btn-create-group.component';
 
-
 @NgModule({
   imports: [ProfilePageRoutingModule],
   exports: [HeaderComponent, ProfileDataComponent],
