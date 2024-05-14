@@ -1,0 +1,30 @@
+.photo {
+  width: 100px; /* Establece el ancho máximo del contenedor */
+  height: 100px; /* Establece la altura máxima del contenedor */
+  overflow: hidden; /* Oculta cualquier parte de la imagen que se desborde */
+}
+
+.image {
+  width: 100%; /* Ocupa todo el ancho del contenedor */
+  height: 100%; /* Ocupa todo el alto del contenedor */
+  object-fit: cover; /* Escala la imagen para llenar el contenedor, manteniendo la relación de aspecto y recortando el exceso */
+}
+.card{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border: 1px black solid ;
+  width: 80%;
+}
+.author-information{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.author-names{
+  font-size: 1.2rem;
+  font-weight: bolder;
+}
