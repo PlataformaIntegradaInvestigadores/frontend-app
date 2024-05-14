@@ -2,7 +2,7 @@ export interface Author  {
   name: String,
   email: String,
   affiliation: String,
-  numero_articulos:Number,
+  num_articles:Number,
   topics:Topic[],
 }
 

@@ -13,7 +13,7 @@
 
       <!-- Botón de Iniciar Sesión -->
       <div>
-          <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+          <button routerLink="/login" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 hidden md:flex">
               Iniciar sesión
           </button>
       </div>
@@ -32,7 +32,7 @@
   <div id="mobile-menu" class="hidden md:hidden mt-2">
       <a routerLink="author-list" class="block text-white my-2 hover:text-gray-200 transition duration-300">Autores</a>
       <a routerLink="analitica" class="block text-white my-2 hover:text-gray-200 transition duration-300">Análitica</a>
-      <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full mt-4 transition duration-300">
+      <button routerLink="login" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-full w-full mt-4 transition duration-300">
           Iniciar sesión
       </button>
   </div>
