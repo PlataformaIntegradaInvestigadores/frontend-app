@@ -1,3 +1,8 @@
-<div class="container">
-Este es el contenedor principal
+<search-engine-header-component></search-engine-header-component>
+<search-engine-navbar-component></search-engine-navbar-component>
+<div class="w-full bg-slate-200" *ngIf="showSearchBox">
+  <app-search-box
+    class="flex w-full h-full items-center justify-center"
+  ></app-search-box>
 </div>
+<router-outlet></router-outlet>

@@ -2,6 +2,8 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import 'flowbite';
+
 
 .auth_bg {
     background-color: black;
@@ -9,5 +11,18 @@
     background-size: cover;
     background-position: center;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html {
+    overflow-y: scroll;
+    /* Add the ability to scroll */
+}
