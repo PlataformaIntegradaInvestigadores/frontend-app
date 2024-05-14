@@ -5,8 +5,7 @@ import { ValuationPageComponent } from "./presentation/pages/valuation-page/valu
 import { DecisionPageComponent } from "./presentation/pages/decision-page/decision-page.component";
 
 const routes: Routes = [
-    {
-        
+    {  
         path: "consensus/recommend-topics",
         component:RecommendTopicsPageComponent 
     },
@@ -17,9 +16,7 @@ const routes: Routes = [
     {
         path: "consensus/decision",
         component: DecisionPageComponent
-    },
-
-
+    },    
     { 
         path: '', 
         redirectTo: 'consensus/recommend-topics', 

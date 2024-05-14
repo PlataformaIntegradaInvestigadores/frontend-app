@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import { HomePageRoutingModule } from './search-engine/presentation/home-page/home-page-rounting.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProfilePageModule } from './profile/profile-page.module';
+import { ProfilePageRoutingModule } from './profile/profile-page-routing.module';
 import { ProfilePageRoutingModule } from './profile/presentation/profile-page/profile-page-routing.module';
 import { LoginComponent } from './auth/presentation/login/login.component';
 import { RegisterComponent } from './auth/presentation/register/register.component';
