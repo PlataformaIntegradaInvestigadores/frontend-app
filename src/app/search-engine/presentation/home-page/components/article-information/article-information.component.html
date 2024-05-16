@@ -1,0 +1,28 @@
+<ng-container *ngFor="let item of items" class="">
+  <div class="flex border-b-2">
+    <div class="m-2">
+      <span>Title:</span>
+      <h1>{{item.title}}</h1>
+      <div>Authors:</div>
+      <ng-container *ngFor="let au of item.authors" >
+        <span class="p-2">{{au.name}}</span>
+      </ng-container>
+      <div class="grid grid-cols-2 pt-2">
+        <div class="flex flex-col justify-center">
+        <span>Affiliation:</span>
+      <h3 >{{item.affiliation}}</h3>
+        </div>
+        <div class="flex flex-col justify-center items-center">
+          <span>Citations</span>
+          <h3>{{item.citationCount}}</h3>
+        </div>
+        <div>
+        <span>Publication Date:</span>
+      <h3>{{item.publicationDate}}</h3>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-container>
+

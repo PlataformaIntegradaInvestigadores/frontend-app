@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {ArticleInformationComponent} from "./components/article-information/article-information.component";
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     AuthorTopicsComponent,
     AuthorRetrieveComponent,
     SearchResultComponent,
+    ArticleInformationComponent
   ],
   providers: [],
 })

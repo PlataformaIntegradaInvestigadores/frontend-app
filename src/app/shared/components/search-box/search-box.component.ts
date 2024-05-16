@@ -16,11 +16,16 @@ import {Dropdown, DropdownOptions, initFlowbite} from "flowbite";
 export class SearchBoxComponent implements OnInit{
 
   faSearch = faSearch
+  folded:boolean = true
+
+  changeStateDropdown(){
+    this.folded = !this.folded;
+  }
 
   searchOptions: SearchOption[] = [
-    {code: 'au', label: 'Autor', placeholder: 'Ej. Lorena Recalde', icon: faUser},
-    {code: 'mrau', label: 'Autores relevantes', placeholder: 'Ej. Artificial Intelligence, Covid', icon: faUsers},
-    {code: 'mrar', label: 'Artículos relevantes', placeholder: 'Ej. Machine learning', icon: faNewspaper}
+    {code: 'au', label: 'Author', placeholder: 'Ej. Lorena Recalde', icon: faUser},
+    {code: 'mrau', label: 'Relevant Authors', placeholder: 'Ej. Artificial Intelligence, Covid', icon: faUsers},
+    {code: 'mrar', label: 'Relevant Articles', placeholder: 'Ej. Machine learning', icon: faNewspaper}
   ]
 
   selectedOption!: SearchOption;

@@ -40,11 +40,11 @@ export class AuthorListComponent {
       topics: [{ name: 'Tema 7' }, { name: 'Tema 8' }, { name: 'Tema 8' }],
     },
     {
-      name: 'Autor 5',
+      name: 'Lorena Recalde',
       email: 'autor5@example.com',
-      affiliation: 'Afiliación 5',
+      affiliation: 'Escuela superios del ejercito ESPE',
       num_articles: 7,
-      topics: [{ name: 'Artificial intelligence' }, { name: 'data cience' }],
+      topics: [{ name: 'Artificial intelligence' }, { name: 'data cience' }, { name: 'Machine Learning' }],
     },
   ];
 }
