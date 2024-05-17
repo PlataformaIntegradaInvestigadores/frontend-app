@@ -44,7 +44,7 @@ export class AuthorListComponent {
       email: 'autor5@example.com',
       affiliation: 'Escuela superios del ejercito ESPE',
       num_articles: 7,
-      topics: [{ name: 'Artificial intelligence' }, { name: 'data cience' }, { name: 'Machine Learning' }],
+      topics: [{ name: 'Artificial intelligence' }, { name: 'data cience' }, { name: 'Machine Learning' }, { name: 'Artificial intelligence' }, { name: 'data cience' }, { name: 'Machine Learning' }],
     },
   ];
 }
