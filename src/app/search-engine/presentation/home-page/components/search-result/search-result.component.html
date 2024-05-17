@@ -1,9 +1,17 @@
 <div class="pt-2 w-full flex justify-center items-center flex-col md:flex-row">
   <div class="w-1/4">Filtros</div>
+
   <app-author-retrieve
     *ngIf="showComponent"
     class="w-3/4 md:w-full"
   ></app-author-retrieve>
+
+
+  <!--
+
+  <app-article-information></app-article-information>
+
+  -->
 </div>
 <mat-paginator
   [length]="100"
@@ -13,3 +21,10 @@
   class="w-full"
 >
 </mat-paginator>
+<!--
+  <div class="flex justify-center">
+
+  </div>
+
+</div>
+-->

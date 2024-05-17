@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthorListComponent } from './pages/author-list/author-list.component';
-import { HomePageComponent } from './pages/home-page/home-page.component';
-import { AnaliticaComponent } from './components/analitica/analitica.component';
-import { SearchResultComponent } from './components/search-result/search-result.component';
+import { RouterModule, Routes } from "@angular/router";
+import { HomePageComponent } from "../search-engine/presentation/home-page/pages/home-page/home-page.component";
+import { SearchResultComponent } from "../search-engine/presentation/home-page/components/search-result/search-result.component";
+import { AnaliticaComponent } from "../search-engine/presentation/home-page/components/analitica/analitica.component";
+import { AuthorListComponent } from "../search-engine/presentation/home-page/pages/author-list/author-list.component";
+import { NgModule } from "@angular/core";
 
 const routes: Routes = [
   {
@@ -36,4 +36,4 @@ const routes: Routes = [
   declarations: [],
   providers: [],
 })
-export class HomePageRoutingModule {}
+export class SharedRoutingModule {}

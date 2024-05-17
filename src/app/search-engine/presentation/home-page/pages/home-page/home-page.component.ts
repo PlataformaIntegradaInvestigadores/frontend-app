@@ -8,6 +8,7 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class HomePageComponent implements AfterViewInit {
   showSearchBox: boolean = false;
+  showinformationNavigationBar:boolean = true
 
   constructor(private router: Router) {}
 
@@ -29,4 +30,6 @@ export class HomePageComponent implements AfterViewInit {
       }
     });
   }
+
+
 }

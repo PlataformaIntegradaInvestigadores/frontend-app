@@ -1,6 +1,13 @@
 <app-search-box></app-search-box>
+<mat-paginator
+  [length]="100"
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page"
+>
+</mat-paginator>
 <div class="flex justify-center items-start md:pt-3 md:pr-2">
-  <div class="hidden sm:block md:w-[200px]">
+  <div class="hidden sm:block md:w-1/5">
     <h1>Filtros</h1>
     <form class="max-w-sm mx-auto">
       <label
@@ -19,12 +26,12 @@
       </select>
     </form>
   </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2">
+  <div class="grid grid-cols-1 w-3/5">
     <div
       *ngFor="let author of authors"
-      class="items-center rounded-2xl border-2 justify-center m-4"
+      class="items-center rounded-2xl border-2 justify-center m-2 hover-effect border-gray p-4"
     >
-      <app-author-information [author]="author"></app-author-information>
+      <app-author-information [author]="author" ></app-author-information>
     </div>
   </div>
 </div>

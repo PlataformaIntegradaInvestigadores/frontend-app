@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { HomePageRoutingModule } from './search-engine/presentation/home-page/home-page-rounting.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProfilePageRoutingModule } from './profile/profile-page-routing.module';
@@ -15,8 +14,7 @@ import { NetworkComponent } from './profile/presentation/components/network/netw
 import { ContactComponent } from './profile/presentation/components/contact/contact.component';
 import { ArticleComponent } from './profile/presentation/components/article/article.component';
 import { FingerprintComponent } from './profile/presentation/components/fingerprint/fingerprint.component';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -32,13 +30,13 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HomePageRoutingModule,
+
     SharedModule,
     BrowserAnimationsModule,
     ProfilePageRoutingModule,
     FontAwesomeModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
