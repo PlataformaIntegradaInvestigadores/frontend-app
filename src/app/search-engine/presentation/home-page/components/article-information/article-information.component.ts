@@ -30,6 +30,17 @@ export class ArticleInformationComponent {
           { name: "Deep Learning" },
           { name: "Big Data" }
         ]
+      },
+      {
+        name: "Dr. John Smith",
+        email: "john.smith@example.com",
+        affiliation: "Institute of Technology",
+        num_articles: 40,
+        topics: [
+          { name: "Neural Networks" },
+          { name: "Deep Learning" },
+          { name: "Big Data" }
+        ]
       }
     ],
     publicationDate: '2023-08-15',
