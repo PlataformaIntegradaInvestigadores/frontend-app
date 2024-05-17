@@ -1,17 +1,30 @@
-<div class="pt-2 w-full">
-  <mat-paginator
-    [length]="100"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    aria-label="Select page"
-  >
-  </mat-paginator>
-  <app-author-retrieve *ngIf="showComponent"></app-author-retrieve>
-  <mat-paginator
-    [length]="100"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    aria-label="Select page"
-  >
-  </mat-paginator>
+<div class="pt-2 w-full flex justify-center items-center flex-col md:flex-row">
+  <div class="w-1/4">Filtros</div>
+
+  <app-author-retrieve
+    *ngIf="showComponent"
+    class="w-3/4 md:w-full"
+  ></app-author-retrieve>
+
+
+  <!--
+
+  <app-article-information></app-article-information>
+
+  -->
 </div>
+<mat-paginator
+  [length]="100"
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page"
+  class="w-full"
+>
+</mat-paginator>
+<!--
+  <div class="flex justify-center">
+
+  </div>
+
+</div>
+-->
