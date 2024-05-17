@@ -1,17 +1,15 @@
-/* navbar.component.css */
-
-/* Estilos generales */
+*{
+  box-sizing: border-box;
+}
 nav {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos para el botón de menú en dispositivos móviles */
 #mobile-menu-toggle svg {
   width: 1.5rem;
   height: 1.5rem;
 }
 
-/* Estilos para los enlaces de navegación */
 a {
   transition: color 0.3s ease;
 }
@@ -19,4 +17,23 @@ a {
 /* Hover en los enlaces de navegación */
 a:hover {
   color: #ffffff;
+}
+.author-list {
+  border-bottom: 2px solid transparent; /* Establece un borde transparente */
+  transition: border-color 0.3s;
+  padding-bottom: 1.5px;
+}
+
+.author-list:hover {
+  border-bottom-color: white;
+}
+
+.analitica{
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s;
+  padding-bottom: 1.5px;
+}
+
+.analitica:hover{
+  border-bottom-color:white;
 }
