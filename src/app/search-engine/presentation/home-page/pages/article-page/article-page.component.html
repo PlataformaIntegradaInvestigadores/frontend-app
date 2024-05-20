@@ -1,0 +1,52 @@
+<div class="flex flex-col items-center bg-gray-50 h-full py-5">
+  <div class="w-3/4">
+    <h1>
+      {{ article.title }}
+    </h1>
+    <div class="flex w-full justify-end mt-3">
+      <a class="text-amber-300 hover:text-amber-500 text-[17px]">VIEW ARTICLE IN SCOPUS</a>
+    </div>
+    <h2 class="inline">Authors:</h2>
+    <div class="flex flex-wrap gap-x-3">
+      <ng-container *ngFor="let au of article.authors">
+        <h3>{{ au.name }}</h3>
+      </ng-container>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3">
+      <div>
+        <h2 class="inline">Affiliation:</h2>
+        <h3>
+          {{ article.affiliation }}
+        </h3>
+      </div>
+      <div class="">
+        <h2 class="inline">Publication date:</h2>
+        <h3>
+          {{ article.publicationDate }}
+        </h3>
+      </div>
+      <div class="">
+        <h2 class="inline">Citations:</h2>
+        <h3>
+          {{ article.citationCount }}
+        </h3>
+      </div>
+    </div>
+    <h2 class="inline">Abstract:</h2>
+    <h3 style="text-align: justify">
+      {{ article.abstract }}
+    </h3>
+    <div class="flex flex-col items-center">
+      <h2 class=" ">Related Topics</h2>
+      <div class="flex flex-wrap gap-x-3 pb-3">
+        <ng-container *ngFor="let topic of article.relatedTopics">
+          <div class="flex p-2 border-2 rounded-md">
+            <span class="inline-block">{{ topic.name }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+</div>
+

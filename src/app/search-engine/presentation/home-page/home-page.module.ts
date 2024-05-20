@@ -15,6 +15,14 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {ArticleInformationComponent} from "./components/article-information/article-information.component";
 import { SharedRoutingModule } from 'src/app/shared/shared.routing.module';
+import { ArticlePageComponent } from './pages/article-page/article-page.component';
+import { FilterSidebarComponent } from './components/filter-sidebar/filter-sidebar.component';
+import { CoauthorsGraphComponent } from './components/coauthors-graph/coauthors-graph.component';
+import {AppModule} from "../../../dashboard/dashboard.module";
+import { MostRelevantAuthorsGraphComponent } from './components/most-relevant-authors-graph/most-relevant-authors-graph.component';
+import { SummaryComponent } from './components/summary/summary.component';
+import {FormsModule} from "@angular/forms";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   imports: [
@@ -26,7 +34,10 @@ import { SharedRoutingModule } from 'src/app/shared/shared.routing.module';
     MatIconModule,
     MatButtonModule,
     MatPaginatorModule,
-    SharedRoutingModule
+    SharedRoutingModule,
+    FormsModule,
+    FontAwesomeModule,
+    AppModule
   ],
   exports: [],
   declarations: [
@@ -37,7 +48,12 @@ import { SharedRoutingModule } from 'src/app/shared/shared.routing.module';
     AuthorTopicsComponent,
     AuthorRetrieveComponent,
     SearchResultComponent,
-    ArticleInformationComponent
+    ArticleInformationComponent,
+    ArticlePageComponent,
+    FilterSidebarComponent,
+    CoauthorsGraphComponent,
+    MostRelevantAuthorsGraphComponent,
+    SummaryComponent,
   ],
   providers: [],
 })

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-analitica',
@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./analitica.component.css']
 })
 export class AnaliticaComponent {
-
+  @Input()
+  code!: String;
 }
