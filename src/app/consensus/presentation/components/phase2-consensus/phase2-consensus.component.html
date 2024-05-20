@@ -1,1 +1,16 @@
-<p>phase2-consensus works!</p>
+<div class="container mx-auto mb-4 rounded-xl border p-5 shadow-md bg-white">
+    <div class="mb-3 text-xl font-bold">Sort the topics</div>
+    <div class="text-sm text-neutral-600">
+        <p>By drag and drop organic the topics acords your interested </p>
+        <div class="flex justify-center items-center" >
+
+            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+                <div class="example-box" *ngFor="let movie of movies" cdkDrag>
+                  <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                  {{movie}}
+                </div>
+            </div>
+            
+        </div>  
+    </div>
+</div>

@@ -1,0 +1,24 @@
+/* Estilo general para hover en enlaces no activos */
+a:hover {
+    color:#172554; /* Esto aplicará solo si el enlace no tiene la clase .active */
+}
+
+/* Estilos para enlaces activos */
+.active {
+    background-color: #172554;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    color: #fff;
+    border-radius: 12px;
+}
+
+/* Asegurarse de que hover no cambie el color en enlaces activos */
+.active:hover {
+    color: #fff; /* Mantén el color blanco incluso en hover */
+}
+
+.active svg {
+    fill: #fff; /* El SVG también se mantiene blanco */
+}
