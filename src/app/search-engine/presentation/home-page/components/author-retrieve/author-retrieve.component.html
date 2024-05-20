@@ -1,107 +1,46 @@
 <ng-container *ngFor="let item of items" class="">
-  <div class="flexmd:flex">
-    <!-- Mobile screen version-->
-    <div class="md:hidden flex justify-center items-center">
-      <div class="card my-2 bg-slate-300 rounded-md">
-        <div class="photo">
-          <img
-            [src]="item.photo || './assets/profile.png'"
-            alt="Author image profile"
-            class="image"
-          />
-        </div>
-        <div class="author-information">
-          <div class="author info">
-            <div class="author-names ">{{ item.name }}</div>
-            <div class="author-current-affiliation">
-              {{ item.current_affiliation }}
-            </div>
-          </div>
-        </div>
+  <div class="flex flex-col md:flex-row items-center border-2 border-black w-full my-2 p-3  rounded-md">
+    <!-- Profile Author -->
+    <div class="photo w-24 h-24 md:w-1/12 md:h-auto flex-shrink-0">
+      <img [src]="item.photo || './assets/profile.png'" alt="Author image profile" class="w-full h-full object-cover rounded-full md:rounded-none" />
+    </div>
 
-        <div class="flex items-center justify-center">
-          <div class="flex items-center justify-center flex-col">
-            <div class="">{{ item.articles }}</div>
-            <p>Articles </p>
-          </div>
-          <div class="flex items-center justify-center flex-col">
-            <div class="citations">{{ item.citations }}</div>
-            <p>Citations</p>
-          </div>
-          <div class="flex items-center justify-center flex-col ">
-            <div class="topics">{{ item.topics }}</div>
-            <p>Topics</p>
-          </div>
+    <!-- Información del autor -->
+    <div class="text-center md:text-left md:w-1/4 md:pl-4">
+      <div class="author-names text-lg font-semibold">{{ item.name }}</div>
+      <div class="author-current-affiliation text-sm text-gray-600">{{ item.current_affiliation }}</div>
+    </div>
+
+    <!-- Publicaciones, citas y temas -->
+    <div class="flex justify-around w-full md:w-3/4 mt-4 md:mt-0">
+      <div class="text-center flex flex-col items-center md:flex-row md:w-1/4">
+        <mat-icon class="mr-1 hidden md:block">article</mat-icon>
+        <div>
+          <div>{{ item.articles }}</div>
+          <p class="text-sm">Articles</p>
+        </div>
+      </div>
+      <div class="text-center flex flex-col items-center md:flex-row md:w-1/4">
+        <mat-icon class="mr-1 hidden md:block">trending_up</mat-icon>
+        <div>
+          <div>{{ item.citations }}</div>
+          <p class="text-sm">Citations</p>
+        </div>
+      </div>
+      <div class="text-center flex flex-col items-center md:flex-row md:w-1/4">
+        <mat-icon class="mr-1 hidden md:block">topic</mat-icon>
+        <div>
+          <div>{{ item.topics }}</div>
+          <p class="text-sm">Topics</p>
         </div>
       </div>
     </div>
 
-    <!-- Desktop Screen version-->
-
-    <div class="hidden md:flex border-red-800 border-2 w-full my-2 px-2">
-      <div class="flex items-center justify-around w-full">
-        <!-- Photo -->
-        <div class="photo" style="width: 10%">
-          <img
-            [src]="item.photo || './assets/profile.png'"
-            alt="Author image profile"
-            class="image"
-          />
-        </div>
-
-        <!-- Author information -->
-        <div class="justify-self-start text-center" style="width: 25%">
-          <div class="name">{{ item.name }}</div>
-          <div class="current-affiliation">{{ item.current_affiliation }}</div>
-        </div>
-
-        <!-- Published articles -->
-        <div
-          class="published-articles flex justify-center flex-col text-center my-1"
-          style="width: 10%"
-        >
-          <div class="flex justify-center items-center w-full">
-            <mat-icon class="mr-1">article</mat-icon>
-            <div>{{ item.articles }}</div>
-          </div>
-          <p class="mt-1">Articles</p>
-        </div>
-        <!-- Topics -->
-        <div
-          class="last-article flex justify-center flex-col items-center my-1"
-          style="width: 10%"
-        >
-          <div class="flex justify-center items-center">
-            <mat-icon class="mr-1">topic</mat-icon>
-            <div>{{ item.topics }}</div>
-          </div>
-
-          <p>Topics</p>
-        </div>
-
-        <!-- Citations -->
-        <div
-          class="all-citations flex justify-center flex-col text-center"
-          style="width: 10%"
-        >
-          <div class="flex justify-center items-center w-full my-1">
-            <mat-icon class="mr-1">trending_up</mat-icon>
-            <div>{{ item.citations }}</div>
-          </div>
-          <p>Citations</p>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex justify-center flex-col" style="width: 15%">
-          <!-- Scopus Profile -->
-          <button mat-flat-button color="primary" class="my-2">
-            Scopus Profile
-          </button>
-
-          <!-- All Information -->
-          <button mat-flat-button color="primary">See More Information</button>
-        </div>
-      </div>
+    <!-- Botones -->
+    <div class="flex flex-col items-center mt-4 md:mt-0 md:w-1/4 md:pl-4">
+      <button mat-flat-button color="primary" class="my-2 w-full md:w-full" >Scopus Profile</button>
+      <button mat-flat-button color="primary" class="w-full md:w-full" routerLink="/profile">More Information</button>
     </div>
   </div>
+
 </ng-container>
