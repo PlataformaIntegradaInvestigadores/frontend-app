@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 import {
   faNewspaper,
   faSearch,
@@ -74,7 +74,13 @@ export class SearchBoxComponent implements OnInit{
         query: this.inputValue
       })
   }
-
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container') && !target.closest('.dropdown-button')) {
+      this.folded = true;
+    }
+  }
   setOption(option: SearchOption) {
     this.selectedOption = option
     if (this.selectedOption.code == 'au') {
