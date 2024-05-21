@@ -1,0 +1,7 @@
+.bg-custom {
+    background-image: url("src/assets/background.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+}
