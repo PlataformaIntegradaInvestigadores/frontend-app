@@ -7,10 +7,11 @@ import { FormsModule } from '@angular/forms'; // Asegúrate de importar FormsMod
 import { CommonModule } from '@angular/common'; // Importa CommonModule
 import { HeaderComponent } from './components/header/header.component';
 import { SharedRoutingModule } from './shared.routing.module';
+import {FooterComponent} from "./components/footer/footer.component";
 
 @NgModule({
-  declarations: [SearchBoxComponent, HeaderComponent],
-  exports: [SearchBoxComponent, HeaderComponent],
+  declarations: [SearchBoxComponent, HeaderComponent,FooterComponent],
+  exports: [SearchBoxComponent, HeaderComponent,FooterComponent],
   imports: [
     MatButtonModule,
     MatIconModule,

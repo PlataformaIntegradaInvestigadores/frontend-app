@@ -18,7 +18,7 @@ import { SharedRoutingModule } from 'src/app/shared/shared.routing.module';
 import { ArticlePageComponent } from './pages/article-page/article-page.component';
 import { FilterSidebarComponent } from './components/filter-sidebar/filter-sidebar.component';
 import { CoauthorsGraphComponent } from './components/coauthors-graph/coauthors-graph.component';
-import {AppModule} from "../../../dashboard/dashboard.module";
+import {DashboardModule} from "../../../dashboard/dashboard.module";
 import { MostRelevantAuthorsGraphComponent } from './components/most-relevant-authors-graph/most-relevant-authors-graph.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import {FormsModule} from "@angular/forms";
@@ -37,7 +37,8 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     SharedRoutingModule,
     FormsModule,
     FontAwesomeModule,
-    AppModule
+    DashboardModule,
+
   ],
   exports: [],
   declarations: [
