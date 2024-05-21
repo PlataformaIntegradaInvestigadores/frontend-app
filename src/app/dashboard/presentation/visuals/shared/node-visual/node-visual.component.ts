@@ -32,7 +32,7 @@ import {Node} from "../../../../../shared/d3";
       </svg:text>
     </svg:g>
   `,
-  styleUrls: ['./node-visual.component.scss']
+  styleUrls: ['./node-visual.component.css']
 })
 export class NodeVisualComponent {
   @Input('nodeVisual') node!: Node;

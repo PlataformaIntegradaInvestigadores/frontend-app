@@ -22,7 +22,7 @@ import {Link} from "../../../../../shared/d3";
               container="body"
     ></svg:line>
   `,
-  styleUrls: ['./link-visual.component.scss']
+  styleUrls: ['./link-visual.component.css']
 })
 export class LinkVisualComponent {
   @Input('linkVisual') link!: Link;

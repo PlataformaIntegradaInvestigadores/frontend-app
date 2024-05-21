@@ -3,27 +3,28 @@
 
 import {NgModule} from "@angular/core";
 import {GraphComponent} from "./presentation/visuals/graph/graph.component";
-import {D3Module} from "../shared/d3/d3.module";
 import {LinkVisualComponent, NodeVisualComponent} from "./presentation/visuals/shared";
 import { EcuadorMapComponent } from './presentation/visuals/ecuador-map/ecuador-map.component';
+import {ZoomableDirective} from "../shared/d3/directives";
 
 @NgModule({
   declarations: [
     GraphComponent,
     LinkVisualComponent,
     NodeVisualComponent,
-    EcuadorMapComponent
-    ],
+    EcuadorMapComponent,
+    ZoomableDirective
+  ],
   exports: [
     GraphComponent,
     LinkVisualComponent,
     NodeVisualComponent,
     EcuadorMapComponent
   ],
-  imports: [
-  ],
+    imports: [
+    ],
   providers: [
     ],
 })
-export class AppModule {
+export class DashboardModule {
 }
