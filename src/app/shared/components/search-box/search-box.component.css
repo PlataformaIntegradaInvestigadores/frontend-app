@@ -23,11 +23,11 @@
 }
 
 .dropdown-menu button:focus {
-  background-color: var(--primary);
+  background-color: var(-primary_tailwind);
 }
 
 .btn-search {
-  background-color: var(--primary);
+  background-color: var(-primary_tailwind);
   color: var(--white);
   display: flex;
   align-items: center;
