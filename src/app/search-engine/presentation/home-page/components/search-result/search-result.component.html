@@ -1,30 +1,53 @@
-<div class="pt-2 w-full flex justify-center items-center flex-col md:flex-row">
-  <div class="w-1/4">Filtros</div>
-
-  <app-author-retrieve
-    *ngIf="showComponent"
-    class="w-3/4 md:w-full"
-  ></app-author-retrieve>
-
-
-  <!--
-
-  <app-article-information></app-article-information>
-
-  -->
+<div class="w-full bg-slate-200">
+  <app-search-box (search)="onSearch($event)" [setSearch]="setSearch"
+                  class="flex w-full h-full items-center justify-center"
+  ></app-search-box>
 </div>
-<mat-paginator
-  [length]="100"
-  [pageSize]="10"
-  [pageSizeOptions]="[5, 10, 25, 100]"
-  aria-label="Select page"
-  class="w-full"
->
-</mat-paginator>
-<!--
-  <div class="flex justify-center">
 
+<div class="w-full flex  justify-center items-center ">
+  <div *ngIf="searchValue && searchValue.query" [ngSwitch]="searchValue.option" class="flex pb-5 flex-col justify-center items-center md:flex-row w-full">
+    <app-filter-sidebar [code]="searchValue.option" class="w-1/4"></app-filter-sidebar>
+    <div class="w-3/4">
+      <mat-paginator
+        [length]="100"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page"
+        class="w-full"
+      >
+      </mat-paginator>
+      <!-- Most Relevant Authors Results -->
+      <app-article-information *ngSwitchCase="'mrar'">
+      </app-article-information>
+      <!-- Author Results -->
+      <app-author-retrieve *ngSwitchCase="'au'">
+      </app-author-retrieve>
+      <!-- Most Relevant Articles Results -->
+      <app-most-relevant-authors-graph *ngSwitchCase="'mrau'">
+        Si
+      </app-most-relevant-authors-graph>
+    </div>
   </div>
-
 </div>
--->
+
+
+
+<div *ngIf="!searchValue || !searchValue.query">
+  <app-summary></app-summary>
+  <div class="flex flex-col">
+    <div class="flex justify-center items-center bg-red-800 p-2">
+      <h1 class="font-bold text-white">Scientific contribution in Ecuador</h1>
+    </div>
+    <div class=" flex justify-center">
+      <div class="w-11/12 flex  p-3 ">
+        <p class="text-justify text-md p-3">
+          Ecuador, a country known for its rich biodiversity and cultural heritage, has been making significant strides
+          in
+          various research fields. Each of its provinces brings unique contributions, enhancing the nation's scientific
+          and technological landscape.
+        </p>
+        <app-ecuador-map></app-ecuador-map>
+      </div>
+    </div>
+  </div>
+</div>

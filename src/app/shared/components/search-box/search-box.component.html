@@ -1,37 +1,43 @@
-<div class="relative flex w-full h-[470px] justify-center items-center overflow-hidden">
-  <img src="assets/img.png" class="min-h-[500px] object-cover">
-  <div class="absolute flex flex-col  items-center justify-center min-h-[264px]  bg-black bg-opacity-70  rounded-2xl">
+<div class="relative flex w-full h-[450px] justify-center items-center overflow-hidden">
+  <img src="assets/img.png" class="min-h-[490px] object-cover">
+  <div class="absolute flex flex-col  items-center justify-center min-h-[264px]  bg-black bg-opacity-75  rounded-2xl">
     <div class="text-white flex justify-center items-center p-2 md:p-0 text-3xl">WELCOME TO CENTINELA EPN</div>
+
     <div class="flex p-2">
-      <div>
-      <button class="h-[36px] text-white bg-red-800 hover:bg-red-900 rounded-l-lg text-sm flex text-center items-center justify-center md:min-w-[200px] p-2"
-              type="button"
-              (click)="changeStateDropdown()"
-      >
-        <div class="flex flex-grow justify-center">
-        <fa-icon [icon]="selectedOption.icon" ></fa-icon>
-        <div class="hidden md:block pl-2">
-          {{ selectedOption.label }}
-        </div>
-        </div>
-        <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-             viewBox="0 0 10 6">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-        </svg>
-      </button>
-      <div class="relative flex flex-col items-center">
-      <button class=" absolute bg-white divide-y divide-gray-100 rounded-lg shadow" [ngClass]="{'hidden':folded}" >
-        <div class="text-sm text-gray-700 dark:text-gray-200"
-             *ngFor="let option of searchOptions">
-          <div [ngClass]="{'hidden':selectedOption === option,'p-2':selectedOption!==option}"
-               (click)="setOption(option); changeStateDropdown()">
-            <fa-icon [icon]="option.icon"></fa-icon>
-            {{ option.label }}
+      <!-- Dropdown start -->
+      <div class="dropdown-container">
+        <button
+          class="h-[36px] text-white bg-red-800 hover:bg-red-900 rounded-l-lg text-sm flex text-center items-center justify-center md:min-w-[200px] p-2 dropdown-button"
+          type="button"
+          (click)="changeStateDropdown()"
+        >
+          <div class="flex flex-grow justify-center">
+            <fa-icon [icon]="selectedOption.icon"></fa-icon>
+            <div class="hidden md:block pl-2">
+              {{ selectedOption.label }}
+            </div>
           </div>
+          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+               viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div class="relative flex flex-col items-center ">
+          <button class="absolute bg-white divide-y divide-gray-100 rounded-lg shadow" [ngClass]="{'hidden': folded}">
+            <div class="text-sm text-gray-700 dark:text-gray-200"
+                 *ngFor="let option of searchOptions">
+              <div [ngClass]="{'hidden': selectedOption === option, 'p-2': selectedOption !== option}"
+                   (click)="setOption(option); changeStateDropdown()">
+                <fa-icon [icon]="option.icon"></fa-icon>
+                {{ option.label }}
+              </div>
+            </div>
+          </button>
         </div>
-      </button>
       </div>
-      </div>
+      <!-- Dropdown end -->
       <div class="flex items-center">
         <label for="inputQuery" class="sr-only">Search</label>
         <input id="inputQuery"
@@ -57,5 +63,6 @@
           <div class="hidden md:block">Buscar</div>
         </button>
       </div>
+    </div>
   </div>
 </div>

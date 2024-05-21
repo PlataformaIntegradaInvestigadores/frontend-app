@@ -9,3 +9,17 @@ export interface Author  {
 export interface Topic {
   name: string;
 }
+export interface Coauthors {
+  links: { source: number, target: number, collabStrength: number }[]
+  nodes: AuthorNode[]
+  affiliations: { scopusId: number, name: string }[]
+}
+
+
+export interface AuthorNode {
+  scopusId: number
+  initials: string
+  firstName: string
+  lastName: string
+  weight: number
+}
