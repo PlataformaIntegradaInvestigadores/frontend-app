@@ -3,10 +3,10 @@
     padding-right: 12px;
     font-weight: bold;
     border-bottom-width: 2px;
-    border-bottom-color: theme('colors.primary');
+    border-bottom-color: theme('colors.primary_tailwind');
     border-bottom-style: solid;
 
     svg {
-        fill: theme('colors.primary');
+        fill: theme('colors.primary_tailwind');
     }
 }
