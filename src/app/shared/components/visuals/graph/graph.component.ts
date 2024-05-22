@@ -7,8 +7,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import {Node,D3Service, ForceDirectedGraph, Link} from "../../../../shared/d3";
-
+import {D3Service, ForceDirectedGraph, Node,Link} from "../../../d3";
 
 
 @Component({
@@ -19,23 +18,21 @@ import {Node,D3Service, ForceDirectedGraph, Link} from "../../../../shared/d3";
       <g [zoomableOf]="svg" class="my-border">
         <g [linkVisual]="link" *ngFor="let link of links"></g>
         <g [nodeVisual]="node" *ngFor="let node of nodes"
-           ></g>
+           [draggableNode]="node" [draggableInGraph]="graph"></g>
       </g>
     </svg>
   `,
   styleUrls: ['./graph.component.css']
 })
 export class GraphComponent implements OnInit, AfterViewInit {
-  @Input('nodes')
-  nodes!: Node[];
+  @Input('nodes') nodes!: Node[];
   @Input('links') links!: Link[];
   @Input('forces') forces: any;
-  graph: ForceDirectedGraph | undefined;
+  graph!: ForceDirectedGraph;
   private _options: { width: number, height: number } = {width: 800, height: 600};
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    // @ts-ignore
     this.graph.initSimulation(this.options);
   }
 
@@ -44,7 +41,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    // @ts-ignore
     /** Receiving an initialized simulated graph from our custom d3 service */
     this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options, this.forces);
 
@@ -59,7 +55,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // @ts-ignore
     this.graph.initSimulation(this.options);
   }
 

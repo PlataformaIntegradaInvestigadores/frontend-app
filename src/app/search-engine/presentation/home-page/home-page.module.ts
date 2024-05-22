@@ -38,7 +38,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     FormsModule,
     FontAwesomeModule,
     DashboardModule,
-
+    SharedModule
   ],
   exports: [],
   declarations: [
