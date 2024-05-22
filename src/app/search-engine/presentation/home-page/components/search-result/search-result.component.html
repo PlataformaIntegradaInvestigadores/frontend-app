@@ -5,9 +5,9 @@
 </div>
 
 <div class="w-full flex  justify-center items-center ">
-  <div *ngIf="searchValue && searchValue.query" [ngSwitch]="searchValue.option" class="flex pb-5">
-    <app-filter-sidebar [code]="searchValue.option"></app-filter-sidebar>
-    <div>
+  <div *ngIf="searchValue && searchValue.query" [ngSwitch]="searchValue.option" class="flex pb-5 flex-col justify-center items-center md:flex-row w-full">
+    <app-filter-sidebar [code]="searchValue.option" class="w-1/4"></app-filter-sidebar>
+    <div class="w-3/4">
       <mat-paginator
         [length]="100"
         [pageSize]="10"
@@ -29,6 +29,9 @@
     </div>
   </div>
 </div>
+
+
+
 <div *ngIf="!searchValue || !searchValue.query">
   <app-summary></app-summary>
   <div class="flex flex-col">
