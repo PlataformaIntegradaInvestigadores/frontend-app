@@ -1,0 +1,7 @@
+#noob-label, #expert-label {
+    transition: opacity 0.3s ease-in-out;
+}
+
+input::placeholder {
+    text-align: left; /* Alinear el texto a la derecha */
+}
