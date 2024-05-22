@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
   navOpen: boolean = false;
+  isActive: boolean = true;
 
   constructor(private router: Router) {}
 

@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component} from '@angular/core';
 import {Search} from "../../../../../shared/interfaces/search-type.interface";
 import {ActivatedRoute} from "@angular/router";
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-search-result',
@@ -14,7 +15,7 @@ export class SearchResultComponent {
   setSearch!: Search
   loading: boolean = false
 
-  constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef,) {
+  constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title:Title) {
     const {option, query} = route.snapshot.queryParams
     if (option && query)
       this.setSearch = {option, query}
@@ -29,5 +30,11 @@ export class SearchResultComponent {
 
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
+  }
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.title.setTitle("Welcome")
   }
 }
