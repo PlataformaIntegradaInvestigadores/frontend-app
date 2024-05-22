@@ -9,7 +9,7 @@ import {json} from "d3";
 export class EcuadorMapComponent {
   private svg: any;
   private margin = 50;
-  private width =750 - (this.margin * 2);
+  private width =600 - (this.margin * 2);
   private height = 450 - (this.margin * 2);
   private scale = Math.min(this.width, this.height);
   private geoJson: any;
@@ -21,7 +21,7 @@ export class EcuadorMapComponent {
 
 // Definir una escala de color ord
     var projection = d3.geoMercator()
-      .center([-79,-2])
+      .center([-77,-2])
       .scale(3500)
     // .rotate([0, 0]);
 
