@@ -1,42 +1,39 @@
-<div class="flex flex-grow justify-center md:justify-start mx-auto max-w-screen-xl">
-    <div class="max-w-screen-xl mx-auto py-1 px-2 lg:py-8 lg:px-3">
-        <div class="flex flex-col md:flex-row">
-            <div class="mr-0 md:mr-8 mb-6 md:mb-0 bg-black border-black border-2">
-                <img class="w-1/2 sm:w-40 mx-auto" src="./assets/profile.png" alt="Imagen de perfil">
-            </div>
-            <div
-                class="flex-1 flex flex-col sm:flex-row flex-wrap justify-center items-start -mb-4 -mx-2 md:justify-start">
-                <div class="w-full sm:w-full mb-2 px-1">
-                    <div class="h-full px-3 md:text-start text-center">
-                        <strong class="text-2xl font-bold text-md mb-6 ">Name - Lastname</strong>
-                        <p class="text-sm text-justify">Our platform leverages user data and behavior to provide a
-                            highly
-                            personalized
-                            experience, with dynamic content and product recommendations that change in real-time.</p>
-                    </div>
-                    <div class="h-full px-3 md:text-start text-start">
-                        <strong class="text-lg font-bold mt-4 md:mt-6 mb-1 md:mb-3">Institution</strong>
-                        <p>Escuela Politécnica Nacional</p>
-                    </div>
-                </div>
-            </div>
-            <div [class.hidden]="mostrarBloqueEnPantallaPequena"
-                class="flex-1 flex flex-col sm:flex-row flex-wrap justify-center items-start -mb-4 -mx-2 md:justify-start">
-                <div class="w-full sm:w-full mb-2 px-1">
-                    <div class="h-full px-3 md:text-start text-start">
-                        <strong class="text-lg font-bold mb-1 md:mb-3">Citaciones</strong>
-                        <p>#</p>
-                        <strong class="text-lg font-bold mt-4 md:mt-6 mb-1 md:mb-3">ORC ID</strong>
-                        <p>##############</p>
-                        <strong class="text-lg font-bold mt-4 md:mt-6 mb-1 md:mb-3">Documents</strong>
-                        <p>#</p>
-                    </div>
-                </div>
-            </div>
-
-            <button (click)="toggleVisibilidadEnPantallaPequena()" class="flex px-3">
-                {{ mostrarBloqueEnPantallaPequena ? '...' : '...' }}
-            </button>
+<div class="flex justify-center md:justify-start mx-auto max-w-screen-xl">
+    <div class="max-w-screen-xl mx-auto py-8 px-3 lg:py-8 lg:px-3 flex flex-col md:flex-row">
+        <div class="flex m-auto bg-black md:mr-4">
+            <img class="w-40 m-auto bg-white border-2 border-white shadow-lg" src="./assets/profile.png"
+                alt="Imagen de perfil">
         </div>
+        <div class="flex-1 flex flex-col sm:flex-row flex-wrap justify-center items-start md:justify-start md:mr-4">
+            <div class="w-full sm:w-full mb-2 px-3">
+                <div class="text-center md:text-left">
+                    <strong class="text-2xl font-bold mb-6">Name - Lastname</strong>
+                    <p class="text-sm text-justify">Our platform leverages user data and behavior to provide a highly
+                        personalized experience, with dynamic content and product recommendations that change in
+                        real-time.</p>
+                </div>
+                <div class="mt-6 text-left">
+                    <strong class="text-lg font-bold mb-3">Institution</strong>
+                    <p>Escuela Politécnica Nacional</p>
+                </div>
+            </div>
+        </div>
+        <div [class.hidden]="mostrarBloqueEnPantallaPequena"
+            class="flex-1 flex flex-col sm:flex-row flex-wrap justify-center items-start md:justify-start">
+            <div class="w-full sm:w-full mb-2 px-3">
+                <div class="text-left">
+                    <strong class="text-lg font-bold mb-3">Citaciones</strong>
+                    <p>#</p>
+                    <strong class="text-lg font-bold mt-6 mb-3">ORC ID</strong>
+                    <p>##############</p>
+                    <strong class="text-lg font-bold mt-6 mb-3">Documents</strong>
+                    <p>#</p>
+                </div>
+            </div>
+        </div>
+
+        <button (click)="toggleVisibilidadEnPantallaPequena()" class="flex px-3 mt-6 md:mt-0">
+            {{ mostrarBloqueEnPantallaPequena ? 'Mostrar detalles' : 'Ocultar detalles' }}
+        </button>
     </div>
 </div>

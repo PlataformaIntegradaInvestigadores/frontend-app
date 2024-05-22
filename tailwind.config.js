@@ -8,16 +8,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-
       colors: {
-        primary:'#172554'
-      },
-
-      /* colors: {
-        primary:'#fe2c55'
-      } */
-
-
+        primary_tailwind: '#1e3a8a',
+        secondary: '#eaebed'
+      }
     },
   },
   plugins: [
