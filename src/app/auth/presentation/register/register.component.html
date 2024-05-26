@@ -19,36 +19,36 @@
             </p>
         </div>
         <div class="p-5 bg-white md:flex-1">
-            <h3 class="my-4 text-2xl font-semibold text-gray-700">Create Account</h3>
+            <p class="my-4 text-2xl font-semibold text-gray-700">Create Account</p>
             <form action="#" class="flex flex-col space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col space-y-1">
                         <label for="name" class="text-sm font-semibold text-gray-500">First Name</label>
                         <input type="text" id="name"
-                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-900" />
+                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" />
                     </div>
                     <div class="flex flex-col space-y-1">
                         <label for="lastname" class="text-sm font-semibold text-gray-500">Last Name</label>
                         <input type="text" id="lastname"
-                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-900" />
+                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" />
                     </div>
                 </div>
                 <div class="flex flex-col space-y-1">
                     <label for="email" class="text-sm font-semibold text-gray-500">Email Address</label>
                     <input type="email" id="email"
-                        class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-900" />
+                        class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col space-y-1">
                         <label for="password" class="text-sm font-semibold text-gray-500">Password</label>
                         <input type="password" id="password"
-                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-900" />
+                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" />
                     </div>
                     <div class="flex flex-col space-y-1">
                         <label for="confirm_password" class="text-sm font-semibold text-gray-500">Confirm
                             Password</label>
                         <input type="password" id="confirm_password"
-                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-900" />
+                            class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" />
                     </div>
                 </div>
                 <div class="flex flex-col space-y-1">
@@ -61,27 +61,25 @@
                                     d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                             </svg>
                         </div>
-                        <input datepicker datepicker-autohide datepicker-orientation="top left"
-                            datepicker-format="dd/mm/yyyy" id="birthdate" type="date"
-                            class="pl-10 pr-4 py-2.5 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-900 w-full"
-                            placeholder="dd/mm/aaaa">
+                        <input id="birthdate" type="date"
+                            class="pl-10 pr-4 py-2.5 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200 w-full">
                     </div>
                 </div>
 
                 <div class="flex flex-col space-y-1">
                     <label for="scopusID" class="text-sm font-semibold text-gray-500">Scopus ID (optional)</label>
                     <input type="scopusID" id="scopusID"
-                        class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-900" />
+                        class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" />
                 </div>
                 <div class="flex items-center space-x-2">
                     <input type="checkbox" id="agree_terms"
-                        class="w-4 h-4 transition duration-300 rounded focus:ring-2 focus:ring-offset-0 focus:outline-none focus:ring-blue-900" />
+                        class="w-4 h-4 transition duration-300 rounded focus:ring-2 focus:ring-offset-0 focus:outline-none focus:ring-blue-200" />
                     <label for="agree_terms" class="text-sm font-semibold text-gray-500">I agree to the <a href="#"
                             class="underline">terms</a> and <a href="#" class="underline">conditions</a></label>
                 </div>
                 <div>
                     <button type="submit" routerLink="/login"
-                        class="w-full px-4 py-2 text-lg font-semibold text-white transition-colors duration-300 bg-primary_tailwind rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-blue-900 focus:ring-4">
+                        class="w-full px-4 py-2 text-lg font-semibold text-white transition-colors duration-300 bg-primary_tailwind rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-blue-200 focus:ring-4">
                         Create Account
                     </button>
                 </div>
