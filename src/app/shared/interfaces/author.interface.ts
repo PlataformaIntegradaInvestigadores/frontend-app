@@ -15,10 +15,10 @@ export interface PaginationAuthorResult {
 }
 
 export interface Author {
-  name: String,
-  email: String,
-  affiliation: String,
-  num_articles:Number,
+  name: string,
+  email: string,
+  affiliation: string,
+  num_articles:number,
   topics:string [],
   scopusId: number,
   firstName: string

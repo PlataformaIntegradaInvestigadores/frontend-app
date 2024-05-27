@@ -7,6 +7,8 @@ import { CardGroupComponent } from './presentation/components/card-group/card-gr
 import { ListGroupComponent } from './presentation/components/list-group/list-group.component';
 import { BtnCreateGroupComponent } from './presentation/components/btn-create-group/btn-create-group.component';
 import { SharedModule } from '../shared/shared.module';
+import {AuthorService} from "../search-engine/domain/services/author.service";
+import {D3Service} from "../shared/d3";
 
 @NgModule({
   imports: [ProfilePageRoutingModule, SharedModule],
@@ -19,6 +21,6 @@ import { SharedModule } from '../shared/shared.module';
     ListGroupComponent,
     BtnCreateGroupComponent
   ],
-  providers: [],
+  providers: [D3Service],
 })
 export class ProfilePageModule { }

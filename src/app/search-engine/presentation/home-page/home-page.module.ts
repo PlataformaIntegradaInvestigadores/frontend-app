@@ -41,7 +41,9 @@ import { EcuadorContributionComponent } from './components/ecuador-contribution/
     DashboardModule,
     SharedModule
   ],
-  exports: [],
+  exports: [
+    CoauthorsGraphComponent
+  ],
   declarations: [
     AuthorListComponent,
     HomePageComponent,
