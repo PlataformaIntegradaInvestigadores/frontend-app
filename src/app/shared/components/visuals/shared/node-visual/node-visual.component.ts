@@ -16,13 +16,7 @@ import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
           <ng-template #elseLink>{{node.popover.content}}</ng-template>
       </ng-template>
 
-      <svg:g
-          [ngbPopover]="popContent"
-          [popoverTitle]="popTitle"
-          triggers="manual"
-          #p1="ngbPopover"
-          (click)="togglePopover(p1)"
-          container="body">
+      <svg:g>
           <svg:circle
                   class="node"
                   [attr.fill]="node.color"
