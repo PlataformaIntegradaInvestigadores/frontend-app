@@ -4,7 +4,8 @@ import {faDownload} from "@fortawesome/free-solid-svg-icons";
 import {DOCUMENT} from "@angular/common";
 import {Author, AuthorNode} from "../../../../../shared/interfaces/author.interface";
 import {Node,Link} from "../../../../../shared/d3";
-
+import {AuthorService} from "../../../../domain/services/author.service";
+import * as htmlToImage from "html-to-image";
 @Component({
   selector: 'app-coauthors-graph',
   templateUrl: './coauthors-graph.component.html',
@@ -26,10 +27,24 @@ export class CoauthorsGraphComponent {
   @ViewChild("downloadEl") downloadEl!: ElementRef;
   faDownload = faDownload
 
-  constructor() {
+  constructor(private authorService: AuthorService,
+              @Inject(DOCUMENT) private coreDoc: Document) {
   }
 
   ngOnInit() {
+    this.authorService.getCoauthorsById(this.author.scopusId).subscribe((coauthors) => {
+      this.apiNodes = coauthors.nodes
+      this.apiNodes.push({
+        scopusId: this.author.scopusId,
+        initials: this.author.initials,
+        firstName: this.author.firstName,
+        lastName: this.author.lastName,
+        weight: 0
+      })
+      this.setupNodes()
+      this.setupLinks(coauthors.links)
+      this.showGraph = true
+    })
   }
 
   setupNodes() {
@@ -75,9 +90,19 @@ export class CoauthorsGraphComponent {
   }
 
   downloadDataUrl(dataUrl: string, filename: string): void {
+    let a = this.coreDoc.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    this.coreDoc.body.appendChild(a); //Firefox requires link to be in body
+    a.click();
+    this.coreDoc.body.removeChild(a);
   }
 
   onDownloadGraph(): void {
     const theElement = this.downloadEl.nativeElement;
+    htmlToImage.toPng(theElement).then(dataUrl => {
+      this.downloadDataUrl(dataUrl, `coauthor-graph-${this.author.scopusId}`);
+    });
   }
+
 }

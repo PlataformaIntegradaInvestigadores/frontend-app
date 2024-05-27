@@ -23,6 +23,7 @@ import { MostRelevantAuthorsGraphComponent } from './components/most-relevant-au
 import { SummaryComponent } from './components/summary/summary.component';
 import {FormsModule} from "@angular/forms";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { EcuadorContributionComponent } from './components/ecuador-contribution/ecuador-contribution.component';
 
 @NgModule({
   imports: [
@@ -55,6 +56,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     CoauthorsGraphComponent,
     MostRelevantAuthorsGraphComponent,
     SummaryComponent,
+    EcuadorContributionComponent,
   ],
   providers: [],
 })

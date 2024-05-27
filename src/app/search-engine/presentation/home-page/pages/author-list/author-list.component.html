@@ -1,4 +1,6 @@
-<app-search-box></app-search-box>
+<div class="custom-bg">
+  <app-search-box></app-search-box>
+</div>
 <mat-paginator
   [length]="100"
   [pageSize]="10"
@@ -13,7 +15,7 @@
       <label
         for="countries"
         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >Select your country</label
+      >Select your country</label
       >
       <select
         id="countries"
@@ -31,7 +33,7 @@
       *ngFor="let author of authors"
       class="items-center rounded-2xl border-2 justify-center m-2 hover-effect border-gray p-4"
     >
-      <app-author-information [author]="author" ></app-author-information>
+      <app-author-information [author]="author"></app-author-information>
     </div>
   </div>
 </div>

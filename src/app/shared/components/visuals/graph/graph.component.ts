@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import {D3Service, ForceDirectedGraph, Node,Link} from "../../../d3";
 
-
 @Component({
   selector: 'graph',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {Link} from "../../../../../shared/d3";
+import {Link} from "../../../../d3";
+import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
@@ -8,26 +9,32 @@ import {Link} from "../../../../../shared/d3";
     <ng-template #popTitle>Arista</ng-template>
 
     <ng-template #popContent>
-      <b>Fuerza de colaboración:</b> {{ link.strokeWidth / 5 }}
+      <b>Fuerza de colaboración:</b> {{link.strokeWidth / 5}}
     </ng-template>
 
-    <svg:line class="line"
-              style="stroke-width:{{link.strokeWidth}}; stroke: rgb(0, 0, 0)"
-              [attr.x1]="link.source.x"
-              [attr.y1]="link.source.y"
-              [attr.x2]="link.target.x"
-              [attr.y2]="link.target.y"
+    <svg:line>
 
-              triggers="manual"
-              container="body"
-    ></svg:line>
+<!--      class="line"-->
+<!--              style="stroke-width:{{link.strokeWidth}}; stroke: rgb(0, 0, 0)"-->
+<!--              [attr.x1]="link.source.x"-->
+<!--              [attr.y1]="link.source.y"-->
+<!--              [attr.x2]="link.target.x"-->
+<!--              [attr.y2]="link.target.y"-->
+
+<!--              [ngbPopover]="popContent"-->
+<!--              [popoverTitle]="popTitle"-->
+<!--              triggers="manual"-->
+<!--              #p1="ngbPopover"-->
+<!--              (click)="togglePopover(p1)"-->
+<!--              container="body"-->
+    </svg:line>
   `,
   styleUrls: ['./link-visual.component.css']
 })
 export class LinkVisualComponent {
   @Input('linkVisual') link!: Link;
 
-  togglePopover(popover: any) {
+  togglePopover(popover: NgbPopover) {
     if (popover.isOpen()) {
       popover.close();
     } else {

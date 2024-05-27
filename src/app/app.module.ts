@@ -15,7 +15,7 @@ import { ContactComponent } from './profile/presentation/components/contact/cont
 import { ArticleComponent } from './profile/presentation/components/article/article.component';
 import { FingerprintComponent } from './profile/presentation/components/fingerprint/fingerprint.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {NgbModule, NgbPopoverModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -36,6 +36,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ProfilePageRoutingModule,
     FontAwesomeModule,
     NgbModule,
+    NgbPopoverModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

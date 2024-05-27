@@ -8,5 +8,5 @@ import {Topic} from "../../../../../shared/interfaces/author.interface";
 })
 export class AuthorTopicsComponent {
   @Input()
-  topics:Topic[]=[];
+  topics:String[]=[];
 }
