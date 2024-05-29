@@ -1,11 +1,11 @@
 /* Estilo general para hover en enlaces no activos */
 a:hover {
-    color:#172554; /* Esto aplicará solo si el enlace no tiene la clase .active */
+    color:#1E3C8B; /* Esto aplicará solo si el enlace no tiene la clase .active */
 }
 
 /* Estilos para enlaces activos */
 .active {
-    background-color: #172554;
+    background-color: #1E3C8B;
     padding-left: 12px;
     padding-right: 12px;
     padding-top: 6px;
