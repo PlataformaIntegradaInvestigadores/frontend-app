@@ -10,6 +10,8 @@ import { SharedModule } from '../shared/shared.module';
 import { DropdownBtnComponent } from './presentation/components/dropdown-btn/dropdown-btn.component';
 import { CommonModule } from '@angular/common';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
+import {AuthorService} from "../search-engine/domain/services/author.service";
+import {D3Service} from "../shared/d3";
 
 @NgModule({
   imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger,CdkMenu, CdkMenuItem ], // Remove MatMenuModule from imports array
@@ -23,6 +25,6 @@ import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
     BtnCreateGroupComponent,
     DropdownBtnComponent
   ],
-  providers: [],
+  providers: [D3Service],
 })
 export class ProfilePageModule { }

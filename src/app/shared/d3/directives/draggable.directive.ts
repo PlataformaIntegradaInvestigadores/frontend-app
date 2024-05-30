@@ -15,3 +15,4 @@ export class DraggableDirective implements OnInit {
     this.d3Service.applyDraggableBehaviour(this._element.nativeElement, this.draggableNode, this.draggableInGraph);
   }
 }
+
