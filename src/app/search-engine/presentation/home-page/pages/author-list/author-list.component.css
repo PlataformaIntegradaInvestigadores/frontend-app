@@ -15,3 +15,12 @@
 * {
   box-sizing: border-box; /* Aplica esto a todos los elementos */
 }
+
+.custom-bg {
+  background-image: url('src/assets/img.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  max-width: 100%;
+;
+}
