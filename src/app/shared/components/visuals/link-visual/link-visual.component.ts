@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Link} from "../../../d3";
+import {Link} from '../../../d3';
 import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -17,7 +17,6 @@ import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
               [attr.y1]="link.source.y"
               [attr.x2]="link.target.x"
               [attr.y2]="link.target.y"
-
 
               [ngbPopover]="popContent"
               [popoverTitle]="popTitle"

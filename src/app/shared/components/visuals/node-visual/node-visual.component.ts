@@ -12,7 +12,6 @@ import {Node} from '../../../d3';
         <b>Nombre:</b> {{node.popover.content}}
       </a>
       <div><b>Grado:</b> {{node.degree}}</div>
-      <div><b>Rol:</b> {{node.rol=="0" ? "Sin Ron" :node.rol}}</div>
       <ng-container *ngIf="node.weight"><b>Relevancia:</b> {{node.weight}}</ng-container>
       <ng-template #elseLink>{{node.popover.content}}</ng-template>
     </ng-template>
