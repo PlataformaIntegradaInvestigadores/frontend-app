@@ -11,7 +11,11 @@ import { UserService } from 'src/app/profile/domain/entities/user.service';
 })
 export class ProfileComponent implements OnInit {
   userId: number = 0;
-  user: any;
+  user = {
+    "first_name": "Danny",
+    "last_name": "Cabrera",
+    "scopus_id": 1234567
+  }
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
 
