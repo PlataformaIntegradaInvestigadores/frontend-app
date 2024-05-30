@@ -14,7 +14,7 @@ const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'profile/:id',
+    path: ':id',
     loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
   },
   {
@@ -22,8 +22,6 @@ const routes: Routes = [
     loadChildren: () => import('src/app/search-engine/presentation/home-page/home-page.module').then(m => m.HomePageModule)
   },
   
-
-  /* Siempre al ultimo */
   {
     path: '**', // Redirects to home when the route is not correct
     redirectTo: 'home'
