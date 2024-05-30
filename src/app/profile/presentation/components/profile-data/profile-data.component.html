@@ -1,39 +1,52 @@
-<div class="flex justify-center md:justify-start mx-auto max-w-screen-xl">
-    <div class="max-w-screen-xl mx-auto py-8 px-3 lg:py-8 lg:px-3 flex flex-col md:flex-row">
-        <div class="flex m-auto bg-black md:mr-4">
-            <img class="w-40 m-auto bg-white border-2 border-white shadow-lg" src="./assets/profile.png"
+<!-- profile-data.component.html -->
+<div *ngIf="user" class="flex justify-center md:justify-start mx-auto max-w-screen-xl p-4 lg:p-8">
+    <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-start gap-4">
+        <div class="flex  md:w-1/4 justify-center md:justify-center ">
+            <img class="w-32 sm:w-40 rounded border-4 border-gray-200 shadow-xl" src="./assets/profile.png"
                 alt="Imagen de perfil">
         </div>
-        <div class="flex-1 flex flex-col sm:flex-row flex-wrap justify-center items-start md:justify-start md:mr-4">
-            <div class="w-full sm:w-full mb-2 px-3">
-                <div class="text-center md:text-left">
-                    <strong class="text-2xl font-bold mb-6">Name - Lastname</strong>
-                    <p class="text-sm text-justify">Our platform leverages user data and behavior to provide a highly
-                        personalized experience, with dynamic content and product recommendations that change in
-                        real-time.</p>
-                </div>
-                <div class="mt-6 text-left">
-                    <strong class="text-lg font-bold mb-3">Institution</strong>
-                    <p>Escuela Politécnica Nacional</p>
-                </div>
-            </div>
-        </div>
-        <div [class.hidden]="mostrarBloqueEnPantallaPequena"
-            class="flex-1 flex flex-col sm:flex-row flex-wrap justify-center items-start md:justify-start">
-            <div class="w-full sm:w-full mb-2 px-3">
-                <div class="text-left">
-                    <strong class="text-lg font-bold mb-3">Citaciones</strong>
-                    <p>#</p>
-                    <strong class="text-lg font-bold mt-6 mb-3">ORC ID</strong>
-                    <p>##############</p>
-                    <strong class="text-lg font-bold mt-6 mb-3">Documents</strong>
-                    <p>#</p>
-                </div>
-            </div>
-        </div>
 
-        <button (click)="toggleVisibilidadEnPantallaPequena()" class="flex px-3 mt-6 md:mt-0">
-            {{ mostrarBloqueEnPantallaPequena ? 'Mostrar detalles' : 'Ocultar detalles' }}
-        </button>
+        <div
+            class="w-full md:w-fit flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-4 border-r border-gray-300 pr-4">
+            <div class="w-full px-3">
+                <div class="text-center md:text-left">
+                    <strong class="text-xl sm:text-2xl font-bold mb-2 block">{{ user.first_name }} {{ user.last_name
+                        }}</strong>
+                    <p class="text-xs sm:text-sm text-justify">
+                        Nuestra plataforma utiliza datos y comportamiento del usuario para proporcionar una experiencia
+                        altamente personalizada, con contenido dinámico y recomendaciones de productos que cambian en
+                        tiempo real.
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <strong class="text-md sm:text-lg font-bold mb-1 block">Institución</strong>
+                    <p>{{ user.institution }}</p>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="user.scopus_id; else noScopusId"
+            class="w-full md:w-2/5 flex flex-col justify-center items-center gap-4">
+            <div class="w-full px-3">
+                <div>
+                    <strong class="text-md sm:text-lg font-bold mb-1 block">Citaciones</strong>
+                    <p>{{ user.citations }}</p>
+                    <strong class="text-md sm:text-lg font-bold mt-4 mb-1 block">SCOPUS ID</strong>
+                    <p>{{ user.scopus_id }}</p>
+                    <strong class="text-md sm:text-lg font-bold mt-4 mb-1 block">Documentos</strong>
+                    <p>{{ user.documents }}</p>
+                </div>
+            </div>
+        </div>
+        <ng-template #noScopusId>
+            <div class="w-full md:w-2/5 flex flex-col justify-center items-center gap-4">
+                <div class="w-full px-3 text-center">
+                    <strong class="text-sm font-bold mb-1 text-green-500 block">¡Sigue adelante!</strong>
+                    <p class="text-xs text-gray-500 text-justify">
+                        Aún no tienes un Scopus ID, pero cada paso que das en tu investigación te acerca más a lograrlo.
+                        ¡Sigue con el gran trabajo!
+                    </p>
+                </div>
+            </div>
+        </ng-template>
     </div>
 </div>

@@ -14,7 +14,7 @@ import {AuthorService} from "../search-engine/domain/services/author.service";
 import {D3Service} from "../shared/d3";
 
 @NgModule({
-  imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger,CdkMenu, CdkMenuItem ], // Remove MatMenuModule from imports array
+  imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger,CdkMenu, CdkMenuItem],
   exports: [ProfileDataComponent],
   declarations: [
     ProfileComponent,
