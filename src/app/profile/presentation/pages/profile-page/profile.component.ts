@@ -1,6 +1,7 @@
 // profile.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/auth/domain/entities/auth.service';
 import { UserService } from 'src/app/profile/domain/entities/user.service';
 
 
@@ -16,14 +17,18 @@ export class ProfileComponent implements OnInit {
     "last_name": "Cabrera",
     "scopus_id": 1234567
   }
+  isOwnProfile: boolean = false;
 
-  constructor(private route: ActivatedRoute, private userService: UserService) { }
+  constructor(private route: ActivatedRoute, private userService: UserService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.userId = +params['id'];
       this.getUserData();
     });
+    if (this.userId === parseInt(this.authService.getUserId() ?? '')) {
+      this.isOwnProfile = true;
+    }
   }
 
   getUserData() {
