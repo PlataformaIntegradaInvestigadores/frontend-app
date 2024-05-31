@@ -13,7 +13,6 @@
     <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0  rtl:space-x-reverse">
       <li class="me-2">
         <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-
           class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base">
           <svg
             class="w-4 h-4 me-2 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300"
@@ -61,12 +60,25 @@
           Analytics
         </a>
       </li>
-      <li class="me-2 flex justify-center items-center md:ml-auto px-3 " *ngIf="showInformation">
+      <li class="me-2 flex justify-center items-center md:ml-auto px-3 " *ngIf="showLogin">
         <button mat-flat-button
           class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base"
           routerLink="/login">
           Login
         </button>
+      </li>
+      <li class="me-2 flex justify-center items-center md:ml-auto px-3 gap-1" *ngIf="!showLogin">
+        <button mat-flat-button
+          class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg text-base transition-colors duration-200 ease-in-out bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          (click)="profile()">
+          Your Profile
+        </button>
+        <button mat-flat-button
+          class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg text-base transition-colors duration-200 ease-in-out bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          (click)="logout()">
+          Logout
+        </button>
+
       </li>
     </ul>
   </div>
