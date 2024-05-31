@@ -12,6 +12,7 @@ export class HeaderComponent {
   isActive: boolean = true;
   showLogin: boolean = false;
   user: any;
+  userId: any;
 
   constructor(private router: Router, private authService: AuthService) { }
 
@@ -23,8 +24,6 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.showLogin = !this.authService.isLoggedIn();
-    console.log(this.showLogin);
-    console.log(this.authService.isLoggedIn());
   }
 
   logout() {
@@ -37,7 +36,7 @@ export class HeaderComponent {
 
   profile() {
     this.authService.getUserId();
-    const userId = this.authService.getUserId();
-    this.router.navigate([`${userId}/about-me`]);
+    this.userId = this.authService.getUserId();
+    this.router.navigate([`${this.userId}/about-me`]);
   }
 }
