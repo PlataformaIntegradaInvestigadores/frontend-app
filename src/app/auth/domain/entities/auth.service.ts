@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User } from './interfaces';
+import { jwtDecode } from "jwt-decode";
 
 @Injectable({
   providedIn: 'root'
@@ -27,17 +28,24 @@ export class AuthService {
   }
 
   private setSession(authResult: { access: string, refresh: string }): void {
+    const decodedToken = jwtDecode(authResult.access) as any;
     localStorage.setItem('accessToken', authResult.access);
     localStorage.setItem('refreshToken', authResult.refresh);
+    localStorage.setItem('userId', decodedToken.user_id);
   }
 
   logout(): void {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
   }
 
   isLoggedIn(): boolean {
     return !!localStorage.getItem('accessToken');
+  }
+
+  getUserId(): string | null {
+    return localStorage.getItem('userId');
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
@@ -64,5 +72,4 @@ export class AuthService {
 
     return throwError(() => new Error(errorMessages.join('\n')));
   }
-
 }
