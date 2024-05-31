@@ -1,6 +1,5 @@
 <!-- profile.component.html -->
 <div>
-    <div *ngIf="isOwnProfile">HOLA HOLA QUE TAL</div>
     <div class="bg-slate-200">
         <app-header></app-header>
     </div>
@@ -10,6 +9,7 @@
     <div class="bg-slate-200 border-y border-gray-200">
         <app-data-nav [user]="user"></app-data-nav>
     </div>
+    <div *ngIf="isOwnProfile">HOLA HOLA QUE TAL</div>
     <div class="bg-gray-100">
         <div class="container mx-auto max-w-screen-xl px-3 pt-4">
             <router-outlet></router-outlet>
