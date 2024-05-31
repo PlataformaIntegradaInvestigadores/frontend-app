@@ -1,12 +1,12 @@
-<div class="">
-  <div class="custom-bg w-full">
+<div class="custom-bg">
+  <div class="w-full">
     <app-search-box (search)="onSearch($event)" [setSearch]="setSearch"
-                    class="flex w-full h-full items-center justify-center">
+      class="flex w-full h-full items-center justify-center">
     </app-search-box>
 
   </div>
   <div *ngIf="!searchValue || !searchValue.query">
-    <div class="custom-bg">
+    <div class="bg-transparent">
       <app-summary></app-summary>
     </div>
     <app-ecuador-contribution></app-ecuador-contribution>
@@ -14,11 +14,11 @@
 </div>
 <div class="w-full flex  justify-center items-center ">
   <div *ngIf="searchValue && searchValue.query" [ngSwitch]="searchValue.option"
-       class="flex pb-5 flex-col justify-center items-center md:flex-row w-full">
+    class="flex pb-5 flex-col justify-center items-center md:flex-row w-full">
     <app-filter-sidebar [code]="searchValue.option" class="w-1/4"></app-filter-sidebar>
     <div class="w-3/4 pt-2">
       <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page"
-                     class="w-full">
+        class="w-full">
       </mat-paginator>
       <!-- Most Relevant Authors Results -->
       <app-article-information *ngSwitchCase="'mrar'">
