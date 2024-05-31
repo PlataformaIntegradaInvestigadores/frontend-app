@@ -27,11 +27,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
-      console.log('Login Data:', loginData);
       this.authService.login(loginData).subscribe(
         response => {
-          console.log('Login Success:', response);
-          this.router.navigate(['/profile/aboutme']); // Navigate to home or another route
+          const userId = this.authService.getUserId();
+          this.router.navigate([`/${userId}/about-me`]);
         },
         error => {
           this.processErrors(error);
@@ -41,7 +40,6 @@ export class LoginComponent implements OnInit {
       this.errorMessages = ['Please fill in all required fields correctly.'];
     }
   }
-
   private processErrors(errors: any) {
     this.errorMessages = [];
     if (errors.error) {
