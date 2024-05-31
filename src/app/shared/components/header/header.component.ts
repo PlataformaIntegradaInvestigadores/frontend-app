@@ -11,6 +11,7 @@ export class HeaderComponent {
   navOpen: boolean = false;
   isActive: boolean = true;
   showLogin: boolean = false;
+  user: any;
 
   constructor(private router: Router, private authService: AuthService) { }
 
