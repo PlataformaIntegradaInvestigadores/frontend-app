@@ -15,7 +15,12 @@ export class ProfileComponent implements OnInit {
   user = {
     "first_name": "Danny",
     "last_name": "Cabrera",
-    "scopus_id": 1234567
+    "scopus_id": 1234567,
+    "institution": 'Escuela Politécnica Nacional',
+    "website": 'dannycabrera.com',
+    "investigation_camp": 'Software Engineering',
+    "profile_picture": "http://127.0.0.1:8000/media/profile_pictures/default_profile_picture.png",
+    "email_institution": 'danny.cabrera@epn.edu.ec'
   }
   isOwnProfile: boolean = false;
 

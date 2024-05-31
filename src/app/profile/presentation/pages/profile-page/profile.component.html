@@ -1,10 +1,10 @@
 <!-- profile.component.html -->
 <div>
-    <div class="bg-slate-200">
+    <div class="">
         <app-header></app-header>
     </div>
     <div class="bg-gray-50">
-        <app-profile-data [user]="user"></app-profile-data>
+        <app-profile-data [user]="user" [isOwnProfile]="isOwnProfile"></app-profile-data>
     </div>
     <div class="bg-slate-200 border-y border-gray-200">
         <app-data-nav [user]="user"></app-data-nav>
