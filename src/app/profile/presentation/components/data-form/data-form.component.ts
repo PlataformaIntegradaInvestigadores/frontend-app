@@ -53,8 +53,13 @@ export class DataFormComponent {
       this.errorMessages.last_name = 'Last name is required.';
     }
 
-    if (this.formData.website && !this.isValidURL(this.formData.website)) {
-      this.errorMessages.website = 'Invalid website URL.';
+    // Validar y ajustar la URL del sitio web
+    if (this.formData.website) {
+      if (!this.isValidURL(this.formData.website)) {
+        this.errorMessages.website = 'Invalid website URL.';
+      } else {
+        this.formData.website = this.adjustURL(this.formData.website);
+      }
     }
 
     if (Object.keys(this.errorMessages).length > 0) {
