@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 
 @Component({
@@ -6,8 +6,8 @@ import { initFlowbite } from 'flowbite';
   templateUrl: './list-group.component.html',
   styleUrls: ['./list-group.component.css']
 })
-export class ListGroupComponent implements OnInit {
-  ngOnInit(): void {
+export class ListGroupComponent  implements AfterViewInit {
+  ngAfterViewInit(): void {
     initFlowbite();
   }
 }

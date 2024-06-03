@@ -13,6 +13,10 @@ import {EcuadorMapComponent} from "./components/visuals/ecuador-map/ecuador-map.
 import {GraphComponent} from "./components/visuals/graph/graph.component";
 import {SHARED_VISUALS} from "./components/visuals";
 import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
+import {CardSummaryComponent} from "./components/visuals/card-summary/card-summary.component";
+import {WordCloudComponent} from "./components/visuals/word-cloud/word-cloud.component";
+import {NgxChartsModule, NumberCardModule} from "@swimlane/ngx-charts";
+import {EvolutionLineChartComponent} from "./components/visuals/evolution-line-chart/evolution-line-chart.component";
 @NgModule({
   declarations: [
     SearchBoxComponent,
@@ -21,7 +25,10 @@ import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
     ...D3_DIRECTIVES,
     ...SHARED_VISUALS,
     EcuadorMapComponent,
+    CardSummaryComponent,
+    WordCloudComponent,
     GraphComponent,
+    EvolutionLineChartComponent
   ],
   exports: [
     SearchBoxComponent,
@@ -30,7 +37,10 @@ import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
     ...D3_DIRECTIVES,
     ...SHARED_VISUALS,
     EcuadorMapComponent,
+    CardSummaryComponent,
+    WordCloudComponent,
     GraphComponent,
+    EvolutionLineChartComponent
   ],
   imports: [
     MatButtonModule,
@@ -40,6 +50,8 @@ import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
     CommonModule,
     SharedRoutingModule,
     NgbPopoverModule,
+    NumberCardModule,
+    NgxChartsModule,
   ],
   providers: [],
 })

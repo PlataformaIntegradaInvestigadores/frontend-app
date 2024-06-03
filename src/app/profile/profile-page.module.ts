@@ -7,11 +7,16 @@ import { CardGroupComponent } from './presentation/components/card-group/card-gr
 import { ListGroupComponent } from './presentation/components/list-group/list-group.component';
 import { BtnCreateGroupComponent } from './presentation/components/btn-create-group/btn-create-group.component';
 import { SharedModule } from '../shared/shared.module';
-import {AuthorService} from "../search-engine/domain/services/author.service";
-import {D3Service} from "../shared/d3";
+import { DropdownBtnComponent } from './presentation/components/dropdown-btn/dropdown-btn.component';
+import { CommonModule } from '@angular/common';
+import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
+import { AuthorService } from "../search-engine/domain/services/author.service";
+import { D3Service } from "../shared/d3";
+import { DataFormComponent } from './presentation/components/data-form/data-form.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [ProfilePageRoutingModule, SharedModule],
+  imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger, CdkMenu, CdkMenuItem, FormsModule],
   exports: [ProfileDataComponent],
   declarations: [
     ProfileComponent,
@@ -19,7 +24,9 @@ import {D3Service} from "../shared/d3";
     DataNavComponent,
     CardGroupComponent,
     ListGroupComponent,
-    BtnCreateGroupComponent
+    BtnCreateGroupComponent,
+    DropdownBtnComponent,
+    DataFormComponent
   ],
   providers: [D3Service],
 })

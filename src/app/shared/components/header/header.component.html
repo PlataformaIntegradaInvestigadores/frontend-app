@@ -1,19 +1,18 @@
 <nav class="bg-primary_tailwind bg-custom">
   <div class="container mx-auto max-w-screen-xl">
-    <div class="flex items-center justify-between p-4">
-      <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+    <div class="flex items-center justify-between p-2">
+      <a href="/home" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="/assets/logo.svg" class="h-16 bg-slate-100 rounded-full" alt="Flowbite Logo" />
         <span class="text-5xl font-light text-white">Centinela</span>
       </a>
     </div>
   </div>
 </nav>
-<nav class="">
+<nav class="py-2 ">
   <div class="container mx-auto max-w-screen-xl px-3">
     <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0  rtl:space-x-reverse">
       <li class="me-2">
         <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-
           class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base">
           <svg
             class="w-4 h-4 me-2 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300"
@@ -24,18 +23,6 @@
           Home
         </a>
         <!-- TODO: change pading on each element-->
-      </li>
-      <li *ngIf="!showInformation">
-        <a routerLink="./profile"
-          class="inline-flex items-center justify-center p-2 border-b-2 rounded-t-lg hover:text-gray-600 border-primary_tailwind font-bold text-base">
-          <svg
-            class="w-4 h-4 me-2 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300 fill-primary_tailwind"
-            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path
-              d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
-          </svg>
-          Profile
-        </a>
       </li>
       <li class="me-2" *ngIf="showInformation">
         <a routerLink="./author-list" routerLinkActive="active"
@@ -61,11 +48,28 @@
           Analytics
         </a>
       </li>
-      <li class="me-2 flex justify-center items-center md:ml-auto px-3 " *ngIf="showInformation">
+      <li class="me-2 flex justify-center items-center md:ml-auto px-3 " *ngIf="showLogin">
         <button mat-flat-button
           class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base"
           routerLink="/login">
           Login
+        </button>
+      </li>
+      <li class="me-2 flex justify-center items-center md:ml-auto px-3 gap-1" *ngIf="!showLogin">
+        <a class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base"
+          (click)="profile()">
+          <svg
+            class="w-4 h-4 me-2 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300"
+            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path
+              d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
+          </svg>
+          Profile
+        </a>
+        <button mat-flat-button
+          class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg text-base transition-colors duration-200 ease-in-out bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          (click)="logout()">
+          Logout
         </button>
       </li>
     </ul>
