@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AuthService } from 'src/app/auth/domain/entities/auth.service';
 
 @Component({
   selector: 'app-data-form',
@@ -6,9 +7,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./data-form.component.css']
 })
 export class DataFormComponent {
-
   @Input() user: any;
   @Output() formSubmitted = new EventEmitter<void>();
+  errorMessage: string | null = null;
+  selectedFile: File | null = null;
 
   formData = {
     first_name: '',
@@ -20,6 +22,8 @@ export class DataFormComponent {
     profile_picture: '',
     email_institution: '',
   };
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
     if (this.user) {
@@ -37,14 +41,69 @@ export class DataFormComponent {
   }
 
   onSubmit() {
-    // Lógica para manejar el envío del formulario
-    console.log(this.formData);
-    this.formSubmitted.emit();
+    // Validar que los campos obligatorios no estén vacíos
+    if (!this.formData.first_name.trim() || !this.formData.last_name.trim()) {
+      this.errorMessage = 'First name and last name are required.';
+      return;
+    }
+
+    if (this.formData.website && !this.isValidURL(this.formData.website)) {
+      this.errorMessage = 'Invalid website URL.';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('first_name', this.formData.first_name);
+    formData.append('last_name', this.formData.last_name);
+
+    // Enviar null para campos opcionales vacíos
+    formData.append('scopus_id', this.formData.scopus_id || '');
+    formData.append('institution', this.formData.institution || '');
+    formData.append('website', this.formData.website || '');
+    formData.append('investigation_camp', this.formData.investigation_camp || '');
+    formData.append('email_institution', this.formData.email_institution || '');
+
+    if (this.selectedFile) {
+      formData.append('profile_picture', this.selectedFile, this.selectedFile.name);
+    } else {
+      formData.append('profile_picture', '');
+    }
+
+    this.authService.updateUser(formData).subscribe(
+      response => {
+        console.log('User updated successfully', response);
+        this.formSubmitted.emit();
+        this.errorMessage = null;
+        window.location.reload();
+      },
+      error => {
+        this.errorMessage = error.message;
+        console.error('There was an error updating the user!', error);
+      }
+    );
+  }
+
+  adjustURL(url: string): string {
+    if (url && !/^https?:\/\//i.test(url)) {
+      url = 'http://' + url;
+    }
+    return url;
+  }
+
+  isValidURL(url: string): boolean {
+    const urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocolo
+      '((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|' + // dominio
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // dirección IP (v4)
+      '(\\:\\d+)?(\\/[-a-zA-Z0-9@:%._\\+~#=]*)*' + // puerto y ruta
+      '(\\?[;&a-zA-Z0-9@:%._\\+~#=]*)?' + // cadena de consulta
+      '(\\#[-a-zA-Z0-9_]*)?$'); // fragmento de ancla
+    return urlPattern.test(url);
   }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.formData.profile_picture = e.target.result;
