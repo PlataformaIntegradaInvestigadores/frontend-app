@@ -10,6 +10,7 @@ export class DataFormComponent {
   @Input() user: any;
   @Output() formSubmitted = new EventEmitter<void>();
   errorMessage: string | null = null;
+  errorMessages: any = {};
   selectedFile: File | null = null;
 
   formData = {
@@ -41,14 +42,23 @@ export class DataFormComponent {
   }
 
   onSubmit() {
+    this.errorMessages = {};
+
     // Validar que los campos obligatorios no estén vacíos
-    if (!this.formData.first_name.trim() || !this.formData.last_name.trim()) {
-      this.errorMessage = 'First name and last name are required.';
-      return;
+    if (!this.formData.first_name.trim()) {
+      this.errorMessages.first_name = 'First name is required.';
+    }
+
+    if (!this.formData.last_name.trim()) {
+      this.errorMessages.last_name = 'Last name is required.';
     }
 
     if (this.formData.website && !this.isValidURL(this.formData.website)) {
-      this.errorMessage = 'Invalid website URL.';
+      this.errorMessages.website = 'Invalid website URL.';
+    }
+
+    if (Object.keys(this.errorMessages).length > 0) {
+      this.errorMessage = 'Please fix the errors in the form.';
       return;
     }
 
