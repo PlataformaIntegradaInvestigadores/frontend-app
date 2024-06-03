@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  userId: number = 0;
+  userId: string = '0';
   user = {
     "first_name": "Danny",
     "last_name": "Cabrera",
@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe(params => {
-      this.userId = +params['id'];
+      this.userId = params['id'];
       this.getUserData();
       this.checkIfOwnProfile();
     });
@@ -43,12 +43,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getUserData() {
-    this.userService.getUserById(this.userId).subscribe(data => {
+    this.userService.getUserById(this.userId.toString()).subscribe(data => {
       this.user = data;
     });
   }
 
   checkIfOwnProfile() {
-    this.isOwnProfile = this.userId === parseInt(this.authService.getUserId() ?? '', 10);
+    this.isOwnProfile = this.userId === this.authService.getUserId();
   }
 }
