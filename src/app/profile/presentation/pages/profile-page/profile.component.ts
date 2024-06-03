@@ -19,7 +19,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     "website": 'dannycabrera.com',
     "investigation_camp": 'Software Engineering',
     "profile_picture": "http://127.0.0.1:8000/media/profile_pictures/default_profile_picture.png",
-    "email_institution": 'danny.cabrera@epn.edu.ec'
+    "email_institution": 'danny.cabrera@epn.edu.ec',
+    "user_id": this.userId
   }
   isOwnProfile: boolean = false;
 
