@@ -25,6 +25,7 @@ import {FormsModule} from "@angular/forms";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { EcuadorContributionComponent } from './components/ecuador-contribution/ecuador-contribution.component';
 import {HttpClientModule} from "@angular/common/http";
+import {CountUpModule} from "ngx-countup";
 
 @NgModule({
   imports: [
@@ -41,7 +42,8 @@ import {HttpClientModule} from "@angular/common/http";
     FormsModule,
     FontAwesomeModule,
     DashboardModule,
-    SharedModule
+    SharedModule,
+    CountUpModule,
   ],
   exports: [
     CoauthorsGraphComponent

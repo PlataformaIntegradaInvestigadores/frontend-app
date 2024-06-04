@@ -8,41 +8,28 @@
         <div
             class="w-full h-full md:items-center md:w-full flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-x-4 gap-y-1 md:border-r border-gray-300">
             <div class="w-full">
-                <div class=" px-4 text-left">
+                <div class="text-left">
                     <strong class="block text-xl sm:text-2xl font-bold mb-2">{{ user.first_name }} {{ user.last_name
                         }}</strong>
                 </div>
-                <div class="px-4 grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 mt-4">
                     <ng-container *ngIf="user.institution">
-                        <div>
-                            <strong
-                                class="block text-lg sm:text-xl font-semibold mb-2 text-gray-700">Institution</strong>
-                            <p class="text-base sm:text-lg text-gray-900">{{ user.institution }}</p>
-                        </div>
+                        <strong class="block text-md sm:text-lg font-bold mb-1">Institution</strong>
+                        <p>{{ user.institution }}</p>
                     </ng-container>
                     <ng-container *ngIf="user.website">
-                        <div>
-                            <strong class="block text-lg sm:text-xl font-semibold mb-2 text-gray-700">Website</strong>
-                            <p class="text-base sm:text-lg text-gray-900"><a href="{{ user.website }}"
-                                    class="text-blue-500 hover:underline">{{ user.website }}</a></p>
-                        </div>
+                        <strong class="block text-md sm:text-lg font-bold mb-1">Website</strong>
+                        <p>{{ user.website }}</p>
                     </ng-container>
                     <ng-container *ngIf="user.investigation_camp">
-                        <div>
-                            <strong class="block text-lg sm:text-xl font-semibold mb-2 text-gray-700">Investigation
-                                Field</strong>
-                            <p class="text-base sm:text-lg text-gray-900">{{ user.investigation_camp }}</p>
-                        </div>
+                        <strong class="block text-md sm:text-lg font-bold mb-1">Investigation Field</strong>
+                        <p>{{ user.investigation_camp }}</p>
                     </ng-container>
                     <ng-container *ngIf="user.email_institution">
-                        <div>
-                            <strong class="block text-lg sm:text-xl font-semibold mb-2 text-gray-700">Institutional
-                                Email</strong>
-                            <p class="text-base sm:text-lg text-gray-900">{{ user.email_institution }}</p>
-                        </div>
+                        <strong class="block text-md sm:text-lg font-bold mb-1">Institutional Email</strong>
+                        <p>{{ user.email_institution }}</p>
                     </ng-container>
                 </div>
-
                 <div *ngIf="shouldShowLoggedInMessage" class="px-4 text-justify">
                     <p class="text-gray-600">
                         Welcome {{ user.first_name }}! It's great to see you here. By completing your profile, you can
