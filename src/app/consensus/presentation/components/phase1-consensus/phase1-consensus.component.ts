@@ -39,10 +39,11 @@ export class Phase1ConsensusComponent implements OnInit{
   
   getGradient(value: number): string {
     /* #172554  == hsl(223, 58%, 20%) */
-    const hue = 223;  // Tono fijo del color final
-    const saturation = 58; // Saturación fija del color final
+    /* #1E3C8B == hsl(227, 65%, 34%) */
+    const hue = 227;  // Tono fijo del color final
+    const saturation = 65; // Saturación fija del color final
     // A medida que el valor aumenta, la luminosidad disminuye hacia 20% (oscuro)
-    let lightness = 80 - (80 - 20) * (value / 100); // Invertir la interpolación
+    let lightness = 80 - (80 - 34) * (value / 100); // Invertir la interpolación
     return `linear-gradient(90deg, hsl(${hue}, ${saturation}%, ${lightness}%) 0%, hsl(${hue}, ${saturation}%, ${lightness}%) 100%)`;
   }
   

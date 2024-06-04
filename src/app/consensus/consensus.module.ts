@@ -16,6 +16,8 @@ import { MemberDeleteBtnComponent } from './presentation/components/member-delet
 import { UniqueIDDirective } from "./presentation/components/directives/unique-id.directive";
 import { SharedModule } from "../shared/shared.module";
 import { FormsModule } from "@angular/forms";
+import { BtnMailComponent } from './presentation/components/btn-mail/btn-mail.component';
+import { SatisfactionLevelComponent } from './presentation/components/satisfaction-level/satisfaction-level.component';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { FormsModule } from "@angular/forms";
     ViewAllMembersComponent,
     MemberItemComponent,
     MemberDeleteBtnComponent,
-    UniqueIDDirective
+    UniqueIDDirective,
+    BtnMailComponent,
+    SatisfactionLevelComponent
   ],
     imports: [ConsensusRoutingModule, ProfilePageModule, CommonModule, SharedModule, FormsModule],
     exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],

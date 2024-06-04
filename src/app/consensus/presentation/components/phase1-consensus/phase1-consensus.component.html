@@ -1,11 +1,11 @@
 
 <div class="container mx-auto mb-2 rounded-xl border p-4 shadow-md bg-white">
     <div class="mb-3 text-xl font-bold">Your group recomendation</div>
-    <div class="container text-sm text-neutral-600">
+    <div class="container text-sm text-gray-900">
         <p>Explore the suggested topics list and acquaint yourself with the available choices</p>
 
         <div class="flex items-center mb-4">
-            <input type="checkbox" id="toggleSliders" [(ngModel)]="showSliders" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <input type="checkbox" id="toggleSliders" [(ngModel)]="showSliders" class="w-4 h-4 text-primary_tailwind bg-gray-100 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             <label for="toggleSliders" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to choose my expertise in each topic</label>
         </div>
 
@@ -14,14 +14,14 @@
             <div class="w-full mx-6 text-sm text-gray-900 bg-white border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
                 
                 <div *ngFor="let topic of topics; let i = index" class="w-full text-sm text-gray-900 bg-white  dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
-                    <div class="flex items-center justify-between w-full px-4 py-2 text-left border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+                    <div class="flex items-center justify-between w-full px-4 py-3 text-left border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
                         <span>{{ i + 1 }}. {{ topic }}</span>
                         <div class="relative w-1/3" *ngIf="showSliders">
                             <input [(ngModel)]="rangeValues[i]" type="range" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                             (mousedown)="showLabels(i)" (mouseup)="hideLabels(i)" (touchstart)="showLabels(i)" (touchend)="hideLabels(i)"
                             [style.background]="getGradient(rangeValues[i])">
-                            <span class="absolute -left-5 -top-1 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Junior</span>
-                            <span class="absolute -right-5 -top-1 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Expert</span>
+                            <span class="absolute -left-5 -top-3 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Junior</span>
+                            <span class="absolute -right-5 -top-3 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Expert</span>
                         </div>
                     </div>
                 </div>

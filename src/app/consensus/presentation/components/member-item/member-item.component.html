@@ -1,4 +1,4 @@
-<li class="py-3 sm:py-4 px-6">
+<li class="py-3 sm:py-4 pr-4 pl-2">
     <div class="flex items-center ">
         <div class="flex-shrink-0">
             <img class="w-9 h-9 rounded-full bg-black" src="../../../../../assets/profile.png" alt="Lana image">
@@ -12,7 +12,8 @@
             </p>
             <hr>
         </div>
-        <member-delete-btn></member-delete-btn>               
+        <btn-mail></btn-mail>
+        <member-delete-btn *ngIf="showDeleteButton"></member-delete-btn>               
     </div>
 </li>
 
