@@ -17,6 +17,7 @@ import {CardSummaryComponent} from "./components/visuals/card-summary/card-summa
 import {WordCloudComponent} from "./components/visuals/word-cloud/word-cloud.component";
 import {NgxChartsModule, NumberCardModule} from "@swimlane/ngx-charts";
 import {EvolutionLineChartComponent} from "./components/visuals/evolution-line-chart/evolution-line-chart.component";
+import {D3Service} from "./d3";
 @NgModule({
   declarations: [
     SearchBoxComponent,
@@ -53,7 +54,7 @@ import {EvolutionLineChartComponent} from "./components/visuals/evolution-line-c
     NumberCardModule,
     NgxChartsModule,
   ],
-  providers: [],
+  providers: [D3Service],
 })
 export class SharedModule {
 }

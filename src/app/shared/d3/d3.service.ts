@@ -28,7 +28,7 @@ export class D3Service {
   }
 
   /** A method to bind a draggable behaviour to an svg element */
-  applyDraggableBehaviour(element: any, node: Node, graph: ForceDirectedGraph) {
+  applyDraggableNodeBehaviour(element: any, node: Node, graph: ForceDirectedGraph) {
     const d3element = d3.select(element);
 
     function started(e: any) {
@@ -60,6 +60,23 @@ export class D3Service {
       .on('start', started));
   }
 
+  applyDraggableBehavior(element: any) {
+    const drag = d3.drag()
+      .on('start', (event: any) => {
+        // Lógica al iniciar el arrastre
+      })
+      .on('drag', (event: any) => {
+        // Lógica durante el arrastre
+        d3.select(event.sourceEvent.target)
+          .attr('x', event.x)
+          .attr('y', event.y);
+      })
+      .on('end', (event: any) => {
+        // Lógica al finalizar el arrastre
+      });
+
+    d3.select(element).call(drag);
+  }
 
   /** The interactable graph we will simulate in this article
    * This method does not interact with the document, purely physical calculations with d3

@@ -1,4 +1,4 @@
-import {Component, ElementRef} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as d3 from 'd3';
 import * as cloud from 'd3-cloud';
 
@@ -7,7 +7,10 @@ import * as cloud from 'd3-cloud';
   templateUrl: './word-cloud.component.html',
   styleUrls: ['./word-cloud.component.css']
 })
-export class WordCloudComponent {
+export class WordCloudComponent implements OnInit,AfterViewInit{
+  @ViewChild('svg') svgElement!: ElementRef<SVGElement>;
+  width = 600; // Asumiendo un ancho fijo para el SVG
+  height = 400; // Asumiendo una altura fija para el SVG
   private words: { text: string, size: number }[] = [
     { text: 'Data Mining', size: 50 },
     { text: 'Machine Learning', size: 70 },
@@ -105,10 +108,13 @@ export class WordCloudComponent {
     { text: 'Biomechanics', size: 60 }
   ];
 
-  constructor(private el: ElementRef) { }
+  constructor(private el:ElementRef) { }
 
   ngOnInit(): void {
-    this.generateWordCloud();
+
+  }
+  ngAfterViewInit(): void {
+    this.generateWordCloud();// Asegúrate de llamarlo aquí, después de que el SVG esté disponible
   }
 
   private generateWordCloud(): void {
@@ -116,7 +122,6 @@ export class WordCloudComponent {
       .size([700, 300])
       .words(this.words.map(d => ({ text: d.text, size: d.size })))
       .padding(2)
-      .font('Impact')
       .rotate(0)
       .fontSize(d => (d.size || 10)/4)
       .on('end', words => this.draw(words));
@@ -125,22 +130,78 @@ export class WordCloudComponent {
   }
 
   private draw(words: any[]): void {
-    d3.select(this.el.nativeElement).select('svg').remove();
 
-    const svg = d3.select(this.el.nativeElement).append('svg')
-      .attr('width', 600)
-      .attr('height', 400)
-      .append('g')
-      .attr('transform', 'translate(320,200)');
+    const g = d3.select(this.svgElement.nativeElement).select('g');
 
-    svg.selectAll('text')
+    const text:any = g
+      .selectAll('text')
       .data(words)
       .enter().append('text')
+      .attr('draggable','')
       .style('font-size', d => `${d.size}px`)
       .style('font-family', 'Impact')
       .style('fill', () => d3.schemeCategory10[Math.floor(Math.random() * 10)])
       .attr('text-anchor', 'middle')
       .attr('transform', d => `translate(${d.x},${d.y})rotate(${d.rotate})`)
-      .text(d => d.text);
+      .text(d => d.text)
+      .call(d3.drag<SVGTextElement, any>()
+        .on('start', function (event, d) {
+          d3.select(this).raise().attr('stroke', 'black');
+          d3.select(this).interrupt();
+        })
+        .on('drag', function (event, d) {
+          d3.select(this).attr('transform', `translate(${d.x = event.x},${d.y = event.y})rotate(${d.rotate})`);
+        })
+        .on('end', function (event, d) {
+          d3.select(this).attr('stroke', null);
+          //this.animateFloating(d3.select(event.sourceEvent.target));
+        }))
+      .on('click', (event, d) => this.onWordClick(d))
+    this.animateFloating(text);
+  }
+  // private animateFloating(textSelection: d3.Selection<SVGTextElement, any, SVGGElement, any>): void {
+  //   textSelection.each(function (d) {
+  //     float(d3.select(this));
+  //   });
+  //
+  //   function float(element: d3.Selection<SVGTextElement, any, any, any>) {
+  //     const randomX = Math.random() * 10 - 5;
+  //     const randomY = Math.random() * 10 - 5;
+  //     element.transition()
+  //       .duration(2000)
+  //       .ease(d3.easeSinInOut)
+  //       .attr('transform', function (d) {
+  //         const currentTransform = d3.select(this).attr('transform');
+  //         const translate = currentTransform.match(/translate\(([^)]+)\)/);
+  //         const [x, y] = translate ? translate[1].split(',').map(Number) : [d.x, d.y];
+  //         return `translate(${x + randomX},${y + randomY})rotate(${d.rotate})`;
+  //       })
+  //       .on('end', () => float(element));
+  //   }
+  // }
+  private animateFloating(textSelection: d3.Selection<SVGTextElement, any, SVGGElement, any>): void {
+    textSelection.each((d, i, nodes) => {
+      this.float(d3.select(nodes[i]));
+    });
+  }
+
+  private float(element: d3.Selection<SVGTextElement, any, any, any>): void {
+    const randomX = Math.random() * 10 - 5;
+    const randomY = Math.random() * 10 - 5;
+    element.transition()
+      .duration(2000)
+      .ease(d3.easeSinInOut)
+      .attr('transform', function (d) {
+        const currentTransform = d3.select(this).attr('transform');
+        const translate = currentTransform.match(/translate\(([^)]+)\)/);
+        const [x, y] = translate ? translate[1].split(',').map(Number) : [d.x, d.y];
+        return `translate(${x + randomX},${y + randomY})rotate(${d.rotate})`;
+      })
+      .on('end', () => this.float(element));
+  }
+  //
+  private onWordClick(word: any): void {
+    console.log(word.text)
+    // Aquí puedes agregar cualquier acción que desees realizar al hacer clic en una palabra
   }
 }
