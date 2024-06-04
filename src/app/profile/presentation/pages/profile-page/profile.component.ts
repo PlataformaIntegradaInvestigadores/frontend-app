@@ -11,7 +11,7 @@ import { UserService } from 'src/app/profile/domain/entities/user.service';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  userId: number = 0;
+  userId: string = '0';
   user = {
     "first_name": "Danny",
     "last_name": "Cabrera",
@@ -20,7 +20,8 @@ export class ProfileComponent implements OnInit {
     "website": 'dannycabrera.com',
     "investigation_camp": 'Software Engineering',
     "profile_picture": "http://127.0.0.1:8000/media/profile_pictures/default_profile_picture.png",
-    "email_institution": 'danny.cabrera@epn.edu.ec'
+    "email_institution": 'danny.cabrera@epn.edu.ec',
+    "user_id": this.userId
   }
   isOwnProfile: boolean = false;
 
@@ -28,17 +29,21 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.userId = +params['id'];
+      this.userId = params['id'];
       this.getUserData();
+      this.user.user_id = this.userId;
+      this.checkIfOwnProfile();
     });
-    if (this.userId === parseInt(this.authService.getUserId() ?? '')) {
-      this.isOwnProfile = true;
-    }
+  
   }
 
   getUserData() {
-    this.userService.getUserById(this.userId).subscribe(data => {
+    this.userService.getUserById(this.userId.toString()).subscribe(data => {
       this.user = data;
     });
+  }
+
+  checkIfOwnProfile() {
+    this.isOwnProfile = this.userId === this.authService.getUserId();
   }
 }

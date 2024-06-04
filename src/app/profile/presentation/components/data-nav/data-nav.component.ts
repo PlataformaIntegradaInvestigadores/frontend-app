@@ -10,6 +10,8 @@ import { UserDataService } from 'src/app/profile/domain/entities/user_data.servi
 export class DataNavComponent implements OnChanges {
   @Input() user: any;
 
+  @Input() isOwnProfile: boolean = false;
+
   constructor(private userDataService: UserDataService) { }
 
   ngOnChanges(changes: SimpleChanges): void {

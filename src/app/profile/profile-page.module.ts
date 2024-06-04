@@ -10,23 +10,29 @@ import { SharedModule } from '../shared/shared.module';
 import { DropdownBtnComponent } from './presentation/components/dropdown-btn/dropdown-btn.component';
 import { CommonModule } from '@angular/common';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
-import { AuthorService } from "../search-engine/domain/services/author.service";
 import { D3Service } from "../shared/d3";
 import { DataFormComponent } from './presentation/components/data-form/data-form.component';
 import { FormsModule } from '@angular/forms';
+import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
+import { PostComponent } from './presentation/components/aboutme/post/post.component';
+import { InformationComponent } from './presentation/components/aboutme/information/information.component';
 
 @NgModule({
   imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger, CdkMenu, CdkMenuItem, FormsModule],
   exports: [ProfileDataComponent],
   declarations: [
     ProfileComponent,
+    AboutMeComponent,
+    PostComponent,
+    InformationComponent,
     ProfileDataComponent,
     DataNavComponent,
     CardGroupComponent,
     ListGroupComponent,
     BtnCreateGroupComponent,
     DropdownBtnComponent,
-    DataFormComponent
+    DataFormComponent,
+
   ],
   providers: [D3Service],
 })

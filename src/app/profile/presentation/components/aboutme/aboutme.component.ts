@@ -14,6 +14,8 @@ export class AboutMeComponent implements OnInit {
   ngOnInit(): void {
     this.userDataService.currentUser.subscribe(user => {
       this.user = user;
-    });
+    }
+    );
+    console.log(this.user);
   }
 }
