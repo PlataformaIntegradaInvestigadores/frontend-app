@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
       this.getUserData();
+      this.user.user_id = this.userId;
       this.checkIfOwnProfile();
     });
   }
