@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import { bind } from 'angular';
 import * as d3 from 'd3';
 import * as cloud from 'd3-cloud';
@@ -10,8 +10,12 @@ import * as cloud from 'd3-cloud';
 })
 export class WordCloudComponent implements OnInit, AfterViewInit {
   @ViewChild('svg') svgElement!: ElementRef<SVGElement>;
-  width = 600; // Asumiendo un ancho fijo para el SVG
+  width = 300; // Asumiendo un ancho fijo para el SVG
   height = 400; // Asumiendo una altura fija para el SVG
+
+  @Output()
+  eventEmitter:EventEmitter<string> = new EventEmitter();
+
   private words: { text: string, size: number }[] = [
     {text: 'Data Mining', size: 50},
     {text: 'Machine Learning', size: 70},
@@ -122,11 +126,11 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
 
   private generateWordCloud(): void {
     const layout = cloud()
-      .size([700, 300])
+      .size([300, 300])
       .words(this.words.map(d => ({text: d.text, size: d.size})))
       .padding(2)
       .rotate(0)
-      .fontSize(d => (d.size || 10) / 4)
+      .fontSize(d => (d.size || 10) / 5)
       .on('end', words => this.draw(words));
 
     layout.start();
@@ -208,7 +212,6 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
 
   //
   private onWordClick(word: any): void {
-    console.log(word.text)
-    // Aquí puedes agregar cualquier acción que desees realizar al hacer clic en una palabra
+    this.eventEmitter.emit(word.text)
   }
 }

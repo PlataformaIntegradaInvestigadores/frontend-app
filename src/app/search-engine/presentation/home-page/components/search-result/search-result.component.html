@@ -1,18 +1,15 @@
-<div class="overflow-hidden">
-  <div class="custom-bg">
-    <div class="w-full">
-      <app-search-box (search)="onSearch($event)" [setSearch]="setSearch"
-                      class="flex w-full h-full items-center justify-center">
-      </app-search-box>
-
+<div class="custom-bg">
+  <div class="w-full">
+    <app-search-box (search)="onSearch($event)" [setSearch]="setSearch"
+                    class="flex w-full h-full items-center justify-center" >
+    </app-search-box>
+  </div>
+  <div *ngIf="!searchValue || !searchValue.query">
+    <div class="bg-transparent">
+      <app-summary></app-summary>
     </div>
-    <div *ngIf="!searchValue || !searchValue.query">
-      <div class="bg-transparent">
-        <app-summary></app-summary>
-      </div>
-      <div>
-        <app-ecuador-contribution></app-ecuador-contribution>
-      </div>
+    <div>
+      <app-ecuador-contribution (t)="topicClcked($event)"></app-ecuador-contribution>
     </div>
   </div>
 </div>

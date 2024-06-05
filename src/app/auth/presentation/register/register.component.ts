@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../domain/entities/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -12,8 +13,7 @@ import { passwordMatchValidator } from '../../domain/entities/custom-validators'
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup = new FormGroup({});
   errorMessages: string[] = [];
-
-  constructor(private fb: FormBuilder, private authService: AuthService) { }
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
@@ -48,6 +48,7 @@ export class RegisterComponent implements OnInit {
       next: response => {
         console.log('Registration successful', response);
         // Handle successful registration here
+        this.router.navigate(['/login']);
       },
       error: error => {
         this.errorMessages = error.message.split('\n');

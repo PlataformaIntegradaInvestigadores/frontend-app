@@ -1,17 +1,16 @@
-// profile.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/domain/entities/auth.service';
 import { UserService } from 'src/app/profile/domain/entities/user.service';
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
-  userId: number = 0;
+export class ProfileComponent implements OnInit, OnDestroy {
+  userId: string = '0';
   user = {
     "first_name": "Danny",
     "last_name": "Cabrera",
@@ -24,15 +23,21 @@ export class ProfileComponent implements OnInit {
   }
   isOwnProfile: boolean = false;
 
+  private routeSub: Subscription = new Subscription();
+
   constructor(private route: ActivatedRoute, private userService: UserService, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.userId = +params['id'];
+    this.routeSub = this.route.params.subscribe(params => {
+      this.userId = params['id'];
       this.getUserData();
+      this.checkIfOwnProfile();
     });
-    if (this.userId === parseInt(this.authService.getUserId() ?? '')) {
-      this.isOwnProfile = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
     }
   }
 
@@ -40,5 +45,9 @@ export class ProfileComponent implements OnInit {
     this.userService.getUserById(this.userId).subscribe(data => {
       this.user = data;
     });
+  }
+
+  checkIfOwnProfile() {
+    this.isOwnProfile = this.userId === this.authService.getUserId();
   }
 }

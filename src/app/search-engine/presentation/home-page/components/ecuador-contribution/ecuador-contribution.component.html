@@ -14,9 +14,9 @@
             scientific
             and technological landscape.
           </p>
-          <app-word-cloud class="hidden md:block"></app-word-cloud>
+          <app-word-cloud class="hidden md:flex justify-center" (eventEmitter)="emitT($event)"></app-word-cloud>
         </div>
-        <app-ecuador-map></app-ecuador-map>
+        <app-ecuador-map ></app-ecuador-map>
       </div>
     </div>
   </div>

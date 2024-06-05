@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProfilePageRoutingModule } from './profile/profile-page-routing.module';
 import { LoginComponent } from './auth/presentation/login/login.component';
 import { RegisterComponent } from './auth/presentation/register/register.component';
@@ -29,16 +28,15 @@ import { ReactiveFormsModule } from '@angular/forms';
     FingerprintComponent,
   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
     SharedModule,
-    BrowserAnimationsModule,
     ProfilePageRoutingModule,
     FontAwesomeModule,
     HomePageModule,
     NgbModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserModule
   ],
   providers: [],
   bootstrap: [AppComponent],
