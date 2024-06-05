@@ -126,11 +126,11 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
 
   private generateWordCloud(): void {
     const layout = cloud()
-      .size([300, 300])
+      .size([250, 280])
       .words(this.words.map(d => ({text: d.text, size: d.size})))
       .padding(2)
       .rotate(0)
-      .fontSize(d => (d.size || 10) / 5)
+      .fontSize(d => (d.size || 10) / 7)
       .on('end', words => this.draw(words));
 
     layout.start();
