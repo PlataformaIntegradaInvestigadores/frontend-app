@@ -12,13 +12,13 @@ import { CommonModule } from '@angular/common';
 import { CdkMenu, CdkMenuItem, CdkMenuTrigger } from '@angular/cdk/menu';
 import { D3Service } from "../shared/d3";
 import { DataFormComponent } from './presentation/components/data-form/data-form.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
 import { PostComponent } from './presentation/components/aboutme/post/post.component';
 import { InformationComponent } from './presentation/components/aboutme/information/information.component';
-
+import { GroupCreateModalComponent } from './presentation/components/btn-create-group/group-create-modal/group-create-modal.component';
 @NgModule({
-  imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger, CdkMenu, CdkMenuItem, FormsModule],
+  imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger, CdkMenu, CdkMenuItem, FormsModule, ReactiveFormsModule],
   exports: [ProfileDataComponent],
   declarations: [
     ProfileComponent,
@@ -32,7 +32,7 @@ import { InformationComponent } from './presentation/components/aboutme/informat
     BtnCreateGroupComponent,
     DropdownBtnComponent,
     DataFormComponent,
-
+    GroupCreateModalComponent
   ],
   providers: [D3Service],
 })
