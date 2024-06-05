@@ -12,7 +12,7 @@
         </button>
         <div class="hidden w-full md:block md:w-auto" id="navbar-default">
             <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0 rtl:space-x-reverse">
-                <li>
+                <li *ngIf="isloggedIn">
                     <a routerLink="./about-me" routerLinkActive="active" ariaCurrentWhenActive="page"
                         class="inline-flex items-center justify-center p-6 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
                         <svg class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500 " aria-hidden="true"
@@ -20,7 +20,7 @@
                             <path
                                 d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 256h64c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zm-32-96a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zm256-32H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
                         </svg>
-                        About me
+                        About {{user.first_name}}
                     </a>
                 </li>
                 <li *ngIf="user?.scopus_id">

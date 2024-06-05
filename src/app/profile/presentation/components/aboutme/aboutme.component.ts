@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/domain/entities/auth.service';
 import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
 
 @Component({
@@ -9,12 +10,14 @@ import { UserDataService } from 'src/app/profile/domain/entities/user_data.servi
 export class AboutMeComponent implements OnInit {
 
   user: any;
+  isloggedIn: boolean = false;
 
-  constructor(private userDataService: UserDataService) { }
+  constructor(private userDataService: UserDataService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.userDataService.getUser().subscribe(user => {
       this.user = user;
     });
+    this.isloggedIn = this.authService.isLoggedIn();
   }
 }
