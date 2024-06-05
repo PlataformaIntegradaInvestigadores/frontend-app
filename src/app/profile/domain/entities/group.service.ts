@@ -10,11 +10,11 @@ import { AuthService } from 'src/app/auth/domain/entities/auth.service';
     providedIn: 'root'
 })
 export class GroupService {
-    private apiUrl = `${environment.apiUrl}/groups/create/`;
+    private apiUrl = `${environment.apiUrl}/groups/`;
 
     constructor(private http: HttpClient, private authService: AuthService) { }
 
-    createGroup(groupData: { title: string, description: string }): Observable<any> {
+    createGroup(groupData: { title: string, description: string, users?: any[] }): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`

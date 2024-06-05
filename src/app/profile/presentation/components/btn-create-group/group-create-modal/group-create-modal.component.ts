@@ -1,8 +1,6 @@
 // group-create-modal.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/domain/entities/auth.service';
 import { GroupService } from 'src/app/profile/domain/entities/group.service';
 
@@ -76,24 +74,25 @@ export class GroupCreateModalComponent {
 
   onSubmit() {
     if (this.groupForm.valid) {
-      const groupData = {
+      const groupData: any = {
         title: this.groupForm.get('title')?.value,
         description: this.groupForm.get('description')?.value,
-        admin: this.authService.getUserId(),
-        users: this.selectedUsers.map(user => user.id)
       };
+      if (this.selectedUsers.length > 0) {
+        groupData.users = this.selectedUsers.map(user => user.id);
+      }
 
       console.log('Creating group', groupData);
-      // this.groupService.createGroup(groupData).subscribe(
-      //   response => {
-      //     console.log('Group created successfully', response);
-      //     alert('Group created successfully');
-      //     window.location.reload();
-      //   },
-      //   error => {
-      //     console.error('Error creating group', error);
-      //   }
-      // );
+
+      this.groupService.createGroup(groupData).subscribe(
+        response => {
+          console.log('Group created successfully', response);
+          window.location.reload();
+        },
+        error => {
+          console.error('Error creating group', error);
+        }
+      );
     }
   }
 
