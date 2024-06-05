@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from '../../domain/entities/auth.service';
 import { Router } from '@angular/router';
+import { ErrorService } from '../../domain/entities/error.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,13 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessages: string[] = [];
 
-  constructor(private title: Title, private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private title: Title,
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private errorService: ErrorService // Inject your ErrorService
+  ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -40,28 +47,9 @@ export class LoginComponent implements OnInit {
       this.errorMessages = ['Please fill in all required fields correctly.'];
     }
   }
+
   private processErrors(errors: any) {
-    this.errorMessages = [];
-    if (errors.error) {
-      if (errors.error.detail) {
-        this.errorMessages.push(errors.error.detail);
-      } else {
-        for (const key in errors.error) {
-          if (errors.error.hasOwnProperty(key)) {
-            const errorArray = errors.error[key];
-            if (Array.isArray(errorArray)) {
-              errorArray.forEach(err => {
-                this.errorMessages.push(err);
-              });
-            } else {
-              this.errorMessages.push(errorArray);
-            }
-          }
-        }
-      }
-    } else {
-      this.errorMessages.push('An unknown error occurred.');
-    }
+    this.errorMessages = this.errorService.processErrors(errors); // Use the service to process errors
     console.error('Error logging in', this.errorMessages);
   }
 }

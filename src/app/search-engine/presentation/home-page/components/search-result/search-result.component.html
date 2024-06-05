@@ -5,8 +5,22 @@
     </app-search-box>
   </div>
   <div *ngIf="!searchValue || !searchValue.query">
-    <div class="bg-transparent">
-      <app-summary></app-summary>
+    <div class="bg-primary_tailwind bg-opacity-55">
+      <app-summary class="text-white"></app-summary>
+      <div class="bg-white">
+        <div class="flex flex-col  justify-center items-center py-2">
+          <div class="w-4/5">
+            <h1>Welcome to Centinela</h1>
+            <p class="text-justify">
+              Centinela is a tool designed specifically to provide detailed academic information about Ecuadorian researchers,
+              and offers
+              users three types of searches to access this information. Its main objective is to streamline and facilitate the
+              understanding of the findings and results of relevant scientific research, allowing researchers to explore the
+              relationships and occurrences between keywords used in these studies.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     <div>
       <app-ecuador-contribution (t)="topicClcked($event)"></app-ecuador-contribution>

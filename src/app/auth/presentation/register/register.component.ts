@@ -56,6 +56,19 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  preventNonAlphabetic(event: KeyboardEvent): void {
+    const charCode = event.key.charCodeAt(0);
+    if (!/[a-zA-Z\s]/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  capitalizeInput(event: any): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value
+      .toLowerCase()
+      .replace(/\b\w/g, char => char.toUpperCase());
+  }
 
   preventNonNumeric(event: KeyboardEvent): void {
     if (event.key < '0' || event.key > '9') {

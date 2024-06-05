@@ -22,7 +22,7 @@ export class AuthService {
   }
 
   login(credentials: { username: string, password: string }): Observable<any> {
-    return this.http.post<{ access: string, refresh: string }>(`${this.apiUrl}/api/token/`, credentials).pipe(
+    return this.http.post<{ access: string, refresh: string }>(`${this.apiUrl}/token/`, credentials).pipe(
       tap(response => this.setSession(response)),
       catchError(this.handleError)
     );
@@ -48,37 +48,14 @@ export class AuthService {
   getUserId(): string | null {
     return localStorage.getItem('userId');
   }
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    console.error('An error occurred:', error);
 
-    let errorMessages: string[] = ['An unknown error occurred!'];
-
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessages = [`Client-side error: ${error.error.message}`];
-    } else if (error.error) {
-      // Server-side error
-      if (error.status === 400 && error.error.errors) {
-        errorMessages = [];
-        for (const key in error.error.errors) {
-          if (error.error.errors.hasOwnProperty(key)) {
-            errorMessages.push(`${error.error.errors[key].join(', ')}`);
-          }
-        }
-      } else {
-        errorMessages = [`Server-side error: ${error.error.detail || error.message}`];
-      }
-    }
-
-    return throwError(() => new Error(errorMessages.join('\n')));
-  }
   private refreshAccessToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
       this.logout();
       return throwError(() => new Error('Refresh token not found'));
     }
-    return this.http.post<{ access: string }>(`${this.apiUrl}/api/token/refresh/`, { refresh: refreshToken }).pipe(
+    return this.http.post<{ access: string }>(`${this.apiUrl}/token/refresh/`, { refresh: refreshToken }).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.access);
       })
@@ -104,5 +81,48 @@ export class AuthService {
         return this.handleError(error);
       })
     );
+  }
+  getUsers(): Observable<User[]> {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      return throwError(() => new Error('Access token not found'));
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${accessToken}`
+    });
+    return this.http.get<User[]>(`${this.apiUrl}/users/`, { headers }).pipe(
+      catchError(error => {
+        if (error.status === 401 && error.error.code === 'token_not_valid') {
+          return this.refreshAccessToken().pipe(
+            switchMap(() => this.getUsers())
+          );
+        }
+        return this.handleError(error);
+      })
+    );
+  }
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('An error occurred:', error);
+
+    let errorMessages: string[] = ['An unknown error occurred!'];
+
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessages = [`Client-side error: ${error.error.message}`];
+    } else if (error.error) {
+      // Server-side error
+      if (error.status === 400 && error.error.errors) {
+        errorMessages = [];
+        for (const key in error.error.errors) {
+          if (error.error.errors.hasOwnProperty(key)) {
+            errorMessages.push(`${error.error.errors[key].join(', ')}`);
+          }
+        }
+      } else {
+        errorMessages = [`Server-side error: ${error.error.detail || error.message}`];
+      }
+    }
+
+    return throwError(() => new Error(errorMessages.join('\n')));
   }
 }

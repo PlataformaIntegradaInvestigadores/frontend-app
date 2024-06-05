@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { bind } from 'angular';
 import * as d3 from 'd3';
 import * as cloud from 'd3-cloud';
@@ -10,7 +10,9 @@ import * as cloud from 'd3-cloud';
 })
 export class WordCloudComponent implements OnInit, AfterViewInit {
   @ViewChild('svg') svgElement!: ElementRef<SVGElement>;
-  width = 300; // Asumiendo un ancho fijo para el SVG
+  @Input()
+  width = 270; // Asumiendo un ancho fijo para el SVG
+  @Input()
   height = 400; // Asumiendo una altura fija para el SVG
 
   @Output()
@@ -126,19 +128,20 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
 
   private generateWordCloud(): void {
     const layout = cloud()
-      .size([250, 280])
+      .size([this.width + 30, this.height - 50])
       .words(this.words.map(d => ({text: d.text, size: d.size})))
-      .padding(2)
+      .padding(1)
       .rotate(0)
-      .fontSize(d => (d.size || 10) / 7)
+      .fontSize(d => (d.size || 10) / 6)
       .on('end', words => this.draw(words));
 
     layout.start();
   }
 
   private draw(words: any[]): void {
+    const svg = d3.select(this.svgElement.nativeElement)
 
-    const g = d3.select(this.svgElement.nativeElement).select('g');
+    const g = svg.select('g');
 
     const text: any = g
       .selectAll('text')
@@ -161,11 +164,11 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
         })
         .on('end', (event, d) => {
           d3.select(event.sourceEvent.target).attr('stroke', null);
-          this.float(d3.select(event.sourceEvent.target)); // Reinicia la animación después del arrastre
+          //this.float(d3.select(event.sourceEvent.target)); // Reinicia la animación después del arrastre
         }))
       .on('click', (event, d) => this.onWordClick(d));
 
-    this.animateFloating(text);
+    //this.animateFloating(text);
 
   }
 
@@ -196,10 +199,10 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   }
 
   private float(element: d3.Selection<SVGTextElement, any, any, any>): void {
-    const randomX = Math.random() * 10 - 5;
-    const randomY = Math.random() * 10 - 5;
+    const randomX = Math.random() * 3;
+    const randomY = Math.random() * 3;
     element.transition()
-      .duration(2000)
+      .duration(1000)
       .ease(d3.easeSinInOut)
       .attr('transform', function (d) {
         const currentTransform = d3.select(this).attr('transform');

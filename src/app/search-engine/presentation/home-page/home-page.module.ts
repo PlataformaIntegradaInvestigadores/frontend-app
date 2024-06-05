@@ -26,25 +26,27 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { EcuadorContributionComponent } from './components/ecuador-contribution/ecuador-contribution.component';
 import {HttpClientModule} from "@angular/common/http";
 import {CountUpModule} from "ngx-countup";
+import {LineChartModule} from "@swimlane/ngx-charts";
 
 @NgModule({
-  imports: [
-    MatSlideToggleModule,
-    SharedModule,
-    CommonModule,
-    HttpClientModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatPaginatorModule,
-    SharedRoutingModule,
-    FormsModule,
-    FontAwesomeModule,
-    DashboardModule,
-    SharedModule,
-    CountUpModule,
-  ],
+    imports: [
+        MatSlideToggleModule,
+        SharedModule,
+        CommonModule,
+        HttpClientModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatButtonModule,
+        MatPaginatorModule,
+        SharedRoutingModule,
+        FormsModule,
+        FontAwesomeModule,
+        DashboardModule,
+        SharedModule,
+        CountUpModule,
+        LineChartModule,
+    ],
   exports: [
     CoauthorsGraphComponent
   ],
