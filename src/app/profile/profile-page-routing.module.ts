@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { ProfileComponent } from './presentation/pages/profile-page/profile.component';
 import { RouterModule, Routes } from '@angular/router';
-import { ListGroupComponent } from './presentation/components/list-group/list-group.component';
 import { NetworkComponent } from './presentation/components/network/network.component';
 import { ArticleComponent } from './presentation/components/article/article.component';
 import { FingerprintComponent } from './presentation/components/fingerprint/fingerprint.component';
 import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
+import { ListGroupComponent } from '../group/presentation/list-group/list-group.component';
 
 
 const routes: Routes = [

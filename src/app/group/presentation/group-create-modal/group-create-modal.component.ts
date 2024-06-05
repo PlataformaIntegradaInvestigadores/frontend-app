@@ -2,7 +2,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/domain/entities/auth.service';
-import { GroupService } from 'src/app/profile/domain/entities/group.service';
+import { GroupService } from 'src/app/group/domain/entities/group.service';
 
 @Component({
   selector: 'app-group-create-modal',
