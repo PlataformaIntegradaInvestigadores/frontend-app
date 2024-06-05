@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User } from './interfaces';
 import { jwtDecode } from "jwt-decode";
@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   login(credentials: { username: string, password: string }): Observable<any> {
-    return this.http.post<{ access: string, refresh: string }>(`${this.apiUrl}/api/token/`, credentials).pipe(
+    return this.http.post<{ access: string, refresh: string }>(`${this.apiUrl}/token/`, credentials).pipe(
       tap(response => this.setSession(response)),
       catchError(this.handleError)
     );
@@ -47,6 +47,61 @@ export class AuthService {
   getUserId(): string | null {
     return localStorage.getItem('userId');
   }
+
+  private refreshAccessToken(): Observable<any> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      this.logout();
+      return throwError(() => new Error('Refresh token not found'));
+    }
+    return this.http.post<{ access: string }>(`${this.apiUrl}/token/refresh/`, { refresh: refreshToken }).pipe(
+      tap(response => {
+        localStorage.setItem('accessToken', response.access);
+      })
+    );
+  }
+
+  updateUser(user: any): Observable<any> {
+    const userId = this.getUserId();
+    if (!userId) {
+      return throwError(() => new Error('User ID not found'));
+    }
+    return this.http.put(`${this.apiUrl}/users/${userId}/update/`, user, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      })
+    }).pipe(
+      catchError(error => {
+        if (error.status === 401 && error.error.code === 'token_not_valid') {
+          return this.refreshAccessToken().pipe(
+            switchMap(() => this.updateUser(user))
+          );
+        }
+        return this.handleError(error);
+      })
+    );
+  }
+
+  getUsers(): Observable<User[]> {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      return throwError(() => new Error('Access token not found'));
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${accessToken}`
+    });
+    return this.http.get<User[]>(`${this.apiUrl}/users/`, { headers }).pipe(
+      catchError(error => {
+        if (error.status === 401 && error.error.code === 'token_not_valid') {
+          return this.refreshAccessToken().pipe(
+            switchMap(() => this.getUsers())
+          );
+        }
+        return this.handleError(error);
+      })
+    );
+  }
+
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.error('An error occurred:', error);

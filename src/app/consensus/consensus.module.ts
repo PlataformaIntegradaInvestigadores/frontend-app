@@ -6,7 +6,6 @@ import { Phase3ConsensusComponent } from './presentation/components/phase3-conse
 import { NavbarConsensusComponent } from './presentation/components/navbar-consensus/navbar-consensus.component';
 import { Phase1ConsensusNotificationComponent } from './presentation/components/phase1-consensus-notification/phase1-consensus-notification.component';
 import { MembersConsensusComponent } from './presentation/components/members-consensus-card-list/members-consensus.component';
-import { ProfilePageModule } from "../profile/profile-page.module";
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ConsensusPageComponent } from './presentation/pages/consensus-page/consensus-page.component';
 import { CommonModule } from "@angular/common";
@@ -18,10 +17,11 @@ import { SharedModule } from "../shared/shared.module";
 import { FormsModule } from "@angular/forms";
 import { BtnMailComponent } from './presentation/components/btn-mail/btn-mail.component';
 import { SatisfactionLevelComponent } from './presentation/components/satisfaction-level/satisfaction-level.component';
+import { ProfilePageModule } from "../profile/profile-page.module";
 
 
 @NgModule({
-    declarations: [
+  declarations: [
     Phase1ConsensusComponent,
     /* Phase2ConsensusComponent, */
     Phase3ConsensusComponent,
@@ -36,9 +36,9 @@ import { SatisfactionLevelComponent } from './presentation/components/satisfacti
     BtnMailComponent,
     SatisfactionLevelComponent
   ],
-    imports: [ConsensusRoutingModule, ProfilePageModule, CommonModule, SharedModule, FormsModule],
-    exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [ConsensusRoutingModule, ProfilePageModule, CommonModule, SharedModule, FormsModule],
+  exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ConsensusModule {
 }

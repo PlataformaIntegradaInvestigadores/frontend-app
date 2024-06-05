@@ -7,15 +7,14 @@ import { UserDataService } from 'src/app/profile/domain/entities/user_data.servi
   styleUrls: ['./aboutme.component.css']
 })
 export class AboutMeComponent implements OnInit {
+
   user: any;
 
   constructor(private userDataService: UserDataService) { }
 
   ngOnInit(): void {
-    this.userDataService.currentUser.subscribe(user => {
+    this.userDataService.getUser().subscribe(user => {
       this.user = user;
-    }
-    );
-    console.log(this.user);
+    });
   }
 }

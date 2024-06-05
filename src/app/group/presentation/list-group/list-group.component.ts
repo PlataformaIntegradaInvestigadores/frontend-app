@@ -30,10 +30,10 @@ export class ListGroupComponent implements AfterViewInit {
   constructor(private userDataService: UserDataService) { }
 
   ngOnInit(): void {
-    this.userDataService.currentUser.subscribe(user => {
+    this.userDataService.getUser().subscribe(user => {
       this.user = user;
-    }
-    );
-    console.log(this.user);
+      console.log(this.user);
+      console.log(this.user.isOwnProfile);
+    });
   }
 }
