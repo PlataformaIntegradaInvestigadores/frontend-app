@@ -1,0 +1,8 @@
+/* group-create-modal.component.css */
+.max-h-60 {
+    max-height: 15rem;
+}
+
+.overflow-auto {
+    overflow: auto;
+}

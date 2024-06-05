@@ -1,0 +1,61 @@
+<!-- group-create-modal.component.html -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50" *ngIf="isOpen">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+        <h2 class="text-xl font-semibold mb-4">Create Group</h2>
+        <form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
+            <div class="mb-4">
+                <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
+                <input id="title" formControlName="title" class="mt-1 p-2 w-full border border-gray-300 rounded-md" (input)="capitalizeInput($event)" />
+                <div *ngIf="getControl('title')?.invalid && getControl('title')?.touched" class="text-red-600 mt-1">
+                    Title is required.</div>
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-sm font-medium text-gray-700">Description *</label>
+                <textarea id="description" formControlName="description"
+                    class="mt-1 p-2 w-full border border-gray-300 rounded-md" (input)="capitalizeInput($event)"></textarea>
+                <div *ngIf="getControl('description')?.invalid && getControl('description')?.touched"
+                    class="text-red-600 mt-1">Description is required.</div>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Add Users</label>
+                <input type="text" formControlName="userSearch"
+                    class="mb-2 p-2 w-full border border-gray-300 rounded-md" placeholder="Search users..." (input)="capitalizeInput($event)" />
+                <div class="relative">
+                    <div *ngIf="searchQuery && filteredUsers.length > 0"
+                        class="absolute left-0 right-0 z-10 w-full bg-white border border-gray-300 rounded-md mt-0 max-h-60 overflow-auto">
+                        <div *ngFor="let user of filteredUsers" (click)="onUserSelect(user)"
+                            class="p-2 hover:bg-gray-200 cursor-pointer">
+                            <div class="flex items-center">
+                                <div
+                                    class="flex-shrink-0 h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+                                    {{ user.first_name.charAt(0) }}{{ user.last_name.charAt(0) }}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">{{ user.first_name }} {{ user.last_name
+                                        }}</p>
+                                    <p class="text-xs text-gray-500">{{ user.username }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="selectedUsers.length > 0" class="mt-4">
+                    <h3 class="text-sm font-medium text-gray-700">Selected Users</h3>
+                    <div class="flex flex-wrap">
+                        <div *ngFor="let user of selectedUsers"
+                            class="m-1 p-2 bg-gray-200 rounded-md flex items-center">
+                            {{ user.first_name }} {{ user.last_name }}
+                            <button type="button" (click)="removeUser(user)" class="ml-2 text-red-600">×</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" (click)="closeModal()"
+                    class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-md">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-primary_tailwind text-white rounded-md"
+                    [disabled]="groupForm.invalid">Create Group</button>
+            </div>
+        </form>
+    </div>
+</div>
