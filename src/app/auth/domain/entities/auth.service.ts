@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {Observable, switchMap, throwError} from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User } from './interfaces';
 import { jwtDecode } from "jwt-decode";
+
 
 @Injectable({
   providedIn: 'root'
@@ -81,7 +82,6 @@ export class AuthService {
       })
     );
   }
-
   getUsers(): Observable<User[]> {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
@@ -101,8 +101,6 @@ export class AuthService {
       })
     );
   }
-
-
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.error('An error occurred:', error);
 

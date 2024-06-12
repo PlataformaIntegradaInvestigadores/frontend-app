@@ -1,9 +1,7 @@
-// profile.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/domain/entities/auth.service';
 import { UserService } from 'src/app/profile/domain/entities/user.service';
-
 import { Subscription } from 'rxjs';
 import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
 
@@ -12,7 +10,7 @@ import { UserDataService } from 'src/app/profile/domain/entities/user_data.servi
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   userId: string = '0';
   user = {
     "first_name": "Danny",
@@ -45,11 +43,16 @@ export class ProfileComponent implements OnInit {
       this.checkIfOwnProfile();
       this.userDataService.setUser(this.user);
     });
-  
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
+    }
   }
 
   getUserData() {
-    this.userService.getUserById(this.userId.toString()).subscribe(data => {
+    this.userService.getUserById(this.userId).subscribe(data => {
       this.user = data;
     });
   }

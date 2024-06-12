@@ -7,10 +7,10 @@ import {json} from "d3";
   styleUrls: ['./ecuador-map.component.css']
 })
 export class EcuadorMapComponent {
-  private svg: any;
-  private margin = 50;
-  private width =600 - (this.margin * 2);
-  private height = 450 - (this.margin * 2);
+  private g: any;
+  margin = 50;
+  width =600 - (this.margin * 2);
+  height = 450 - (this.margin * 2);
   private scale = Math.min(this.width, this.height);
   private geoJson: any;
 
@@ -40,12 +40,8 @@ export class EcuadorMapComponent {
               "#005EAB", "#00509B", "#00428B", "#00347B", "#00266B", "#00185B"
             ]
           )
-        this.svg = d3.select('figure#map')
-          .append("svg")
-          .attr("width", this.width + (this.margin * 2))
-          .attr("height", this.height + (this.margin * 2))
-          .append("g")
-          .style("background-color", "lightblue")
+        this.g = d3.select('figure#map').select('svg').select('g')
+
           .selectAll('path')
           .data(this.geoJson.features)
           .join('path')
@@ -55,7 +51,7 @@ export class EcuadorMapComponent {
           .text((d: any) => d.properties.dpa_despro); // Puedes cambiar d.properties.dpa_despro por el contenido que quieras mostrar
 
         // Agregar evento de mouseover para mostrar el popover
-        this.svg.on("mouseover", (event:any, d:any) => {
+        this.g.on("mouseover", (event:any, d:any) => {
           var tooltip = d3.select("#tooltip");
           tooltip.html("<div>" + d.properties.dpa_despro + "</div>")
             .style("left", (event.pageX + 10) + "px")

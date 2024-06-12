@@ -16,7 +16,7 @@ export class DataNavComponent implements OnChanges {
   isloggedIn: boolean = false;
 
   constructor(private userDataService: UserDataService, private authService: AuthService) { }
-
+  
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['user']) {
       this.userDataService.changeUser(this.user);
