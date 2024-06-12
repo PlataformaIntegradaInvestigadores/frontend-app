@@ -36,3 +36,18 @@ input[type="range"]::-ms-thumb {
     border-radius: 50%;
     border: none;
 }
+
+#btn-combined-search {
+    border: solid #1E3C8B 1px !important;
+}
+
+#btn-expertice {
+    border: solid #1E3C8B 1px !important
+}
+
+
+
+/* Cambia el color del path cuando el mouse está sobre el botón */
+#btn-expertice:hover .svg-path {
+    stroke: #ffffff; /* Cambia el color del stroke a blanco */
+}

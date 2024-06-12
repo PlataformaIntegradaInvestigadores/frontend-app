@@ -11,13 +11,20 @@ export class Phase1ConsensusComponent implements OnInit{
   rangeValues: number[] = [];
   showLabel: boolean[] = [];
   showSliders = false;  // Esta propiedad controlará la visibilidad de las barras de rango
+  showCheckTopics: boolean[] = []; // Esta propiedad controlará la visibilidad de los tópicos
   topics = this.obtenerTopicos();
+  enableCombinedSearch = false;
+  
+  ngOnInit(): void {
+    initFlowbite();
+  }
 
   constructor() { 
     // Supongamos que obtienes la cantidad de tópicos de alguna manera
     const numeroDeTopicos = this.obtenerTopicos().length;
     this.rangeValues = new Array(numeroDeTopicos).fill(0); // Inicializa todos los rangos en 0
     this.showLabel = new Array(numeroDeTopicos).fill(false); // Inicializa la visibilidad de las etiquetas en false
+    this.showCheckTopics = new Array(numeroDeTopicos).fill(false); // Inicializa la visibilidad de los tópicos en false
   } 
 
   obtenerTopicos(): string[] {
@@ -33,9 +40,14 @@ export class Phase1ConsensusComponent implements OnInit{
       this.showLabel[index] = false;
   }
 
-  ngOnInit(): void {
-    initFlowbite();
+  showCheckTopic(index: number) {
+    this.showCheckTopics[index] = true;
   }
+
+  hideCheckTopic(index: number) {
+    this.showCheckTopics[index] = false;
+  } 
+
   
   getGradient(value: number): string {
     /* #172554  == hsl(223, 58%, 20%) */

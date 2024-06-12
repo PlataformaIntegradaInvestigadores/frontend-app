@@ -4,46 +4,119 @@
     <div class="container text-sm text-gray-900">
         <p>Explore the suggested topics list and acquaint yourself with the available choices</p>
 
-        <div class="flex items-center mb-4">
+        <div class="flex items-center mb-2.5">
             <input type="checkbox" id="toggleSliders" [(ngModel)]="showSliders" class="w-4 h-4 text-primary_tailwind bg-gray-100 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             <label for="toggleSliders" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to choose my expertise in each topic</label>
         </div>
 
-        <div class="flex justify-center items-center" >
+        <div class="flex items-center mb-2.5">
+            <input type="checkbox" id="toggleSliders2" [(ngModel)]="enableCombinedSearch" class="w-4 h-4 text-primary_tailwind bg-gray-100 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="toggleSliders2" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to enable combined sheard</label>
+        </div>
 
+        <div class="flex justify-center items-center space-x-4 mb-2.5">
+            <!-- EXPERTICE POPOVER -->
+    
+            <div class="flex justify-center items-center mb-2.5">
+                <button id="btn-expertice" data-popover-target="popover-top2" type="button" class="mb-2.5 text-primary_tailwind border border-primary_tailwind hover:bg-primary_tailwind hover:text-white focus:ring-2 focus:outline-none focus:ring-primary_tailwind font-medium rounded-full text-sm p-2 ml-1 text-center inline-flex items-center dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500">
+                        <!-- License: Apache. Made by bytedance: https://github.com/bytedance/IconPark -->
+                        <svg width="22px" height="22px" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="svg-icon">
+                            <rect width="48" height="48" fill="white" fill-opacity="0.01"/>
+                            <path class="svg-path" d="M19.036 44.0001C18.0561 40.8045 16.5778 38.4222 14.6011 36.8532C11.636 34.4997 6.92483 35.9624 5.18458 33.5349C3.44433 31.1073 6.40382 26.6431 7.44234 24.009C8.48086 21.375 3.46179 20.4436 4.04776 19.6958C4.43842 19.1973 6.97471 17.7587 11.6567 15.3801C12.987 7.79346 17.9008 4.00014 26.3982 4.00014C39.1441 4.00014 44 14.8061 44 21.679C44 28.552 38.1201 35.9563 29.7441 37.5528C28.9951 38.6436 30.0754 40.7927 32.9848 44.0001" stroke="#1E3C8B" stroke-width="4.66685" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path class="svg-path" fill-rule="evenodd" clip-rule="evenodd" d="M19.4997 14.5C18.8464 17.0342 19.0408 18.8138 20.0829 19.8385C21.125 20.8633 22.9011 21.5334 25.4112 21.8489C24.8417 25.1176 25.5361 26.6511 27.4942 26.4493C29.4524 26.2475 30.6289 25.4338 31.0239 24.0083C34.0842 24.8684 35.7428 24.1486 35.9997 21.8489C36.3852 18.3993 34.525 15.6475 33.7624 15.6475C32.9997 15.6475 31.0239 15.5547 31.0239 14.5C31.0239 13.4452 28.7159 12.8493 26.6329 12.8493C24.5499 12.8493 25.8035 11.4452 22.9432 12C21.0363 12.3698 19.8885 13.2031 19.4997 14.5Z" fill="#2F88FF" stroke="#1E3C8B" stroke-width="4" stroke-linejoin="round"/>
+                            <path class="svg-path" d="M30.5002 25.5001C29.4833 26.1311 28.0878 27.1804 27.5002 28.0001C26.0313 30.0496 24.8398 31.2975 24.5791 32.6082" stroke="#1E3C8B" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                </button>
+            </div>
+            
+            
+            
+            
+            <div data-popover id="popover-top2" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                <div class="px-2.5 py-2 bg-gray-200 border-b border-gray-300 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                    <h3 class="font-semibold text-gray-900 dark:text-white m-0 text-center">Choose Expertise</h3>
+                </div>
+                <div class="px-3 py-2 m-0">
+                    <p>I want to choose my expertise in each topic</p>
+                    <div class="flex items-center mt-2">
+                        <input id="enable-combined-search" type="checkbox" [(ngModel)]="showSliders" class="mr-2 w-4 h-4 text-primary_tailwind bg-gray-300 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="enable-combined-search">Enable expertise</label>
+                    </div>
+                </div>
+                <div data-popper-arrow></div>
+            </div>
+    
+            <!-- COMBINED SEARCH POPOVER -->
+    
+            <div class="flex justify-center items-center mb-2.5">
+                <button id="btn-combined-search" data-popover-target="popover-top" type="button" class="mb-2.5 text-primary_tailwind border border-primary_tailwind hover:bg-primary_tailwind hover:text-white focus:ring-2 focus:outline-none focus:ring-primary_tailwind font-medium rounded-full text-sm p-2 ml-1 text-center inline-flex items-center dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500">
+                    <ng-container *ngIf="!enableCombinedSearch; else okTemplate">
+                        <svg fill="currentColor" width="20px" height="20px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="fill-current">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.573 2.729c-0.729 0.484-4.292 2.849-7.917 5.255s-6.589 4.396-6.589 4.422c0 0.026 0.182 0.146 0.406 0.266 0.224 0.13 3.797 2.109 7.953 4.411l7.542 4.193 0.193-0.099c0.109-0.052 2.891-1.641 6.188-3.521l5.99-3.427 0.036 10.599h3.557v-12.401l-4.615-3.094c-6.219-4.167-11.188-7.448-11.307-7.474-0.063-0.010-0.703 0.38-1.438 0.87zM7.141 22.177l0.016 2.672 8.828 5.292 8.891-5.339v-2.641c0-1.458-0.016-2.646-0.031-2.646-0.021 0-1.76 1.042-3.87 2.323l-4.406 2.661-0.578 0.339-1.755-1.052c-1.464-0.875-2.927-1.755-4.385-2.641l-2.672-1.615c-0.031-0.010-0.042 1.177-0.036 2.646z"/>
+                        </svg>
+                    </ng-container>
+                    <ng-template #okTemplate>
+                        <span class="font-bold">OK</span>
+                    </ng-template>
+                </button>
+            </div>
+            
+            
+            <div data-popover id="popover-top" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                <div class="px-2.5 py-2 bg-gray-200 border-b border-gray-300 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                    <h3 class="font-semibold text-gray-900 dark:text-white m-0 text-center">Combined Search</h3>
+                </div>
+                <div class="px-3 py-2 m-0">
+                    <p>Select two or more topics to search in Google Scholar</p>
+                    <div class="flex items-center mt-2">
+                        <input id="enable-combined-search" type="checkbox"  [(ngModel)]="enableCombinedSearch" class="mr-2 w-4 h-4 text-primary_tailwind bg-gray-300 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="enable-combined-search">Enable combined search </label>
+                    </div>
+                </div>
+                <div data-popper-arrow></div>
+            </div>
+
+        </div>
+
+
+        
+        <div class="flex justify-center items-center" >
             <div class="w-full mx-6 text-sm text-gray-900 bg-white border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
-                
                 <div *ngFor="let topic of topics; let i = index" class="w-full text-sm text-gray-900 bg-white  dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
                     <div class="flex items-center justify-between w-full px-4 py-3 text-left border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
                         <span>{{ i + 1 }}. {{ topic }}</span>
-                        <div class="relative w-1/3" *ngIf="showSliders">
+                        <div class="relative w-1/4" *ngIf="showSliders">
                             <input [(ngModel)]="rangeValues[i]" type="range" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                             (mousedown)="showLabels(i)" (mouseup)="hideLabels(i)" (touchstart)="showLabels(i)" (touchend)="hideLabels(i)"
                             [style.background]="getGradient(rangeValues[i])">
                             <span class="absolute -left-5 -top-3 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Junior</span>
                             <span class="absolute -right-5 -top-3 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Expert</span>
                         </div>
+                        <div class="absolute inset-0 flex items-center justify-center" *ngIf="enableCombinedSearch">
+                            <input type="checkbox" class="w-4 h-4 text-primary_tailwind bg-gray-300 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        </div>
                     </div>
                 </div>
-                
-                <button disabled type="button" class="w-full px-4 py-2 font-medium text-left rtl:text-right bg-gray-100 rounded-b-lg cursor-not-allowed dark:bg-gray-600 dark:text-gray-400">
+                <div class="w-full px-4 py-2 font-medium text-left rtl:text-right bg-gray-100 rounded-b-lg cursor-not-allowed dark:bg-gray-600 dark:text-gray-400">
                     <form class="max-w-sm mx-auto">   
                         <label for="new-topic-input" class="cursor-not-allowed block text-sm font-medium text-gray-600 dark:text-white">I want to add a new topic</label>
-                        <div class="relative flex justify-center items-center">
-                            <input type="text" id="new-topic-input" aria-describedby="add a new topic that would you like investigate" class="block w-full p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white cursor-not-allowed dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex: Sports prediction" required disabled/>
-                                <button disabled type="submit" class="bg-primary_tailwind cursor-not-allowed text-white absolute end-2 bottom-2 font-medium rounded-lg text-sm px-3 py-1"><!-- </button> -->
-                                <!-- SVG integrado -->
-                                <svg fill="currentColor" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon line-color">
-                                    <line x1="7" y1="12" x2="11" y2="12" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
-                                    <path d="M5.44,4.15l14.65,7a1,1,0,0,1,0,1.8l-14.65,7A1,1,0,0,1,4.10,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.10,5.46A1,1,0,0,1,5.44,4.15Z" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
-                                </svg>
-                            </button>
+                        <div class="relative flex items-center">
+                            <input type="text" id="new-topic-input" aria-describedby="add a new topic that would you like investigate" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white cursor-not-allowed dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex: Sports prediction" required disabled/>
+                            <div class=" absolute right-2 flex items-center justify-center h-full">
+                                <div class="bg-primary_tailwind cursor-not-allowed text-white font-medium rounded-lg text-sm px-1.5 py-1 m-1 flex items-center">
+                                    <!-- SVG integrado -->
+                                    <svg fill="currentColor" width="18px" height="18px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon line-color">
+                                        <line x1="7" y1="12" x2="11" y2="12" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
+                                        <path d="M5.44,4.15l14.65,7a1,1,0,0,1,0,1.8l-14.65,7A1,1,0,0,1,4.10,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.10,5.46A1,1,0,0,1,5.44,4.15Z" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </form>
-                </button>
+                </div>
             </div>
         </div>  
-        <div class="flex justify-center mt-4">
+        <!-- <div class="flex justify-center mt-4">
             <button type="button" class=" text-white bg-primary_tailwind hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" class="me-2">
                     <path stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8h2m-2 4h2m-5 4H7m14-4V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7M7 8v4h4V8H7z"/>
@@ -51,6 +124,6 @@
                 </svg>
                 Combined Search
             </button>
-        </div>
+        </div> -->
     </div>
 </div>
