@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {Link} from "../../../../../shared/d3";
-
+import {Link} from '../../../d3';
+import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: '[linkVisual]',
@@ -8,7 +8,7 @@ import {Link} from "../../../../../shared/d3";
     <ng-template #popTitle>Arista</ng-template>
 
     <ng-template #popContent>
-      <b>Fuerza de colaboración:</b> {{ link.strokeWidth / 5 }}
+      <b>Fuerza de colaboración:</b> {{link.strokeWidth / 5}}
     </ng-template>
 
     <svg:line class="line"
@@ -18,7 +18,11 @@ import {Link} from "../../../../../shared/d3";
               [attr.x2]="link.target.x"
               [attr.y2]="link.target.y"
 
+              [ngbPopover]="popContent"
+              [popoverTitle]="popTitle"
               triggers="manual"
+              #p1="ngbPopover"
+              (click)="togglePopover(p1)"
               container="body"
     ></svg:line>
   `,
@@ -27,7 +31,7 @@ import {Link} from "../../../../../shared/d3";
 export class LinkVisualComponent {
   @Input('linkVisual') link!: Link;
 
-  togglePopover(popover: any) {
+  togglePopover(popover: NgbPopover) {
     if (popover.isOpen()) {
       popover.close();
     } else {

@@ -11,8 +11,8 @@ import {FooterComponent} from "./components/footer/footer.component";
 import {D3_DIRECTIVES} from "./d3/directives";
 import {EcuadorMapComponent} from "./components/visuals/ecuador-map/ecuador-map.component";
 import {GraphComponent} from "./components/visuals/graph/graph.component";
-import {LinkVisualComponent, NodeVisualComponent, SHARED_VISUALS} from "./components/visuals/shared";
-
+import {SHARED_VISUALS} from "./components/visuals";
+import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
 @NgModule({
   declarations: [
     SearchBoxComponent,
@@ -22,8 +22,6 @@ import {LinkVisualComponent, NodeVisualComponent, SHARED_VISUALS} from "./compon
     ...SHARED_VISUALS,
     EcuadorMapComponent,
     GraphComponent,
-    LinkVisualComponent,
-    NodeVisualComponent
   ],
   exports: [
     SearchBoxComponent,
@@ -32,7 +30,7 @@ import {LinkVisualComponent, NodeVisualComponent, SHARED_VISUALS} from "./compon
     ...D3_DIRECTIVES,
     ...SHARED_VISUALS,
     EcuadorMapComponent,
-    GraphComponent
+    GraphComponent,
   ],
   imports: [
     MatButtonModule,
@@ -41,6 +39,7 @@ import {LinkVisualComponent, NodeVisualComponent, SHARED_VISUALS} from "./compon
     FormsModule,
     CommonModule,
     SharedRoutingModule,
+    NgbPopoverModule,
   ],
   providers: [],
 })

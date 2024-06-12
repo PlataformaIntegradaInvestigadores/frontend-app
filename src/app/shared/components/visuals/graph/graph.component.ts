@@ -7,8 +7,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import {D3Service, ForceDirectedGraph, Node,Link} from "../../../d3";
-
+import {D3Service, ForceDirectedGraph, Link, Node} from "../../../d3";
 
 @Component({
   selector: 'graph',
@@ -17,7 +16,7 @@ import {D3Service, ForceDirectedGraph, Node,Link} from "../../../d3";
     <svg #svg [attr.width]="options.width" [attr.height]="options.height">
       <g [zoomableOf]="svg" class="my-border">
         <g [linkVisual]="link" *ngFor="let link of links"></g>
-        <g [nodeVisual]="node" *ngFor="let node of nodes"
+        <g [nodeVisual]="node"  *ngFor="let node of nodes"
            [draggableNode]="node" [draggableInGraph]="graph"></g>
       </g>
     </svg>
@@ -75,3 +74,4 @@ export class GraphComponent implements OnInit, AfterViewInit {
     };
   }
 }
+

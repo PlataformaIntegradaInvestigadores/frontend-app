@@ -4,7 +4,6 @@
 @import "tailwindcss/utilities";
 @import 'flowbite';
 
-
 .auth_bg {
     background-color: black;
     background-image: url('/assets/background.jpg');
@@ -19,7 +18,7 @@ body {
 
 * {
     margin: 0;
-    font-family: Arial,Roboto,Helvetica,sans-serif; 
+    font-family: Arial,Roboto,Helvetica,sans-serif;
 }
 
 html {

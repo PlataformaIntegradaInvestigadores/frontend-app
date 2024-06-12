@@ -1,4 +1,4 @@
-import {EventEmitter} from '@angular/core';
+import {EventEmitter} from "@angular/core";
 import {Link} from './link';
 import {Node} from './node';
 import * as d3 from 'd3';
@@ -44,6 +44,11 @@ export class ForceDirectedGraph {
           // @ts-ignore
           return d['id']
         })
+      /*.strength(d =>{
+        return d['strokeWidth'] / 100
+      })*/
+      // .strength(FORCES.LINKS)
+      // .strength(1 / (this.nodes.length * 10))
     );
   }
 

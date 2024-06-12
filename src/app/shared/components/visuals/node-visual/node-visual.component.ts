@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {Router} from "@angular/router";
-import {Node} from "../../../../../shared/d3";
+import {NgbPopover,NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
+import {Node} from '../../../d3';
 
 @Component({
   selector: '[nodeVisual]',
@@ -16,7 +17,11 @@ import {Node} from "../../../../../shared/d3";
     </ng-template>
 
     <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
+           [ngbPopover]="popContent"
+           [popoverTitle]="popTitle"
            triggers="manual"
+           #p1="ngbPopover"
+           (click)="togglePopover(p1)"
            container="body">
       <svg:circle
         class="node"
@@ -40,8 +45,8 @@ export class NodeVisualComponent {
   constructor(private router: Router) {
   }
 
-  togglePopover(popover: any) {
-    console.log(this.node)
+  togglePopover(popover: NgbPopover) {
+
     if (this.node.popover.enablePopover) {
       if (popover.isOpen()) {
         popover.close();
