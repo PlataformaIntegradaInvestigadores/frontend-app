@@ -37,17 +37,28 @@ input[type="range"]::-ms-thumb {
     border: none;
 }
 
-#btn-combined-search {
+#btn-combined-search, #btn-expertice, #btn-add-topic, #btn-next  {
     border: solid #1E3C8B 1px !important;
 }
 
-#btn-expertice {
-    border: solid #1E3C8B 1px !important
+#btn-next:hover{
+    color: #1E3C8B;
 }
-
-
+#btn-next:hover svg {
+    fill: #1E3C8B ; /* Cambia el color de relleno del SVG a blanco */
+    stroke: #1E3C8B; /* Cambia el color del stroke a blanco */
+    
+}
 
 /* Cambia el color del path cuando el mouse está sobre el botón */
 #btn-expertice:hover .svg-path {
     stroke: #ffffff; /* Cambia el color del stroke a blanco */
 }
+
+.text-container {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

@@ -11,10 +11,15 @@ export class Phase1ConsensusComponent implements OnInit{
   rangeValues: number[] = [];
   showLabel: boolean[] = [];
   showSliders = false;  // Esta propiedad controlará la visibilidad de las barras de rango
-  showCheckTopics: boolean[] = []; // Esta propiedad controlará la visibilidad de los tópicos
+  showCheckTopics: boolean[] = []; // Esta propiedad controlará la visibilidad de los check tópicos
   topics = this.obtenerTopicos();
   enableCombinedSearch = false;
-  
+  combinedChecks: boolean[] = []; // Estado de los checkboxes combinados
+  newTopic: string = '';
+  userAddedTopicsIndexes: number[] = []; // Indices de los tópicos agregados por el usuario
+  showAddTopicForm: boolean = false;
+
+
   ngOnInit(): void {
     initFlowbite();
   }
@@ -58,5 +63,63 @@ export class Phase1ConsensusComponent implements OnInit{
     let lightness = 80 - (80 - 34) * (value / 100); // Invertir la interpolación
     return `linear-gradient(90deg, hsl(${hue}, ${saturation}%, ${lightness}%) 0%, hsl(${hue}, ${saturation}%, ${lightness}%) 100%)`;
   }
+
+  redirectToGoogleScholar(topic: string): void {
+    const query = encodeURIComponent(topic);
+    const url = `https://scholar.google.com/scholar?q=${query}`;
+    window.open(url, '_blank');
+  }
+
+  combinedSearch(): void {
+    const selectedTopics = this.topics.filter((_, index) => this.combinedChecks[index]);
+    if (selectedTopics.length > 0) {
+      const query = encodeURIComponent(selectedTopics.join(' '));
+      const url = `https://scholar.google.com/scholar?q=${query}`;
+      window.open(url, '_blank');
+    } else {
+      alert('Please select at least one topic for a combined search.');
+    }
+  }
+
+  checkAndCombinedSearch(): void {
+    if (this.enableCombinedSearch) {
+      this.combinedSearch();
+    } else {
+      alert('Enable combined search by checking the box.');
+    }
+  }
+
+  addNewTopic(): void {
+    if (this.newTopic.trim()) {
+      this.topics.push(this.newTopic.trim());
+      this.rangeValues.push(0);
+      this.showLabel.push(false);
+      this.showCheckTopics.push(false);
+      this.userAddedTopicsIndexes.push(this.topics.length - 1); // Agregar el índice del nuevo tópico
+      this.newTopic = '';
+    }
+  }
+
+  removeLastUserAddedTopic(): void {
+    if (this.userAddedTopicsIndexes.length > 0) {
+      const lastIndex = this.userAddedTopicsIndexes.pop(); // Obtener y eliminar el último índice
+      if (lastIndex !== undefined) {
+        this.topics.splice(lastIndex, 1);
+        this.rangeValues.splice(lastIndex, 1);
+        this.showLabel.splice(lastIndex, 1);
+        this.showCheckTopics.splice(lastIndex, 1);
+
+        // Actualizar los índices de los tópicos agregados por el usuario
+        this.userAddedTopicsIndexes = this.userAddedTopicsIndexes.map(index => index > lastIndex ? index - 1 : index);
+      }
+    } else {
+      alert('No user-added topics to remove.');
+    }
+  }
+  
+  toggleExpertise(): void {
+    this.showSliders = !this.showSliders;
+  }
+  
   
 }
