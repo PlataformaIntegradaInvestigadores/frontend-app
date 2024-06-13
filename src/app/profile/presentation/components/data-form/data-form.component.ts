@@ -79,8 +79,6 @@ export class DataFormComponent {
 
     if (this.selectedFile) {
       formData.append('profile_picture', this.selectedFile, this.selectedFile.name);
-    } else {
-      formData.append('profile_picture', '');
     }
 
     this.authService.updateUser(formData).subscribe(
