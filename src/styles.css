@@ -18,10 +18,19 @@ body {
 
 * {
     margin: 0;
-    font-family: Arial,Roboto,Helvetica,sans-serif;
+    font-family: Arial, Roboto, Helvetica, sans-serif;
 }
 
 html {
     overflow-y: scroll;
     /* Add the ability to scroll */
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
 }
