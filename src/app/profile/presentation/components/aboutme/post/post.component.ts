@@ -63,15 +63,18 @@ export class PostComponent implements OnInit {
 
     this.postService.createPost(formData).subscribe(
       response => {
-        this.posts.push(response);
-        this.isLoading = false;
-        this.success = 'Post created successfully!';
-        this.loadPosts(this.user.user_id);  // Recargar publicaciones
+      this.posts.push(response);
+      this.isLoading = false;
+      this.success = 'Post created successfully!';
+      this.loadPosts(this.user.user_id);  // Recargar publicaciones
+      setTimeout(() => {
+        this.success = null;
+      }, 3000);
       },
       error => {
-        console.error('Error creating post:', error);
-        this.error = 'Failed to create post';
-        this.isLoading = false;
+      console.error('Error creating post:', error);
+      this.error = 'Failed to create post';
+      this.isLoading = false;
       }
     );
   }
@@ -80,13 +83,16 @@ export class PostComponent implements OnInit {
     this.isLoading = true;
     this.postService.deletePost(postId).subscribe(
       () => {
-        this.posts = this.posts.filter(post => post.id !== postId);
-        this.isLoading = false;
+      this.posts = this.posts.filter(post => post.id !== postId);
+      this.isLoading = false;
+      setTimeout(() => {
+        this.success = null;
+      }, 3000); // Set success message to null after 3 seconds
       },
       error => {
-        console.error('Error deleting post:', error);
-        this.error = 'Failed to delete post';
-        this.isLoading = false;
+      console.error('Error deleting post:', error);
+      this.error = 'Failed to delete post';
+      this.isLoading = false;
       }
     );
   }
