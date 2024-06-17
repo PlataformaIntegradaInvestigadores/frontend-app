@@ -1,0 +1,53 @@
+::ng-deep .carousel-control-prev-icon,
+::ng-deep .carousel-control-next-icon {
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+::ng-deep .carousel-control-prev-icon {
+    background-image: url('https://www.svgrepo.com/show/302407/arrow-left.svg');
+}
+
+::ng-deep .carousel-control-next-icon {
+    background-image: url('https://www.svgrepo.com/show/302407/arrow-left.svg');
+    transform: rotate(180deg);
+}
+
+::ng-deep .carousel-control-prev,
+::ng-deep .carousel-control-next {
+    width: auto;
+    padding: 0;
+    transform: none;
+}
+
+::ng-deep .carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    top: 100%;
+    /* Espacio entre los indicadores */
+}
+
+::ng-deep .carousel-indicators [data-bs-target] {
+    width: 40px;
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Color de fondo de los indicadores */
+    border: 1px solid white;
+    border-radius: 3px;
+    /* Bordes redondeados */
+}
+
+::ng-deep .carousel-indicators .active {
+    background-color: black;
+    border: 1px solid white;
+    transform: none;
+    /* Evitar que se eleve */
+}

@@ -17,8 +17,26 @@ import { PostComponent } from './presentation/components/aboutme/post/post.compo
 import { InformationComponent } from './presentation/components/aboutme/information/information.component';
 import { GroupCreateModalComponent } from '../group/presentation/group-create-modal/group-create-modal.component';
 import { ListGroupComponent } from '../group/presentation/list-group/list-group.component';
+import { ContactInfoComponent } from './presentation/components/aboutme/information/components/contact-info/contact-info.component';
+import { DisciplinesComponent } from './presentation/components/aboutme/information/components/disciplines/disciplines.component';
+import { AboutMeProfileComponent } from './presentation/components/aboutme/information/components/about-me-profile/about-me-profile.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PostInputComponent } from './presentation/components/aboutme/post/components/post-input/post-input.component';
+import { PostListComponent } from './presentation/components/aboutme/post/components/post-list/post-list.component';
+import { PostItemComponent } from './presentation/components/aboutme/post/components/post-item/post-item.component';
+
 @NgModule({
-  imports: [ProfilePageRoutingModule, SharedModule, CommonModule, CdkMenuTrigger, CdkMenu, CdkMenuItem, FormsModule, ReactiveFormsModule],
+  imports: [
+    ProfilePageRoutingModule,
+    SharedModule,
+    CommonModule,
+    CdkMenuTrigger,
+    CdkMenu,
+    CdkMenuItem,
+    FormsModule,
+    ReactiveFormsModule,
+    NgbModule,
+  ],
   exports: [ProfileDataComponent],
   declarations: [
     ProfileComponent,
@@ -32,7 +50,15 @@ import { ListGroupComponent } from '../group/presentation/list-group/list-group.
     BtnCreateGroupComponent,
     DropdownBtnComponent,
     DataFormComponent,
-    GroupCreateModalComponent
+    GroupCreateModalComponent,
+    AboutMeComponent,
+    InformationComponent,
+    ContactInfoComponent,
+    DisciplinesComponent,
+    AboutMeProfileComponent,
+    PostInputComponent,
+    PostListComponent,
+    PostItemComponent,
   ],
   providers: [D3Service],
 })

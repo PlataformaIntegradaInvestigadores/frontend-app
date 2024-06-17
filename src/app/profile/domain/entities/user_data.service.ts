@@ -10,7 +10,6 @@ export class UserDataService {
   private userSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public user$: Observable<any> = this.userSubject.asObservable();
 
-
   constructor() { }
 
   changeUser(user: any) {
@@ -24,5 +23,4 @@ export class UserDataService {
   getUser(): Observable<any> {
     return this.user$.pipe();
   }
-
 }

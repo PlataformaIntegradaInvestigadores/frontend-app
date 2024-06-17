@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/auth/domain/entities/auth.service';
 import { UserService } from 'src/app/profile/domain/entities/user.service';
 import { Subscription } from 'rxjs';
 import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
@@ -32,7 +33,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
-    private userDataService: UserDataService
+    private userDataService: UserDataService,
+    private titleService: Title
   ) { }
 
   ngOnInit(): void {
@@ -40,8 +42,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.userId = params['id'];
       this.getUserData();
       this.user.user_id = this.userId;
-      this.checkIfOwnProfile();
-      this.userDataService.setUser(this.user);
     });
   }
 
@@ -54,11 +54,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
   getUserData() {
     this.userService.getUserById(this.userId).subscribe(data => {
       this.user = data;
+      this.user.user_id = this.userId;
+      this.checkIfOwnProfile();
+      this.userDataService.setUser(this.user);
+      this.setTitle(); // Llama al método setTitle() después de obtener los datos del usuario
     });
   }
 
   checkIfOwnProfile() {
     this.isOwnProfile = this.userId === this.authService.getUserId();
     this.user.isOwnProfile = this.isOwnProfile;
+  }
+
+  setTitle() {
+    // Establece el título de la página usando el nombre y apellido del usuario
+    const title = `${this.user.first_name} ${this.user.last_name}`;
+    this.titleService.setTitle(title);
   }
 }

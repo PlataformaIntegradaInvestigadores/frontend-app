@@ -1,25 +1,11 @@
-<div class='flex items-start justify-start flex-col'>
-    <div class=" mb-3 rounded-xl border p-4 shadow-md bg-white">
-        <div class="mb-3 text-xl font-bold">About Me</div>
-        <div class="text-sm text-neutral-600">Aliquam a tristique sapien, nec bibendum urna. Maecenas
-            convallis
-            dignissim turpis, non suscipit mauris interdum at. Morbi sed gravida nisl, a pharetra nulla.
-            Etiam
-            tincidunt turpis leo, ut mollis ipsum consectetur quis. Etiam faucibus est risus, ac condimentum
-            mauris
-            consequat nec. Curabitur eget feugiat massa</div>
-    </div>
-    <div class="container mx-auto mb-3 rounded-xl border p-4 shadow-md bg-white">
-        <div class="mb-3 text-xl font-bold">Disciplines</div>
-        <div class="text-sm text-neutral-600">
-            <p>Análisis, Programación, Diseño, Marketing, Finanzas</p>
-        </div>
-    </div>
-    <div class="container mx-auto mb-3 rounded-xl border p-4 shadow-md bg-white">
-        <div class="mb-3 text-xl font-bold">Contact information</div>
-        <div class="text-sm text-neutral-600">
-            <strong>E-mail</strong>
-            <p>name.lastname&#64;inst.edu.ec</p>
-        </div>
-    </div>
-</div>
+<app-about-me-profile [userInfo]="userInfo" [isOwnProfile]="user?.isOwnProfile" (saveAboutMe)="saveAboutMe($event)"
+    (toggleEdit)="toggleEdit()">
+</app-about-me-profile>
+
+<app-disciplines [disciplines]="disciplines" [isOwnProfile]="user?.isOwnProfile"
+    (saveDisciplines)="saveDisciplines($event)" (toggleEdit)="toggleEdit()">
+</app-disciplines>
+
+<app-contact-info [contactInfo]="contactInfo" [isOwnProfile]="user?.isOwnProfile"
+    (saveContactInfo)="saveContactInfo($event)" (toggleEdit)="toggleEdit()">
+</app-contact-info>
