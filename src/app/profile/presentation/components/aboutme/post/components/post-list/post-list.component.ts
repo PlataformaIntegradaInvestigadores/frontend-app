@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Post } from 'src/app/profile/domain/entities/post.interface';
-import { PostService } from 'src/app/profile/domain/entities/post.service';
+import { PostService } from 'src/app/profile/domain/services/post.service';
+
 
 @Component({
   selector: 'app-post-list',

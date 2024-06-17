@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/auth/domain/entities/auth.service';
-import { UserService } from 'src/app/profile/domain/entities/user.service';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { UserService } from 'src/app/profile/domain/services/user.service';
 import { Subscription } from 'rxjs';
-import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
+
 import { Title } from '@angular/platform-browser';
+import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 
 @Component({
   selector: 'app-profile',

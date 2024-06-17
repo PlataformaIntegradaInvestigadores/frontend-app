@@ -3,9 +3,8 @@ import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Observable, switchMap, throwError} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { User } from './interfaces';
-import { jwtDecode } from "jwt-decode";
-
+import { User, UserUpdate } from '../entities/interfaces';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'

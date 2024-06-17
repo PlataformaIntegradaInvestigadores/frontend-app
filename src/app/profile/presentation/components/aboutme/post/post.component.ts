@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Post } from 'src/app/profile/domain/entities/post.interface';
-import { PostService } from 'src/app/profile/domain/entities/post.service';
-import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
-import { AuthService } from 'src/app/auth/domain/entities/auth.service';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { PostService } from 'src/app/profile/domain/services/post.service';
+import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 
 @Component({
   selector: 'app-post',
