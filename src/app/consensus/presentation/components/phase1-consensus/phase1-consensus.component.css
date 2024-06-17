@@ -62,3 +62,15 @@ input[type="range"]::-ms-thumb {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+@media (max-width: 640px) {
+    .movil-margin-cero {
+      margin-left: 0;
+      margin-right: 0;
+    }
+}
+
+.active-ring {
+    border: 1px solid #1E3C8B; /* Cambia #1E3C8B por el color de tu elección */
+    box-shadow: 0 0 0 2px rgba(30, 60, 139, 0.5); /* Esto es un ejemplo, ajusta los valores y colores como desees */
+  }

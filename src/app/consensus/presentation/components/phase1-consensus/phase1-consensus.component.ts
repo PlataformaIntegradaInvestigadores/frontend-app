@@ -10,15 +10,15 @@ export class Phase1ConsensusComponent implements OnInit{
 
   rangeValues: number[] = [];
   showLabel: boolean[] = [];
-  showSliders = false;  // Esta propiedad controlará la visibilidad de las barras de rango
   showCheckTopics: boolean[] = []; // Esta propiedad controlará la visibilidad de los check tópicos
   topics = this.obtenerTopicos();
-  enableCombinedSearch = false;
-  combinedChecks: boolean[] = []; // Estado de los checkboxes combinados
   newTopic: string = '';
   userAddedTopicsIndexes: number[] = []; // Indices de los tópicos agregados por el usuario
+  combinedChecksState: boolean[] = []; // Estado de los checkboxes combinados
+  
+  showSliders:boolean = false;  // Esta propiedad controlará la visibilidad de las barras de rango
+  enableCombinedSearch: boolean = false;
   showAddTopicForm: boolean = false;
-
 
   ngOnInit(): void {
     initFlowbite();
@@ -71,7 +71,7 @@ export class Phase1ConsensusComponent implements OnInit{
   }
 
   combinedSearch(): void {
-    const selectedTopics = this.topics.filter((_, index) => this.combinedChecks[index]);
+    const selectedTopics = this.topics.filter((_, index) => this.combinedChecksState[index]);
     if (selectedTopics.length > 0) {
       const query = encodeURIComponent(selectedTopics.join(' '));
       const url = `https://scholar.google.com/scholar?q=${query}`;
@@ -81,11 +81,14 @@ export class Phase1ConsensusComponent implements OnInit{
     }
   }
 
+  
+
   checkAndCombinedSearch(): void {
     if (this.enableCombinedSearch) {
       this.combinedSearch();
     } else {
-      alert('Enable combined search by checking the box.');
+      /* alert('Enable combined search by checking the box.'); */
+      this.enableCombinedSearch = !this.enableCombinedSearch;
     }
   }
 
@@ -108,7 +111,6 @@ export class Phase1ConsensusComponent implements OnInit{
         this.rangeValues.splice(lastIndex, 1);
         this.showLabel.splice(lastIndex, 1);
         this.showCheckTopics.splice(lastIndex, 1);
-
         // Actualizar los índices de los tópicos agregados por el usuario
         this.userAddedTopicsIndexes = this.userAddedTopicsIndexes.map(index => index > lastIndex ? index - 1 : index);
       }
@@ -119,6 +121,10 @@ export class Phase1ConsensusComponent implements OnInit{
   
   toggleExpertise(): void {
     this.showSliders = !this.showSliders;
+  }
+
+  toggleAddTopicForm(): void { 
+    this.showAddTopicForm = !this.showAddTopicForm;
   }
   
   
