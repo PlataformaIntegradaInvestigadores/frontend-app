@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { AuthService } from 'src/app/auth/domain/entities/auth.service';
-import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
-
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 
 @Component({
   selector: 'app-data-nav',

@@ -32,7 +32,7 @@ import { ProfilePageModule } from "../profile/profile-page.module";
     MemberDeleteBtnComponent,
     UniqueIDDirective
   ],
-  imports: [ConsensusRoutingModule, ProfilePageModule, CommonModule, SharedModule, FormsModule],
+  imports: [ConsensusRoutingModule,CommonModule, SharedModule, FormsModule, ProfilePageModule],
   exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
-import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
+import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 
 @Component({
   selector: 'list-group',
