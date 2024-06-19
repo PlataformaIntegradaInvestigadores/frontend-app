@@ -20,22 +20,34 @@ export class DisciplinesComponent {
     this.editableDisciplines = [...this.disciplines];
   }
 
+  /**
+   * Alterna el modo de edición del componente.
+   */
   toggleEditDisciplines(): void {
     this.isEditing = !this.isEditing;
     this.toggleEdit.emit();
   }
 
+  /**
+   * Guarda las disciplinas y emite el evento correspondiente.
+   */
   save(): void {
     this.saveDisciplines.emit(this.editableDisciplines);
     this.isEditing = false;
     this.displaySaveMessage();
   }
 
+  /**
+   * Cancela la edición y restablece las disciplinas originales.
+   */
   cancel(): void {
     this.isEditing = false;
     this.editableDisciplines = [...this.disciplines];
   }
 
+  /**
+   * Añade una nueva disciplina a la lista editable.
+   */
   addDiscipline(): void {
     if (this.newDiscipline) {
       this.editableDisciplines.push(this.newDiscipline);
@@ -43,10 +55,17 @@ export class DisciplinesComponent {
     }
   }
 
+  /**
+   * Elimina una disciplina de la lista editable.
+   * @param index - El índice de la disciplina a eliminar.
+   */
   removeDiscipline(index: number): void {
     this.editableDisciplines.splice(index, 1);
   }
 
+  /**
+   * Muestra un mensaje de guardado exitoso.
+   */
   displaySaveMessage(): void {
     this.saveMessage = 'Changes saved successfully!';
     setTimeout(() => {

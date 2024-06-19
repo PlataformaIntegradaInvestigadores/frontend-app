@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private errorService: ErrorService // Inject your ErrorService
+    private errorService: ErrorService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
@@ -31,7 +31,10 @@ export class LoginComponent implements OnInit {
     this.title.setTitle("Login");
   }
 
-  onSubmit() {
+  /**
+   * Maneja el envío del formulario de inicio de sesión.
+   */
+  onSubmit(): void {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
       this.authService.login(loginData).subscribe(
@@ -48,8 +51,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private processErrors(errors: any) {
-    this.errorMessages = this.errorService.processErrors(errors); // Use the service to process errors
+  /**
+   * Procesa los errores de la respuesta de la API y actualiza los mensajes de error.
+   * @param errors - Los errores de la respuesta de la API.
+   */
+  private processErrors(errors: any): void {
+    this.errorMessages = this.errorService.processErrors(errors);
     console.error('Error logging in', this.errorMessages);
   }
 }

@@ -12,15 +12,27 @@ export class UserDataService {
 
   constructor() { }
 
-  changeUser(user: any) {
+  /**
+   * Cambia el usuario actual.
+   * @param user - El nuevo usuario.
+   */
+  changeUser(user: any): void {
     this.userSource.next(user);
   }
 
-  setUser(user: any) {
+  /**
+   * Establece el usuario actual.
+   * @param user - El usuario a establecer.
+   */
+  setUser(user: any): void {
     this.userSubject.next(user);
   }
 
+  /**
+   * Obtiene el usuario actual como un Observable.
+   * @returns Un Observable que emite el usuario actual.
+   */
   getUser(): Observable<any> {
-    return this.user$.pipe();
+    return this.user$;
   }
 }

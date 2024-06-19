@@ -34,6 +34,10 @@ export class PostComponent implements OnInit {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
 
+  /**
+   * Carga las publicaciones de un usuario específico.
+   * @param userId - El ID del usuario.
+   */
   loadPosts(userId: string): void {
     this.isLoading = true;
     this.postService.getPosts(userId).subscribe(
@@ -49,7 +53,11 @@ export class PostComponent implements OnInit {
     );
   }
 
-  createPost(newPost: any) {
+  /**
+   * Crea una nueva publicación.
+   * @param newPost - Los datos de la nueva publicación.
+   */
+  createPost(newPost: any): void {
     this.isLoading = true;
     this.error = null;
     this.success = null;
@@ -63,36 +71,40 @@ export class PostComponent implements OnInit {
 
     this.postService.createPost(formData).subscribe(
       response => {
-      this.posts.push(response);
-      this.isLoading = false;
-      this.success = 'Post created successfully!';
-      this.loadPosts(this.user.user_id);  // Recargar publicaciones
-      setTimeout(() => {
-        this.success = null;
-      }, 3000);
+        this.posts.push(response);
+        this.isLoading = false;
+        this.success = 'Post created successfully!';
+        this.loadPosts(this.user.user_id);  // Recargar publicaciones
+        setTimeout(() => {
+          this.success = null;
+        }, 3000);
       },
       error => {
-      console.error('Error creating post:', error);
-      this.error = 'Failed to create post';
-      this.isLoading = false;
+        console.error('Error creating post:', error);
+        this.error = 'Failed to create post';
+        this.isLoading = false;
       }
     );
   }
 
-  deletePost(postId: string) {
+  /**
+   * Elimina una publicación específica.
+   * @param postId - El ID de la publicación a eliminar.
+   */
+  deletePost(postId: string): void {
     this.isLoading = true;
     this.postService.deletePost(postId).subscribe(
       () => {
-      this.posts = this.posts.filter(post => post.id !== postId);
-      this.isLoading = false;
-      setTimeout(() => {
-        this.success = null;
-      }, 3000); // Set success message to null after 3 seconds
+        this.posts = this.posts.filter(post => post.id !== postId);
+        this.isLoading = false;
+        setTimeout(() => {
+          this.success = null;
+        }, 3000);
       },
       error => {
-      console.error('Error deleting post:', error);
-      this.error = 'Failed to delete post';
-      this.isLoading = false;
+        console.error('Error deleting post:', error);
+        this.error = 'Failed to delete post';
+        this.isLoading = false;
       }
     );
   }

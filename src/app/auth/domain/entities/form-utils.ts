@@ -1,5 +1,10 @@
 import { FormGroup } from '@angular/forms';
 
+/**
+ * Obtiene los errores de validación del formulario.
+ * @param form - El formulario del cual se obtienen los errores de validación.
+ * @returns Una lista de mensajes de error.
+ */
 export function getFormValidationErrors(form: FormGroup): string[] {
     const messages: string[] = [];
     Object.keys(form.controls).forEach(key => {
@@ -36,6 +41,11 @@ export function getFormValidationErrors(form: FormGroup): string[] {
     return messages;
 }
 
+/**
+ * Obtiene la etiqueta de un control de formulario basado en su nombre.
+ * @param controlName - El nombre del control de formulario.
+ * @returns La etiqueta del control de formulario.
+ */
 function getControlLabel(controlName: string): string {
     const controlLabels: { [key: string]: string } = {
         first_name: 'First Name',

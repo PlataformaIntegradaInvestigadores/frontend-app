@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {Observable, switchMap, throwError} from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, switchMap, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User, UserUpdate } from '../entities/interfaces';
@@ -14,12 +14,22 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  /**
+   * Registra un nuevo usuario.
+   * @param user - Los datos del usuario a registrar.
+   * @returns Un Observable que emite la respuesta del registro.
+   */
   register(user: User): Observable<any> {
     return this.http.post(`${this.apiUrl}/register/`, user).pipe(
       catchError(this.handleError)
     );
   }
 
+  /**
+   * Inicia sesión con las credenciales proporcionadas.
+   * @param credentials - Las credenciales del usuario (nombre de usuario y contraseña).
+   * @returns Un Observable que emite la respuesta del inicio de sesión.
+   */
   login(credentials: { username: string, password: string }): Observable<any> {
     return this.http.post<{ access: string, refresh: string }>(`${this.apiUrl}/token/`, credentials).pipe(
       tap(response => this.setSession(response)),
@@ -27,6 +37,10 @@ export class AuthService {
     );
   }
 
+  /**
+   * Establece la sesión del usuario almacenando los tokens en el almacenamiento local.
+   * @param authResult - El resultado de la autenticación que contiene los tokens.
+   */
   private setSession(authResult: { access: string, refresh: string }): void {
     const decodedToken = jwtDecode(authResult.access) as any;
     localStorage.setItem('accessToken', authResult.access);
@@ -34,20 +48,35 @@ export class AuthService {
     localStorage.setItem('userId', decodedToken.user_id);
   }
 
+  /**
+   * Cierra la sesión del usuario eliminando los tokens del almacenamiento local.
+   */
   logout(): void {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userId');
   }
 
+  /**
+   * Verifica si el usuario está autenticado.
+   * @returns Verdadero si el usuario está autenticado, falso en caso contrario.
+   */
   isLoggedIn(): boolean {
     return !!localStorage.getItem('accessToken');
   }
 
+  /**
+   * Obtiene el ID del usuario actualmente autenticado.
+   * @returns El ID del usuario o null si no está autenticado.
+   */
   getUserId(): string | null {
     return localStorage.getItem('userId');
   }
 
+  /**
+   * Refresca el token de acceso utilizando el token de actualización.
+   * @returns Un Observable que emite la nueva respuesta del token de acceso.
+   */
   private refreshAccessToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
@@ -61,6 +90,11 @@ export class AuthService {
     );
   }
 
+  /**
+   * Actualiza la información del usuario.
+   * @param user - Los datos del usuario a actualizar.
+   * @returns Un Observable que emite la respuesta de la actualización.
+   */
   updateUser(user: any): Observable<any> {
     const userId = this.getUserId();
     if (!userId) {
@@ -81,6 +115,11 @@ export class AuthService {
       })
     );
   }
+
+  /**
+   * Obtiene una lista de usuarios.
+   * @returns Un Observable que emite la lista de usuarios.
+   */
   getUsers(): Observable<User[]> {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
@@ -100,16 +139,22 @@ export class AuthService {
       })
     );
   }
+
+  /**
+   * Maneja los errores de las solicitudes HTTP.
+   * @param error - El error de la solicitud HTTP.
+   * @returns Un Observable que emite el error.
+   */
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.error('An error occurred:', error);
 
     let errorMessages: string[] = ['An unknown error occurred!'];
 
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
+      // Error del lado del cliente
       errorMessages = [`Client-side error: ${error.error.message}`];
     } else if (error.error) {
-      // Server-side error
+      // Error del lado del servidor
       if (error.status === 400 && error.error.errors) {
         errorMessages = [];
         for (const key in error.error.errors) {

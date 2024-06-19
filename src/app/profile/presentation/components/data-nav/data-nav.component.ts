@@ -9,19 +9,15 @@ import { UserDataService } from 'src/app/profile/domain/services/user_data.servi
 })
 export class DataNavComponent implements OnChanges {
   @Input() user: any;
-
   @Input() isOwnProfile: boolean = false;
-
   isloggedIn: boolean = false;
 
   constructor(private userDataService: UserDataService, private authService: AuthService) { }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['user']) {
       this.userDataService.changeUser(this.user);
       this.isloggedIn = this.authService.isLoggedIn();
     }
   }
-
-
 }

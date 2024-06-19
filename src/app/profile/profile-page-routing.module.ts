@@ -7,7 +7,6 @@ import { FingerprintComponent } from './presentation/components/fingerprint/fing
 import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
 import { ListGroupComponent } from '../group/presentation/list-group/list-group.component';
 
-
 const routes: Routes = [
   {
     path: "",
@@ -48,7 +47,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: 'about-me',
   }
-]
+];
 
 @NgModule({
   imports: [
@@ -56,8 +55,6 @@ const routes: Routes = [
   ],
   exports: [
     RouterModule
-  ],
-  declarations: [],
-  providers: [],
+  ]
 })
 export class ProfilePageRoutingModule { }

@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./network.component.css']
 })
 export class NetworkComponent {
-
+  // El componente actualmente no tiene lógica específica ni datos.
 }

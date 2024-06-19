@@ -1,4 +1,3 @@
-// profile-data.component.ts
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
@@ -19,11 +18,17 @@ export class ProfileDataComponent implements OnChanges {
     }
   }
 
-  toggleForm() {
+  /**
+   * Alterna el formulario de edición.
+   */
+  toggleForm(): void {
     this.showForm = !this.showForm;
   }
 
-  checkLoginStatus() {
+  /**
+   * Verifica el estado de inicio de sesión del usuario.
+   */
+  checkLoginStatus(): void {
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
     const userId = localStorage.getItem('userId');
@@ -31,14 +36,23 @@ export class ProfileDataComponent implements OnChanges {
     this.isLoggedIn = !!(accessToken && refreshToken && userId);
   }
 
+  /**
+   * Indica si debe mostrarse el mensaje para usuarios conectados.
+   */
   get shouldShowLoggedInMessage(): boolean {
     return this.isLoggedIn && this.isOwnProfile && !this.hasUserDetails;
   }
 
+  /**
+   * Indica si debe mostrarse el mensaje para usuarios desconectados.
+   */
   get shouldShowLoggedOutMessage(): boolean {
     return !this.isLoggedIn && !this.hasUserDetails || (this.isLoggedIn && !this.isOwnProfile && !this.hasUserDetails);
   }
 
+  /**
+   * Indica si el usuario tiene detalles en su perfil.
+   */
   get hasUserDetails(): boolean {
     return this.user && (this.user.institution || this.user.website || this.user.investigation_camp || this.user.email_institution);
   }

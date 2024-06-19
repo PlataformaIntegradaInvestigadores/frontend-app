@@ -3,18 +3,15 @@ import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { InformationService } from 'src/app/profile/domain/services/information.service';
 import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 
-
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.css']
 })
 export class InformationComponent implements OnInit {
-
   userInfo: any = {};
   disciplines: string[] = [];
   contactInfo: { type: string, value: string }[] = [];
-
   user: any;
   isloggedIn: boolean = false;
 
@@ -35,6 +32,10 @@ export class InformationComponent implements OnInit {
     this.isloggedIn = this.authService.isLoggedIn();
   }
 
+  /**
+   * Obtiene la información pública del usuario.
+   * @param userId - El ID del usuario.
+   */
   fetchPublicInformation(userId: string): void {
     this.informationService.getPublicInformation(userId).subscribe(info => {
       this.userInfo = info || {};
@@ -43,25 +44,40 @@ export class InformationComponent implements OnInit {
     });
   }
 
+  /**
+   * Guarda la información de "Sobre mí".
+   * @param aboutMe - El contenido de "Sobre mí".
+   */
   saveAboutMe(aboutMe: string): void {
     this.informationService.updateInformation({ about_me: aboutMe }).subscribe(response => {
       this.userInfo.about_me = response.about_me;
     });
   }
 
+  /**
+   * Guarda las disciplinas del usuario.
+   * @param disciplines - Las disciplinas a guardar.
+   */
   saveDisciplines(disciplines: string[]): void {
     this.informationService.updateInformation({ disciplines }).subscribe(response => {
       this.disciplines = response.disciplines;
     });
   }
 
+  /**
+   * Guarda la información de contacto del usuario.
+   * @param contactInfo - La información de contacto a guardar.
+   */
   saveContactInfo(contactInfo: { type: string, value: string }[]): void {
     this.informationService.updateInformation({ contact_info: contactInfo }).subscribe(response => {
       this.contactInfo = response.contact_info;
     });
   }
 
+  /**
+   * Alterna el estado de edición.
+   */
   toggleEdit(): void {
-    // Implement logic to handle toggle edit state if needed
+    // Implementa la lógica para manejar el estado de edición si es necesario
   }
 }

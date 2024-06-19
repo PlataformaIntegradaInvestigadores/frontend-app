@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Post } from 'src/app/profile/domain/entities/post.interface';
 import { PostService } from 'src/app/profile/domain/services/post.service';
 
-
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -15,10 +14,18 @@ export class PostListComponent {
 
   constructor(private postService: PostService) { }
 
-  onDeletePost(postId: string) {
+  /**
+   * Emite el evento para eliminar una publicación.
+   * @param postId - El ID de la publicación a eliminar.
+   */
+  onDeletePost(postId: string): void {
     this.deletePost.emit(postId);
   }
 
+  /**
+   * Carga las publicaciones de un usuario específico.
+   * @param userId - El ID del usuario.
+   */
   loadPosts(userId: string): void {
     this.postService.getPosts(userId).subscribe(
       posts => {

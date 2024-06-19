@@ -1,3 +1,6 @@
+/**
+ * Representa un usuario en la aplicación.
+ */
 export interface User {
     id?: string | null;
     firstName: string;
@@ -6,11 +9,18 @@ export interface User {
     password: string;
     scopus_id?: string | null;
 }
+
+/**
+ * Representa las credenciales de inicio de sesión.
+ */
 export interface Credentials {
     username: string;
     password: string;
 }
 
+/**
+ * Representa la información de actualización de un usuario.
+ */
 export interface UserUpdate {
     first_name: string;
     last_name: string;

@@ -1,9 +1,6 @@
-// aboutme.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
-
 
 @Component({
   selector: 'app-aboutme',
@@ -11,7 +8,6 @@ import { UserDataService } from 'src/app/profile/domain/services/user_data.servi
   styleUrls: ['./aboutme.component.css']
 })
 export class AboutMeComponent implements OnInit {
-
   user: any;
   isloggedIn: boolean = false;
 
@@ -20,7 +16,6 @@ export class AboutMeComponent implements OnInit {
   ngOnInit(): void {
     this.userDataService.getUser().subscribe(user => {
       this.user = user;
-      console.log(this.user);
     });
     this.isloggedIn = this.authService.isLoggedIn();
   }

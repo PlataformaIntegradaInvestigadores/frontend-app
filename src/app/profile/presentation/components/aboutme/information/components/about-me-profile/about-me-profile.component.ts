@@ -19,22 +19,34 @@ export class AboutMeProfileComponent {
     this.editableUserInfo = { ...this.userInfo };
   }
 
+  /**
+   * Alterna el modo de edición del componente.
+   */
   toggleEditAboutMe(): void {
     this.isEditing = !this.isEditing;
     this.toggleEdit.emit();
   }
 
+  /**
+   * Guarda la información de "Sobre mí" y emite el evento correspondiente.
+   */
   save(): void {
     this.saveAboutMe.emit(this.editableUserInfo.about_me);
     this.isEditing = false;
     this.displaySaveMessage();
   }
 
+  /**
+   * Cancela la edición y restablece la información original.
+   */
   cancel(): void {
     this.isEditing = false;
     this.editableUserInfo = { ...this.userInfo };
   }
 
+  /**
+   * Muestra un mensaje de guardado exitoso.
+   */
   displaySaveMessage(): void {
     this.saveMessage = 'Changes saved successfully!';
     setTimeout(() => {

@@ -23,32 +23,54 @@ export class PostItemComponent implements OnInit {
     this.sortFiles();
   }
 
-  toggleMenu() {
+  /**
+   * Alterna la visibilidad del menú de opciones.
+   */
+  toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
 
-  confirmDelete() {
+  /**
+   * Muestra el cuadro de diálogo de confirmación de eliminación.
+   */
+  confirmDelete(): void {
     this.showConfirmDialog = true;
   }
 
-  cancelDelete() {
+  /**
+   * Oculta el cuadro de diálogo de confirmación de eliminación.
+   */
+  cancelDelete(): void {
     this.showConfirmDialog = false;
   }
 
-  onDeletePost() {
+  /**
+   * Emite el evento de eliminación de la publicación.
+   */
+  onDeletePost(): void {
     this.deletePost.emit(this.post.id);
     this.cancelDelete();
   }
 
-  openImagePreview(imageUrl: string) {
+  /**
+   * Abre la previsualización de una imagen.
+   * @param imageUrl - La URL de la imagen a previsualizar.
+   */
+  openImagePreview(imageUrl: string): void {
     this.imagePreview = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
   }
 
-  closeImagePreview() {
+  /**
+   * Cierra la previsualización de la imagen.
+   */
+  closeImagePreview(): void {
     this.imagePreview = null;
   }
 
-  sortFiles() {
+  /**
+   * Ordena los archivos de la publicación por tipo (videos primero).
+   */
+  sortFiles(): void {
     this.sortedFiles = this.post.files.slice().sort((a, b) => {
       if (a.file.endsWith('.mp4')) return -1;
       if (b.file.endsWith('.mp4')) return 1;

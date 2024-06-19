@@ -16,7 +16,10 @@ export class PostInputComponent {
   filePreviews: any[] = [];
   showForm: boolean = false;
 
-  addPost() {
+  /**
+   * Añade una nueva publicación si tiene descripción o archivos adjuntos.
+   */
+  addPost(): void {
     if (this.newPost.description || this.newPost.files.length > 0) {
       this.postCreated.emit(this.newPost);
       this.cancelPost();
@@ -25,13 +28,20 @@ export class PostInputComponent {
     }
   }
 
-  cancelPost() {
+  /**
+   * Cancela la creación de una publicación y restablece los valores del formulario.
+   */
+  cancelPost(): void {
     this.newPost = { description: '', files: [], created_at: new Date().toISOString() };
     this.filePreviews = [];
     this.showForm = false;
   }
 
-  onFileSelected(event: any) {
+  /**
+   * Maneja la selección de archivos y crea vistas previas de los mismos.
+   * @param event - El evento de selección de archivos.
+   */
+  onFileSelected(event: any): void {
     const files: File[] = Array.from(event.target.files);
     this.newPost.files.push(...files);
 
@@ -45,7 +55,11 @@ export class PostInputComponent {
     }
   }
 
-  removeFile(index: number) {
+  /**
+   * Elimina un archivo de la lista de archivos seleccionados.
+   * @param index - El índice del archivo a eliminar.
+   */
+  removeFile(index: number): void {
     this.newPost.files.splice(index, 1);
     this.filePreviews.splice(index, 1);
   }
