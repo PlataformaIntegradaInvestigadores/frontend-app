@@ -1,13 +1,13 @@
 <div class="auth_bg flex items-center min-h-screen p-4 bg-gray-100 lg:justify-center">
-    <div class="flex flex-col overflow-hidden rounded-md shadow-lg md:flex-row md:flex-1 lg:max-w-screen-md">
+    <div class="flex flex-col overflow-hidden rounded-md shadow-lg max-w-full md:flex-row md:flex-1 lg:max-w-screen-md">
         <div
             class="p-4 py-6 text-white bg-primary_tailwind bg-opacity-85 md:w-80 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
             <div class="my-3 text-4xl font-bold tracking-wider text-center">
-                <a href="#">CENTINELA</a>
+                <a href="/home">CENTINELA</a>
             </div>
-            <p class="mt-6 font-normal text-center text-gray-300">
-                With the power of CENTINELA, you can now focus only on functionality for your digital products, while
-                leaving the UI design to us!
+            <p class="mt-6 font-normal text-center text-gray-300 md:mt-0">
+                Join CENTINELA, the academic social network where you can connect, collaborate, and share knowledge with
+                other students and professionals.
             </p>
             <p class="flex flex-col items-center justify-center mt-10 text-center">
                 <span>Already have an account?</span>
@@ -17,10 +17,10 @@
                 Read our <a href="#" class="underline">terms</a> and <a href="#" class="underline">conditions</a>
             </p>
         </div>
-        <div class="p-5 bg-white md:flex-1">
+        <div class="p-4 bg-white md:flex-1">
             <p class="my-4 text-2xl font-semibold text-gray-700">Create Account</p>
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-2">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col space-y-1">
                         <label for="firstName" class="px-2 text-sm font-semibold text-gray-500">First Name *</label>
                         <input formControlName="first_name" type="text" id="firstName"
@@ -56,7 +56,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col space-y-1">
                         <label for="password" class="px-2 text-sm font-semibold text-gray-500">Password *</label>
                         <input formControlName="password" type="password" id="password"
@@ -93,7 +93,7 @@
                         class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
                         pattern="^[0-9]*$" (keypress)="preventNonNumeric($event)" />
                     <div *ngIf="registerForm.get('scopus_id')?.hasError('pattern') && registerForm.get('scopus_id')?.touched"
-                        class="text-red-500 text-sm">
+                        class="text-red-500 text-xs">
                         Scopus ID must be a positive number.
                     </div>
                 </div>
