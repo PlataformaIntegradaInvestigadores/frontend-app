@@ -1,9 +1,15 @@
 <!-- aboutme.component.html -->
-
 <div *ngIf="isloggedIn; else loginPrompt" class="grid md:grid-cols-3 grid-cols-1 gap-3">
-    <app-post class="md:col-span-2 col-span-1"></app-post>
-    <app-information class="col-span-1"></app-information>
+    <ng-container *ngIf="isMobileView; else desktopView">
+        <app-information class="col-span-1"></app-information>
+        <app-post class="col-span-1"></app-post>
+    </ng-container>
+    <ng-template #desktopView>
+        <app-post class="md:col-span-2 col-span-1"></app-post>
+        <app-information class="col-span-1"></app-information>
+    </ng-template>
 </div>
+
 
 <ng-template #loginPrompt>
     <div class="container mx-auto max-w-screen-xl px-3 items-center justify-center bg-gray-100 mb-2">
