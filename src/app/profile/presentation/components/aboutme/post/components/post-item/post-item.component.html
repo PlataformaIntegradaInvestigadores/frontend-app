@@ -9,7 +9,7 @@
     </div>
 
     <div class="post-content mt-2 mb-4">
-        <div class="post-description text-sm text-gray-800 mb-2">{{ post.description }}</div>
+        <div class="post-description text-sm text-gray-800 text-justify mb-2">{{ post.description }}</div>
         <div *ngIf="sortedFiles.length > 0"
             class="post-files mt-3 relative border border-gray-300 bg-white p-2 rounded-lg">
             <ngb-carousel [interval]="0" [showNavigationArrows]="sortedFiles.length > 1"
