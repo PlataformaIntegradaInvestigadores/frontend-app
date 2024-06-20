@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/auth/domain/services/auth.service';
 export class DataFormComponent implements OnInit {
   @Input() user: any;
   @Output() formSubmitted = new EventEmitter<void>();
+  @Output() formClosed = new EventEmitter<void>(); // Añadir este evento
   errorMessage: string | null = null;
   errorMessages: any = {};
   selectedFile: File | null = null;
@@ -97,6 +98,13 @@ export class DataFormComponent implements OnInit {
   }
 
   /**
+   * Cierra el formulario emitiendo un evento.
+   */
+  closeForm(): void {
+    this.formClosed.emit();
+  }
+
+  /**
    * Ajusta la URL agregando "http://" si falta.
    * @param url - La URL a ajustar.
    * @returns La URL ajustada.
@@ -114,12 +122,12 @@ export class DataFormComponent implements OnInit {
    * @returns Verdadero si la URL es válida, falso en caso contrario.
    */
   isValidURL(url: string): boolean {
-    const urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocolo
-      '((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|' + // dominio
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // dirección IP (v4)
-      '(\\:\\d+)?(\\/[-a-zA-Z0-9@:%._\\+~#=]*)*' + // puerto y ruta
-      '(\\?[;&a-zA-Z0-9@:%._\\+~#=]*)?' + // cadena de consulta
-      '(\\#[-a-zA-Z0-9_]*)?$'); // fragmento de ancla
+    const urlPattern = new RegExp('^(https?:\\/\\/)?' +
+      '((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|' +
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      '(\\:\\d+)?(\\/[-a-zA-Z0-9@:%._\\+~#=]*)*' +
+      '(\\?[;&a-zA-Z0-9@:%._\\+~#=]*)?' +
+      '(\\#[-a-zA-Z0-9_]*)?$');
     return urlPattern.test(url);
   }
 

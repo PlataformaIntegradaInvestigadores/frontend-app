@@ -106,16 +106,7 @@
         <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 mr-1" />
         Edit Profile
     </button>
-    <div *ngIf="showForm" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
-        <div class="relative bg-white p-4 rounded shadow-lg">
-            <button (click)="toggleForm()" class="absolute top-1 right-1 text-gray-600 hover:text-gray-900"
-                title="Edit Profile">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-            <app-data-form [user]="user" (formSubmitted)="toggleForm()"></app-data-form>
-        </div>
+    <div *ngIf="showForm" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
+        <app-data-form [user]="user" (formSubmitted)="toggleForm()" (formClosed)="toggleForm()"></app-data-form>
     </div>
 </div>
