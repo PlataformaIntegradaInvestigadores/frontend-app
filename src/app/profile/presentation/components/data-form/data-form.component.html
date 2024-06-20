@@ -1,6 +1,6 @@
-<!-- data-form.component.html -->
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-    <div class="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 overflow-y-auto">
+    <div
+        class="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-4 sm:mx-6 md:mx-8 my-6 h-full max-h-screen overflow-y-auto">
         <!-- Botón de cierre -->
         <button (click)="closeForm()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900" title="Close">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -74,7 +74,6 @@
                         <input type="file" id="profile_picture" (change)="onFileSelected($event)"
                             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             aria-label="Upload Photo">
-
                         <div *ngIf="formData.profile_picture" class="mt-4 flex justify-center">
                             <img [src]="formData.profile_picture" alt="Profile Picture Preview"
                                 class="w-24 h-24 object-cover">
