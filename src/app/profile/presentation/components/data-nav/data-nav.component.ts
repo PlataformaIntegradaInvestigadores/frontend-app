@@ -11,6 +11,7 @@ export class DataNavComponent implements OnChanges {
   @Input() user: any;
   @Input() isOwnProfile: boolean = false;
   isloggedIn: boolean = false;
+  navOpen: boolean = false;
 
   constructor(private userDataService: UserDataService, private authService: AuthService) { }
 
@@ -19,5 +20,9 @@ export class DataNavComponent implements OnChanges {
       this.userDataService.changeUser(this.user);
       this.isloggedIn = this.authService.isLoggedIn();
     }
+  }
+
+  toggleNav() {
+    this.navOpen = !this.navOpen;
   }
 }
