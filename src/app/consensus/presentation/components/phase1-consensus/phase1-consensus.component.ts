@@ -34,7 +34,13 @@ export class Phase1ConsensusComponent implements OnInit{
 
   obtenerTopicos(): string[] {
     // Supongamos que obtienes la cantidad de tópicos de alguna manera
-    return ['Tópico 1', 'Tópico 2', 'Tópico 3', 'Tópico 4', 'Tópico 5'];
+    return [
+      'Interpretability and Explainability of AI Models',
+      'Development of Contextual Recommendation Systems', 
+      'Computer Vision Applications in Agriculture', 
+      'Automation of Neural Network Design',
+      'Privacy-Enhancing Technologies',
+    ];
   }
 
   showLabels(index: number) {

@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { Group } from './group.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -37,4 +38,12 @@ export class GroupService {
         console.error(errorMessage);
         return throwError(() => new Error(errorMessage));
     }
+
+
+    private baseUrl = 'http://localhost:8000/api/groups'; // Ajusta esto a la URL de tu API
+
+    getGroups(): Observable<Group[]> {
+    return this.http.get<Group[]>(this.baseUrl);
+    }
+
 }

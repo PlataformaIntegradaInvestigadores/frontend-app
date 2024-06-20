@@ -1,5 +1,4 @@
-<div *ngFor="let group of groups" (click)="navigateToGroup(group.id)" tabindex="0" class="max-w-xs mx-auto p-3 bg-white rounded-lg hover-effect border-gray">
-  <!-- Flex container para alinear elementos -->
+<!-- <div *ngFor="let group of groups" (click)="navigateToGroup(group.id)" tabindex="0" class="max-w-xs mx-auto p-3 bg-white rounded-lg hover-effect border-gray">
   <div class="flex justify-between items-center mb-2">
     <span class="text-xl">Group XYZ</span>
       <dropdown-btn (click)="$event.stopPropagation()"></dropdown-btn>
@@ -15,4 +14,31 @@
       <span class="text-gray-700">Tema de investigación</span>
     </div>
   </div>
+</div> -->
+
+
+<div *ngFor="let group of groups" (click)="navigateToGroup(group.id)" tabindex="0" class="max-w-xs mx-auto p-3 bg-white rounded-lg hover-effect border-gray">
+  <div class="flex justify-between items-center mb-2">
+    <span class="text-xl">{{ group.title }}</span>
+    <dropdown-btn (click)="$event.stopPropagation()"></dropdown-btn>
+  </div>
+  <div class="text-sm">
+    <span class="text-sm">Consensus phase: {{ group.phase }}</span>
+    <p class="text-gray-700">Owner: {{ group.owner }}</p>
+  </div>
 </div>
+
+
+<!-- 
+<div  (click)="navigateToGroup(groups[0].id)" tabindex="0" class="max-w-xs mx-auto p-3 bg-white rounded-lg hover-effect border-gray">
+  <div class="flex justify-between items-center mb-2">
+    <span class="text-xl">{{ groups[0].title }}</span>
+    <dropdown-btn (click)="$event.stopPropagation()"></dropdown-btn>
+  </div>
+  <div class="text-sm">
+    <span class="text-sm">Consensus phase: {{ groups[0].phase }}</span>
+    <p class="text-gray-700">Owner: {{ groups[0].owner }}</p>
+  </div>
+</div>
+
+ -->

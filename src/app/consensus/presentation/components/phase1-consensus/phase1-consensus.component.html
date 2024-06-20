@@ -1,6 +1,6 @@
 
 <div class="container mx-auto mb-2 rounded-xl border p-4 shadow-md bg-white">
-    <div class="flex justify-between items-center mb-3">
+    <div class="flex justify-between items-center mb-2.5">
         <div class="mb-3 text-xl font-bold">Your group recomendation</div>
         <button id="btn-next" class="transition duration-300 bg-primary_tailwind font-bold text-white hover:bg-gray-100 hover:text-gray-300 focus:ring-2 focus:outline-none focus:ring-primary_tailwind rounded-full text-sm px-2 py-1.5 ml-1 text-center inline-flex items-center" >
             <svg fill="#ffffff" width="16" height="16" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" id="arrow"  >
@@ -9,10 +9,10 @@
         </button>
     </div>
     <div class="container text-sm text-gray-900">
-        <p>Explore the suggested topics list and acquaint yourself with the available choices</p>
+        <p class="mb-3">Explore the suggested topics list and acquaint yourself with the available choices</p>
 
     <!-- POPOVER y LIST TOPICS -->
-        <div class="flex justify-start items-center space-x-4 mb-2.5">
+        <div class="flex justify-start items-center space-x-4 mb-0">
             <!-- Popover combinenSerach -->
             <div class="flex justify-center items-center mb-2.5">
                 <button id="btn-combined-search" data-popover-target="popover-top" type="button" class="mb-2.5 text-primary_tailwind border border-primary_tailwind hover:bg-primary_tailwind hover:text-white focus:ring-2 focus:outline-none focus:ring-primary_tailwind font-medium rounded-full text-sm p-2 ml-1 text-center inline-flex items-center" (click)="checkAndCombinedSearch()" [ngClass]="{'active-ring':  enableCombinedSearch}">
@@ -128,12 +128,11 @@
 
 <!-- ////////// Second Option \\\\\\\\\\\\ -->
 
-<div class="container mx-auto mb-2 rounded-xl border p-4 shadow-md bg-white">
+<!-- <div class="container mx-auto mb-2 rounded-xl border p-4 shadow-md bg-white">
     <div class="mb-3 text-xl font-bold">Your group recommendation</div>
         <div class="container text-sm text-gray-900">
             <p>Explore the suggested topics list and acquaint yourself with the available choices</p>
 
-            <!-- Checks search and expertice -->
             <div class="flex items-center mb-2.5">
                 <input type="checkbox" id="toggleSliders10" [(ngModel)]="enableCombinedSearch" class="w-4 h-4 text-primary_tailwind bg-gray-100 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                 <label for="toggleSliders10" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to enable combined search</label>
@@ -190,6 +189,6 @@
             </div>  
         </div>
     </div>
-
+ -->
 
     

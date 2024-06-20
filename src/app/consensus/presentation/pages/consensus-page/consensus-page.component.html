@@ -6,7 +6,7 @@
             class="block w-full rounded-lg bg-white text-center shadow-secondary-1 dark:bg-surface-dark dark:text-white mb-4">
             <div class="p-3 border-gray-300 rounded-xl border shadow-md bg-white"> 
 
-                <h1 class="leading-none tracking-tight mb-0 lg:text-6xl dark:text-white mb-2">Group Researchers Pro</h1>
+                <h1 class="leading-none tracking-tight mb-2 text-2xl font-semibold text-gray-800">Tech Explorers</h1>
 
                 <div class="mx-4 my-0" id="accordion-collapse" data-accordion="collapse">
                     <h2 id="accordion-collapse-heading-1" class="m-0 ">
@@ -43,7 +43,7 @@
 
                 <div
                     class="editor flexi mx-auto flex flex-col text-gray-800 border-gray-300 mb-4 rounded-xl border p-4 shadow-md bg-white ">
-                    <div class="text-center font-bold text-xl text-gray-800 mb-4">
+                    <div class="text-center font-semibold text-xl text-gray-800 mb-4">
                         Consensus Workshop
                     </div>
                     
@@ -56,9 +56,9 @@
             </div>
             <div class="col-span-1">
                 <div class='w-full flex items-start justify-start flex-col'>
+                    <members-consensus class="w-full mb-2"></members-consensus>
                     <phase1-consensus-notification class="w-full" *ngIf="!isDecisionPhase"></phase1-consensus-notification>
                     <satisfaction-level *ngIf="isDecisionPhase"></satisfaction-level>
-                    <members-consensus class="w-full"></members-consensus>
                 </div>
             </div>
         </div>
