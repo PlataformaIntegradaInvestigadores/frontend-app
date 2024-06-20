@@ -6,7 +6,7 @@
             (click)="toggleEditAboutMe()">
     </div>
     <div *ngIf="!isEditing">
-        <p class="text-sm text-gray-700 break-all" *ngIf="userInfo?.about_me; else aboutMePlaceholder">
+        <p class="block text-sm text-justify text-gray-700 " *ngIf="userInfo?.about_me; else aboutMePlaceholder">
             {{ userInfo?.about_me }}
         </p>
         <ng-template #aboutMePlaceholder>
