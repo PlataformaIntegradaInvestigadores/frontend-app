@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Post } from 'src/app/profile/domain/entities/post.interface';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { PostService } from 'src/app/profile/domain/services/post.service';
-import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
+import { User } from 'src/app/profile/domain/entities/user.interfaces';
 
 @Component({
   selector: 'app-post',
@@ -10,8 +10,8 @@ import { UserDataService } from 'src/app/profile/domain/services/user_data.servi
   styleUrls: ['./post.component.css']
 })
 export class PostComponent implements OnInit {
+  @Input() user: User | null = null;
   posts: Post[] = [];
-  user: any;
   isLoggedIn: boolean = false;
   isLoading: boolean = false;
   error: string | null = null;
@@ -19,18 +19,13 @@ export class PostComponent implements OnInit {
 
   constructor(
     private postService: PostService,
-    private userDataService: UserDataService,
     private authService: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.userDataService.getUser().subscribe(user => {
-      this.user = user;
-      if (this.user) {
-        this.loadPosts(this.user.user_id);
-      }
-    });
-
+    if (this.user && this.user.id) {
+      this.loadPosts(this.user.id);
+    }
     this.isLoggedIn = this.authService.isLoggedIn();
   }
 
@@ -40,6 +35,7 @@ export class PostComponent implements OnInit {
    */
   loadPosts(userId: string): void {
     this.isLoading = true;
+
     this.postService.getPosts(userId).subscribe(
       posts => {
         this.posts = posts;
@@ -57,7 +53,7 @@ export class PostComponent implements OnInit {
    * Crea una nueva publicación.
    * @param newPost - Los datos de la nueva publicación.
    */
-  createPost(newPost: any): void {
+  createPost(newPost: { description: string, files: File[], created_at: string }): void {
     this.isLoading = true;
     this.error = null;
     this.success = null;
@@ -74,7 +70,7 @@ export class PostComponent implements OnInit {
         this.posts.push(response);
         this.isLoading = false;
         this.success = 'Post created successfully!';
-        this.loadPosts(this.user.user_id);  // Recargar publicaciones
+        this.loadPosts(this.user!.id!);  // Recargar publicaciones
         setTimeout(() => {
           this.success = null;
         }, 3000);
@@ -97,6 +93,7 @@ export class PostComponent implements OnInit {
       () => {
         this.posts = this.posts.filter(post => post.id !== postId);
         this.isLoading = false;
+        this.success = 'Post deleted successfully!';
         setTimeout(() => {
           this.success = null;
         }, 3000);
