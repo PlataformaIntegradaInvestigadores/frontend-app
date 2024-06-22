@@ -1,37 +1,35 @@
 <!-- disciplines.component.html -->
 <div class="container mx-auto mb-2 rounded-xl border p-6 shadow-md bg-white">
-    <div class="flex justify-between items-start mb-2">
-        <h2 class="text-2xl font-semibold text-gray-800">Disciplines</h2>
-        <img *ngIf="isOwnProfile" src="assets/pencil-solid.svg" alt="Edit" class="cursor-pointer w-4 h-4"
-            (click)="toggleEditDisciplines()">
+  <div class="flex justify-between items-start mb-2">
+    <h2 class="text-2xl font-semibold text-gray-800">Disciplines</h2>
+    <img *ngIf="isOwnProfile" src="assets/pencil-solid.svg" alt="Edit" class="cursor-pointer w-4 h-4"
+      (click)="toggleEditDisciplines()">
+  </div>
+  <div *ngIf="!isEditing">
+    <div class="text-sm text-gray-700" *ngIf="disciplines.length > 0; else disciplinesPlaceholder">
+      <p *ngFor="let discipline of disciplines" class="block text-sm text-justify"> - {{ discipline }}</p>
     </div>
-    <div *ngIf="!isEditing">
-        <div class="text-sm text-gray-700" *ngIf="disciplines.length > 0; else disciplinesPlaceholder">
-            <p *ngFor="let discipline of disciplines" class="block text-sm text-justify"> - {{ discipline }}</p>
-        </div>
-        <ng-template #disciplinesPlaceholder>
-            <p class="text-sm text-gray-500">Please add some disciplines to showcase your expertise.</p>
-        </ng-template>
+    <ng-template #disciplinesPlaceholder>
+      <p class="text-sm text-gray-500">Please add some disciplines to showcase your expertise.</p>
+    </ng-template>
+  </div>
+  <div *ngIf="isEditing">
+    <div class="text-sm text-gray-700">
+      <div class="flex items-center justify-between space-x-2 mb-2"
+        *ngFor="let discipline of editableDisciplines; let i = index">
+        <span class="block text-sm text-justify">{{ discipline }}</span>
+        <button (click)="removeDiscipline(i)"
+          class="px-2 py-1 rounded bg-red-500 text-white hover:bg-red-600">Remove</button>
+      </div>
+      <input [(ngModel)]="newDiscipline" class="w-full border rounded p-3 mb-3" placeholder="Add new discipline"
+        [attr.aria-label]="'New Discipline'" />
+      <button (click)="addDiscipline()"
+        class="px-4 py-2 rounded bg-primary_tailwind text-white hover:bg-black">Add</button>
     </div>
-    <div *ngIf="isEditing">
-        <div class="text-sm text-gray-700">
-            <div class="flex items-center justify-between space-x-2 mb-2"
-                *ngFor="let discipline of editableDisciplines; let i = index">
-                <span class="block text-sm text-justify">{{ discipline }}</span>
-                <button (click)="removeDiscipline(i)"
-                    class="px-2 py-1 rounded bg-red-500 text-white hover:bg-red-600">Remove</button>
-            </div>
-            <input [(ngModel)]="newDiscipline" class="w-full border rounded p-3 mb-3" placeholder="Add new discipline"
-                [attr.aria-label]="'New Discipline'" />
-            <button (click)="addDiscipline()"
-                class="px-4 py-2 rounded bg-primary_tailwind text-white hover:bg-black">Add</button>
-        </div>
-        <div class="flex space-x-3 mt-3">
-            <button (click)="save()"
-                class="px-4 py-2 rounded bg-primary_tailwind text-white hover:bg-black">Save</button>
-            <button (click)="cancel()"
-                class="px-4 py-2 rounded bg-gray-300 text-gray-700 hover:bg-gray-400">Cancel</button>
-        </div>
+    <div class="flex space-x-3 mt-3">
+      <button (click)="save()" class="px-4 py-2 rounded bg-primary_tailwind text-white hover:bg-black">Save</button>
+      <button (click)="cancel()" class="px-4 py-2 rounded bg-gray-300 text-gray-700 hover:bg-gray-400">Cancel</button>
     </div>
-    <div *ngIf="saveMessage" class="mt-3 text-green-600">{{ saveMessage }}</div>
+  </div>
+  <div *ngIf="saveMessage" class="mt-3 text-green-600">{{ saveMessage }}</div>
 </div>
