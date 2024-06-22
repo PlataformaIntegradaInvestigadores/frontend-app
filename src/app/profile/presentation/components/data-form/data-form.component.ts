@@ -81,7 +81,9 @@ export class DataFormComponent implements OnInit {
 
     if (this.selectedFile) {
       formData.append('profile_picture', this.selectedFile, this.selectedFile.name);
+      console.log('Profile picture:', this.selectedFile);  // Asegúrate de que esto muestra la imagen seleccionada
     }
+
 
     this.authService.updateUser(formData).subscribe(
       response => {
