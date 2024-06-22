@@ -1,29 +1,27 @@
 <!-- about-me-profile.component.html -->
 <div class="container mx-auto mb-2 rounded-xl border p-6 shadow-md bg-white">
-    <div class="flex justify-between items-start mb-2">
-        <h2 class="text-2xl font-semibold text-gray-800">About Me</h2>
-        <img *ngIf="isOwnProfile" src="assets/pencil-solid.svg" alt="Edit" class="cursor-pointer w-4 h-4"
-            (click)="toggleEditAboutMe()">
+  <div class="flex justify-between items-start mb-2">
+    <h2 class="text-2xl font-semibold text-gray-800">About Me</h2>
+    <img *ngIf="isOwnProfile" src="assets/pencil-solid.svg" alt="Edit" class="cursor-pointer w-4 h-4"
+      (click)="toggleEditAboutMe()">
+  </div>
+  <div *ngIf="!isEditing">
+    <p class="block text-sm text-justify text-gray-700" *ngIf="hasAboutMeContent(); else aboutMePlaceholder">
+      {{ userInfo.about_me }}
+    </p>
+    <ng-template #aboutMePlaceholder>
+      <p class="text-sm text-gray-500">Please add some information about yourself to make your profile more appealing.
+      </p>
+    </ng-template>
+  </div>
+  <div *ngIf="isEditing">
+    <label for="aboutMe" class="sr-only">About Me</label>
+    <textarea id="aboutMe" [(ngModel)]="editableUserInfo.about_me" class="w-full border rounded p-3 mb-3"
+      placeholder="Describe yourself" [attr.aria-label]="'About Me'"></textarea>
+    <div class="flex space-x-3">
+      <button (click)="save()" class="px-4 py-2 rounded bg-primary_tailwind text-white hover:bg-black">Save</button>
+      <button (click)="cancel()" class="px-4 py-2 rounded bg-gray-300 text-gray-700 hover:bg-gray-400">Cancel</button>
     </div>
-    <div *ngIf="!isEditing">
-        <p class="block text-sm text-justify text-gray-700 " *ngIf="userInfo?.about_me; else aboutMePlaceholder">
-            {{ userInfo?.about_me }}
-        </p>
-        <ng-template #aboutMePlaceholder>
-            <p class="text-sm text-gray-500">Please add some information about yourself to make your profile more
-                appealing.</p>
-        </ng-template>
-    </div>
-    <div *ngIf="isEditing">
-        <label for="aboutMe" class="sr-only">About Me</label>
-        <textarea id="aboutMe" [(ngModel)]="editableUserInfo.about_me" class="w-full border rounded p-3 mb-3"
-            placeholder="Describe yourself" [attr.aria-label]="'About Me'"></textarea>
-        <div class="flex space-x-3">
-            <button (click)="save()"
-                class="px-4 py-2 rounded bg-primary_tailwind text-white hover:bg-black">Save</button>
-            <button (click)="cancel()"
-                class="px-4 py-2 rounded bg-gray-300 text-gray-700 hover:bg-gray-400">Cancel</button>
-        </div>
-    </div>
-    <div *ngIf="saveMessage" class="mt-3 text-green-600">{{ saveMessage }}</div>
+  </div>
+  <div *ngIf="saveMessage" class="mt-3 text-green-600">{{ saveMessage }}</div>
 </div>
