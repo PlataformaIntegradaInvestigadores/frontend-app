@@ -5,7 +5,7 @@ export interface Post {
   id: string;
   description: string;
   files: PostFile[];
-  created_at: string;
+  created_at: Date; // Cambio de string a Date
 }
 
 /**
