@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { User } from 'src/app/profile/domain/entities/user.interfaces';
 
 @Component({
   selector: 'app-post-input',
@@ -6,7 +7,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./post-input.component.css']
 })
 export class PostInputComponent {
-  @Input() user: any;
+  @Input() user!: User;
   @Output() postCreated = new EventEmitter<any>();
   newPost: { description: string, files: File[], created_at: string } = {
     description: '',
@@ -24,7 +25,6 @@ export class PostInputComponent {
       this.postCreated.emit(this.newPost);
       this.cancelPost();
     } else {
-      console.log('Post description or file is required');
     }
   }
 
