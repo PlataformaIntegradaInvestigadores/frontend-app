@@ -8,14 +8,16 @@ import { ProfilePageRoutingModule } from './profile-page-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
 import { D3Service } from '../shared/d3';
+
 import { ProfileComponent } from './presentation/pages/profile-page/profile.component';
+import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
+import { InformationComponent } from './presentation/components/aboutme/information/information.component';
+import { PostComponent } from './presentation/components/aboutme/post/post.component';
+
 import { ProfileDataComponent } from './presentation/components/profile-data/profile-data.component';
 import { DataNavComponent } from './presentation/components/data-nav/data-nav.component';
 import { DropdownBtnComponent } from './presentation/components/dropdown-btn/dropdown-btn.component';
 import { DataFormComponent } from './presentation/components/data-form/data-form.component';
-import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
-import { PostComponent } from './presentation/components/aboutme/post/post.component';
-import { InformationComponent } from './presentation/components/aboutme/information/information.component';
 import { ContactInfoComponent } from './presentation/components/aboutme/information/components/contact-info/contact-info.component';
 import { DisciplinesComponent } from './presentation/components/aboutme/information/components/disciplines/disciplines.component';
 import { AboutMeProfileComponent } from './presentation/components/aboutme/information/components/about-me-profile/about-me-profile.component';
@@ -28,18 +30,6 @@ import { ListGroupComponent } from '../group/presentation/list-group/list-group.
 import { GroupCreateModalComponent } from '../group/presentation/group-create-modal/group-create-modal.component';
 
 @NgModule({
-  imports: [
-    ProfilePageRoutingModule,
-    SharedModule,
-    CommonModule,
-    CdkMenuTrigger,
-    CdkMenu,
-    CdkMenuItem,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbModule,
-  ],
-  exports: [ProfileDataComponent],
   declarations: [
     ProfileComponent,
     AboutMeComponent,
@@ -47,21 +37,31 @@ import { GroupCreateModalComponent } from '../group/presentation/group-create-mo
     InformationComponent,
     ProfileDataComponent,
     DataNavComponent,
-    CardGroupComponent,
-    ListGroupComponent,
-    BtnCreateGroupComponent,
     DropdownBtnComponent,
     DataFormComponent,
-    GroupCreateModalComponent,
-    AboutMeComponent,
-    InformationComponent,
     ContactInfoComponent,
     DisciplinesComponent,
     AboutMeProfileComponent,
     PostInputComponent,
     PostListComponent,
     PostItemComponent,
+    CardGroupComponent,
+    ListGroupComponent,
+    BtnCreateGroupComponent,
+    GroupCreateModalComponent,
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgbModule,
+    ProfilePageRoutingModule,
+    SharedModule,
+    CdkMenuTrigger,
+    CdkMenu,
+    CdkMenuItem,
   ],
   providers: [D3Service],
+  exports: [ProfileDataComponent],
 })
 export class ProfilePageModule { }
