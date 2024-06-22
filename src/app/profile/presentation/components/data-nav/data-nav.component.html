@@ -1,70 +1,70 @@
 <!-- data-nav.component.html -->
 <nav class="bg-white shadow">
-    <div class="container mx-auto max-w-screen-xl px-3 py-1">
-        <button
-            class="inline-flex items-center p-1 w-8 h-8 justify-center text-sm text-gray-500 rounded-lg md:hidden focus:outline-none focus:ring-2 focus:ring-gray-200"
-            aria-controls="navbar-default" aria-expanded="false" (click)="toggleNav()" type="button">
-            <span class="sr-only">Open main menu</span>
-            <div class="w-4 h-4">
-                <img src="assets/svg-data-nav/menu.svg" alt="Menu icon"
-                    class="w-4 h-4 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300">
+  <div class="container mx-auto max-w-screen-xl px-3 py-1">
+    <button
+      class="inline-flex items-center p-1 w-8 h-8 justify-center text-sm text-gray-500 rounded-lg md:hidden focus:outline-none focus:ring-2 focus:ring-gray-200"
+      aria-controls="navbar-default" aria-expanded="false" (click)="toggleNav()" type="button">
+      <span class="sr-only">Open main menu</span>
+      <div class="w-4 h-4">
+        <img src="assets/svg-data-nav/menu.svg" alt="Menu icon"
+          class="w-4 h-4 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300">
+      </div>
+    </button>
+    <div [ngClass]="{'hidden': !navOpen, 'block': navOpen}" class="w-full md:block md:w-auto" id="navbar-default">
+      <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0 rtl:space-x-reverse">
+        <li *ngIf="isLoggedIn">
+          <a routerLink="./about-me" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
+            <div class="w-4 h-4 mr-2">
+              <img src="assets/svg-data-nav/about-me.svg" alt="About me icon"
+                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
             </div>
-        </button>
-        <div [ngClass]="{'hidden': !navOpen, 'block': navOpen}" class="w-full md:block md:w-auto" id="navbar-default">
-            <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0 rtl:space-x-reverse">
-                <li *ngIf="isloggedIn">
-                    <a routerLink="./about-me" routerLinkActive="active" ariaCurrentWhenActive="page"
-                        class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
-                        <div class="w-4 h-4 mr-2">
-                            <img src="assets/svg-data-nav/about-me.svg" alt="About me icon"
-                                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
-                        </div>
-                        About {{user.first_name}}
-                    </a>
-                </li>
-                <li *ngIf="user?.scopus_id">
-                    <a routerLink="./network" routerLinkActive="active" ariaCurrentWhenActive="page"
-                        class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
-                        aria-current="page">
-                        <div class="w-4 h-4 mr-2">
-                            <img src="assets/svg-data-nav/network.svg" alt="Network icon"
-                                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
-                        </div>
-                        Network
-                    </a>
-                </li>
-                <li *ngIf="user?.scopus_id">
-                    <a routerLink="./article" routerLinkActive="active" ariaCurrentWhenActive="page"
-                        class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
-                        aria-current="page">
-                        <div class="w-4 h-4 mr-2">
-                            <img src="assets/svg-data-nav/article.svg" alt="Article icon"
-                                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
-                        </div>
-                        Article
-                    </a>
-                </li>
-                <li *ngIf="user?.scopus_id">
-                    <a routerLink="./fingerprint" routerLinkActive="active" ariaCurrentWhenActive="page"
-                        class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
-                        <div class="w-4 h-4 mr-2">
-                            <img src="assets/svg-data-nav/fingerprint.svg" alt="Fingerprint icon"
-                                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
-                        </div>
-                        Fingerprint
-                    </a>
-                </li>
-                <li *ngIf="isOwnProfile">
-                    <a routerLink="./my-groups" routerLinkActive="active" ariaCurrentWhenActive="page"
-                        class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
-                        <div class="w-4 h-4 mr-2">
-                            <img src="assets/svg-data-nav/groups.svg" alt="My groups icon"
-                                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
-                        </div>
-                        Groups
-                    </a>
-                </li>
-            </ul>
-        </div>
+            About {{ user?.first_name }}
+          </a>
+        </li>
+        <li *ngIf="user?.scopus_id">
+          <a routerLink="./network" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
+            aria-current="page">
+            <div class="w-4 h-4 mr-2">
+              <img src="assets/svg-data-nav/network.svg" alt="Network icon"
+                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+            </div>
+            Network
+          </a>
+        </li>
+        <li *ngIf="user?.scopus_id">
+          <a routerLink="./article" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
+            aria-current="page">
+            <div class="w-4 h-4 mr-2">
+              <img src="assets/svg-data-nav/article.svg" alt="Article icon"
+                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+            </div>
+            Article
+          </a>
+        </li>
+        <li *ngIf="user?.scopus_id">
+          <a routerLink="./fingerprint" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
+            <div class="w-4 h-4 mr-2">
+              <img src="assets/svg-data-nav/fingerprint.svg" alt="Fingerprint icon"
+                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+            </div>
+            Fingerprint
+          </a>
+        </li>
+        <li *ngIf="isOwnProfile">
+          <a routerLink="./my-groups" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
+            <div class="w-4 h-4 mr-2">
+              <img src="assets/svg-data-nav/groups.svg" alt="My groups icon"
+                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+            </div>
+            Groups
+          </a>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
