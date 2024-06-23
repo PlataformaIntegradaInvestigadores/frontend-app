@@ -1,16 +1,36 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Group } from '../../domain/entities/group.interface';
 import { GroupServiceDos } from '../../domain/entities/groupdos.service';
 import { Subscription } from 'rxjs';
+import { colorSets } from '@swimlane/ngx-charts';
+import { ModalService } from '../../domain/services/deleteMessage.service';
 
 @Component({
   selector: 'card-group',
   templateUrl: './card-group.component.html',
   styleUrls: ['./card-group.component.css']
 })
-export class CardGroupComponent implements OnInit, OnDestroy {
-  groups: Group[] = [];
+export class CardGroupComponent  {
+
+
+  @Input() group: Group | undefined;
+  @Output() navigate = new EventEmitter<number>();
+  modalOpen: boolean = false;
+
+  constructor(private router: Router, private modalService: ModalService) {
+    this.modalService.modalOpen$.subscribe(isOpen => this.modalOpen = isOpen);
+  }
+
+  onNavigate() {
+    if (this.group && !this.modalOpen) {
+      const groupId = parseInt(this.group.id);
+      this.navigate.emit(groupId);
+      console.log('groupId', groupId);
+    }
+  }
+
+  /* groups: Group[] = [];
   private subscriptions: Subscription = new Subscription();
 
   constructor(private router: Router, private groupService: GroupServiceDos) {}
@@ -36,5 +56,5 @@ export class CardGroupComponent implements OnInit, OnDestroy {
 
   navigateToGroup(groupId: string): void {
     this.router.navigate([`/profile/my-groups/${groupId}/consensus`]);
-  }
+  } */
 }

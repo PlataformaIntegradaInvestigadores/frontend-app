@@ -15,6 +15,17 @@ export class GroupService {
 
     constructor(private http: HttpClient, private authService: AuthService) { }
 
+    leaveGroup(groupId: string): Observable<any> {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        });
+    
+        return this.http.delete(`${this.apiUrl}/${groupId}`, { headers }).pipe(
+          catchError(this.handleError)
+        );
+      }
+
     createGroup(groupData: { title: string, description: string, users?: any[] }): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
