@@ -9,16 +9,18 @@
   box-shadow: 0 4px 6px -1px rgb(3, 105, 161, 0.5), 0 2px 4px -1px rgba(14, 165, 233, 0.06);
 }
 
-.border-gray{
+.border-gray {
   border: 1px solid rgb(148 163 184);
 }
+
 * {
-  box-sizing: border-box; /* Aplica esto a todos los elementos */
+  box-sizing: border-box;
+  /* Aplica esto a todos los elementos */
 }
 
 .custom-bg {
   background-image: url('src/assets/img.png');
-  background-size: 150% auto;
-  background-position: top center;
+  background-size: auto 100%;
+  background-position: center;
   background-repeat: no-repeat;
 }

@@ -5,6 +5,7 @@ import { UserService } from 'src/app/profile/domain/services/user.service';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
+import { UserProfile, User } from 'src/app/profile/domain/entities/user.interfaces';
 
 @Component({
   selector: 'app-profile',
@@ -13,18 +14,7 @@ import { UserDataService } from 'src/app/profile/domain/services/user_data.servi
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   userId: string = '0';
-  user: any = {
-    first_name: 'Danny',
-    last_name: 'Cabrera',
-    scopus_id: 1234567,
-    institution: 'Escuela Politécnica Nacional',
-    website: 'dannycabrera.com',
-    investigation_camp: 'Software Engineering',
-    profile_picture: 'http://127.0.0.1:8000/media/profile_pictures/default_profile_picture.png',
-    email_institution: 'danny.cabrera@epn.edu.ec',
-    user_id: this.userId,
-    isOwnProfile: true,
-  };
+  user: User | null = null;
   isOwnProfile: boolean = false;
   private routeSub: Subscription = new Subscription();
 
@@ -37,10 +27,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
       this.getUserData();
-      this.user.user_id = this.userId;
     });
   }
 
@@ -53,29 +42,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
   /**
    * Obtiene los datos del usuario y actualiza el estado del componente.
    */
-  getUserData(): void {
-    this.userService.getUserById(this.userId).subscribe(data => {
-      this.user = data;
-      this.user.user_id = this.userId;
-      this.checkIfOwnProfile();
-      this.userDataService.setUser(this.user);
-      this.setTitle();
+  private getUserData(): void {
+    this.userService.getUserById(this.userId).subscribe({
+      next: (data: UserProfile) => {
+        this.user = { ...data, id: this.userId, isOwnProfile: this.isOwnProfile };
+        this.checkIfOwnProfile();
+        this.userDataService.setUser(this.user); // Establecemos el usuario en UserDataService
+        this.setTitle();
+        console.log('User data:', this.user);
+      },
+      error: (err) => {
+        console.error('Error fetching user data', err);
+      }
     });
   }
 
   /**
    * Verifica si el perfil pertenece al usuario autenticado.
    */
-  checkIfOwnProfile(): void {
+  private checkIfOwnProfile(): void {
     this.isOwnProfile = this.userId === this.authService.getUserId();
-    this.user.isOwnProfile = this.isOwnProfile;
+    if (this.user) {
+      this.user.isOwnProfile = this.isOwnProfile;
+    }
   }
 
   /**
    * Establece el título de la página usando el nombre y apellido del usuario.
    */
-  setTitle(): void {
-    const title = `${this.user.first_name} ${this.user.last_name}`;
-    this.titleService.setTitle(title);
+  private setTitle(): void {
+    if (this.user) {
+      const title = `${this.user.first_name} ${this.user.last_name}`;
+      this.titleService.setTitle(title);
+    }
   }
 }

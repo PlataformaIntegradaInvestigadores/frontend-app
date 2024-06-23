@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Post } from 'src/app/profile/domain/entities/post.interface';
 import { PostService } from 'src/app/profile/domain/services/post.service';
+import { User } from 'src/app/profile/domain/entities/user.interfaces';
 
 @Component({
   selector: 'app-post-list',
@@ -9,7 +10,7 @@ import { PostService } from 'src/app/profile/domain/services/post.service';
 })
 export class PostListComponent {
   @Input() posts: Post[] = [];
-  @Input() user: any;
+  @Input() user!: User;
   @Output() deletePost = new EventEmitter<string>();
 
   constructor(private postService: PostService) { }

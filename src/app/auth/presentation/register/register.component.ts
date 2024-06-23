@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../domain/services/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
 import { Router } from "@angular/router";
+import { User } from '../../domain/entities/interfaces';
 
 @Component({
   selector: 'app-register',
@@ -40,19 +41,18 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    const formValues = this.registerForm.value;
-    const user = {
-      ...formValues,
-      scopus_id: formValues.scopus_id ? formValues.scopus_id : null
-    };
-    delete user.confirm_password;
-    delete user.agree_terms;
+    const formValues = { ...this.registerForm.value };
+    delete formValues.confirm_password;
+    delete formValues.agree_terms;
 
-    console.log('Registering user', user);
+    const user: User = {
+      ...formValues,
+      scopus_id: formValues.scopus_id ? formValues.scopus_id : null,
+      id: null // Si necesitas inicializar el ID a null
+    };
 
     this.authService.register(user).subscribe({
       next: response => {
-        console.log('Registration successful', response);
         this.router.navigate(['/login']);
       },
       error: error => {

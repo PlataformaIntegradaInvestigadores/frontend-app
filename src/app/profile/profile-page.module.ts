@@ -8,13 +8,15 @@ import { ProfilePageRoutingModule } from './profile-page-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
 import { D3Service } from '../shared/d3';
+
 import { ProfileComponent } from './presentation/pages/profile-page/profile.component';
+import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
+import { InformationComponent } from './presentation/components/aboutme/information/information.component';
+import { PostComponent } from './presentation/components/aboutme/post/post.component';
+
 import { ProfileDataComponent } from './presentation/components/profile-data/profile-data.component';
 import { DataNavComponent } from './presentation/components/data-nav/data-nav.component';
 import { DataFormComponent } from './presentation/components/data-form/data-form.component';
-import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
-import { PostComponent } from './presentation/components/aboutme/post/post.component';
-import { InformationComponent } from './presentation/components/aboutme/information/information.component';
 import { ContactInfoComponent } from './presentation/components/aboutme/information/components/contact-info/contact-info.component';
 import { DisciplinesComponent } from './presentation/components/aboutme/information/components/disciplines/disciplines.component';
 import { AboutMeProfileComponent } from './presentation/components/aboutme/information/components/about-me-profile/about-me-profile.component';
@@ -39,7 +41,6 @@ import { ConfirmLeaveModalComponent } from '../group/presentation/confirm-leave-
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    
   ],
   exports: [ProfileDataComponent],
   declarations: [
@@ -53,9 +54,6 @@ import { ConfirmLeaveModalComponent } from '../group/presentation/confirm-leave-
     ListGroupComponent,
     BtnCreateGroupComponent,
     DataFormComponent,
-    GroupCreateModalComponent,
-    AboutMeComponent,
-    InformationComponent,
     ContactInfoComponent,
     DisciplinesComponent,
     AboutMeProfileComponent,
@@ -63,7 +61,11 @@ import { ConfirmLeaveModalComponent } from '../group/presentation/confirm-leave-
     PostListComponent,
     PostItemComponent,
     BtnMenuGroupComponent,
-    ConfirmLeaveModalComponent
+    ConfirmLeaveModalComponent,
+    CardGroupComponent,
+    ListGroupComponent,
+    BtnCreateGroupComponent,
+    GroupCreateModalComponent,
   ],
   providers: [D3Service],
 })

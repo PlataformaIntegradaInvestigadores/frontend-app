@@ -1,11 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-disciplines',
   templateUrl: './disciplines.component.html',
   styleUrls: ['./disciplines.component.css']
 })
-export class DisciplinesComponent {
+export class DisciplinesComponent implements OnChanges {
   @Input() disciplines: string[] = [];
   @Input() isOwnProfile?: boolean;
   @Output() saveDisciplines = new EventEmitter<string[]>();
@@ -16,8 +16,10 @@ export class DisciplinesComponent {
   newDiscipline: string = '';
   saveMessage: string = '';
 
-  ngOnChanges(): void {
-    this.editableDisciplines = [...this.disciplines];
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['disciplines']) {
+      this.editableDisciplines = [...this.disciplines];
+    }
   }
 
   /**

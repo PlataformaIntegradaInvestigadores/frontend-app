@@ -1,23 +1,26 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { ContactInfo } from 'src/app/profile/domain/entities/user.interfaces';
 
 @Component({
   selector: 'app-contact-info',
   templateUrl: './contact-info.component.html',
   styleUrls: ['./contact-info.component.css']
 })
-export class ContactInfoComponent {
-  @Input() contactInfo: { type: string, value: string }[] = [];
+export class ContactInfoComponent implements OnChanges {
+  @Input() contactInfo: ContactInfo[] = [];
   @Input() isOwnProfile?: boolean;
-  @Output() saveContactInfo = new EventEmitter<{ type: string, value: string }[]>();
+  @Output() saveContactInfo = new EventEmitter<ContactInfo[]>();
   @Output() toggleEdit = new EventEmitter<void>();
 
   isEditing: boolean = false;
-  editableContactInfo: { type: string, value: string }[] = [];
+  editableContactInfo: ContactInfo[] = [];
   newContactValue: string = '';
   saveMessage: string = '';
 
-  ngOnChanges(): void {
-    this.editableContactInfo = [...this.contactInfo];
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['contactInfo']) {
+      this.editableContactInfo = [...this.contactInfo];
+    }
   }
 
   /**
@@ -60,7 +63,7 @@ export class ContactInfoComponent {
    * Elimina una información de contacto de la lista editable.
    * @param contact - La información de contacto a eliminar.
    */
-  removeContactInfo(contact: { type: string, value: string }): void {
+  removeContactInfo(contact: ContactInfo): void {
     const index = this.editableContactInfo.indexOf(contact);
     if (index > -1) {
       this.editableContactInfo.splice(index, 1);

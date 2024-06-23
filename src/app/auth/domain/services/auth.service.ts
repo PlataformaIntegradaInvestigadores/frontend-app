@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, switchMap, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { User, UserUpdate } from '../entities/interfaces';
+import { User, LoginCredentials, AuthResponse } from '../entities/interfaces';
 import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
@@ -30,8 +30,8 @@ export class AuthService {
    * @param credentials - Las credenciales del usuario (nombre de usuario y contraseña).
    * @returns Un Observable que emite la respuesta del inicio de sesión.
    */
-  login(credentials: { username: string, password: string }): Observable<any> {
-    return this.http.post<{ access: string, refresh: string }>(`${this.apiUrl}/token/`, credentials).pipe(
+  login(credentials: LoginCredentials): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/token/`, credentials).pipe(
       tap(response => this.setSession(response)),
       catchError(this.handleError)
     );
@@ -41,7 +41,7 @@ export class AuthService {
    * Establece la sesión del usuario almacenando los tokens en el almacenamiento local.
    * @param authResult - El resultado de la autenticación que contiene los tokens.
    */
-  private setSession(authResult: { access: string, refresh: string }): void {
+  private setSession(authResult: AuthResponse): void {
     const decodedToken = jwtDecode(authResult.access) as any;
     localStorage.setItem('accessToken', authResult.access);
     localStorage.setItem('refreshToken', authResult.refresh);
@@ -77,13 +77,13 @@ export class AuthService {
    * Refresca el token de acceso utilizando el token de actualización.
    * @returns Un Observable que emite la nueva respuesta del token de acceso.
    */
-  private refreshAccessToken(): Observable<any> {
+  private refreshAccessToken(): Observable<AuthResponse> {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
       this.logout();
       return throwError(() => new Error('Refresh token not found'));
     }
-    return this.http.post<{ access: string }>(`${this.apiUrl}/token/refresh/`, { refresh: refreshToken }).pipe(
+    return this.http.post<AuthResponse>(`${this.apiUrl}/token/refresh/`, { refresh: refreshToken }).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.access);
       })
@@ -91,16 +91,17 @@ export class AuthService {
   }
 
   /**
-   * Actualiza la información del usuario.
-   * @param user - Los datos del usuario a actualizar.
-   * @returns Un Observable que emite la respuesta de la actualización.
-   */
-  updateUser(user: any): Observable<any> {
+    * Actualiza la información del usuario.
+    * @param formData - Los datos del formulario a actualizar.
+    * @returns Un Observable que emite la respuesta de la actualización.
+    */
+  updateUser(formData: FormData): Observable<any> {
+    console.log(formData);
     const userId = this.getUserId();
     if (!userId) {
       return throwError(() => new Error('User ID not found'));
     }
-    return this.http.put(`${this.apiUrl}/users/${userId}/update/`, user, {
+    return this.http.put(`${this.apiUrl}/users/${userId}/update/`, formData, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       })
@@ -108,13 +109,14 @@ export class AuthService {
       catchError(error => {
         if (error.status === 401 && error.error.code === 'token_not_valid') {
           return this.refreshAccessToken().pipe(
-            switchMap(() => this.updateUser(user))
+            switchMap(() => this.updateUser(formData))
           );
         }
         return this.handleError(error);
       })
     );
   }
+
 
   /**
    * Obtiene una lista de usuarios.

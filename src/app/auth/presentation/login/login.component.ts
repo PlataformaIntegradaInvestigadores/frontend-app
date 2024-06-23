@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { AuthService } from '../../domain/services/auth.service';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../domain/services/error.service';
+import { LoginCredentials } from '../../domain/entities/interfaces';
 
 @Component({
   selector: 'app-login',
@@ -36,11 +37,13 @@ export class LoginComponent implements OnInit {
    */
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const loginData = this.loginForm.value;
+      const loginData: LoginCredentials = this.loginForm.value;
       this.authService.login(loginData).subscribe(
         response => {
           const userId = this.authService.getUserId();
-          this.router.navigate([`/${userId}/about-me`]);
+          if (userId) {
+            this.router.navigate([`/${userId}/about-me`]);
+          }
         },
         error => {
           this.processErrors(error);

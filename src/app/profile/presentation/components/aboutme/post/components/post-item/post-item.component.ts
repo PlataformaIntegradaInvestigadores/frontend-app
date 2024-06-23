@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Post } from 'src/app/profile/domain/entities/post.interface';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { User } from 'src/app/profile/domain/entities/user.interfaces';
 
 @Component({
   selector: 'app-post-item',
@@ -9,7 +10,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class PostItemComponent implements OnInit {
   @Input() post!: Post;
-  @Input() user: any;
+  @Input() user!: User;
   @Output() deletePost = new EventEmitter<string>();
 
   menuOpen: boolean = false;

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { ContactInfo, User, UserInfo } from 'src/app/profile/domain/entities/user.interfaces';
 import { InformationService } from 'src/app/profile/domain/services/information.service';
 import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 
@@ -9,11 +10,11 @@ import { UserDataService } from 'src/app/profile/domain/services/user_data.servi
   styleUrls: ['./information.component.css']
 })
 export class InformationComponent implements OnInit {
-  userInfo: any = {};
+  @Input() user: User | null = null;
+  userInfo: UserInfo = {};
   disciplines: string[] = [];
-  contactInfo: { type: string, value: string }[] = [];
-  user: any;
-  isloggedIn: boolean = false;
+  contactInfo: ContactInfo[] = [];
+  isLoggedIn: boolean = false;
 
   constructor(
     private informationService: InformationService,
@@ -22,14 +23,10 @@ export class InformationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userDataService.getUser().subscribe(user => {
-      this.user = user;
-      if (this.user) {
-        this.fetchPublicInformation(this.user.user_id);
-      }
-    });
-
-    this.isloggedIn = this.authService.isLoggedIn();
+    this.isLoggedIn = this.authService.isLoggedIn();
+    if (this.user) {
+      this.fetchPublicInformation(this.user.id!);
+    }
   }
 
   /**
@@ -37,7 +34,7 @@ export class InformationComponent implements OnInit {
    * @param userId - El ID del usuario.
    */
   fetchPublicInformation(userId: string): void {
-    this.informationService.getPublicInformation(userId).subscribe(info => {
+    this.informationService.getPublicInformation(userId).subscribe((info: UserInfo) => {
       this.userInfo = info || {};
       this.disciplines = info.disciplines || [];
       this.contactInfo = info.contact_info || [];
@@ -49,7 +46,7 @@ export class InformationComponent implements OnInit {
    * @param aboutMe - El contenido de "Sobre mí".
    */
   saveAboutMe(aboutMe: string): void {
-    this.informationService.updateInformation({ about_me: aboutMe }).subscribe(response => {
+    this.informationService.updateInformation({ about_me: aboutMe }).subscribe((response: UserInfo) => {
       this.userInfo.about_me = response.about_me;
     });
   }
@@ -59,8 +56,8 @@ export class InformationComponent implements OnInit {
    * @param disciplines - Las disciplinas a guardar.
    */
   saveDisciplines(disciplines: string[]): void {
-    this.informationService.updateInformation({ disciplines }).subscribe(response => {
-      this.disciplines = response.disciplines;
+    this.informationService.updateInformation({ disciplines }).subscribe((response: UserInfo) => {
+      this.disciplines = response.disciplines || [];
     });
   }
 
@@ -68,9 +65,9 @@ export class InformationComponent implements OnInit {
    * Guarda la información de contacto del usuario.
    * @param contactInfo - La información de contacto a guardar.
    */
-  saveContactInfo(contactInfo: { type: string, value: string }[]): void {
-    this.informationService.updateInformation({ contact_info: contactInfo }).subscribe(response => {
-      this.contactInfo = response.contact_info;
+  saveContactInfo(contactInfo: ContactInfo[]): void {
+    this.informationService.updateInformation({ contact_info: contactInfo }).subscribe((response: UserInfo) => {
+      this.contactInfo = response.contact_info || [];
     });
   }
 
