@@ -22,7 +22,9 @@
                     <div class=" dark:border-gray-700">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <btn-create-group></btn-create-group>
-                            <card-group></card-group>
+                            <ng-container *ngFor="let group of groups">
+                                <card-group [group]="group" (navigate)="navigateToGroup($event)"></card-group>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
@@ -44,12 +46,9 @@
                 </h2>
                 <div id="accordion-flush-body-2" class="hidden" aria-labelledby="accordion-flush-heading-2">
                     <div class="py-5 dark:border-gray-700">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <card-group></card-group>
-                            <card-group></card-group>
-                            <card-group></card-group>
-                            <card-group></card-group>
-                        </div>
+                        <ng-container *ngFor="let group of groups">
+                            <card-group [group]="group" (navigate)="navigateToGroup($event)"></card-group>
+                        </ng-container>
                     </div>
                 </div>
             </div>
@@ -57,3 +56,4 @@
     </div>
 
 </div>
+

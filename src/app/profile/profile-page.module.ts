@@ -11,7 +11,6 @@ import { D3Service } from '../shared/d3';
 import { ProfileComponent } from './presentation/pages/profile-page/profile.component';
 import { ProfileDataComponent } from './presentation/components/profile-data/profile-data.component';
 import { DataNavComponent } from './presentation/components/data-nav/data-nav.component';
-import { DropdownBtnComponent } from './presentation/components/dropdown-btn/dropdown-btn.component';
 import { DataFormComponent } from './presentation/components/data-form/data-form.component';
 import { AboutMeComponent } from './presentation/components/aboutme/aboutme.component';
 import { PostComponent } from './presentation/components/aboutme/post/post.component';
@@ -26,6 +25,8 @@ import { CardGroupComponent } from '../group/presentation/card-group/card-group.
 import { BtnCreateGroupComponent } from '../group/presentation/btn-create-group/btn-create-group.component';
 import { ListGroupComponent } from '../group/presentation/list-group/list-group.component';
 import { GroupCreateModalComponent } from '../group/presentation/group-create-modal/group-create-modal.component';
+import { BtnMenuGroupComponent } from '../group/presentation/btn-menu-group/btn-menu-group.component';
+import { ConfirmLeaveModalComponent } from '../group/presentation/confirm-leave-modal/confirm-leave-modal.component';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { GroupCreateModalComponent } from '../group/presentation/group-create-mo
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
+    
   ],
   exports: [ProfileDataComponent],
   declarations: [
@@ -50,7 +52,6 @@ import { GroupCreateModalComponent } from '../group/presentation/group-create-mo
     CardGroupComponent,
     ListGroupComponent,
     BtnCreateGroupComponent,
-    DropdownBtnComponent,
     DataFormComponent,
     GroupCreateModalComponent,
     AboutMeComponent,
@@ -61,6 +62,8 @@ import { GroupCreateModalComponent } from '../group/presentation/group-create-mo
     PostInputComponent,
     PostListComponent,
     PostItemComponent,
+    BtnMenuGroupComponent,
+    ConfirmLeaveModalComponent
   ],
   providers: [D3Service],
 })
