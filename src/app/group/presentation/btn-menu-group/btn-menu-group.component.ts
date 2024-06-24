@@ -1,6 +1,6 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { GroupService } from '../../domain/entities/group.service';
-import { ModalService } from '../../domain/services/deleteMessage.service';
+import { ModalService } from '../../domain/services/modalService.service';
 
 
 @Component({
@@ -13,12 +13,12 @@ export class BtnMenuGroupComponent {
   @Input() isOwner: boolean = false;
   menuOpen: boolean = false;
   showConfirmLeaveModal = false;
+  showDeleteGroupModal = false;
   modalOpen: boolean = false;
 
   constructor(private groupService: GroupService, private modalService: ModalService) {
     this.modalService.modalOpen$.subscribe(isOpen => this.modalOpen = isOpen);
   }
-  
  @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
      if (this.menuOpen && !this.modalOpen) {
@@ -36,8 +36,8 @@ export class BtnMenuGroupComponent {
 
   deleteGroup() {
     console.debug('Opening delete group modal');
-    this.menuOpen = false;
-    this.modalService.setModalOpen(false);
+    this.showDeleteGroupModal = true;
+    this.modalService.setModalOpen(true);
   }
 
   leaveGroup() {
@@ -55,6 +55,17 @@ export class BtnMenuGroupComponent {
 
   onCancelLeave() {
     this.showConfirmLeaveModal = false;
+    this.modalService.setModalOpen(false);
+  }
+
+  onConfirmDelete() {
+    console.log('Group deleted');
+    this.showDeleteGroupModal = false;
+    this.modalService.setModalOpen(false);
+  }
+
+  onCancelDelete() {
+    this.showDeleteGroupModal = false;
     this.modalService.setModalOpen(false);
   }
 }

@@ -1,3 +1,7 @@
+<div *ngIf="loading$ | async" class="loading-indicator">
+    Loading...
+  </div>
+
 <!-- Visibilidad de la lista -->
 <div *ngIf="user.isOwnProfile" class="container mx-auto max-w-screen-xl px-3 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 ">
     <div class="col-span-12 md:col-span-12">
@@ -23,7 +27,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <btn-create-group></btn-create-group>
                             <ng-container *ngFor="let group of groups">
-                                <card-group [group]="group" (navigate)="navigateToGroup($event)"></card-group>
+                                <card-group [group]="group" [isOwner]="isOwner" (navigate)="navigateToGroup($event)"></card-group>
                             </ng-container>
                         </div>
                     </div>
@@ -54,6 +58,5 @@
             </div>
         </div>
     </div>
-
 </div>
 

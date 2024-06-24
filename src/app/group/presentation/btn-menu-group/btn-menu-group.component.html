@@ -32,3 +32,8 @@
                      (confirm)="onConfirmLeave()"
                      (cancel)="onCancelLeave()">
 </confirm-leave-modal>
+
+<confirm-delete-modal *ngIf="showDeleteGroupModal"
+                     (confirm)="onConfirmDelete()"
+                     (cancel)="onCancelDelete()">
+</confirm-delete-modal>

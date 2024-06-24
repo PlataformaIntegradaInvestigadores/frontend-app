@@ -29,6 +29,7 @@ import { ListGroupComponent } from '../group/presentation/list-group/list-group.
 import { GroupCreateModalComponent } from '../group/presentation/group-create-modal/group-create-modal.component';
 import { BtnMenuGroupComponent } from '../group/presentation/btn-menu-group/btn-menu-group.component';
 import { ConfirmLeaveModalComponent } from '../group/presentation/confirm-leave-modal/confirm-leave-modal.component';
+import { ConfirmDeleteModalComponent } from '../group/presentation/confirm-delete-modal/confirm-delete-modal.component';
 
 @NgModule({
   imports: [
@@ -62,6 +63,7 @@ import { ConfirmLeaveModalComponent } from '../group/presentation/confirm-leave-
     PostItemComponent,
     BtnMenuGroupComponent,
     ConfirmLeaveModalComponent,
+    ConfirmDeleteModalComponent,
     CardGroupComponent,
     ListGroupComponent,
     BtnCreateGroupComponent,

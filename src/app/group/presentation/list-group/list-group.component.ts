@@ -3,7 +3,8 @@ import { initFlowbite } from 'flowbite';
 import { Router } from '@angular/router';
 import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 import { Group } from '../../domain/entities/group.interface';
-import { GroupServiceDos } from '../../domain/entities/groupdos.service';
+import { GetGroupsService } from '../../domain/services/getGroupsUser.service';
+import { LoadingService } from '../../domain/services/loadingService.service';
 
 
 @Component({
@@ -16,7 +17,14 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
   groups : Group [] = []
   modalOpen: boolean = false;
 
-  constructor(private userDataService: UserDataService, private groupService: GroupServiceDos, private router:Router) { }
+  isOwner: boolean = false; 
+  loading$ = this.loadingService.loading$;
+
+  constructor(
+    private userDataService: UserDataService, 
+    private getGroupService: GetGroupsService,
+    private router:Router,
+    private loadingService: LoadingService) { }
 
   ngAfterViewInit(): void {
     initFlowbite();
@@ -25,24 +33,27 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.userDataService.getUser().subscribe(user => {
       this.user = user;
-      if (this.user.isOwnProfile) {
-        this.loadGroups();
-      }
+      console.log('User2:', this.isOwner);
+      if (this.user && this.user.isOwnProfile) {
+        this.isOwner = this.user.isOwnProfile;
+        this.loadGroups(this.user.id);
+      } 
     });
   }
 
-  loadGroups(): void {
-    const userId = '6kVoleSRyj';  // Suponiendo que tienes un ID de usuario a usar
-    this.groupService.getGroupsByUserId(userId).subscribe({
-      next: (groups) => {
-        this.groups = groups.map(group => ({
-          ...group,
-          owner: 'Default Owner',  // Valor quemado temporal
-          phase: '1/3'  // Valor quemado temporal
-        }));
-      },
-      error: (error) => console.error('Error fetching groups:', error)
-    });
+  loadGroups(userId: string): void {
+    if (userId) {
+      this.getGroupService.getGroupsByUserId().subscribe({
+        next: (groups) => {
+          this.groups = groups.map(group => ({
+            ...group,
+            owner: 'Default Owner',  // Valor quemado temporal
+            phase: '1/3'  // Valor quemado temporal
+          }));
+        },
+        error: (error) => console.error('Error fetching groups:', error)
+      });
+    }
   }
 
   navigateToGroup(groupId: number): void {
@@ -64,16 +75,4 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
     // Aquí puedes manejar la lógica cuando se cancela la salida del grupo
     console.log('Leave cancelled');
   }
-
-  /* groups = [
-    { id: 1, name: 'Group XYZ', owner: 'Bob', phase: '1/3' },
-    // Añadir más grupos según sea necesario
-  ];
-
-  constructor(private router: Router) {}
-
-  navigateToGroup(groupId: number): void {
-    this.router.navigate([`/profile/my-groups/${groupId}/consensus`]);
-  }
-   */
 }
