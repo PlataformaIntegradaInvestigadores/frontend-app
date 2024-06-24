@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap, switchMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, tap, switchMap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User, LoginCredentials, AuthResponse } from '../entities/interfaces';
 import { jwtDecode } from 'jwt-decode';
@@ -71,6 +71,21 @@ export class AuthService {
    */
   getUserId(): string | null {
     return localStorage.getItem('userId');
+  }
+
+
+  getToken(): Observable<string | null> {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      return of(token);
+    }
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      return this.refreshAccessToken().pipe(
+        map(response => response.access)
+      );
+    }
+    return of(null);
   }
 
   /**
