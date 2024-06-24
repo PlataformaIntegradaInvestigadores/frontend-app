@@ -13,11 +13,12 @@ import { LoadingService } from '../../domain/services/loadingService.service';
   styleUrls: ['./list-group.component.css']
 })
 export class ListGroupComponent implements AfterViewInit, OnInit {
+  userId: string | null = null;
   user: any;
   groups : Group [] = []
   modalOpen: boolean = false;
 
-  isOwner: boolean = false; 
+  isOwnerMap: { [key: string]: boolean } = {};
   loading$ = this.loadingService.loading$;
 
   constructor(
@@ -31,30 +32,38 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-    this.userDataService.getUser().subscribe(user => {
-      this.user = user;
-      console.log('User2:', this.isOwner);
-      if (this.user && this.user.isOwnProfile) {
-        this.isOwner = this.user.isOwnProfile;
-        this.loadGroups(this.user.id);
-      } 
+    this.userId = localStorage.getItem('userId');
+    console.log('Authenticated User ID:', this.userId);
+    if (this.userId) {
+      this.loadGroups();
+    }
+  }
+
+  loadGroups(): void {
+    this.getGroupService.getGroupsByUserId().subscribe({
+      next: (groups) => {
+        this.groups = groups.map(group => ({
+          ...group,
+          owner: 'Default Owner',  // Valor quemado temporal
+          phase: '1/3'  // Valor quemado temporal
+        }));
+        console.log('Groups loaded:', this.groups);
+        this.updateIsOwnerMap();
+        console.log('isOwnerMap:', this.isOwnerMap);
+      },
+      error: (error) => console.error('Error fetching groups:', error)
     });
   }
 
-  loadGroups(userId: string): void {
-    if (userId) {
-      this.getGroupService.getGroupsByUserId().subscribe({
-        next: (groups) => {
-          this.groups = groups.map(group => ({
-            ...group,
-            owner: 'Default Owner',  // Valor quemado temporal
-            phase: '1/3'  // Valor quemado temporal
-          }));
-        },
-        error: (error) => console.error('Error fetching groups:', error)
+  updateIsOwnerMap(): void {
+    if (this.userId) {
+      this.groups.forEach(group => {
+        this.isOwnerMap[group.id] = this.userId === group.admin_id;
+        console.log(`Group ID: ${group.id},Auth ID: ${this.userId}, Admin ID: ${group.admin_id}, isOwner: ${this.isOwnerMap[group.id]}`);
       });
     }
   }
+
 
   navigateToGroup(groupId: number): void {
     if (!this.modalOpen) {

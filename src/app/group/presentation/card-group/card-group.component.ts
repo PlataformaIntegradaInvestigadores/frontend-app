@@ -20,6 +20,11 @@ export class CardGroupComponent  {
     this.modalService.modalOpen$.subscribe(isOpen => this.modalOpen = isOpen);
   }
 
+  ngOnChanges(): void {
+    console.log('Group:', this.group);
+    console.log('Is Owner:', this.isOwner);
+  }
+
   onNavigate() {
     if (this.group && !this.modalOpen) {
       const groupId = parseInt(this.group.id);

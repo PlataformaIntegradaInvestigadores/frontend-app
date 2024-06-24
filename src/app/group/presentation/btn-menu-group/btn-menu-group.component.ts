@@ -19,6 +19,11 @@ export class BtnMenuGroupComponent {
   constructor(private groupService: GroupService, private modalService: ModalService) {
     this.modalService.modalOpen$.subscribe(isOpen => this.modalOpen = isOpen);
   }
+
+  ngOnChanges(): void {
+    console.log('isOwner:', this.isOwner);
+  }
+
  @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
      if (this.menuOpen && !this.modalOpen) {

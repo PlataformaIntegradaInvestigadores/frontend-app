@@ -4,5 +4,6 @@ export interface Group {
     description: string;
     owner?: string; // Este campo puede ser opcional y quemado en el frontend por ahora
     phase?: string; // Este campo también puede ser opcional y quemado
+    admin_id: string;
   }
   
