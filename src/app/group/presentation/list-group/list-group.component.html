@@ -27,7 +27,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <btn-create-group></btn-create-group>
                             <ng-container *ngFor="let group of groups">
-                                <card-group [group]="group" [isOwner]="isOwnerMap[group.id]" (navigate)="navigateToGroup($event)"></card-group>
+                                <card-group [group]="group" [isOwner]="isOwnerMap[group.id]" (navigate)="navigateToGroup(group.id)"></card-group>
                             </ng-container>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                 <div id="accordion-flush-body-2" class="hidden" aria-labelledby="accordion-flush-heading-2">
                     <div class="py-5 dark:border-gray-700">
                         <ng-container *ngFor="let group of groups">
-                            <card-group [group]="group" (navigate)="navigateToGroup($event)"></card-group>
+                            <card-group [group]="group" (navigate)="navigateToGroup(group.id)"></card-group>
                         </ng-container>
                     </div>
                 </div>

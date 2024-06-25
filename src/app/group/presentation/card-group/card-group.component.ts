@@ -13,7 +13,7 @@ export class CardGroupComponent  {
 
   @Input() group: Group | undefined;
   @Input() isOwner: boolean = false;
-  @Output() navigate = new EventEmitter<number>();
+  @Output() navigate = new EventEmitter<Group>();
   @Output() groupDeleted = new EventEmitter<string>();
   @Output() groupLeaveed = new EventEmitter<string>();
   modalOpen: boolean = false;
@@ -29,10 +29,7 @@ export class CardGroupComponent  {
 
   onNavigate() {
     if (this.group && !this.modalOpen) {
-      const groupId = parseInt(this.group.id);
-      this.navigate.emit(groupId);
-      console.log('groupId', groupId);
-      console.log('isOwner2', this.isOwner);
+      this.navigate.emit(this.group);
     }
   }
 
