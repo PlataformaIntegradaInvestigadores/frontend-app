@@ -19,7 +19,7 @@
   <div class="flex justify-between items-center mb-3">
     <span class="text-xl truncate">{{ group?.title }}</span><!-- 
     <dropdown-btn (click)="$event.stopPropagation()"></dropdown-btn> -->
-    <btn-menu-group [isOwner]="isOwner"></btn-menu-group>
+    <btn-menu-group [isOwner]="isOwner" [groupId]="group?.id || ''"></btn-menu-group>
   </div>
   <div class="text-sm">
     <span class="text-sm mb-2">Consensus phase: {{ group?.phase }}</span>

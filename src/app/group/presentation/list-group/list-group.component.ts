@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { Router } from '@angular/router';
-import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 import { Group } from '../../domain/entities/group.interface';
 import { GetGroupsService } from '../../domain/services/getGroupsUser.service';
 import { LoadingService } from '../../domain/services/loadingService.service';
+import { GroupService } from '../../domain/entities/group.service';
+import { forkJoin, map } from 'rxjs';
 
 
 @Component({
@@ -13,16 +14,15 @@ import { LoadingService } from '../../domain/services/loadingService.service';
   styleUrls: ['./list-group.component.css']
 })
 export class ListGroupComponent implements AfterViewInit, OnInit {
+  
   userId: string | null = null;
-  user: any;
   groups : Group [] = []
   modalOpen: boolean = false;
-
   isOwnerMap: { [key: string]: boolean } = {};
   loading$ = this.loadingService.loading$;
 
-  constructor(
-    private userDataService: UserDataService, 
+  constructor( 
+    private groupService : GroupService,
     private getGroupService: GetGroupsService,
     private router:Router,
     private loadingService: LoadingService) { }
@@ -40,11 +40,38 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
   }
 
   loadGroups(): void {
+    this.groupService.getGroups().subscribe({
+      next: (groups) => {
+        const groupRequests = groups.map(group =>
+          this.groupService.getUserById(group.admin_id).pipe(
+            map(user => ({
+              ...group,
+              owner: `${user.first_name} ${user.last_name}`,
+              phase: '1/3'
+            }))
+          )
+        );
+
+        forkJoin(groupRequests).subscribe(
+          groupsWithOwners => {
+            this.groups = groupsWithOwners;
+            console.log('Groups loaded:', this.groups);
+            this.updateIsOwnerMap();
+            console.log('isOwnerMap:', this.isOwnerMap);
+          },
+          error => console.error('Error fetching group owners:', error)
+        );
+      },
+      error: (error) => console.error('Error fetching groups:', error)
+    });
+  }
+
+  /* loadGroups(): void {
     this.getGroupService.getGroupsByUserId().subscribe({
       next: (groups) => {
         this.groups = groups.map(group => ({
           ...group,
-          owner: 'Default Owner',  // Valor quemado temporal
+          owner: group.admin_id,  // Valor quemado temporal
           phase: '1/3'  // Valor quemado temporal
         }));
         console.log('Groups loaded:', this.groups);
@@ -53,7 +80,7 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
       },
       error: (error) => console.error('Error fetching groups:', error)
     });
-  }
+  } */
 
   updateIsOwnerMap(): void {
     if (this.userId) {
@@ -75,13 +102,38 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
     this.modalOpen = open;
   }
 
-  onConfirmLeave() {
-    // Aquí puedes manejar la lógica cuando se confirma la salida del grupo
-    console.log('Group left');
+
+  onGroupDeleted(groupId: string) {
+    this.groups = this.groups.filter(group => group.id !== groupId);
+    this.updateIsOwnerMap();
   }
 
-  onCancelLeave() {
-    // Aquí puedes manejar la lógica cuando se cancela la salida del grupo
-    console.log('Leave cancelled');
+  onGroupLeave(groupId: string) { 
+    this.groups = this.groups.filter(group => group.id !== groupId);
+    this.updateIsOwnerMap();
+  }
+
+  deleteGroup(groupId: string) {
+    this.groupService.deleteGroup(groupId).subscribe(
+      () => {
+        console.log('Group deleted successfully');
+        this.onGroupDeleted(groupId);  // Actualizar la lista localmente
+      },
+      error => {
+        console.error('Error deleting group', error);
+      }
+    );
+  }
+
+  leaveGroup(groupId: string) {
+    this.groupService.leaveGroup(groupId).subscribe(
+      () => {
+        console.log('Left the group');
+        this.onGroupLeave(groupId);  // Actualizar la lista localmente
+      },
+      error => {
+        console.error('Error leaving group', error);
+      }
+    );
   }
 }

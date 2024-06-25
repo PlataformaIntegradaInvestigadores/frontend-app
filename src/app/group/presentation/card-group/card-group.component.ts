@@ -14,6 +14,8 @@ export class CardGroupComponent  {
   @Input() group: Group | undefined;
   @Input() isOwner: boolean = false;
   @Output() navigate = new EventEmitter<number>();
+  @Output() groupDeleted = new EventEmitter<string>();
+  @Output() groupLeaveed = new EventEmitter<string>();
   modalOpen: boolean = false;
 
   constructor(private router: Router, private modalService: ModalService) {
@@ -32,5 +34,13 @@ export class CardGroupComponent  {
       console.log('groupId', groupId);
       console.log('isOwner2', this.isOwner);
     }
+  }
+
+  onGroupDeleted(groupId: string) {
+    this.groupDeleted.emit(groupId);
+  }
+
+  onGroupLeaveed(groupId: string) {
+    this.groupLeaveed.emit(groupId);
   }
 }

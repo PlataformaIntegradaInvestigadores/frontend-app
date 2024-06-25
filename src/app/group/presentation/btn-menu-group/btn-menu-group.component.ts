@@ -1,6 +1,7 @@
-import { Component, HostListener, Input } from '@angular/core';
-import { GroupService } from '../../domain/entities/group.service';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { ModalService } from '../../domain/services/modalService.service';
+import { GetGroupsService } from '../../domain/services/getGroupsUser.service';
+import { GroupService } from '../../domain/entities/group.service';
 
 
 @Component({
@@ -11,6 +12,9 @@ import { ModalService } from '../../domain/services/modalService.service';
 export class BtnMenuGroupComponent {
 
   @Input() isOwner: boolean = false;
+  @Input() groupId: string = '';
+  @Output() groupDeleted = new EventEmitter<string>();
+  @Output() groupLeaveed = new EventEmitter<string>();
   menuOpen: boolean = false;
   showConfirmLeaveModal = false;
   showDeleteGroupModal = false;
@@ -51,10 +55,12 @@ export class BtnMenuGroupComponent {
   }
 
   onConfirmLeave() {
-    this.groupService.leaveGroup("a").subscribe(() => {
+    this.groupService.leaveGroup(this.groupId).subscribe(() => {
       console.log('Left the group');
       this.showConfirmLeaveModal = false;
       this.modalService.setModalOpen(false);
+      this.groupLeaveed.emit(this.groupId);  // Emitir un evento para notificar al componente padre
+      window.location.reload();
     });
   }
 
@@ -64,9 +70,13 @@ export class BtnMenuGroupComponent {
   }
 
   onConfirmDelete() {
-    console.log('Group deleted');
-    this.showDeleteGroupModal = false;
-    this.modalService.setModalOpen(false);
+    this.groupService.deleteGroup(this.groupId).subscribe(() => {
+      console.log('Group deleted');
+      this.showDeleteGroupModal = false;
+      this.modalService.setModalOpen(false);
+      this.groupDeleted.emit(this.groupId);  // Emitir un evento para notificar al componente padre
+      window.location.reload();  // Recargar la página después de eliminar el grupo
+    });
   }
 
   onCancelDelete() {

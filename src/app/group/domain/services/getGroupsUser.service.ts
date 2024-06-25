@@ -11,6 +11,7 @@ import { LoadingService } from './loadingService.service';
 @Injectable({
   providedIn: 'root'})
 export class GetGroupsService {
+
   private apiUrl = `${environment.apiUrl}/test/user/groups/`; // Base URL para las peticiones a /test/user/groups/
 
   constructor(
@@ -43,6 +44,44 @@ export class GetGroupsService {
             console.error('Error fetching groups:', error);
             return throwError(() => new Error('Error fetching groups: ' + error.message));
         })
+    );
+  }
+
+
+  deleteGroup(groupId: string): Observable<void> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.delete<void>(`${this.apiUrl}${groupId}/delet8e/`, { headers });
+      }),
+      catchError(error => {
+        this.errorService.handleError(error);
+        return throwError(() => new Error('Error deleting group: ' + error.message));
+      })
+    );
+  }
+
+
+  leaveGroup(groupId: string): Observable<void> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.post<void>(`${this.apiUrl}${groupId}/leave7/`, {}, { headers });
+      }),
+      catchError(error => {
+        this.errorService.handleError(error);
+        return throwError(() => new Error('Error leaving group: ' + error.message));
+      })
     );
   }
 }
