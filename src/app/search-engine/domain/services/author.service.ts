@@ -14,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class AuthorService {
-  rootURL: string = '';
+  rootURL: string = 'http://127.0.0.1:5000';
 
   constructor(private http: HttpClient) {}
 
@@ -47,13 +47,13 @@ export class AuthorService {
 
   getMostRelevantAuthors(
     topic: string,
-    authorsNumber: number,
+    authorsNumber?: number,
     typeFilter?: string,
     affiliations?: number[]
   ): Observable<Coauthors> {
     let bodyParams: any = {
       topic: topic,
-      authorsNumber: authorsNumber,
+      authorsNumber: 50,
     };
 
     if (typeFilter) {
@@ -62,7 +62,7 @@ export class AuthorService {
     }
 
     let data = this.http.post<Coauthors>(
-      `${this.rootURL}coauthors/most-relevant-authors`,
+      `${this.rootURL}/coauthors/most-relevant-authors`,
       bodyParams
     );
     return data;

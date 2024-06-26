@@ -29,12 +29,10 @@
 </div>
 <div class="w-full flex  justify-center items-center ">
   <div *ngIf="searchValue && searchValue.query" [ngSwitch]="searchValue.option"
-       class="flex pb-5 flex-col justify-center items-center md:flex-row w-full">
-    <app-filter-sidebar [code]="searchValue.option" class="w-1/4"></app-filter-sidebar>
-    <div class="w-3/4 pt-2">
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page"
-                     class="w-full">
-      </mat-paginator>
+       class="flex pb-5 flex-col justify-center md:flex-row w-6/7">
+    <app-filter-sidebar [code]="searchValue.option"></app-filter-sidebar>
+    <div >
+
       <!-- Most Relevant Authors Results -->
       <app-article-information *ngSwitchCase="'mrar'">
       </app-article-information>
@@ -42,8 +40,7 @@
       <app-author-retrieve *ngSwitchCase="'au'">
       </app-author-retrieve>
       <!-- Most Relevant Articles Results -->
-      <app-most-relevant-authors-graph *ngSwitchCase="'mrau'">
-        Si
+      <app-most-relevant-authors-graph *ngSwitchCase="'mrau'" query="{{searchValue.query}}">
       </app-most-relevant-authors-graph>
     </div>
   </div>
