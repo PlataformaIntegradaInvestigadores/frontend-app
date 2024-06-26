@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { bind } from 'angular';
 import * as d3 from 'd3';
-import * as cloud from 'd3-cloud';
+import cloud from 'd3-cloud';
 
 @Component({
   selector: 'app-word-cloud',

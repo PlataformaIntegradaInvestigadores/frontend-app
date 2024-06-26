@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { AuthService } from '../../domain/entities/auth.service';
+import { AuthService } from '../../domain/services/auth.service';
 import { Router } from '@angular/router';
-import { ErrorService } from '../../domain/entities/error.service';
+import { ErrorService } from '../../domain/services/error.service';
+import { LoginCredentials } from '../../domain/entities/interfaces';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private errorService: ErrorService // Inject your ErrorService
+    private errorService: ErrorService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
@@ -31,13 +32,18 @@ export class LoginComponent implements OnInit {
     this.title.setTitle("Login");
   }
 
-  onSubmit() {
+  /**
+   * Maneja el envío del formulario de inicio de sesión.
+   */
+  onSubmit(): void {
     if (this.loginForm.valid) {
-      const loginData = this.loginForm.value;
+      const loginData: LoginCredentials = this.loginForm.value;
       this.authService.login(loginData).subscribe(
         response => {
           const userId = this.authService.getUserId();
-          this.router.navigate([`/${userId}/about-me`]);
+          if (userId) {
+            this.router.navigate([`/${userId}/about-me`]);
+          }
         },
         error => {
           this.processErrors(error);
@@ -48,8 +54,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private processErrors(errors: any) {
-    this.errorMessages = this.errorService.processErrors(errors); // Use the service to process errors
+  /**
+   * Procesa los errores de la respuesta de la API y actualiza los mensajes de error.
+   * @param errors - Los errores de la respuesta de la API.
+   */
+  private processErrors(errors: any): void {
+    this.errorMessages = this.errorService.processErrors(errors);
     console.error('Error logging in', this.errorMessages);
   }
 }

@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./article.component.css']
 })
 export class ArticleComponent {
-
+  // El componente actualmente no tiene lógica específica ni datos.
 }

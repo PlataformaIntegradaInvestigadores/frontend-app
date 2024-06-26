@@ -4,8 +4,15 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class ErrorService {
+
+    /**
+     * Procesa los errores de la respuesta de la API y extrae los mensajes de error.
+     * @param errors - Los errores de la respuesta de la API.
+     * @returns Una lista de mensajes de error.
+     */
     processErrors(errors: any): string[] {
         let errorMessages: string[] = [];
+
         if (errors.error) {
             if (errors.error.detail) {
                 errorMessages.push(errors.error.detail);
@@ -26,6 +33,7 @@ export class ErrorService {
         } else {
             errorMessages.push('Incorrect email or password.');
         }
+
         return errorMessages;
     }
 }
