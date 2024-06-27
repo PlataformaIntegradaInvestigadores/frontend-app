@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { UserG } from 'src/app/group/domain/entities/user.interface';
 
 @Component({
   selector: 'btn-mail',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./btn-mail.component.css']
 })
 export class BtnMailComponent {
+
+  @Input() member: UserG | null = null;
 
 }

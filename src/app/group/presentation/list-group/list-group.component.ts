@@ -66,22 +66,6 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
     });
   }
 
-  /* loadGroups(): void {
-    this.getGroupService.getGroupsByUserId().subscribe({
-      next: (groups) => {
-        this.groups = groups.map(group => ({
-          ...group,
-          owner: group.admin_id,  // Valor quemado temporal
-          phase: '1/3'  // Valor quemado temporal
-        }));
-        console.log('Groups loaded:', this.groups);
-        this.updateIsOwnerMap();
-        console.log('isOwnerMap:', this.isOwnerMap);
-      },
-      error: (error) => console.error('Error fetching groups:', error)
-    });
-  } */
-
   updateIsOwnerMap(): void {
     if (this.userId) {
       this.groups.forEach(group => {
@@ -90,7 +74,6 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
       });
     }
   }
-
 
   navigateToGroup(groupId: string): void {
     if (!this.modalOpen) {

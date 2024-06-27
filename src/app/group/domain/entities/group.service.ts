@@ -18,6 +18,7 @@ export class GroupService {
     constructor(private http: HttpClient, private authService: AuthService) { }
 
     leaveGroup(groupId: string): Observable<any> {
+      
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`

@@ -24,6 +24,15 @@ export class ConsensusService {
     );
   }
 
+  removeMember(groupId: string, memberId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    return this.http.delete(`${this.apiUrl}${groupId}/remove-member/${memberId}/`, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
