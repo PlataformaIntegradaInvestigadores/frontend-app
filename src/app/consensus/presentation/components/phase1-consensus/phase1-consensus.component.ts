@@ -8,15 +8,29 @@ import { initFlowbite } from 'flowbite';
 })
 export class Phase1ConsensusComponent implements OnInit{
 
-  rangeValue = 0;
-  showLabel = false;
+  rangeValues: number[] = [];
+  showLabel: boolean[] = [];
+  showSliders = false;  // Esta propiedad controlará la visibilidad de las barras de rango
+  topics = this.obtenerTopicos();
 
-  showLabels() {
-    this.showLabel = true;
+  constructor() { 
+    // Supongamos que obtienes la cantidad de tópicos de alguna manera
+    const numeroDeTopicos = this.obtenerTopicos().length;
+    this.rangeValues = new Array(numeroDeTopicos).fill(0); // Inicializa todos los rangos en 0
+    this.showLabel = new Array(numeroDeTopicos).fill(false); // Inicializa la visibilidad de las etiquetas en false
+  } 
+
+  obtenerTopicos(): string[] {
+    // Supongamos que obtienes la cantidad de tópicos de alguna manera
+    return ['Tópico 1', 'Tópico 2', 'Tópico 3', 'Tópico 4', 'Tópico 5'];
   }
 
-  hideLabels() {
-    this.showLabel = false;
+  showLabels(index: number) {
+    this.showLabel[index] = true;
+  }
+
+  hideLabels(index: number) {
+      this.showLabel[index] = false;
   }
 
   ngOnInit(): void {

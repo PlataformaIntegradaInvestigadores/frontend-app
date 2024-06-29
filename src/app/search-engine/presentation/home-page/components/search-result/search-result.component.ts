@@ -37,4 +37,10 @@ export class SearchResultComponent {
     //Add 'implements OnInit' to the class.
     this.title.setTitle("Welcome")
   }
+
+  topicClcked(se:Search){
+    this.setSearch = {'option': se.option,'query':se.query}
+    this.onSearch(se)
+
+  }
 }

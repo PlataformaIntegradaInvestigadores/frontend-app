@@ -14,16 +14,15 @@ const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'profile',
-    loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
-  },
-  {
     path: 'home',
     loadChildren: () => import('src/app/search-engine/presentation/home-page/home-page.module').then(m => m.HomePageModule)
   },
-  
+  {
+    path: ':id',
+    loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
+  },
 
-  /* Siempre al ultimo */
+
   {
     path: '**', // Redirects to home when the route is not correct
     redirectTo: 'home'

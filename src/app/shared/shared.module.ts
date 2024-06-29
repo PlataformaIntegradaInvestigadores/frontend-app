@@ -13,6 +13,13 @@ import {EcuadorMapComponent} from "./components/visuals/ecuador-map/ecuador-map.
 import {GraphComponent} from "./components/visuals/graph/graph.component";
 import {SHARED_VISUALS} from "./components/visuals";
 import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
+import {WordCloudComponent} from "./components/visuals/word-cloud/word-cloud.component";
+import {NgxChartsModule, NumberCardModule} from "@swimlane/ngx-charts";
+import {EvolutionLineChartComponent} from "./components/visuals/evolution-line-chart/evolution-line-chart.component";
+import {D3Service} from "./d3";
+import {BarChartComponent} from "./components/visuals/bar-chart/bar-chart.component";
+import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {TreeMapChartComponent} from "./components/visuals/tree-map-chart/tree-map-chart.component";
 @NgModule({
   declarations: [
     SearchBoxComponent,
@@ -21,7 +28,11 @@ import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
     ...D3_DIRECTIVES,
     ...SHARED_VISUALS,
     EcuadorMapComponent,
+    BarChartComponent,
+    WordCloudComponent,
     GraphComponent,
+    EvolutionLineChartComponent,
+    TreeMapChartComponent
   ],
   exports: [
     SearchBoxComponent,
@@ -30,7 +41,11 @@ import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
     ...D3_DIRECTIVES,
     ...SHARED_VISUALS,
     EcuadorMapComponent,
+    WordCloudComponent,
     GraphComponent,
+    BarChartComponent,
+    EvolutionLineChartComponent,
+    TreeMapChartComponent
   ],
   imports: [
     MatButtonModule,
@@ -40,8 +55,10 @@ import {NgbPopoverModule} from "@ng-bootstrap/ng-bootstrap";
     CommonModule,
     SharedRoutingModule,
     NgbPopoverModule,
+    NumberCardModule,
+    NgxChartsModule,
   ],
-  providers: [],
+  providers: [D3Service],
 })
 export class SharedModule {
 }
