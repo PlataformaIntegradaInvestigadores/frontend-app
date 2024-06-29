@@ -1,46 +1,158 @@
-import { Component, OnInit } from '@angular/core';
-import { initFlowbite } from 'flowbite';
+import { Component, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { RecommendedTopic, TopicAddedUser } from 'src/app/consensus/domain/entities/topic.interface';
+import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
+import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketService.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'phase1-consensus',
   templateUrl: './phase1-consensus.component.html',
   styleUrls: ['./phase1-consensus.component.css']
 })
-export class Phase1ConsensusComponent implements OnInit{
+export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   rangeValues: number[] = [];
+  showSliders:boolean = false;
   showLabel: boolean[] = [];
-  showCheckTopics: boolean[] = []; // Esta propiedad controlará la visibilidad de los check tópicos
-  topics = this.obtenerTopicos();
+  showCheckTopics: boolean[] = [];
   newTopic: string = '';
-  userAddedTopicsIndexes: number[] = []; // Indices de los tópicos agregados por el usuario
-  combinedChecksState: boolean[] = []; // Estado de los checkboxes combinados
-  
-  showSliders:boolean = false;  // Esta propiedad controlará la visibilidad de las barras de rango
+  userAddedTopicsIndexes: number[] = [];
+  combinedChecksState: boolean[] = [];
   enableCombinedSearch: boolean = false;
   showAddTopicForm: boolean = false;
 
+  groupId: string = '';
+  recommendedTopics: RecommendedTopic[] = [];
+  addedTopics: TopicAddedUser[] = [];
+  socketSubscription: Subscription | undefined;
+  activeConnections: number = 0;
+
+  constructor(
+    private topicService: TopicService,
+    private webSocketService: WebSocketService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) { }
+
   ngOnInit(): void {
-    initFlowbite();
+    this.route.parent?.paramMap.subscribe(params => {
+      this.groupId = params.get('groupId') || '';
+      console.log('Group ID:', this.groupId);
+      this.loadTopics();
+      this.connectWebSocket();
+    });
+
+    console.log('Current URL:', this.router.url);
   }
 
-  constructor() { 
-    // Supongamos que obtienes la cantidad de tópicos de alguna manera
-    const numeroDeTopicos = this.obtenerTopicos().length;
-    this.rangeValues = new Array(numeroDeTopicos).fill(0); // Inicializa todos los rangos en 0
-    this.showLabel = new Array(numeroDeTopicos).fill(false); // Inicializa la visibilidad de las etiquetas en false
-    this.showCheckTopics = new Array(numeroDeTopicos).fill(false); // Inicializa la visibilidad de los tópicos en false
-  } 
+  ngOnDestroy(): void {
+    this.disconnectWebSocket();
+  }
 
-  obtenerTopicos(): string[] {
-    // Supongamos que obtienes la cantidad de tópicos de alguna manera
-    return [
-      'Interpretability and Explainability of AI Models',
-      'Development of Contextual Recommendation Systems', 
-      'Computer Vision Applications in Agriculture', 
-      'Automation of Neural Network Design',
-      'Privacy-Enhancing Technologies',
-    ];
+ /*  ngOnChanges(changes: SimpleChanges) {
+    if (changes['groupId'] && this.groupId) {
+      this.loadTopics();
+      this.connectWebSocket();
+    }
+  } */
+
+  loadTopics(): void {
+    if (this.groupId) {
+      this.topicService.getRecommendedTopicsByGroup(this.groupId).subscribe(
+        response => {
+          if (response.length > 0) {
+            this.recommendedTopics = response;
+            console.log('Recommended topics:', this.recommendedTopics);
+          } else {
+            this.getAndAssignRandomTopics();
+          }
+          console.log('Number of recommended topics:', this.recommendedTopics.length);
+          this.initializeProperties();
+        },
+        error => {
+          console.error('Error loading recommended topics:', error);
+        }
+      );
+
+      this.topicService.getTopicsAddedByGroup(this.groupId).subscribe(
+        response => {
+          this.addedTopics = response;
+          console.log('Added topics:', this.addedTopics);
+          console.log('Number of added topics:', this.addedTopics.length);
+        },
+        error => {
+          console.error('Error loading added topics:', error);
+        }
+      );
+    }
+  }
+
+  initializeProperties(): void {
+    this.rangeValues = new Array(this.recommendedTopics.length).fill(0);
+    this.showLabel = new Array(this.recommendedTopics.length).fill(false);
+    this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
+  }
+
+  getAndAssignRandomTopics(): void {
+    this.topicService.getRandomRecommendedTopics(this.groupId).subscribe(
+      response => {
+        this.recommendedTopics = response;
+        console.log('Randomly assigned topics:', this.recommendedTopics);
+      },
+      error => {
+        console.error('Error assigning random topics:', error);
+      }
+    );
+  }
+
+  connectWebSocket(): void {
+    if (this.groupId) {
+      console.log(`Connecting WebSocket for group: ${this.groupId}`);
+      const socket = this.webSocketService.connect(this.groupId);
+      this.socketSubscription = socket.subscribe(message => {
+        console.log('Message received: entro al subscriptor', message);
+
+        if (message.message && message.message.type === 'connection_count') {
+          console.log('Active connections: connection_count', message.message.active_connections);
+          this.activeConnections = message.message.active_connections;
+          console.log('Active connections LOOOOL:', this.activeConnections);
+          this.cdr.detectChanges(); // Forzar detección de cambios
+        }
+
+        if (message.message && message.message.type === 'new_topic') {
+          this.recommendedTopics.push(message.message.topic);
+          this.initializeProperties(); // Recalcular las propiedades si es necesario
+          this.cdr.detectChanges(); // Forzar detección de cambios
+        }
+      }, err => {
+        console.error(`WebSocket error for group ${this.groupId}:`, err);
+      }, () => {
+        console.log(`WebSocket connection closed for group ${this.groupId}`);
+      });
+    }
+  }
+
+  disconnectWebSocket(): void {
+    if (this.groupId) {
+      console.log(`Disconnecting WebSocket for group: ${this.groupId}`);
+      this.webSocketService.close(this.groupId);
+      if (this.socketSubscription) {
+        this.socketSubscription.unsubscribe();
+      }
+    }
+  }
+
+  addTopic(): void {
+    const userId = this.authService.getUserId();
+    const message = { topic_name: this.newTopic, user_id: userId };
+    console.log(`Adding new topic to group ${this.groupId}:`, message);
+    this.webSocketService.sendMessage(this.groupId, { type: 'new_topic', topic: message });
+    this.newTopic = '';
   }
 
   showLabels(index: number) {
@@ -48,7 +160,7 @@ export class Phase1ConsensusComponent implements OnInit{
   }
 
   hideLabels(index: number) {
-      this.showLabel[index] = false;
+    this.showLabel[index] = false;
   }
 
   showCheckTopic(index: number) {
@@ -59,7 +171,7 @@ export class Phase1ConsensusComponent implements OnInit{
     this.showCheckTopics[index] = false;
   } 
 
-  
+
   getGradient(value: number): string {
     /* #172554  == hsl(223, 58%, 20%) */
     /* #1E3C8B == hsl(227, 65%, 34%) */
@@ -77,7 +189,7 @@ export class Phase1ConsensusComponent implements OnInit{
   }
 
   combinedSearch(): void {
-    const selectedTopics = this.topics.filter((_, index) => this.combinedChecksState[index]);
+    const selectedTopics = this.recommendedTopics.map(topic => topic.topic_name).filter((_, index) => this.combinedChecksState[index]);
     if (selectedTopics.length > 0) {
       const query = encodeURIComponent(selectedTopics.join(' '));
       const url = `https://scholar.google.com/scholar?q=${query}`;
@@ -87,18 +199,16 @@ export class Phase1ConsensusComponent implements OnInit{
     }
   }
 
-  
-
   checkAndCombinedSearch(): void {
     if (this.enableCombinedSearch) {
       this.combinedSearch();
     } else {
-      /* alert('Enable combined search by checking the box.'); */
+      alert('Enable combined search by checking the box.');
       this.enableCombinedSearch = !this.enableCombinedSearch;
     }
   }
 
-  addNewTopic(): void {
+  /* addNewTopic(): void {
     if (this.newTopic.trim()) {
       this.topics.push(this.newTopic.trim());
       this.rangeValues.push(0);
@@ -107,10 +217,10 @@ export class Phase1ConsensusComponent implements OnInit{
       this.userAddedTopicsIndexes.push(this.topics.length - 1); // Agregar el índice del nuevo tópico
       this.newTopic = '';
     }
-  }
+  } */
 
   removeLastUserAddedTopic(): void {
-    if (this.userAddedTopicsIndexes.length > 0) {
+    /* if (this.userAddedTopicsIndexes.length > 0) {
       const lastIndex = this.userAddedTopicsIndexes.pop(); // Obtener y eliminar el último índice
       if (lastIndex !== undefined) {
         this.topics.splice(lastIndex, 1);
@@ -122,9 +232,9 @@ export class Phase1ConsensusComponent implements OnInit{
       }
     } else {
       alert('No user-added topics to remove.');
-    }
+    } */
   }
-  
+
   toggleExpertise(): void {
     this.showSliders = !this.showSliders;
   }
@@ -132,6 +242,6 @@ export class Phase1ConsensusComponent implements OnInit{
   toggleAddTopicForm(): void { 
     this.showAddTopicForm = !this.showAddTopicForm;
   }
-  
+
   
 }

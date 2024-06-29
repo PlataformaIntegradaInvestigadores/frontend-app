@@ -24,7 +24,7 @@ export class CardGroupComponent  {
 
   ngOnChanges(): void {
     console.log('Group:', this.group);
-    console.log('Is Owner:', this.isOwner);
+    //console.log('Is Owner:', this.isOwner);
   }
 
   onNavigate() {
