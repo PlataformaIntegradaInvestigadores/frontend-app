@@ -25,7 +25,10 @@ import {FormsModule} from "@angular/forms";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { EcuadorContributionComponent } from './components/ecuador-contribution/ecuador-contribution.component';
 import {HttpClientModule} from "@angular/common/http";
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import { AdminModule } from '../admin/admin.module';
+import { AdminRoutingModule } from '../admin/admin-rounting.module';
 @NgModule({
   imports: [
     MatSlideToggleModule,
@@ -41,7 +44,12 @@ import {HttpClientModule} from "@angular/common/http";
     FormsModule,
     FontAwesomeModule,
     DashboardModule,
-    SharedModule
+    SharedModule,
+    MatFormFieldModule,
+    MatInputModule,
+    AdminModule,
+    AdminRoutingModule
+
   ],
   exports: [
     CoauthorsGraphComponent

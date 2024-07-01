@@ -1,0 +1,61 @@
+/* login.component.css */
+
+/* Estilos generales */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Estilo para el contenedor principal */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f3f4f6; /* Color de fondo gris claro */
+}
+
+/* Estilo para el formulario */
+.form-container {
+  background-color: #ffffff; /* Fondo blanco */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 2rem; /* Espaciado interno */
+  max-width: 400px; /* Ancho máximo */
+  width: 100%; /* Ancho completo */
+}
+
+/* Estilo para los inputs */
+input[type="text"],
+input[type="password"] {
+  padding: 1rem; /* Ajuste del relleno */
+  border: 1px solid #ccc; /* Borde gris */
+  border-radius: 0.25rem; /* Bordes redondeados */
+  outline: none; /* Sin contorno al enfocar */
+  transition: border-color 0.2s ease-in-out; /* Transición suave del color del borde */
+}
+
+/* Estilo para el icono dentro del input */
+.relative {
+  position: relative;
+}
+
+/* Estilo para el botón de login */
+button {
+  margin-top: 16px; /* Espacio superior */
+  background-color: #3490dc; /* Color de fondo azul */
+  color: #fff; /* Color de texto blanco */
+  padding: 1rem 2rem; /* Ajuste del relleno */
+  border: none; /* Sin borde */
+  border-radius: 0.25rem; /* Bordes redondeados */
+  cursor: pointer; /* Cursor de puntero al pasar */
+  outline: none; /* Sin contorno al enfocar */
+  transition: background-color 0.2s ease-in-out; /* Transición suave del color de fondo */
+}
+
+button:hover,
+button:focus {
+  background-color: #2779bd; /* Color de fondo azul más oscuro al pasar */
+}
