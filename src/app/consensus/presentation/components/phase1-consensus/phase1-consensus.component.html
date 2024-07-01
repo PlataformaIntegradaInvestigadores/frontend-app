@@ -128,69 +128,19 @@
     </div>
 </div>
 
-<!-- ////////// Second Option \\\\\\\\\\\\ -->
-
-<!-- <div class="container mx-auto mb-2 rounded-xl border p-4 shadow-md bg-white">
-    <div class="mb-3 text-xl font-bold">Your group recommendation</div>
-        <div class="container text-sm text-gray-900">
-            <p>Explore the suggested topics list and acquaint yourself with the available choices</p>
-
-            <div class="flex items-center mb-2.5">
-                <input type="checkbox" id="toggleSliders10" [(ngModel)]="enableCombinedSearch" class="w-4 h-4 text-primary_tailwind bg-gray-100 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                <label for="toggleSliders10" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to enable combined search</label>
-                
-                <button (click)="combinedSearch()" type="button" class="px-3 py-2 text-sm font-medium text-center text-white bg-primary_tailwind rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-2">Search</button>
-            </div>
-            <div class="flex items-center mb-2.5">
-                <input type="checkbox" id="toggleSliders11" [(ngModel)]="showSliders" class="w-4 h-4 text-primary_tailwind bg-gray-100 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                <label for="toggleSliders11" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to choose my expertise in each topic</label>
-            </div>
-
-            <div class="flex items-center mb-2.5">
-                <input type="checkbox" id="toggleSliders12" [(ngModel)]="showAddTopicForm" class="w-4 h-4 text-primary_tailwind bg-gray-100 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                <label for="toggleSliders12" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to add a new topic</label>
-            </div>
-            
-            <div class="flex justify-center items-center">
-                <div class="movil-margin-cero w-full mx-6 text-sm text-gray-900 bg-white border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
-                    <div *ngFor="let topic of topics; let i = index" class="w-full text-sm text-gray-900 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
-                        <div class="flex items-center justify-between w-full px-4 py-3 text-left border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white relative">
-                            <span (click)="redirectToGoogleScholar(topic)" class=" relative w-8/12 cursor-pointer text-container">{{ i + 1 }}. {{ topic }}</span>
-                            <div class="relative w-1/4" *ngIf="showSliders">
-                                <input [(ngModel)]="rangeValues[i]" type="range" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                    (mousedown)="showLabels(i)" (mouseup)="hideLabels(i)" (touchstart)="showLabels(i)" (touchend)="hideLabels(i)"
-                                    [style.background]="getGradient(rangeValues[i])">
-                                <span class="absolute -left-5 -top-3 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Junior</span>
-                                <span class="absolute -right-5 -top-3 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Expert</span>
-                            </div>
-                                    <div class="absolute inset-y-0 right-0 flex items-center justify-center pr-4" *ngIf="enableCombinedSearch" style="left: 68%; transform: translateX(-50%);">
-                                        <input type="checkbox" [(ngModel)]="combinedChecksState[i]" class="w-4 h-4 text-primary_tailwind bg-gray-300 rounded border-gray-300 focus:ring-primary_tailwind dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                    </div>
-                            </div>
-                    </div>
-                    <div *ngIf="showAddTopicForm"  class="w-full px-4 py-2 font-medium text-left rtl:text-right bg-gray-100 rounded-b-lg dark:bg-gray-600 dark:text-gray-400">
-                        <form (ngSubmit)="addNewTopic()" class="max-w-sm mx-auto">
-                          <label for="new-topic-input" class="block text-sm font-medium text-gray-600 dark:text-white">I want to add a new topic</label>
-                          <div class="relative flex items-center">
-                            <input [(ngModel)]="newTopic" name="newTopic" type="text" id="new-topic-input" aria-describedby="add a new topic that you would like to investigate" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex: Sports prediction" required />
-                            <button type="submit" class="absolute right-10 bg-primary_tailwind text-white font-medium rounded-lg text-sm px-1.5 py-1 m-1 flex items-center">
-                              <svg fill="currentColor" width="18px" height="18px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon line-color">
-                                <line x1="7" y1="12" x2="11" y2="12" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
-                                <path d="M5.44,4.15l14.65,7a1,1,0,0,1,0,1.8l-14.65,7A1,1,0,0,1,4.10,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.10,5.46A1,1,0,0,1,5.44,4.15Z" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
-                              </svg>
-                            </button>
-                            <button type="button" (click)="removeLastUserAddedTopic()" class="absolute right-2 bg-primary_tailwind text-text-red-500 font-medium rounded-lg text-sm px-1.5 py-1 m-1 flex items-center">
-                                <svg width="18px" height="18px" viewBox="0 0 48 48" version="1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 48 48">
-                                    <path fill="#F87171" d="M24,6C14.1,6,6,14.1,6,24s8.1,18,18,18s18-8.1,18-18S33.9,6,24,6z M24,10c3.1,0,6,1.1,8.4,2.8L12.8,32.4 C11.1,30,10,27.1,10,24C10,16.3,16.3,10,24,10z M24,38c-3.1,0-6-1.1-8.4-2.8l19.6-19.6C36.9,18,38,20.9,38,24C38,31.7,31.7,38,24,38 z"/>
-                                </svg>
-                            </button>
-                          </div>
-                        </form>
-                    </div>
-                </div>
-            </div>  
-        </div>
-    </div>
- -->
-
-    
+<!-- Error message -->
+<div *ngIf="showError" id="error-message" class="flex items-center p-3.5 mb-4 mt-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+  <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+  </svg>
+  <span class="sr-only">Info</span>
+  <div class="ms-3 text-sm font-medium">
+    {{ errorMessage }}
+  </div>
+  <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700" (click)="showError = false" aria-label="Close">
+    <span class="sr-only">Close</span>
+    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+    </svg>
+  </button>
+</div>

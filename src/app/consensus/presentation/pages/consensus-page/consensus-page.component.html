@@ -44,7 +44,7 @@
             </div>
             <div class="col-span-1">
                 <div class='w-full flex items-start justify-start flex-col'>
-                    <members-consensus [group]="group" class="w-full mb-2"  ></members-consensus>
+                    <members-consensus [group]="group" class="w-full mb-3"  ></members-consensus>
                     <phase1-consensus-notification class="w-full" *ngIf="!isDecisionPhase"></phase1-consensus-notification>
                     <satisfaction-level *ngIf="isDecisionPhase"></satisfaction-level>
                 </div>

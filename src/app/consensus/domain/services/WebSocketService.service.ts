@@ -1,7 +1,9 @@
+// websocket.service.ts
+
 import { Injectable } from '@angular/core';
 import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,21 +11,38 @@ import { Observable } from 'rxjs';
 export class WebSocketService {
 
   private sockets: { [key: string]: WebSocketSubject<any> } = {};
+  public newTopicReceived: Subject<any> = new Subject<any>();
 
   connect(groupId: string): WebSocketSubject<any> {
     if (!this.sockets[groupId] || this.sockets[groupId].closed) {
-      console.log(`Creating new WebSocket connection for group: ${groupId}`);
-      this.sockets[groupId] = webSocket(`${environment.wsUrl}/groups/${groupId}/`);
-      this.sockets[groupId].subscribe(
-        msg => console.log(`Message received on group ${groupId}:`, msg),
-        err => console.error(`WebSocket error on group ${groupId}:`, err),
-        () => console.log(`WebSocket connection closed for group ${groupId}`)
-      );
+        console.log(`Creating new WebSocket connection for group: ${groupId}`);
+        this.sockets[groupId] = webSocket(`${environment.wsUrl}/groups/${groupId}/`);
+        this.sockets[groupId].subscribe(
+            msg => {
+                // Imprimir la estructura completa del mensaje recibido
+                console.log(`Message received on group ws service estructura completa del mensaje recibido ${groupId}:`, JSON.stringify(msg, null, 2));
+                
+                // Verificar si msg.message existe antes de acceder a sus propiedades
+                if (msg.message) {
+                    if (msg.message.type === 'new_topic') {
+                        console.log('Nuevo tópico recibido:', msg.message.topic_name);
+                        this.newTopicReceived.next(msg.message);
+                    }
+                    if (msg.message.type === 'connection_count') {
+                        console.log('Número de conexiones activas:', msg.message.active_connections);
+                    }
+                } else {
+                    console.warn('Received message without expected structure:', msg);
+                }
+            },
+            err => console.error(`WebSocket error on group ${groupId}:`, err),
+            () => console.log(`WebSocket connection closed for group ${groupId}`)
+        );
     } else {
-      console.log(`Reusing existing WebSocket connection for group: ${groupId}`);
+        console.log(`Reusing existing WebSocket connection for group: ${groupId}`);
     }
     return this.sockets[groupId];
-  }
+}
 
   sendMessage(groupId: string, message: any) {
     if (this.sockets[groupId]) {

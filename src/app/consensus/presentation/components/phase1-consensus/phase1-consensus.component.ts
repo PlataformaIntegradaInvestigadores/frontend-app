@@ -28,7 +28,12 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   recommendedTopics: RecommendedTopic[] = [];
   addedTopics: TopicAddedUser[] = [];
   socketSubscription: Subscription | undefined;
+  topicsSubscription: Subscription | undefined;
+  newTopicSubscription: Subscription | undefined;
   activeConnections: number = 0;
+
+  showError: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private topicService: TopicService,
@@ -47,19 +52,37 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       this.connectWebSocket();
     });
 
+    this.topicsSubscription = this.topicService.topics$.subscribe(
+      topics => {
+        this.addedTopics = topics;
+        this.cdr.detectChanges();
+      }
+    );
+
+    this.newTopicSubscription = this.webSocketService.newTopicReceived.subscribe(topic => {
+      console.log('New topic received para ingresar:', topic);
+      // Verificar si el tópico ya existe antes de agregarlo
+      if (!this.recommendedTopics.some(t => t.topic_name === topic.topic_name)) {
+        this.recommendedTopics.push(topic);
+        this.cdr.detectChanges();
+      } else {
+        console.log('Tópico ya existe en la lista:', topic.topic_name);
+      }
+    });
+
     console.log('Current URL:', this.router.url);
   }
 
   ngOnDestroy(): void {
     this.disconnectWebSocket();
+    if (this.topicsSubscription) {
+      this.topicsSubscription.unsubscribe();
+    }
+    if (this.newTopicSubscription) {
+      this.newTopicSubscription.unsubscribe();
+    }
   }
 
- /*  ngOnChanges(changes: SimpleChanges) {
-    if (changes['groupId'] && this.groupId) {
-      this.loadTopics();
-      this.connectWebSocket();
-    }
-  } */
 
   loadTopics(): void {
     if (this.groupId) {
@@ -115,20 +138,20 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       console.log(`Connecting WebSocket for group: ${this.groupId}`);
       const socket = this.webSocketService.connect(this.groupId);
       this.socketSubscription = socket.subscribe(message => {
+        
         console.log('Message received: entro al subscriptor', message);
 
-        if (message.message && message.message.type === 'connection_count') {
-          console.log('Active connections: connection_count', message.message.active_connections);
+        if (message.message.type === 'connection_count') {
           this.activeConnections = message.message.active_connections;
-          console.log('Active connections LOOOOL:', this.activeConnections);
-          this.cdr.detectChanges(); // Forzar detección de cambios
+          this.cdr.detectChanges();  // Forzar detección de cambios
         }
 
-        if (message.message && message.message.type === 'new_topic') {
-          this.recommendedTopics.push(message.message.topic);
-          this.initializeProperties(); // Recalcular las propiedades si es necesario
-          this.cdr.detectChanges(); // Forzar detección de cambios
+        if (message.message.type === 'new_topic') {
+          const newTopic = message.message.topic_name;       
+          this.topicService.updateTopics(newTopic);
+          this.cdr.detectChanges();
         }
+
       }, err => {
         console.error(`WebSocket error for group ${this.groupId}:`, err);
       }, () => {
@@ -144,16 +167,57 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       if (this.socketSubscription) {
         this.socketSubscription.unsubscribe();
       }
+      this.webSocketService.closeAll();
     }
   }
 
   addTopic(): void {
     const userId = this.authService.getUserId();
-    const message = { topic_name: this.newTopic, user_id: userId };
-    console.log(`Adding new topic to group ${this.groupId}:`, message);
-    this.webSocketService.sendMessage(this.groupId, { type: 'new_topic', topic: message });
-    this.newTopic = '';
+    if (this.newTopic.trim() && userId && this.groupId) {
+      this.topicService.addNewTopic(this.groupId, this.newTopic.trim()).subscribe(
+        response => {
+          /* Mensaje enviado desde el front al backend */
+          console.log('New topic added enviado por el front:', response);
+          this.newTopic = '';
+          this.webSocketService.sendMessage(this.groupId, {
+            type: 'new_topic',
+            topic: {
+              id: response.id,
+              topic: response.topic.topic_name,
+              user_id: userId,
+              group_id: this.groupId,
+              added_at: response.added_at
+            }
+          });
+          console.log('New topic message sent to WebSocket:', response);
+        },
+        error => {
+          console.error('Error adding new topic:', error);
+          if (error.status === 400 && error.error.error === "Topic already exists in this group") {
+            this.errorMessage = "This topic already exists in the group.";
+          } else {
+            //this.errorMessage = "An unexpected error occurred. Please try again.";
+            this.errorMessage = "This topic already exists in the group.";
+          }
+          this.showError = true;  // Mostrar el mensaje de error
+         
+          // Desplazar hacia el mensaje de error
+          setTimeout(() => {
+            const errorElement = document.getElementById('error-message');
+            if (errorElement) {
+              errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            // Configurar temporizador para ocultar el mensaje de error después de 5 segundos
+            setTimeout(() => {
+              this.showError = false;
+              this.cdr.detectChanges();  // Forzar detección de cambios
+            }, 8000);
+        }, 0);
+      }
+    );
+    }
   }
+
 
   showLabels(index: number) {
     this.showLabel[index] = true;
@@ -208,22 +272,11 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* addNewTopic(): void {
-    if (this.newTopic.trim()) {
-      this.topics.push(this.newTopic.trim());
-      this.rangeValues.push(0);
-      this.showLabel.push(false);
-      this.showCheckTopics.push(false);
-      this.userAddedTopicsIndexes.push(this.topics.length - 1); // Agregar el índice del nuevo tópico
-      this.newTopic = '';
-    }
-  } */
-
   removeLastUserAddedTopic(): void {
-    /* if (this.userAddedTopicsIndexes.length > 0) {
+    if (this.userAddedTopicsIndexes.length > 0) {
       const lastIndex = this.userAddedTopicsIndexes.pop(); // Obtener y eliminar el último índice
       if (lastIndex !== undefined) {
-        this.topics.splice(lastIndex, 1);
+        this.addedTopics.splice(lastIndex, 1);
         this.rangeValues.splice(lastIndex, 1);
         this.showLabel.splice(lastIndex, 1);
         this.showCheckTopics.splice(lastIndex, 1);
@@ -232,7 +285,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       }
     } else {
       alert('No user-added topics to remove.');
-    } */
+    }
   }
 
   toggleExpertise(): void {
@@ -243,5 +296,4 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.showAddTopicForm = !this.showAddTopicForm;
   }
 
-  
 }

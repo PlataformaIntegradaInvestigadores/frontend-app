@@ -1,8 +1,8 @@
 // src/app/services/topic.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { RecommendedTopic, TopicAddedUser } from '../entities/topic.interface';
 
@@ -11,8 +11,9 @@ import { RecommendedTopic, TopicAddedUser } from '../entities/topic.interface';
 })
 export class TopicService {
   private apiUrl = `${environment.apiUrl}/v1/groups/`;
-
-
+  private topicsSubject = new BehaviorSubject<TopicAddedUser[]>([]);
+  topics$ = this.topicsSubject.asObservable();
+  
   constructor(private http: HttpClient) { 
     
     console.log('TopicService.apiUrl', this.apiUrl);
@@ -27,6 +28,7 @@ export class TopicService {
     );
   }
 
+  /* Para obtener los tópicos recomendados para un grupo específico */
   getRecommendedTopicsByGroup(groupId: string): Observable<RecommendedTopic[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -52,6 +54,34 @@ export class TopicService {
     return this.http.get<{ recommended_topics: RecommendedTopic[], added_topics: TopicAddedUser[] }>(`${this.apiUrl}${groupId}/topics/`, { headers }).pipe(
       catchError(this.handleError)
     );
+  }
+
+  addNewTopic(groupId: string, topicName: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      topic: topicName,  // Asegúrate de que el nombre del campo es correcto
+      user_id: localStorage.getItem('userId')  // Incluye el user_id en el cuerpo de la solicitud
+    };
+    
+    // Imprimir la estructura de datos que se enviará
+    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    
+    return this.http.post<any>(`${this.apiUrl}${groupId}/add-topic/`, body, { headers }).pipe(
+      tap(response => {
+        const currentTopics = this.topicsSubject.getValue();
+        this.topicsSubject.next([...currentTopics, response]);
+      }),
+      catchError(this.handleError)
+    );
+  }
+  
+
+  updateTopics(newTopic: TopicAddedUser): void {
+    const currentTopics = this.topicsSubject.getValue();
+    this.topicsSubject.next([...currentTopics, newTopic]);
   }
 
   private handleError(error: any): Observable<never> {
