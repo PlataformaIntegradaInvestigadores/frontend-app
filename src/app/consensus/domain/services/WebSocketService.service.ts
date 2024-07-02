@@ -8,10 +8,12 @@ import { Observable, Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class WebSocketService {
 
   private sockets: { [key: string]: WebSocketSubject<any> } = {};
   public newTopicReceived: Subject<any> = new Subject<any>();
+  public notificationsReceived: Subject<any> = new Subject<any>();
 
   connect(groupId: string): WebSocketSubject<any> {
     if (!this.sockets[groupId] || this.sockets[groupId].closed) {
@@ -25,11 +27,17 @@ export class WebSocketService {
                 // Verificar si msg.message existe antes de acceder a sus propiedades
                 if (msg.message) {
                     if (msg.message.type === 'new_topic') {
-                        console.log('Nuevo tópico recibido:', msg.message.topic_name);
+                        console.log('Nuevo tópico recibido 1:', msg.message.topic_name);
+                        console.log('Nueva notificacion recibida recibido 1:', msg.message.notification_message);
                         this.newTopicReceived.next(msg.message);
                     }
                     if (msg.message.type === 'connection_count') {
                         console.log('Número de conexiones activas:', msg.message.active_connections);
+                    }
+                    // Manejar las notificaciones generales
+                    if (msg.message.type === 'notification') {
+                      console.log('Nueva notificación recibida:', msg.message.topic_name);
+                        this.notificationsReceived.next(msg.message);
                     }
                 } else {
                     console.warn('Received message without expected structure:', msg);

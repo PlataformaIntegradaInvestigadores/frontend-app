@@ -35,6 +35,9 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   showError: boolean = false;
   errorMessage: string = '';
 
+  notifications: any[] = [];
+
+
   constructor(
     private topicService: TopicService,
     private webSocketService: WebSocketService,
@@ -68,6 +71,18 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       } else {
         console.log('Tópico ya existe en la lista:', topic.topic_name);
       }
+      if (!this.notifications.some(t => t.notification_message === topic.notification_message)) {
+        this.notifications.push(topic);
+        console.log("Se pusheo la notificacion al arreglo")
+        console.log(this.notifications)
+        this.cdr.detectChanges();
+      } 
+    });
+
+    this.webSocketService.notificationsReceived.subscribe(notification => {
+      console.log('Notification INTERACTIVIDAD DE USUARIO received:', notification);
+      this.notifications.push(notification);
+      this.cdr.detectChanges();
     });
 
     console.log('Current URL:', this.router.url);
