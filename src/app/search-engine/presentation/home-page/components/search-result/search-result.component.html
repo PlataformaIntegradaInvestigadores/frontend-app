@@ -34,10 +34,10 @@
     <div >
 
       <!-- Most Relevant Authors Results -->
-      <app-article-information *ngSwitchCase="'mrar'">
+      <app-article-information *ngSwitchCase="'mrar'" query="{{searchValue.query}}">
       </app-article-information>
       <!-- Author Results -->
-      <app-author-retrieve *ngSwitchCase="'au'">
+      <app-author-retrieve *ngSwitchCase="'au'" query="{{searchValue.query}}">
       </app-author-retrieve>
       <!-- Most Relevant Articles Results -->
       <app-most-relevant-authors-graph *ngSwitchCase="'mrau'" query="{{searchValue.query}}">

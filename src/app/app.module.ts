@@ -17,6 +17,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
     ReactiveFormsModule,
     HttpClientModule,
     BrowserModule,
-    NoopAnimationsModule
+    NoopAnimationsModule,
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,18 +1,22 @@
 export interface Article {
   title: string
   abstract: string
-  publicationDate: Date
-  authors: { scopusId: string, name: string }[]
+  publication_date: Date
+  authors: { scopus_id: string, name: string }[]
   affiliations: string[]
   topics: string[]
   doi: string
+  author_count: number
+  affiliation_count: number
 }
 
 export interface ArticleResult {
-  scopusId: number
+  scopus_id: number
   title: string
   authors: string[]
-  publicationDate: Date
+  publication_date: Date
+  author_count: number
+  affiliation_count: number
 }
 
 export interface PaginationArticleResult {

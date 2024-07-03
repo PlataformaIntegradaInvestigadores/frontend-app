@@ -50,9 +50,11 @@ export class MostRelevantAuthorsGraphComponent {
   refreshGraph() {
     this.showGraph = false
     this.loading.emit(true)
+    console.log(this.query)
     this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
       .pipe(
         tap((coauthors) => {
+          console.log(coauthors)
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
@@ -62,7 +64,9 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   setupGraph(coauthors: Coauthors) {
+
     this.apiNodes = coauthors.nodes
+    console.log(this.apiNodes)
     this.d3Nodes = this.getD3Nodes()
     this.d3Links = this.getD3Links(coauthors.links)
   }

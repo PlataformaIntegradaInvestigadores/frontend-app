@@ -3,6 +3,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 @import 'flowbite';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
 
 .auth_bg {
     background-color: black;
@@ -25,3 +27,4 @@ html {
     overflow-y: scroll;
     /* Add the ability to scroll */
 }
+

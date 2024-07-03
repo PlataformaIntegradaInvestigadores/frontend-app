@@ -1,51 +1,70 @@
-<mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page"
-               class="w-full">
+<mat-paginator
+  [length]="total"
+  [pageSize]="size"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page"
+  class="w-full"
+  (page)="onChangePagination($event)"
+>
 </mat-paginator>
-<ng-container *ngFor="let item of items">
-  <div class="flex flex-col md:flex-row items-center border-2 border-black w-full my-2 p-3  rounded-md">
-    <div class=" flex justify-center items-center text-center font-bold w-2/4">
-      {{ item.title }}
-    </div>
-    <div class="flex flex-col  flex-wrap text-center items-center justify-center w-2/4">
-      <mat-icon>person</mat-icon>
-      <div class="flex gap-x-7">
-        <ng-container *ngFor="let au of item.authors">
-          <span>{{ au.name }}</span>
-        </ng-container>
+<div *ngIf="articles$ | async as articles">
+  <ng-container *ngFor="let item of articles.data">
+    <div
+      class="flex flex-col md:flex-row items-center border-2 border-black w-full my-2 p-3 rounded-md"
+    >
+      <div class="flex justify-center items-center text-center font-bold w-2/4">
+        {{ item.title }}
       </div>
-      <div class="flex text-center">
-        <div class="flex justify-center items-center">
-          Authors
+      <div
+        class="flex flex-col flex-wrap text-center items-center justify-center w-2/4"
+      >
+        <mat-icon>person</mat-icon>
+        <div>
+          {{ item.author_count }}
+        </div>
+        <div class="flex text-center">
+          <div class="flex justify-center items-center">Authors</div>
         </div>
       </div>
-    </div>
 
-    <div class=" flex flex-col flex-grow text-center justify-center items-center w-2/5">
-      <mat-icon>apartment</mat-icon>
-      <div class="flex flex-grow items-center justify-center">{{ item.affiliation }}</div>
-      <div>Afiliation</div>
-    </div>
-    <div class="flex justify-center items-center w-1/2 ">
-      <div class=" flex flex-grow flex-col text-center items-center justify-center ">
-        <mat-icon>calendar_month</mat-icon>
-        <div>{{ item.publicationDate }}</div>
-        <div>Publication-Date</div>
+      <div
+        class="flex flex-col flex-grow text-center justify-center items-center w-2/5"
+      >
+        <mat-icon>apartment</mat-icon>
+        <div class="flex flex-grow items-center justify-center">
+          {{ item.affiliation_count }}
+        </div>
+        <div>Afiliation</div>
       </div>
-      <div class="flex flex-col text-center items-center justify-center w-2/5">
-        <mat-icon class="mr-1">trending_up</mat-icon>
-        <div>{{ item.citationCount }}</div>
-        <div>Citations</div>
+
+      <div class="flex justify-center items-center w-1/2">
+        <div
+          class="flex flex-grow flex-col text-center items-center justify-center"
+        >
+          <mat-icon>calendar_month</mat-icon>
+          <div>{{ item.publication_date }}</div>
+          <div>Publication-Date</div>
+        </div>
+        <div
+          class="flex flex-col text-center items-center justify-center w-2/5"
+        >
+          <mat-icon class="mr-1">trending_up</mat-icon>
+          <div>{{ item.scopus_id }}</div>
+          <div>Citations</div>
+        </div>
+      </div>
+
+      <div class="flex justify-center flex-col w-2/5">
+        <!-- Scopus Link -->
+        <button mat-flat-button color="primary" class="my-2" (click)="goToArticle(item.scopus_id)" >
+          See in Scopus
+        </button>
+
+        <!-- Article Information page -->
+        <button mat-flat-button color="primary" routerLink="/home/article">
+          See More Information
+        </button>
       </div>
     </div>
-    <div class="flex justify-center flex-col w-2/5">
-      <!-- Scopus Link -->
-      <button mat-flat-button color="primary" class="my-2">
-        See in Scopus
-      </button>
-
-      <!-- Article Information page -->
-      <button mat-flat-button color="primary" routerLink="/home/article">See More Information</button>
-    </div>
-  </div>
-</ng-container>
-
+  </ng-container>
+</div>
