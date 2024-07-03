@@ -1,10 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
+
 
 @Component({
   selector: 'app-data-nav',
   templateUrl: './data-nav.component.html',
   styleUrls: ['./data-nav.component.css']
 })
-export class DataNavComponent {
+export class DataNavComponent implements OnChanges {
+  @Input() user: any;
 
+  @Input() isOwnProfile: boolean = false;
+
+  constructor(private userDataService: UserDataService) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['user']) {
+      this.userDataService.changeUser(this.user);
+    }
+  }
 }

@@ -1,5 +1,5 @@
 <!-- Visibilidad de la lista -->
-<div class="container mx-auto max-w-screen-xl px-3 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 ">
+<div *ngIf="user.isOwnProfile" class="container mx-auto max-w-screen-xl px-3 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 ">
     <div class="col-span-12 md:col-span-12">
         <div id="accordion-flush" data-accordion="collapse" data-active-classes="text-gray-500 dark:text-gray-400"
             data-inactive-classes="text-gray-500 dark:text-gray-400">

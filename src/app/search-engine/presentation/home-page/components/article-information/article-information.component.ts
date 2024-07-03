@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable, switchMap, tap} from "rxjs";
 import {Article, PaginationArticleResult} from "../../../../../shared/interfaces/article.interface";
 import {ArticleService} from "../../../../domain/services/article.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-article-information',
@@ -10,142 +11,13 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ['./article-information.component.css']
 })
 export class ArticleInformationComponent {
-  items = [{
-    title: "A Comprehensive Study on Machine Learning Algorithms",
-    authors: [
-      {
-        name: "Dr. Jane Doe",
-        email: "jane.doe@example.com",
-        affiliation: "University of Example",
-        num_articles: 50,
-        topics: [
-          { name: "Machine Learning" },
-          { name: "Artificial Intelligence" },
-          { name: "Data Science" }
-        ]
-      },
-      {
-        name: "Dr. John Smith",
-        email: "john.smith@example.com",
-        affiliation: "Institute of Technology",
-        num_articles: 40,
-        topics: [
-          { name: "Neural Networks" },
-          { name: "Deep Learning" },
-          { name: "Big Data" }
-        ]
-      },
-      {
-        name: "Dr. John Smith",
-        email: "john.smith@example.com",
-        affiliation: "Institute of Technology",
-        num_articles: 40,
-        topics: [
-          { name: "Neural Networks" },
-          { name: "Deep Learning" },
-          { name: "Big Data" }
-        ]
-      }
-    ],
-    publicationDate: '2023-08-15',
-    citationCount: 120,
-    affiliation: "Escuela Politecnica Nacional"
-  }, {
-    title: "A Comprehensive Study on Machine Learning Algorithms",
-    authors: [
-      {
-        name: "Dr. Jane Doe",
-        email: "jane.doe@example.com",
-        affiliation: "University of Example",
-        num_articles: 50,
-        topics: [
-          { name: "Machine Learning" },
-          { name: "Artificial Intelligence" },
-          { name: "Data Science" }
-        ]
-      },
-      {
-        name: "Dr. John Smith",
-        email: "john.smith@example.com",
-        affiliation: "Institute of Technology",
-        num_articles: 40,
-        topics: [
-          { name: "Neural Networks" },
-          { name: "Deep Learning" },
-          { name: "Big Data" }
-        ]
-      }
-    ],
-    publicationDate: '2023-08-15',
-    citationCount: 120,
-    affiliation: "ESPE"
-  },{
-    title: "A Comprehensive Study on Machine Learning Algorithms",
-    authors: [
-      {
-        name: "Dr. Jane Doe",
-        email: "jane.doe@example.com",
-        affiliation: "University of Example",
-        num_articles: 50,
-        topics: [
-          { name: "Machine Learning" },
-          { name: "Artificial Intelligence" },
-          { name: "Data Science" }
-        ]
-      },
-      {
-        name: "Dr. John Smith",
-        email: "john.smith@example.com",
-        affiliation: "Institute of Technology",
-        num_articles: 40,
-        topics: [
-          { name: "Neural Networks" },
-          { name: "Deep Learning" },
-          { name: "Big Data" }
-        ]
-      }
-    ],
-    publicationDate: '2023-08-15',
-    citationCount: 120,
-    affiliation: "Escuela Politecnica Nacional"
-  }, {
-    title: "A Comprehensive Study on Machine Learning Algorithms",
-    authors: [
-      {
-        name: "Dr. Jane Doe",
-        email: "jane.doe@example.com",
-        affiliation: "University of Example",
-        num_articles: 50,
-        topics: [
-          { name: "Machine Learning" },
-          { name: "Artificial Intelligence" },
-          { name: "Data Science" }
-        ]
-      },
-      {
-        name: "Dr. John Smith",
-        email: "john.smith@example.com",
-        affiliation: "Institute of Technology",
-        num_articles: 40,
-        topics: [
-          { name: "Neural Networks" },
-          { name: "Deep Learning" },
-          { name: "Big Data" }
-        ]
-      }
-    ],
-    publicationDate: '2023-08-15',
-    citationCount: 120,
-    affiliation: "ESPE"
-  }
-
-  ]
 
   @Input() query!: string
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   page = 1;
   size = 5;
+  total = 0;
 
   refreshTable$: BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>
     = new BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>({
@@ -183,11 +55,13 @@ export class ArticleInformationComponent {
         ),
         tap((articles) => {
           this.loading.emit(false)
+          this.total=articles.total
           if (this.setYears) {
             this.years = []
             this.selectedYears = []
             this.selectedType = ''
             this.years = articles.years.sort((a,b) => b-a)
+
           }
         })
       )
@@ -200,8 +74,11 @@ export class ArticleInformationComponent {
     }
   }
 
-  onChangePagination() {
+
+  onChangePagination(event:PageEvent) {
     this.setYears = false
+    this.page = event.pageIndex + 1
+    this.size = event.pageSize
     if (this.selectedType)
       this.refreshTable$.next({page: this.page, size: this.size, type: this.selectedType, years: this.selectedYears})
     else
@@ -228,5 +105,9 @@ export class ArticleInformationComponent {
       this.article = article
       this.modalService.open(content, {scrollable: true, size: "lg", centered: true}).result.then();
     })
+  }
+
+  goToArticle(scopus: number) {
+    window.open(`https://www.scopus.com/record/display.uri?eid=2-s2.0-${scopus}&origin=resultslist`, '_blank')
   }
 }

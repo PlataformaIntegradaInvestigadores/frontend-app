@@ -3,34 +3,35 @@
     <div class="mb-3 text-xl font-bold">Your group recomendation</div>
     <div class="container text-sm text-neutral-600">
         <p>Explore the suggested topics list and acquaint yourself with the available choices</p>
+
+        <div class="flex items-center mb-4">
+            <input type="checkbox" id="toggleSliders" [(ngModel)]="showSliders" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="toggleSliders" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I want to choose my expertise in each topic</label>
+        </div>
+
         <div class="flex justify-center items-center" >
 
-            <div class="text-sm text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
-                <button type="button" class="flex items-center justify-between w-full px-4 py-2 text-left border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-primary focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white">
-                    <span>1. Topic 1</span>
-                    <div class="relative w-1/3">
-                        <input [(ngModel)]="rangeValue" id="small-range" type="range" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                        (mousedown)="showLabels()" (mouseup)="hideLabels()" (touchstart)="showLabels()" (touchend)="hideLabels()" (keydown)="showLabels()" (keyup)="hideLabels()"
-                        [style.background]="getGradient(rangeValue)">
-                        <span class="absolute -left-5 -top-1 text-xs" [class.opacity-0]="!showLabel" [class.opacity-100]="showLabel">Noob</span>
-                        <span class="absolute -right-8 -top-1 text-xs" [class.opacity-0]="!showLabel" [class.opacity-100]="showLabel">Expert</span>
+            <div class="w-full mx-6 text-sm text-gray-900 bg-white border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
+                
+                <div *ngFor="let topic of topics; let i = index" class="w-full text-sm text-gray-900 bg-white  dark:bg-gray-700 dark:border-gray-600 dark:text-white relative">
+                    <div class="flex items-center justify-between w-full px-4 py-2 text-left border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+                        <span>{{ i + 1 }}. {{ topic }}</span>
+                        <div class="relative w-1/3" *ngIf="showSliders">
+                            <input [(ngModel)]="rangeValues[i]" type="range" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                            (mousedown)="showLabels(i)" (mouseup)="hideLabels(i)" (touchstart)="showLabels(i)" (touchend)="hideLabels(i)"
+                            [style.background]="getGradient(rangeValues[i])">
+                            <span class="absolute -left-5 -top-1 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Junior</span>
+                            <span class="absolute -right-5 -top-1 text-xs text-primary_tailwind" [class.opacity-0]="!showLabel[i]" [class.opacity-100]="showLabel[i]">Expert</span>
+                        </div>
                     </div>
-                </button>
-                <button type="button" class="w-full px-4 py-2 font-medium text-left rtl:text-right border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-                    2. Topic 2
-                </button>
-                <button type="button" class="w-full px-4 py-2 font-medium text-left rtl:text-right border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-                    3. Topic 3
-                </button>
-                <button type="button" class="w-full px-4 py-2 font-medium text-left rtl:text-right border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-                    4. Topic 4
-                </button>
+                </div>
+                
                 <button disabled type="button" class="w-full px-4 py-2 font-medium text-left rtl:text-right bg-gray-100 rounded-b-lg cursor-not-allowed dark:bg-gray-600 dark:text-gray-400">
                     <form class="max-w-sm mx-auto">   
                         <label for="new-topic-input" class="cursor-not-allowed block text-sm font-medium text-gray-600 dark:text-white">I want to add a new topic</label>
                         <div class="relative flex justify-center items-center">
                             <input type="text" id="new-topic-input" aria-describedby="add a new topic that would you like investigate" class="block w-full p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white cursor-not-allowed dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ex: Sports prediction" required disabled/>
-                                <button disabled type="submit" class="cursor-not-allowed text-white absolute end-2 bottom-2 bg-primary font-medium rounded-lg text-sm px-3 py-1"><!-- </button> -->
+                                <button disabled type="submit" class="bg-primary_tailwind cursor-not-allowed text-white absolute end-2 bottom-2 font-medium rounded-lg text-sm px-3 py-1"><!-- </button> -->
                                 <!-- SVG integrado -->
                                 <svg fill="currentColor" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon line-color">
                                     <line x1="7" y1="12" x2="11" y2="12" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
@@ -43,7 +44,7 @@
             </div>
         </div>  
         <div class="flex justify-center mt-4">
-            <button type="button" class="text-white bg-primary_tailwind hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button type="button" class=" text-white bg-primary_tailwind hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" class="me-2">
                     <path stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8h2m-2 4h2m-5 4H7m14-4V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7M7 8v4h4V8H7z"/>
                     <path stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.268 19.268a2.5 2.5 0 1 0-3.536-3.536 2.5 2.5 0 0 0 3.536 3.536zm0 0L21 21"/>

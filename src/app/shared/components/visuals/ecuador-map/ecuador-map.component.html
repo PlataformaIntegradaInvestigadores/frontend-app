@@ -1,8 +1,14 @@
 <div class="flex items-center justify-end">
-  <div class="hidden md:block bg-gray-200 rounded-2xl border-gray-500 border-2 ">
+  <div class="hidden md:block rounded-2xl border-gray-500 border-2 ">
     <div id="tooltip"
          style="position: absolute; background-color: white; padding: 5px; border: 1px solid black; opacity: 0;"></div>
-    <figure id="map"></figure>
+    <figure id="map">
+      <svg #svg [attr.width]="width + (margin * 2)" [attr.height]="height + (margin * 2)">
+        <g [zoomableOf]="svg">
+
+        </g>
+      </svg>
+    </figure>
   </div>
 </div>
 

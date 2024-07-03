@@ -1,14 +1,31 @@
+<mat-paginator
+  [length]="total"
+  [pageSize]="size"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page"
+  class="w-full"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
 <ng-container *ngFor="let item of items" class="">
-  <div class="flex flex-col md:flex-row items-center border-2 border-black w-full my-2 p-3  rounded-md">
+  <div
+    class="flex flex-col md:flex-row items-center border-2 border-black w-full my-2 p-3 rounded-md"
+  >
     <!-- Profile Author -->
     <div class="photo w-24 h-24 md:w-1/12 md:h-auto flex-shrink-0">
-      <img [src]="item.photo || './assets/profile.png'" alt="Author image profile" class="w-full h-full object-cover rounded-full md:rounded-none" />
+      <img
+        [src]="item.photo || './assets/profile.png'"
+        alt="Author image profile"
+        class="w-full h-full object-cover rounded-full md:rounded-none"
+      />
     </div>
 
     <!-- Información del autor -->
     <div class="text-center md:text-left md:w-1/4 md:pl-4">
       <div class="author-names text-lg font-semibold">{{ item.name }}</div>
-      <div class="author-current-affiliation text-sm text-gray-600">{{ item.current_affiliation }}</div>
+      <div class="author-current-affiliation text-sm text-gray-600">
+        {{ item.current_affiliation }}
+      </div>
     </div>
 
     <!-- Publicaciones, citas y temas -->
@@ -38,9 +55,17 @@
 
     <!-- Botones -->
     <div class="flex flex-col items-center mt-4 md:mt-0 md:w-1/4 md:pl-4">
-      <button mat-flat-button color="primary" class="my-2 w-full md:w-full" >Scopus Profile</button>
-      <button mat-flat-button color="primary" class="w-full md:w-full" routerLink="/profile">More Information</button>
+      <button mat-flat-button color="primary" class="my-2 w-full md:w-full" (click)="goToScopus(item.scopus_id)">
+        Scopus Profile
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        class="w-full md:w-full"
+        routerLink="/profile"
+      >
+        More Information
+      </button>
     </div>
   </div>
-
 </ng-container>

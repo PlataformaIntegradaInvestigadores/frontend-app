@@ -9,23 +9,24 @@ import {
   PaginationAuthorResult,
   RandItem
 } from "../../../shared/interfaces/author.interface";
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorService {
-  rootURL: string = '';
+  rootURL: string = environment.apiCentinela;
 
   constructor(private http: HttpClient) {}
 
   getAuthorsByQuery(
     query: string,
-    page: number,
-    size: number
+    page?: number,
+    size?: number
   ): Observable<PaginationAuthorResult> {
     return this.http
       .get<PaginationAuthorResult>(
-        `${this.rootURL}authors/get-authors-by-query?query=${query}&page=${page}&size=${size}`
+        `${this.rootURL}api/v1/authors/authors/find_by_query/?query=${query}&page=${page}&size=${size}`
       )
       .pipe(
         map((response) => {
@@ -47,22 +48,21 @@ export class AuthorService {
 
   getMostRelevantAuthors(
     topic: string,
-    authorsNumber: number,
+    authors_number?: number,
     typeFilter?: string,
     affiliations?: number[]
   ): Observable<Coauthors> {
     let bodyParams: any = {
       topic: topic,
-      authorsNumber: authorsNumber,
+      authors_number: 50,
     };
 
     if (typeFilter) {
       bodyParams['type'] = typeFilter;
       bodyParams['affiliations'] = affiliations;
     }
-
     let data = this.http.post<Coauthors>(
-      `${this.rootURL}coauthors/most-relevant-authors`,
+      `${this.rootURL}/api/v1/authors/authors/most_relevant_authors/`,
       bodyParams
     );
     return data;

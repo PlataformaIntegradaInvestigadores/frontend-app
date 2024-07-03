@@ -28,7 +28,9 @@ import {HttpClientModule} from "@angular/common/http";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { AdminModule } from '../admin/admin.module';
-import { AdminRoutingModule } from '../admin/admin-rounting.module';
+import { AdminRoutingModule } from '../admin/admin-rounting.module';import {CountUpModule} from "ngx-countup";
+import {LineChartModule} from "@swimlane/ngx-charts";
+
 @NgModule({
   imports: [
     MatSlideToggleModule,
@@ -44,12 +46,7 @@ import { AdminRoutingModule } from '../admin/admin-rounting.module';
     FormsModule,
     FontAwesomeModule,
     DashboardModule,
-    SharedModule,
-    MatFormFieldModule,
-    MatInputModule,
-    AdminModule,
-    AdminRoutingModule
-
+    CountUpModule,
   ],
   exports: [
     CoauthorsGraphComponent

@@ -28,7 +28,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   @Input('links') links!: Link[];
   @Input('forces') forces: any;
   graph!: ForceDirectedGraph;
-  private _options: { width: number, height: number } = {width: 800, height: 600};
+  private _options: { width: number, height: number } = {width: 300, height: 600};
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -69,7 +69,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     }
 
     return this._options = {
-      width: window.innerWidth,
+      width: 1100,
       height: height
     };
   }

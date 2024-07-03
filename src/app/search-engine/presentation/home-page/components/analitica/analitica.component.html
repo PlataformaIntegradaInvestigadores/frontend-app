@@ -1,2 +1,17 @@
-<p>analitica works!</p>
-<app-ecuador-map></app-ecuador-map>
+<div class="w-full flex flex-col justify-center">
+  <div class="max-h-[80px]">
+    <app-summary></app-summary>
+  </div>
+  <div class="flex flex-col justify-center pt-4">
+    <div class="flex w-full justify-center">
+      <app-evolution-line-chart [width]="1150" [height]="200"></app-evolution-line-chart>
+    </div>
+    <div class="flex justify-center">
+      <app-bar-chart [width]="1150" [height]="200"></app-bar-chart>
+    </div>
+    <div class="flex justify-center">
+      <app-tree-map-chart [width]="550" [height]="450"></app-tree-map-chart>
+      <app-ecuador-map></app-ecuador-map>
+    </div>
+  </div>
+</div>

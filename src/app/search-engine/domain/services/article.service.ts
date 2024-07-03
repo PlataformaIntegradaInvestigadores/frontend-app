@@ -19,9 +19,10 @@ export class ArticleService {
     return this.http.get<Article>(`${this.rootURL}api/v1/article/${id}/`)
   }
 
-  getMostRelevantArticlesByQuery(topic: string, page: number, size: number, typeFilter?: string, years?: number[]): Observable<PaginationArticleResult> {
+  getMostRelevantArticlesByQuery(query: string, page: number, size: number, typeFilter?: string, years?: number[]): Observable<PaginationArticleResult> {
+
     let bodyParams: any = {
-      topic,
+      query,
       page,
       size,
     }
