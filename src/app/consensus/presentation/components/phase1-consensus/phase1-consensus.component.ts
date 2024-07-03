@@ -30,6 +30,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   socketSubscription: Subscription | undefined;
   topicsSubscription: Subscription | undefined;
   newTopicSubscription: Subscription | undefined;
+  newNotificationSubscription: Subscription | undefined;
   activeConnections: number = 0;
 
   showError: boolean = false;
@@ -67,6 +68,8 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       // Verificar si el tópico ya existe antes de agregarlo
       if (!this.recommendedTopics.some(t => t.topic_name === topic.topic_name)) {
         this.recommendedTopics.push(topic);
+        this.rangeValues = [...this.rangeValues, 0]; // Fix: Assign the value directly to the array
+
         this.cdr.detectChanges();
       } else {
         console.log('Tópico ya existe en la lista:', topic.topic_name);
@@ -79,7 +82,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       } 
     });
 
-    this.webSocketService.notificationsReceived.subscribe(notification => {
+    this.newNotificationSubscription = this.webSocketService.notificationsReceived.subscribe(notification => {
       console.log('Notification INTERACTIVIDAD DE USUARIO received:', notification);
       this.notifications.push(notification);
       this.cdr.detectChanges();
@@ -261,10 +264,22 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     return `linear-gradient(90deg, hsl(${hue}, ${saturation}%, ${lightness}%) 0%, hsl(${hue}, ${saturation}%, ${lightness}%) 100%)`;
   }
 
-  redirectToGoogleScholar(topic: string): void {
-    const query = encodeURIComponent(topic);
+  redirectToGoogleScholar(topic: RecommendedTopic): void {
+    const query = encodeURIComponent(topic.topic_name);
     const url = `https://scholar.google.com/scholar?q=${query}`;
     window.open(url, '_blank');
+
+    const userId = this.authService.getUserId();
+    if (this.groupId && topic.id && userId) {
+      this.topicService.notifyTopicVisited(this.groupId, topic.id.toString(), userId).subscribe(
+        response => {
+          console.log('Topic visited notification sent:', response);
+        },
+        error => {
+          console.error('Error sending topic visited notification:', error);
+        }
+      );
+    }
   }
 
   combinedSearch(): void {

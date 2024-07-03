@@ -17,40 +17,51 @@ export class WebSocketService {
 
   connect(groupId: string): WebSocketSubject<any> {
     if (!this.sockets[groupId] || this.sockets[groupId].closed) {
-        console.log(`Creating new WebSocket connection for group: ${groupId}`);
-        this.sockets[groupId] = webSocket(`${environment.wsUrl}/groups/${groupId}/`);
-        this.sockets[groupId].subscribe(
-            msg => {
-                // Imprimir la estructura completa del mensaje recibido
-                console.log(`Message received on group ws service estructura completa del mensaje recibido ${groupId}:`, JSON.stringify(msg, null, 2));
-                
-                // Verificar si msg.message existe antes de acceder a sus propiedades
-                if (msg.message) {
-                    if (msg.message.type === 'new_topic') {
-                        console.log('Nuevo tópico recibido 1:', msg.message.topic_name);
-                        console.log('Nueva notificacion recibida recibido 1:', msg.message.notification_message);
-                        this.newTopicReceived.next(msg.message);
-                    }
-                    if (msg.message.type === 'connection_count') {
-                        console.log('Número de conexiones activas:', msg.message.active_connections);
-                    }
-                    // Manejar las notificaciones generales
-                    if (msg.message.type === 'notification') {
-                      console.log('Nueva notificación recibida:', msg.message.topic_name);
-                        this.notificationsReceived.next(msg.message);
-                    }
-                } else {
-                    console.warn('Received message without expected structure:', msg);
-                }
-            },
-            err => console.error(`WebSocket error on group ${groupId}:`, err),
-            () => console.log(`WebSocket connection closed for group ${groupId}`)
-        );
+      console.log(`Creating new WebSocket connection for group: ${groupId}`);
+      this.sockets[groupId] = webSocket(`${environment.wsUrl}/groups/${groupId}/`);
+      this.sockets[groupId].subscribe(
+        msg => {
+          // Imprimir la estructura completa del mensaje recibido
+          console.log(`Message received on group ws service estructura completa del mensaje recibido ${groupId}:`, JSON.stringify(msg, null, 2));
+
+          // Verificar si msg.message existe antes de acceder a sus propiedades
+          if (msg && msg.message) {
+            const { type, topic_name, notification_message, active_connections } = msg.message;
+
+            switch (type) {
+              
+              case 'new_topic':
+                console.log('Nuevo tópico recibido:', topic_name);
+                console.log('Nueva notificación recibida:', notification_message);
+                this.newTopicReceived.next(msg.message);
+                break;
+
+              case 'connection_count':
+                console.log('Número de conexiones activas:', active_connections);
+                break;
+
+              case 'topic_visited':
+                console.log('Nueva notificación recibida1:', msg);
+                console.log('Nueva notificación recibida2:', msg.message);
+                console.log('Nueva notificación recibida3:', notification_message);
+                this.notificationsReceived.next(msg.message);
+                break;
+
+              default:
+                console.warn('Tipo de mensaje desconocido:', type);
+            }
+          } else {
+            console.warn('Received message without expected structure:', msg);
+          }
+        },
+        err => console.error(`WebSocket error on group ${groupId}:`, err),
+        () => console.log(`WebSocket connection closed for group ${groupId}`)
+      );
     } else {
-        console.log(`Reusing existing WebSocket connection for group: ${groupId}`);
+      console.log(`Reusing existing WebSocket connection for group: ${groupId}`);
     }
     return this.sockets[groupId];
-}
+  }
 
   sendMessage(groupId: string, message: any) {
     if (this.sockets[groupId]) {

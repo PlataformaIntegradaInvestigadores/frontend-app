@@ -8,7 +8,7 @@ export interface NotificationAdd {
     notification_message: string;
   }
 
-export interface NotificationGroup {
+export interface NotificationGeneral {
   id: number;
   user_id: string;
   group_id: string;

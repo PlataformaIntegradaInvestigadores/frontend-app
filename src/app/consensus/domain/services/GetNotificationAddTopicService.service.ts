@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { NotificationGroup } from '../entities/notificationAdd.interface';
+import { NotificationGeneral } from '../entities/notificationAdd.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +13,11 @@ export class GetNotificationAddTopicService {
 
   constructor(private http: HttpClient) { }
 
-  getNotificationsAddTopicByGroup(groupId: string): Observable<NotificationGroup[]> {
+  getNotificationsAddTopicByGroup(groupId: string): Observable<NotificationGeneral[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
-    return this.http.get<NotificationGroup []>(`${this.apiUrl}${groupId}/notifications/`, { headers }).pipe(
+    return this.http.get<NotificationGeneral []>(`${this.apiUrl}${groupId}/notifications/`, { headers }).pipe(
       catchError(this.handleError)
     );
   }

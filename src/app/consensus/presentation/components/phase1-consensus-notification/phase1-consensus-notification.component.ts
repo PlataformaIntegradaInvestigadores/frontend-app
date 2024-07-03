@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { NotificationAdd, NotificationGroup } from 'src/app/consensus/domain/entities/notificationAdd.interface';
+import { NotificationAdd, NotificationGeneral } from 'src/app/consensus/domain/entities/notificationAdd.interface';
 import { GetNotificationAddTopicService } from 'src/app/consensus/domain/services/GetNotificationAddTopicService.service';
 import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketService.service';
 
@@ -15,7 +15,7 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
   
   newNotificationSubscription: Subscription | undefined;
   notificationsWS: NotificationAdd[] = [];
-  notificationsLoaded: NotificationGroup[] = [];
+  notificationsLoaded: NotificationGeneral[] = [];
   unifiedNotifications: any[] = [];
   
   groupId: string = '';
@@ -46,6 +46,27 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
           this.cdr.detectChanges();
         }
       });
+      
+      this.newNotificationSubscription = this.webSocketService.notificationsReceived.subscribe((notification: any) => {
+        console.log("WEBSOCKET 222222222222222 ", this.webSocketService.notificationsReceived);
+        console.log("Reconocio la notificacion", notification);
+
+        if (notification.type === 'topic_visited') {
+          console.log("Reconocio el topic:visited", notification.notification_message);
+          const visitedNotification: NotificationGeneral = {
+            id: notification.id,
+            user_id: notification.user_id,
+            group_id: notification.group_id,
+            notification_type: notification.type,
+            message: notification.notification_message,
+            created_at: new Date(notification.added_at)
+          };
+          this.notificationsLoaded.unshift(visitedNotification);
+          this.updateUnifiedNotifications();
+          this.cdr.detectChanges();
+          console.log("NOTIFICACIONES VISITADAS", this.notificationsWS);
+        }
+      });
     }
 
     ngOnDestroy(): void {
@@ -61,6 +82,8 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
             ...notification,
             created_at: new Date(notification.created_at)
           }));
+          
+          console.log("NOTIFICACIONES CARGADAS", this.notificationsLoaded);
           this.updateUnifiedNotifications();
           this.cdr.detectChanges();
         },

@@ -84,6 +84,22 @@ export class TopicService {
     this.topicsSubject.next([...currentTopics, newTopic]);
   }
 
+  notifyTopicVisited(groupId: string, topicId: string, userId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      topic_id: topicId,
+      user_id: userId
+    };
+    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    console.log('URL:', `${this.apiUrl}${groupId}/topic-visited/`);
+    return this.http.post<any>(`${this.apiUrl}${groupId}/topic-visited/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
