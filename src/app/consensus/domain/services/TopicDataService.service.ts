@@ -100,6 +100,59 @@ export class TopicService {
     );
   }
 
+  notifyCombinedSearch(groupId: string, topicIds: string[], userId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      topics: topicIds,
+      user_id: userId
+    };
+    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    console.log('URL:', `${this.apiUrl}${groupId}/combined-search/`);
+    return this.http.post<any>(`${this.apiUrl}${groupId}/combined-search/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  notifyExpertice(groupId: string, topicId: number, userId: string,  expertiseLevel: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      group_id: groupId,
+      topic_id: topicId,
+      user_id: userId,
+      expertise_level: expertiseLevel
+    };
+    console.log('Datos que se enviarán: EXPERTICE', JSON.stringify(body, null, 2));
+    console.log('URL:', `${this.apiUrl}${groupId}/user-expertise/`);
+    return this.http.post<any>(`${this.apiUrl}${groupId}/user-expertise/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /* updateUserExpertise(groupId: string, userId: string, topicId: number, expertiseLevel: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      user_id: userId,
+      topic_id: topicId,
+      expertise: expertiseLevel
+    };
+
+    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    console.log('URL:', `${this.apiUrl}${groupId}/user-expertise/`);
+    return this.http.post<any>(`${this.apiUrl}${groupId}/user-expertise/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  } */
+
+
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {

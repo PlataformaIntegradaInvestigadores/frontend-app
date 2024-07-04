@@ -253,6 +253,29 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.showCheckTopics[index] = false;
   } 
 
+    // Enviar la experiencia del usuario al soltar la barra
+  sendUserExpertise(index: number): void {
+    const userId = this.authService.getUserId();
+    if (userId && this.groupId) {
+      const topicId = this.recommendedTopics[index].id;
+      const expertiseLevel = this.rangeValues[index];
+      console.log('User expertise:', userId, topicId, expertiseLevel);
+      this.topicService.notifyExpertice(this.groupId, topicId, userId,  expertiseLevel).subscribe(
+        
+        response => {
+          console.log('User expertise updated successfully:', response);
+        },
+        error => {
+          console.error('Error updating user expertise:', error);
+        }
+      );
+    }
+  }
+
+  onSliderChange(index: number, event: any): void {
+    this.rangeValues[index] = event.target.value;
+  }
+
 
   getGradient(value: number): string {
     /* #172554  == hsl(223, 58%, 20%) */
@@ -283,11 +306,27 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   }
 
   combinedSearch(): void {
-    const selectedTopics = this.recommendedTopics.map(topic => topic.topic_name).filter((_, index) => this.combinedChecksState[index]);
+    const selectedTopics = this.recommendedTopics
+      .filter((_, index) => this.combinedChecksState[index])
+      .map(topic => topic);
+
     if (selectedTopics.length > 0) {
-      const query = encodeURIComponent(selectedTopics.join(' '));
+      const query = encodeURIComponent(selectedTopics.map(t => t.topic_name).join(' '));
       const url = `https://scholar.google.com/scholar?q=${query}`;
       window.open(url, '_blank');
+
+      const userId = this.authService.getUserId();
+      if (this.groupId && selectedTopics.length > 0 && userId) {
+        const topicIds = selectedTopics.map(topic => topic.id.toString());
+        this.topicService.notifyCombinedSearch(this.groupId, topicIds, userId).subscribe(
+          response => {
+            console.log('Combined search notification sent:', response);
+          },
+          error => {
+            console.error('Error sending combined search notification:', error);
+          }
+        );
+      }
     } else {
       alert('Please select at least one topic for a combined search.');
     }

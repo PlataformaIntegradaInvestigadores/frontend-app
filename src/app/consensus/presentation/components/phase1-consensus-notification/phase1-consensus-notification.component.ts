@@ -51,8 +51,8 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
         console.log("WEBSOCKET 222222222222222 ", this.webSocketService.notificationsReceived);
         console.log("Reconocio la notificacion", notification);
 
-        if (notification.type === 'topic_visited') {
-          console.log("Reconocio el topic:visited", notification.notification_message);
+        if (notification.type === 'topic_visited' || notification.type === 'combined_search' || notification.type === 'user_expertise') {
+          console.log("Reconocio el topic:visited o combined_search", notification.notification_message);
           const visitedNotification: NotificationGeneral = {
             id: notification.id,
             user_id: notification.user_id,
@@ -66,7 +66,11 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
           this.cdr.detectChanges();
           console.log("NOTIFICACIONES VISITADAS", this.notificationsWS);
         }
+
       });
+
+      
+
     }
 
     ngOnDestroy(): void {
