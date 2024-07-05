@@ -36,7 +36,7 @@ import { ProfilePageModule } from "../profile/profile-page.module";
     BtnMailComponent,
     SatisfactionLevelComponent
   ],
-  imports: [ConsensusRoutingModule,CommonModule, SharedModule, FormsModule, ProfilePageModule],
+  imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule],
   exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

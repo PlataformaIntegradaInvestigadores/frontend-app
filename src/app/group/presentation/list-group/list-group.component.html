@@ -1,5 +1,9 @@
+<!-- <div *ngIf="loading$ | async" class="loading-indicator">
+    Loading...
+  </div> -->
+
 <!-- Visibilidad de la lista -->
-<div *ngIf="user.isOwnProfile" class="container mx-auto max-w-screen-xl px-3 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 ">
+<div class="container mx-auto max-w-screen-xl px-3 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 ">
     <div class="col-span-12 md:col-span-12">
         <div id="accordion-flush" data-accordion="collapse" data-active-classes="text-gray-500 dark:text-gray-400"
             data-inactive-classes="text-gray-500 dark:text-gray-400">
@@ -22,10 +26,9 @@
                     <div class=" dark:border-gray-700">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <btn-create-group></btn-create-group>
-                            <card-group></card-group>
-                            <card-group></card-group>
-                            <card-group></card-group>
-                            <card-group></card-group>
+                            <ng-container *ngFor="let group of groups">
+                                <card-group [group]="group" [isOwner]="isOwnerMap[group.id]" (navigate)="navigateToGroup(group.id)"></card-group>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
@@ -47,16 +50,13 @@
                 </h2>
                 <div id="accordion-flush-body-2" class="hidden" aria-labelledby="accordion-flush-heading-2">
                     <div class="py-5 dark:border-gray-700">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <card-group></card-group>
-                            <card-group></card-group>
-                            <card-group></card-group>
-                            <card-group></card-group>
-                        </div>
+                        <ng-container *ngFor="let group of groups">
+                            <card-group [group]="group" (navigate)="navigateToGroup(group.id)"></card-group>
+                        </ng-container>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+

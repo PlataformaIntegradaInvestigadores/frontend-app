@@ -6,6 +6,9 @@ import { User } from 'src/app/profile/domain/entities/user.interfaces';
   providedIn: 'root'
 })
 export class UserDataService {
+  unsubscribe() {
+    throw new Error('Method not implemented.');
+  }
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   public user$: Observable<User | null> = this.userSubject.asObservable();
 

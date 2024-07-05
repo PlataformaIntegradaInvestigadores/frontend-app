@@ -21,7 +21,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'my-groups/:id',
+    path: 'my-groups/:groupId',
     loadChildren: () => import('src/app/consensus/consensus.module').then(m => m.ConsensusModule)
   },
   { path: '', redirectTo: 'about-me', pathMatch: 'full' },
