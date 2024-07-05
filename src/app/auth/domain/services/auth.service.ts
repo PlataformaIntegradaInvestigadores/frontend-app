@@ -14,7 +14,7 @@ export class AuthService {
 
   private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
     const token = localStorage.getItem('accessToken');
     if (token) {
       this.tokenSubject.next(token);
