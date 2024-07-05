@@ -1,15 +1,13 @@
 <ngx-charts-line-chart
-  [view]="[width,height]"
+  [view]="[width, height]"
   [showXAxisLabel]="showXAxisLabel"
   [showYAxisLabel]="showYAxisLabel"
+  [scheme]="colorScheme"
   [xAxis]="xAxis"
   [yAxis]="yAxis"
   [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel"
   [timeline]="timeline"
   [results]="multi"
-  (select)="onSelect($event)"
-  (activate)="onActivate($event)"
-  (deactivate)="onDeactivate($event)"
->
+  (select)="onSelect($event)">
 </ngx-charts-line-chart>

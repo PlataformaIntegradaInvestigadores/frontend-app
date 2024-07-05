@@ -1,5 +1,7 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Search} from "../../../../../shared/interfaces/search-type.interface";
+import {VisualsService} from "../../../../../shared/domain/services/visuals.service";
+import {Word} from "../../../../../shared/interfaces/dashboard.interface";
 
 @Component({
   selector: 'app-ecuador-contribution',
@@ -11,10 +13,18 @@ export class EcuadorContributionComponent {
   t:EventEmitter<Search> = new EventEmitter<Search>();
 
 
+  @Input()
+  public words!: Word[]
+
   emitT(top: string){
     const search: Search = {'option':'mrar', 'query': top}
 
     this.t.emit(search)
   }
 
+  constructor(private dashboardService: VisualsService) { }
+
+  ngOnInit() {
+
+  }
 }

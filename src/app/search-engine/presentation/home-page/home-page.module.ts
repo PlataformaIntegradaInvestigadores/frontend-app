@@ -20,36 +20,37 @@ import { FilterSidebarComponent } from './components/filter-sidebar/filter-sideb
 import { CoauthorsGraphComponent } from './components/coauthors-graph/coauthors-graph.component';
 import {DashboardModule} from "../../../dashboard/dashboard.module";
 import { MostRelevantAuthorsGraphComponent } from './components/most-relevant-authors-graph/most-relevant-authors-graph.component';
-import { SummaryComponent } from './components/summary/summary.component';
 import {FormsModule} from "@angular/forms";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { EcuadorContributionComponent } from './components/ecuador-contribution/ecuador-contribution.component';
 import {HttpClientModule} from "@angular/common/http";
-import { MatFormFieldModule } from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import { AdminModule } from '../admin/admin.module';
-import { AdminRoutingModule } from '../admin/admin-rounting.module';import {CountUpModule} from "ngx-countup";
+import {CountUpModule} from "ngx-countup";
 import {LineChartModule} from "@swimlane/ngx-charts";
+import {VisualsService} from "../../../shared/domain/services/visuals.service";
+import {SummaryComponent} from "./components/summary/summary.component";
 
 @NgModule({
-  imports: [
-    MatSlideToggleModule,
-    SharedModule,
-    CommonModule,
-    HttpClientModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatPaginatorModule,
-    SharedRoutingModule,
-    FormsModule,
-    FontAwesomeModule,
-    DashboardModule,
-    CountUpModule,
-  ],
+    imports: [
+        MatSlideToggleModule,
+        SharedModule,
+        CommonModule,
+        HttpClientModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatButtonModule,
+        MatPaginatorModule,
+        SharedRoutingModule,
+        FormsModule,
+        FontAwesomeModule,
+        SharedModule,
+        CountUpModule,
+        LineChartModule,
+        DashboardModule,
+    ],
   exports: [
-    CoauthorsGraphComponent
+    CoauthorsGraphComponent,
+
   ],
   declarations: [
     AuthorListComponent,
@@ -64,9 +65,9 @@ import {LineChartModule} from "@swimlane/ngx-charts";
     FilterSidebarComponent,
     CoauthorsGraphComponent,
     MostRelevantAuthorsGraphComponent,
-    SummaryComponent,
     EcuadorContributionComponent,
+    SummaryComponent
   ],
-  providers: [],
+  providers: [VisualsService,HttpClientModule],
 })
 export class HomePageModule {}
