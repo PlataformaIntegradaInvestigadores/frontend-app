@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { UserDataService } from 'src/app/profile/domain/entities/user_data.service';
-
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
+import { UserProfile } from 'src/app/profile/domain/entities/user.interfaces';
 
 @Component({
   selector: 'app-data-nav',
@@ -8,15 +9,21 @@ import { UserDataService } from 'src/app/profile/domain/entities/user_data.servi
   styleUrls: ['./data-nav.component.css']
 })
 export class DataNavComponent implements OnChanges {
-  @Input() user: any;
-
+  @Input() user: UserProfile | null = null;
   @Input() isOwnProfile: boolean = false;
+  isLoggedIn: boolean = false;
+  navOpen: boolean = false;
 
-  constructor(private userDataService: UserDataService) { }
+  constructor(private userDataService: UserDataService, private authService: AuthService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['user']) {
       this.userDataService.changeUser(this.user);
+      this.isLoggedIn = this.authService.isLoggedIn();
     }
+  }
+
+  toggleNav(): void {
+    this.navOpen = !this.navOpen;
   }
 }

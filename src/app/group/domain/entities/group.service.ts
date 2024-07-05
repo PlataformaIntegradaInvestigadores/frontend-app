@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { AuthService } from 'src/app/auth/domain/entities/auth.service';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
 
 @Injectable({
     providedIn: 'root'

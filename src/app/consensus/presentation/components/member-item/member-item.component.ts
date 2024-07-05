@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 
 @Component({
@@ -10,4 +10,7 @@ export class MemberItemComponent implements OnInit{
   ngOnInit(): void {
     initFlowbite();
   }
+
+  @Input() showDeleteButton: boolean = false;
+
 }

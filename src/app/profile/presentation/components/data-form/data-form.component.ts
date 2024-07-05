@@ -1,13 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AuthService } from 'src/app/auth/domain/entities/auth.service';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
 
 @Component({
   selector: 'app-data-form',
   templateUrl: './data-form.component.html',
+  styleUrls: ['./data-form.component.css']
 })
-export class DataFormComponent {
+export class DataFormComponent implements OnInit {
   @Input() user: any;
   @Output() formSubmitted = new EventEmitter<void>();
+  @Output() formClosed = new EventEmitter<void>(); // Añadir este evento
   errorMessage: string | null = null;
   errorMessages: any = {};
   selectedFile: File | null = null;
@@ -21,8 +23,10 @@ export class DataFormComponent {
     profile_picture: '',
     email_institution: '',
   };
+
   constructor(private authService: AuthService) { }
-  ngOnInit() {
+
+  ngOnInit(): void {
     if (this.user) {
       this.formData = {
         first_name: this.user.first_name || '',
@@ -37,10 +41,10 @@ export class DataFormComponent {
     }
   }
 
-  onSubmit() {
-    // Lógica para manejar el envío del formulario
-    console.log(this.formData);
-    this.formSubmitted.emit();
+  /**
+   * Maneja el envío del formulario.
+   */
+  onSubmit(): void {
     this.errorMessages = {};
 
     // Validar que los campos obligatorios no estén vacíos
@@ -69,8 +73,6 @@ export class DataFormComponent {
     const formData = new FormData();
     formData.append('first_name', this.formData.first_name);
     formData.append('last_name', this.formData.last_name);
-
-    // Enviar null para campos opcionales vacíos
     formData.append('scopus_id', this.formData.scopus_id || '');
     formData.append('institution', this.formData.institution || '');
     formData.append('website', this.formData.website || '');
@@ -79,9 +81,9 @@ export class DataFormComponent {
 
     if (this.selectedFile) {
       formData.append('profile_picture', this.selectedFile, this.selectedFile.name);
-    } else {
-      formData.append('profile_picture', '');
+      console.log('Profile picture:', this.selectedFile);  // Asegúrate de que esto muestra la imagen seleccionada
     }
+
 
     this.authService.updateUser(formData).subscribe(
       response => {
@@ -97,6 +99,18 @@ export class DataFormComponent {
     );
   }
 
+  /**
+   * Cierra el formulario emitiendo un evento.
+   */
+  closeForm(): void {
+    this.formClosed.emit();
+  }
+
+  /**
+   * Ajusta la URL agregando "http://" si falta.
+   * @param url - La URL a ajustar.
+   * @returns La URL ajustada.
+   */
   adjustURL(url: string): string {
     if (url && !/^https?:\/\//i.test(url)) {
       url = 'http://' + url;
@@ -104,17 +118,26 @@ export class DataFormComponent {
     return url;
   }
 
+  /**
+   * Verifica si una URL es válida.
+   * @param url - La URL a verificar.
+   * @returns Verdadero si la URL es válida, falso en caso contrario.
+   */
   isValidURL(url: string): boolean {
-    const urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocolo
-      '((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|' + // dominio
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // dirección IP (v4)
-      '(\\:\\d+)?(\\/[-a-zA-Z0-9@:%._\\+~#=]*)*' + // puerto y ruta
-      '(\\?[;&a-zA-Z0-9@:%._\\+~#=]*)?' + // cadena de consulta
-      '(\\#[-a-zA-Z0-9_]*)?$'); // fragmento de ancla
+    const urlPattern = new RegExp('^(https?:\\/\\/)?' +
+      '((([a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})|' +
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      '(\\:\\d+)?(\\/[-a-zA-Z0-9@:%._\\+~#=]*)*' +
+      '(\\?[;&a-zA-Z0-9@:%._\\+~#=]*)?' +
+      '(\\#[-a-zA-Z0-9_]*)?$');
     return urlPattern.test(url);
   }
 
-  onFileSelected(event: any) {
+  /**
+   * Maneja la selección de un archivo.
+   * @param event - El evento de selección de archivo.
+   */
+  onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
@@ -126,6 +149,10 @@ export class DataFormComponent {
     }
   }
 
+  /**
+   * Evita la entrada de caracteres no numéricos en el campo de ID de Scopus.
+   * @param event - El evento del teclado.
+   */
   preventNonNumeric(event: KeyboardEvent): void {
     if (event.key < '0' || event.key > '9') {
       event.preventDefault();
