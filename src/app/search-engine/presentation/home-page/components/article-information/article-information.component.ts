@@ -14,6 +14,7 @@ export class ArticleInformationComponent {
 
   @Input() query!: string
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() yearsSelected: EventEmitter<number[]> = new EventEmitter<number[]>()
 
   page = 1;
   size = 5;
@@ -60,8 +61,9 @@ export class ArticleInformationComponent {
             this.years = []
             this.selectedYears = []
             this.selectedType = ''
+            console.log(articles.years)
             this.years = articles.years.sort((a,b) => b-a)
-
+            this.yearsSelected.emit(this.years)
           }
         })
       )
