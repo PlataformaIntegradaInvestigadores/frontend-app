@@ -26,7 +26,7 @@ export class AuthorService {
   ): Observable<PaginationAuthorResult> {
     return this.http
       .get<PaginationAuthorResult>(
-        `${this.rootURL}api/v1/authors/authors/find_by_query/?query=${query}&page=${page}&size=${size}`
+        `${this.rootURL}api/v1/authors/authors/find_by_query/?query=${query}&page=${page}&page_size=${size}`
       )
       .pipe(
         map((response) => {

@@ -35,10 +35,10 @@ export interface Coauthors {
 
 
 export interface AuthorNode {
-  scopusId: number
+  scopus_id: number
   initials: string
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   weight: number
   rol?:string
 }

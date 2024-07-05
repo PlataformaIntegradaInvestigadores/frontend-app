@@ -5,6 +5,7 @@ import { AdminDashboardComponent } from "./pages/admin-dashboard/admin-dashboard
 import { CorpusComponent } from "./components/corpus/corpus.component";
 import { ModelsComponent } from "./components/models/models.component";
 import { MainContentComponent } from "./components/main-content/main-content.component";
+import { loginGuard } from "src/guards/login.guard";
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
   {
     path:'dashboard',
     component:AdminDashboardComponent,
+    canActivate: [loginGuard],
     children:[
       {
        path:'main-content',
@@ -32,8 +34,12 @@ const routes: Routes = [
         redirectTo:'main-content',
         pathMatch:'full'
       }
-    ]
+    ],
   },
+  {
+    path: '**',
+    redirectTo: 'admin',
+  }
 
 ]
 

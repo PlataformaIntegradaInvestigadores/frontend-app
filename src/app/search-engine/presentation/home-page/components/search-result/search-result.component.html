@@ -30,11 +30,11 @@
 <div class="w-full flex  justify-center items-center ">
   <div *ngIf="searchValue && searchValue.query" [ngSwitch]="searchValue.option"
        class="flex pb-5 flex-col justify-center md:flex-row w-6/7">
-    <app-filter-sidebar [code]="searchValue.option"></app-filter-sidebar>
+    <app-filter-sidebar [code]="searchValue.option" ></app-filter-sidebar>
     <div >
 
       <!-- Most Relevant Authors Results -->
-      <app-article-information *ngSwitchCase="'mrar'" query="{{searchValue.query}}">
+      <app-article-information *ngSwitchCase="'mrar'" query="{{searchValue.query}}" (yearsSelected)="($event)">
       </app-article-information>
       <!-- Author Results -->
       <app-author-retrieve *ngSwitchCase="'au'" query="{{searchValue.query}}">

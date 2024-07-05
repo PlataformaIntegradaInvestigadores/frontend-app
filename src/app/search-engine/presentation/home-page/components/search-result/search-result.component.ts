@@ -10,7 +10,6 @@ import { Title } from '@angular/platform-browser';
 })
 export class SearchResultComponent {
   showComponent: boolean = true
-
   searchValue!: Search
   setSearch!: Search
   loading: boolean = false
@@ -27,7 +26,9 @@ export class SearchResultComponent {
       query: searchValue.query.trim().replace(/\s\s+/g, ' ')
     };
   }
-
+  yearSelected(years: number[]) {
+    console.log(years)
+  }
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
   }

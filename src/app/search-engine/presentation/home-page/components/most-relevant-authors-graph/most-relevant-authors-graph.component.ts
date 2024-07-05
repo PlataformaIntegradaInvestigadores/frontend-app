@@ -54,7 +54,6 @@ export class MostRelevantAuthorsGraphComponent {
     this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
       .pipe(
         tap((coauthors) => {
-          console.log(coauthors)
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
@@ -66,7 +65,6 @@ export class MostRelevantAuthorsGraphComponent {
   setupGraph(coauthors: Coauthors) {
 
     this.apiNodes = coauthors.nodes
-    console.log(this.apiNodes)
     this.d3Nodes = this.getD3Nodes()
     this.d3Links = this.getD3Links(coauthors.links)
   }
@@ -101,30 +99,25 @@ export class MostRelevantAuthorsGraphComponent {
 
   getD3Nodes() {
     return this.apiNodes.map((node, index) => {
-      return new Node(node.scopusId, this.apiNodes.length,this.truncarCadena(node.firstName) + " \n" + this.truncarCadena(node.lastName), {
+      return new Node(node.scopus_id, this.apiNodes.length,this.truncateString(node.first_name) + " \n" + this.truncateString(node.last_name), {
         enablePopover: true,
         title: 'Autor',
-        content: node.firstName + " " + node.lastName,
-        link: 'author/' + node.scopusId
+        content: node.first_name+ " " + node.last_name,
+        link: 'author/' + node.scopus_id
       }, this.apiNodes.length - index)
     })
   }
-  truncarCadena(texto: string): string {
-    const indiceEspacio = texto.indexOf(' ');
-    const indiceGuion = texto.indexOf('-');
-    // Verifica si hay espacio y guion
-    if (indiceEspacio !== -1 && indiceGuion !== -1) {
-      // Corta en el primero que aparezca
-      return texto.substring(0, Math.min(indiceEspacio, indiceGuion));
-    } else if (indiceEspacio !== -1) {
-      // Si hay solo espacio
-      return texto.substring(0, indiceEspacio);
-    } else if (indiceGuion !== -1) {
-      // Si hay solo guion
-      return texto.substring(0, indiceGuion);
+  truncateString(text: string): string {
+    const spaceIndex = text.indexOf(' ');
+    const dashIndex = text.indexOf('-');
+    if (spaceIndex !== -1 && dashIndex !== -1) {
+      return text.substring(0, Math.min(spaceIndex, dashIndex));
+    } else if (spaceIndex !== -1) {
+      return text.substring(0, spaceIndex);
+    } else if (dashIndex !== -1) {
+      return text.substring(0, dashIndex);
     } else {
-      // Si no hay ni espacio ni guion, devuelve la cadena original
-      return texto;
+      return text;
     }
   }
   getD3Links(links: { source: number, target: number, collabStrength: number }[]) {
@@ -136,7 +129,7 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   getIndexByScopusId(scopusId: any) {
-    return this.apiNodes.map(node => node.scopusId).indexOf(scopusId)
+    return this.apiNodes.map(node => node.scopus_id).indexOf(scopusId)
   }
 
   downloadDataUrl(dataUrl: string, filename: string): void {
