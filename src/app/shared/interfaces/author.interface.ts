@@ -20,10 +20,10 @@ export interface Author {
   affiliation: string,
   num_articles:number,
   topics:string [],
-  scopusId: number,
-  firstName: string
-  lastName: string
-  authName: string
+  scopus_id: number,
+  first_name: string
+  last_name: string
+  auth_name: string
   initials: string
 }
 
@@ -35,10 +35,10 @@ export interface Coauthors {
 
 
 export interface AuthorNode {
-  scopusId: number
+  scopus_id: number
   initials: string
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   weight: number
   rol?:string
 }

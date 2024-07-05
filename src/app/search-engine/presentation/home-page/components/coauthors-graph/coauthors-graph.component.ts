@@ -17,14 +17,14 @@ export class CoauthorsGraphComponent {
 
   author:Author = {
     affiliation: "",
-    authName: "",
+    auth_name: "",
     email: "",
-    firstName: "",
+    first_name: "",
     initials: "",
-    lastName: "",
+    last_name: "",
     name: "",
     num_articles: 0,
-    scopusId: 0,
+    scopus_id: 0,
     topics: []
   }
   d3Nodes: Node[] = []
@@ -224,10 +224,10 @@ export class CoauthorsGraphComponent {
 
   ngOnInit() {
     this.apiNodes.push({
-      scopusId: this.author.scopusId,
+      scopusId: this.author.scopus_id,
       initials: this.author.initials,
-      firstName: this.author.firstName,
-      lastName: this.author.lastName,
+      firstName: this.author.first_name,
+      lastName: this.author.last_name,
     });
     this.setupNodes();
     this.setupLinks(this.apiLinks);
@@ -310,7 +310,7 @@ export class CoauthorsGraphComponent {
   onDownloadGraph(): void {
     const theElement = this.downloadEl.nativeElement;
     htmlToImage.toPng(theElement).then(dataUrl => {
-      this.downloadDataUrl(dataUrl, `coauthor-graph-${this.author.scopusId}`);
+      this.downloadDataUrl(dataUrl, `coauthor-graph-${this.author.scopus_id}`);
     });
   }
 

@@ -1,0 +1,17 @@
+.year-filter {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+
+  & label {
+    font-weight: bold;
+  }
+
+  & div {
+    margin: 5px 0;
+
+    & input {
+      margin-right: 5px;
+    }
+  }
+}
