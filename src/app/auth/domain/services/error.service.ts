@@ -4,6 +4,9 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class ErrorService {
+    handleError(error: any) {
+      throw new Error('Method not implemented.');
+    }
 
     /**
      * Procesa los errores de la respuesta de la API y extrae los mensajes de error.

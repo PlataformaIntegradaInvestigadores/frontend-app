@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, tap, switchMap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User, LoginCredentials, AuthResponse } from '../entities/interfaces';
 import { jwtDecode } from 'jwt-decode';
@@ -12,7 +12,14 @@ import { jwtDecode } from 'jwt-decode';
 export class AuthService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+
+  constructor(private http: HttpClient) {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      this.tokenSubject.next(token);
+    }
+  }
 
   /**
    * Registra un nuevo usuario.
@@ -37,6 +44,23 @@ export class AuthService {
     );
   }
 
+
+/* todo utilizar outhservice is loging acces*/
+  getToken(): Observable<string | null> {
+    const token = this.tokenSubject.value;
+    if (token) {
+      return of(token);
+    }
+    const refreshToken = localStorage.getItem('accessToken');
+    if (refreshToken) {
+      return this.refreshAccessToken().pipe(
+        tap((newToken: AuthResponse) => this.tokenSubject.next(newToken.access)), // Extract the 'access' token from the 'AuthResponse' object
+        map(response => response.access)
+      );
+    }
+    return of(null);
+  }
+
   /**
    * Refresca el token de acceso utilizando el token de actualización.
    * @returns Un Observable que emite la nueva respuesta del token de acceso.
@@ -50,6 +74,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/token/refresh/`, { refresh: refreshToken }).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.access);
+        this.tokenSubject.next(response.access);
       })
     );
   }

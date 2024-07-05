@@ -16,7 +16,6 @@ import { PostComponent } from './presentation/components/aboutme/post/post.compo
 
 import { ProfileDataComponent } from './presentation/components/profile-data/profile-data.component';
 import { DataNavComponent } from './presentation/components/data-nav/data-nav.component';
-import { DropdownBtnComponent } from './presentation/components/dropdown-btn/dropdown-btn.component';
 import { DataFormComponent } from './presentation/components/data-form/data-form.component';
 import { ContactInfoComponent } from './presentation/components/aboutme/information/components/contact-info/contact-info.component';
 import { DisciplinesComponent } from './presentation/components/aboutme/information/components/disciplines/disciplines.component';
@@ -28,8 +27,23 @@ import { CardGroupComponent } from '../group/presentation/card-group/card-group.
 import { BtnCreateGroupComponent } from '../group/presentation/btn-create-group/btn-create-group.component';
 import { ListGroupComponent } from '../group/presentation/list-group/list-group.component';
 import { GroupCreateModalComponent } from '../group/presentation/group-create-modal/group-create-modal.component';
+import { BtnMenuGroupComponent } from '../group/presentation/btn-menu-group/btn-menu-group.component';
+import { ConfirmLeaveModalComponent } from '../group/presentation/confirm-leave-modal/confirm-leave-modal.component';
+import { ConfirmDeleteModalComponent } from '../group/presentation/confirm-delete-modal/confirm-delete-modal.component';
 
 @NgModule({
+  imports: [
+    ProfilePageRoutingModule,
+    SharedModule,
+    CommonModule,
+    CdkMenuTrigger,
+    CdkMenu,
+    CdkMenuItem,
+    FormsModule,
+    ReactiveFormsModule,
+    NgbModule,
+  ],
+  exports: [ProfileDataComponent],
   declarations: [
     ProfileComponent,
     AboutMeComponent,
@@ -37,7 +51,9 @@ import { GroupCreateModalComponent } from '../group/presentation/group-create-mo
     InformationComponent,
     ProfileDataComponent,
     DataNavComponent,
-    DropdownBtnComponent,
+    CardGroupComponent,
+    ListGroupComponent,
+    BtnCreateGroupComponent,
     DataFormComponent,
     ContactInfoComponent,
     DisciplinesComponent,
@@ -45,23 +61,14 @@ import { GroupCreateModalComponent } from '../group/presentation/group-create-mo
     PostInputComponent,
     PostListComponent,
     PostItemComponent,
+    BtnMenuGroupComponent,
+    ConfirmLeaveModalComponent,
+    ConfirmDeleteModalComponent,
     CardGroupComponent,
     ListGroupComponent,
     BtnCreateGroupComponent,
     GroupCreateModalComponent,
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbModule,
-    ProfilePageRoutingModule,
-    SharedModule,
-    CdkMenuTrigger,
-    CdkMenu,
-    CdkMenuItem,
-  ],
   providers: [D3Service],
-  exports: [ProfileDataComponent],
 })
 export class ProfilePageModule { }
