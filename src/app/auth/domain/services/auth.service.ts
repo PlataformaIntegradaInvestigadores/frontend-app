@@ -44,42 +44,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Establece la sesión del usuario almacenando los tokens en el almacenamiento local.
-   * @param authResult - El resultado de la autenticación que contiene los tokens.
-   */
-  private setSession(authResult: AuthResponse): void {
-    const decodedToken = jwtDecode(authResult.access) as any;
-    localStorage.setItem('accessToken', authResult.access);
-    localStorage.setItem('refreshToken', authResult.refresh);
-    localStorage.setItem('userId', decodedToken.user_id);
-  }
-
-  /**
-   * Cierra la sesión del usuario eliminando los tokens del almacenamiento local.
-   */
-  logout(): void {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userId');
-  }
-
-  /**
-   * Verifica si el usuario está autenticado.
-   * @returns Verdadero si el usuario está autenticado, falso en caso contrario.
-   */
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('accessToken');
-  }
-
-  /**
-   * Obtiene el ID del usuario actualmente autenticado.
-   * @returns El ID del usuario o null si no está autenticado.
-   */
-  getUserId(): string | null {
-    return localStorage.getItem('userId');
-  }
-
 /* todo utilizar outhservice is loging acces*/
   getToken(): Observable<string | null> {
     const token = this.tokenSubject.value;
@@ -194,5 +158,41 @@ export class AuthService {
     }
 
     return throwError(() => new Error(errorMessages.join('\n')));
+  }
+
+  /**
+ * Establece la sesión del usuario almacenando los tokens en el almacenamiento local.
+ * @param authResult - El resultado de la autenticación que contiene los tokens.
+ */
+  private setSession(authResult: AuthResponse): void {
+    const decodedToken = jwtDecode(authResult.access) as any;
+    localStorage.setItem('accessToken', authResult.access);
+    localStorage.setItem('refreshToken', authResult.refresh);
+    localStorage.setItem('userId', decodedToken.user_id);
+  }
+
+  /**
+   * Cierra la sesión del usuario eliminando los tokens del almacenamiento local.
+   */
+  logout(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
+  }
+
+  /**
+   * Verifica si el usuario está autenticado.
+   * @returns Verdadero si el usuario está autenticado, falso en caso contrario.
+   */
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('accessToken');
+  }
+
+  /**
+   * Obtiene el ID del usuario actualmente autenticado.
+   * @returns El ID del usuario o null si no está autenticado.
+   */
+  getUserId(): string | null {
+    return localStorage.getItem('userId');
   }
 }

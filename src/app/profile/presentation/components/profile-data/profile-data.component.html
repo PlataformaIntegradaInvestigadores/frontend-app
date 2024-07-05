@@ -10,7 +10,7 @@
     </div>
     <div
       class="w-full flex flex-col sm:flex-row md:flex-col md:flex-grow justify-center md:justify-start gap-x-4 gap-y-2">
-      <div class="w-full md:border-r">
+      <div class="w-full md:border-r pr-7">
         <div class="text-center">
           <strong class="block text-xl sm:text-2xl font-bold mb-2">{{ user.first_name }} {{ user.last_name }}</strong>
         </div>
@@ -42,7 +42,7 @@
             </div>
           </ng-container>
         </div>
-        <div *ngIf="shouldShowLoggedInMessage" class="text-justify mt-6">
+        <div *ngIf="shouldShowLoggedInMessage" class="text-justify mt-2">
           <p class="text-gray-600">
             Welcome {{ user.first_name }}! It's great to see you here. By completing your profile, you can better
             showcase your professional journey and achievements.
@@ -113,7 +113,7 @@
   <button *ngIf="isOwnProfile"
     class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
     (click)="toggleForm()">
-    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 mr-1 md:mr-0">
+    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2">
     <span class="hidden md:inline">Edit Profile</span>
   </button>
   <div *ngIf="showForm" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
