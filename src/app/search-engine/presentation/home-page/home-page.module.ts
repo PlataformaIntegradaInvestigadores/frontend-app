@@ -20,13 +20,13 @@ import { FilterSidebarComponent } from './components/filter-sidebar/filter-sideb
 import { CoauthorsGraphComponent } from './components/coauthors-graph/coauthors-graph.component';
 import {DashboardModule} from "../../../dashboard/dashboard.module";
 import { MostRelevantAuthorsGraphComponent } from './components/most-relevant-authors-graph/most-relevant-authors-graph.component';
-import { SummaryComponent } from './components/summary/summary.component';
 import {FormsModule} from "@angular/forms";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { EcuadorContributionComponent } from './components/ecuador-contribution/ecuador-contribution.component';
 import {HttpClientModule} from "@angular/common/http";
 import {CountUpModule} from "ngx-countup";
 import {LineChartModule} from "@swimlane/ngx-charts";
+import {VisualsService} from "../../../shared/domain/services/visuals.service";
 
 @NgModule({
     imports: [
@@ -42,13 +42,14 @@ import {LineChartModule} from "@swimlane/ngx-charts";
         SharedRoutingModule,
         FormsModule,
         FontAwesomeModule,
-        DashboardModule,
         SharedModule,
         CountUpModule,
         LineChartModule,
+        DashboardModule,
     ],
   exports: [
-    CoauthorsGraphComponent
+    CoauthorsGraphComponent,
+
   ],
   declarations: [
     AuthorListComponent,
@@ -63,9 +64,8 @@ import {LineChartModule} from "@swimlane/ngx-charts";
     FilterSidebarComponent,
     CoauthorsGraphComponent,
     MostRelevantAuthorsGraphComponent,
-    SummaryComponent,
     EcuadorContributionComponent,
   ],
-  providers: [],
+  providers: [VisualsService,HttpClientModule],
 })
 export class HomePageModule {}
