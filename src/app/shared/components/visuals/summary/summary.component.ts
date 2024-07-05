@@ -3,7 +3,7 @@ import {debounce} from "rxjs";
 import {DashboardCounts} from "../../../interfaces/dashboard.interface";
 
 @Component({
-  selector: 'app-summary',
+  selector: 'app1-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.css']
 })

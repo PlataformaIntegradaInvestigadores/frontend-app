@@ -27,6 +27,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {CountUpModule} from "ngx-countup";
 import {LineChartModule} from "@swimlane/ngx-charts";
 import {VisualsService} from "../../../shared/domain/services/visuals.service";
+import {SummaryComponent} from "./components/summary/summary.component";
 
 @NgModule({
     imports: [
@@ -65,6 +66,7 @@ import {VisualsService} from "../../../shared/domain/services/visuals.service";
     CoauthorsGraphComponent,
     MostRelevantAuthorsGraphComponent,
     EcuadorContributionComponent,
+    SummaryComponent
   ],
   providers: [VisualsService,HttpClientModule],
 })

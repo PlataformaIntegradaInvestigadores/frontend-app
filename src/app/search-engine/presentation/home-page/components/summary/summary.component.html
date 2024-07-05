@@ -1,0 +1,35 @@
+<section>
+  <div class="max-w-screen-xl px-4 py-3 mx-auto text-center lg:px-6">
+    <dl class="grid max-w-screen-md gap-8 mx-auto sm:grid-cols-3 dark:text-white">
+      <div class="flex justify-center">
+        <div class="flex flex-col items-center justify-center">
+          <div class="flex justify-center">
+            <mat-icon style="font-size: 40px; width: 50px; height: 50px;">person</mat-icon>
+            <dt class="mb-2 text-3xl md:text-4xl pr-5">
+              <span [countUp]="authorsCount"></span>
+            </dt>
+          </div>
+          <dd class="font-light ">Authors</dd>
+        </div>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <div class="flex justify-center">
+          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">article</mat-icon>
+          <dt class="mb-2 text-3xl md:text-4xl  pr-5">
+            <span [countUp]="articlesCount"></span>
+          </dt>
+        </div>
+        <dd class="font-light">Articles</dd>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <div class="flex justify-center">
+          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">school</mat-icon>
+          <dt class="mb-2 text-3xl md:text-4xl pr-5">
+            <span [countUp]="topicsCount"></span>
+          </dt>
+        </div>
+        <dd class="font-light">Knowledge Areas</dd>
+      </div>
+    </dl>
+  </div>
+</section>
