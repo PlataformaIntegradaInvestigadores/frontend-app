@@ -74,9 +74,15 @@ export class TopicService {
         const currentTopics = this.topicsSubject.getValue();
         this.topicsSubject.next([...currentTopics, response]);
       }),
-      catchError(this.handleError)
+      catchError(error => {
+        /* if (error.status === 403) {
+          // Mostrar mensaje de error específico
+          alert("Solo puedes ingresar un topico de investación");
+        } */
+        return throwError(() => error);
+      })
     );
-  }
+}
   
 
   updateTopics(newTopic: TopicAddedUser): void {
@@ -130,6 +136,20 @@ export class TopicService {
     console.log('Datos que se enviarán: EXPERTICE', JSON.stringify(body, null, 2));
     console.log('URL:', `${this.apiUrl}${groupId}/user-expertise/`);
     return this.http.post<any>(`${this.apiUrl}${groupId}/user-expertise/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  notifyPhaseOneCompleted(groupId: string, userId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      user_id: userId
+    };
+    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    return this.http.post<any>(`${this.apiUrl}${groupId}/phase-one-completed/`, body, { headers }).pipe(
       catchError(this.handleError)
     );
   }

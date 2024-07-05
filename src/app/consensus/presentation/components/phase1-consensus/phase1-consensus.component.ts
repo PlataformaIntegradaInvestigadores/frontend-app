@@ -109,9 +109,9 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
           if (response.length > 0) {
             this.recommendedTopics = response;
             console.log('Recommended topics:', this.recommendedTopics);
-          } else {
+          } /* else {
             this.getAndAssignRandomTopics();
-          }
+          } */
           console.log('Number of recommended topics:', this.recommendedTopics.length);
           this.initializeProperties();
         },
@@ -139,7 +139,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
   }
 
-  getAndAssignRandomTopics(): void {
+  /* getAndAssignRandomTopics(): void {
     this.topicService.getRandomRecommendedTopics(this.groupId).subscribe(
       response => {
         this.recommendedTopics = response;
@@ -150,7 +150,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       }
     );
   }
-
+ */
   connectWebSocket(): void {
     if (this.groupId) {
       console.log(`Connecting WebSocket for group: ${this.groupId}`);
@@ -211,14 +211,17 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         },
         error => {
           console.error('Error adding new topic:', error);
-          if (error.status === 400 && error.error.error === "Topic already exists in this group") {
+
+          if (error.status === 403) {
+            this.errorMessage = "Only one research topic can be entered.";
+          } else if (error.status === 400 ) {
             this.errorMessage = "This topic already exists in the group.";
           } else {
-            //this.errorMessage = "An unexpected error occurred. Please try again.";
             this.errorMessage = "This topic already exists in the group.";
           }
+
           this.showError = true;  // Mostrar el mensaje de error
-         
+
           // Desplazar hacia el mensaje de error
           setTimeout(() => {
             const errorElement = document.getElementById('error-message');
@@ -365,4 +368,21 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.showAddTopicForm = !this.showAddTopicForm;
   }
 
+  completeConsensusPhaseOne(): void {
+    const userId = this.authService.getUserId();
+    if (this.groupId && userId) {
+      this.topicService.notifyPhaseOneCompleted(this.groupId, userId).subscribe(
+        response => {
+          console.log('Consensus completed notification sent:', response);
+          // Redirigir a la nueva ruta
+          const currentUrl = this.router.url;
+          const newUrl = currentUrl.replace('recommend-topics', 'valuation');
+          this.router.navigateByUrl(newUrl);
+        },
+        error => {
+          console.error('Error sending consensus completed notification:', error);
+        }
+      );
+    }
+  }
 }

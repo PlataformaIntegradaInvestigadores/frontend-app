@@ -61,6 +61,13 @@ export class WebSocketService {
                 this.notificationsReceived.next(msg.message);
                 break;
 
+              case 'consensus_completed':
+                console.log('Nueva notificación recibida10:', msg);
+                console.log('Nueva notificación recibida20:', msg.message);
+                console.log('Nueva notificación recibida30:', notification_message);
+                this.notificationsReceived.next(msg.message);
+                break;
+
               default:
                 console.warn('Tipo de mensaje desconocido:', type);
             }
