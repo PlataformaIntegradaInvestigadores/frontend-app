@@ -45,8 +45,8 @@
       <button type="button"
         class="h-9 text-white bg-red-800 hover:bg-red-900 rounded-r-lg text-sm flex items-center justify-start p-2 dropdown-button "
         (click)="this.search.emit({
-  option: this.selectedOption.code,
-  query: this.inputValue
+                option: this.selectedOption.code,
+                query: this.inputValue
 })" [disabled]="isLoading">
         <div *ngIf="isLoading; else normal">
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
