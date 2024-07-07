@@ -1,8 +1,10 @@
-import { Inject } from "@angular/core";
-import { Router } from "@angular/router";
+import { inject} from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router"
+import { ActivatedRouteSnapshot, RouterStateSnapshot, } from "@angular/router";
 
-export const loginGuard = () => {
-  const router = Inject(Router);
-  router.navigate(["/"]);
-  return false;
+export const loginGuard: CanActivateFn= (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  const routerService = inject(Router);
+  routerService.navigate(['/admin']);
+  return true;
+
 }
