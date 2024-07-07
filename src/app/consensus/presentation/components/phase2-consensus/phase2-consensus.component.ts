@@ -22,15 +22,12 @@ export class Phase2ConsensusComponent implements OnInit{
   }
 
   movies = [
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi',
-    'Episode IX - The Rise of Skywalker',
+    '1. Interpretability and Explainability of AI Models',
+      '2. Development of Contextual Recommendation Systems', 
+      '3. Computer Vision Applications in Agriculture', 
+      '4. Automation of Neural Network Design',
+      '5. Privacy-Enhancing Technologies',
+      '6. AI for Real-Time Emotion Analysis'
   ];
 
   drop(event: CdkDragDrop<string[]>) {

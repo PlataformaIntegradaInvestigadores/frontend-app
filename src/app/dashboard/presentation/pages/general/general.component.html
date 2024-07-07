@@ -1,0 +1,18 @@
+<div class="w-full flex flex-col justify-center">
+  <div class="flex w-full justify-center max-h-[170px]">
+    <app-evolution-line-chart [width]="1150" [height]="250" [multi]="lineChartInfo" (selectedYear)="updateData($event)"></app-evolution-line-chart>
+  </div>
+
+  <div class="flex flex-col justify-center pt-4">
+    <div class="max-h-[100px]">
+      <app1-summary [counts]="counts"></app1-summary>
+    </div>
+    <div class="flex justify-center">
+      <app-bar-chart [width]="1150" [height]="200"></app-bar-chart>
+    </div>
+    <div class="flex justify-center">
+      <app-tree-map-chart [width]="550" [height]="450" [single]="treeMapInfo"></app-tree-map-chart>
+      <app-ecuador-map></app-ecuador-map>
+    </div>
+  </div>
+</div>

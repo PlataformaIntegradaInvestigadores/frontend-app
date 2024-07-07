@@ -1,0 +1,13 @@
+
+@media (max-width: 640px) {
+    .sm\:flex-row {
+        flex-direction: column !important;
+    }
+    .sm\:items-center {
+        align-items: flex-start !important;
+    }
+    .sm\:order-last {
+        order: 1;
+    }
+}
+

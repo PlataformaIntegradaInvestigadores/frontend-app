@@ -20,6 +20,9 @@ import {D3Service} from "./d3";
 import {BarChartComponent} from "./components/visuals/bar-chart/bar-chart.component";
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {TreeMapChartComponent} from "./components/visuals/tree-map-chart/tree-map-chart.component";
+import {SummaryComponent} from "./components/visuals/summary/summary.component";
+import {CountUpModule} from "ngx-countup";
+
 @NgModule({
   declarations: [
     SearchBoxComponent,
@@ -32,7 +35,8 @@ import {TreeMapChartComponent} from "./components/visuals/tree-map-chart/tree-ma
     WordCloudComponent,
     GraphComponent,
     EvolutionLineChartComponent,
-    TreeMapChartComponent
+    TreeMapChartComponent,
+    SummaryComponent,
   ],
   exports: [
     SearchBoxComponent,
@@ -44,8 +48,9 @@ import {TreeMapChartComponent} from "./components/visuals/tree-map-chart/tree-ma
     WordCloudComponent,
     GraphComponent,
     BarChartComponent,
+    TreeMapChartComponent,
+    SummaryComponent,
     EvolutionLineChartComponent,
-    TreeMapChartComponent
   ],
   imports: [
     MatButtonModule,
@@ -57,6 +62,7 @@ import {TreeMapChartComponent} from "./components/visuals/tree-map-chart/tree-ma
     NgbPopoverModule,
     NumberCardModule,
     NgxChartsModule,
+    CountUpModule,
   ],
   providers: [D3Service],
 })

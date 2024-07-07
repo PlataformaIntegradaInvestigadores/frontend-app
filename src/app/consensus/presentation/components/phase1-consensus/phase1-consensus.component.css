@@ -5,3 +5,72 @@
 input::placeholder {
     text-align: left; /* Alinear el texto a la derecha */
 }
+
+/* Circulo de la barra de nivel */
+/* Estilos generales para el thumb */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Desactivar la apariencia por defecto */
+    appearance: none;
+    width: 20px; /* Ancho del thumb */
+    height: 20px; /* Alto del thumb */
+    background: #1E3C8B; /* Color de fondo del thumb */
+    cursor: pointer; /* Cursor tipo pointer para indicar que es interactivo */
+    border: none; /* Sin bordes */
+    border-radius: 50%; /* Hacerlo completamente circular */
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #1E3C8B;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+}
+
+input[type="range"]::-ms-thumb {
+    width: 24px;
+    height: 24px;
+    background: #1E3C8B;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+}
+
+#btn-combined-search, #btn-expertice, #btn-add-topic, #btn-next  {
+    border: solid #1E3C8B 1px !important;
+}
+
+#btn-next:hover{
+    color: #1E3C8B;
+}
+#btn-next:hover svg {
+    fill: #1E3C8B ; /* Cambia el color de relleno del SVG a blanco */
+    stroke: #1E3C8B; /* Cambia el color del stroke a blanco */
+    
+}
+
+/* Cambia el color del path cuando el mouse está sobre el botón */
+#btn-expertice:hover .svg-path {
+    stroke: #ffffff; /* Cambia el color del stroke a blanco */
+}
+
+.text-container {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+@media (max-width: 640px) {
+    .movil-margin-cero {
+      margin-left: 0;
+      margin-right: 0;
+    }
+}
+
+.active-ring {
+    border: 1px solid #1E3C8B; /* Cambia #1E3C8B por el color de tu elección */
+    box-shadow: 0 0 0 2px rgba(30, 60, 139, 0.5); /* Esto es un ejemplo, ajusta los valores y colores como desees */
+  }

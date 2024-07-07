@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./fingerprint.component.css']
 })
 export class FingerprintComponent {
-
+  // El componente actualmente no tiene lógica específica ni datos.
 }

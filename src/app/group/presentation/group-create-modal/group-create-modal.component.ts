@@ -1,7 +1,8 @@
 // group-create-modal.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/auth/domain/entities/auth.service';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 import { GroupService } from 'src/app/group/domain/entities/group.service';
 
 @Component({
@@ -21,7 +22,8 @@ export class GroupCreateModalComponent {
   constructor(
     private fb: FormBuilder,
     private groupService: GroupService,
-    private authService: AuthService
+    private authService: AuthService,
+    private topicService: TopicService
   ) {
     this.groupForm = this.fb.group({
       title: ['', Validators.required],
@@ -87,7 +89,28 @@ export class GroupCreateModalComponent {
       this.groupService.createGroup(groupData).subscribe(
         response => {
           console.log('Group created successfully', response);
-          window.location.reload();
+          const groupId = response.id; // Assuming the response contains the group ID
+
+          // Adding recommended topics to the group
+          this.topicService.getRandomRecommendedTopics(groupId).subscribe(
+            topics => {
+              topics.forEach(topic => {
+                this.topicService.addNewTopic(groupId, topic.topic_name).subscribe(
+                  topicResponse => {
+                    console.log('Topic added successfully', topicResponse);
+                  },
+                  error => {
+                    console.error('Error adding topic', error);
+                  }
+                );
+              });
+              window.location.reload();
+            },
+            error => {
+              console.error('Error fetching recommended topics', error);
+            }
+          );
+
         },
         error => {
           console.error('Error creating group', error);

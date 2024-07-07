@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {NameValue} from "../../../interfaces/dashboard.interface";
 
 @Component({
   selector: 'app-tree-map-chart',
@@ -6,44 +7,46 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./tree-map-chart.component.css']
 })
 export class TreeMapChartComponent {
-  single: any[] = [
-    {
-      "name": "Data Mining",
-      "value": 50
-    },
-    {
-      "name": "Machine Learning",
-      "value": 70
-    },
-    {
-      "name": "Deep Learning",
-      "value": 65
-    },
-    {
-      "name": "Artificial Intelligence",
-      "value": 80
-    },
-    {
-      "name": "Big Data",
-      "value": 55
-    },
-    {
-      "name": "Natural Language Processing",
-      "value": 60
-    },
-    {
-      "name": "Computer Vision",
-      "value": 75
-    },
-    {
-      "name": "Bioinformatics",
-      "value": 50
-    },
-    {
-      "name": "Cybersecurity",
-      "value": 70
-    }
-  ]
+  @Input()
+  single!: NameValue[]
+  //   = [
+  //   {
+  //     "name": "Data Mining",
+  //     "value": 50
+  //   },
+  //   {
+  //     "name": "Machine Learning",
+  //     "value": 70
+  //   },
+  //   {
+  //     "name": "Deep Learning",
+  //     "value": 65
+  //   },
+  //   {
+  //     "name": "Artificial Intelligence",
+  //     "value": 80
+  //   },
+  //   {
+  //     "name": "Big Data",
+  //     "value": 55
+  //   },
+  //   {
+  //     "name": "Natural Language Processing",
+  //     "value": 60
+  //   },
+  //   {
+  //     "name": "Computer Vision",
+  //     "value": 75
+  //   },
+  //   {
+  //     "name": "Bioinformatics",
+  //     "value": 50
+  //   },
+  //   {
+  //     "name": "Cybersecurity",
+  //     "value": 70
+  //   }
+  // ]
   @Input()
   width!:number;
   @Input()

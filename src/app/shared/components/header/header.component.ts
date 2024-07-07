@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/domain/entities/auth.service';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +19,7 @@ export class HeaderComponent {
   toggleNav() {
     this.navOpen = !this.navOpen;
   }
+
   @Input({ required: false })
   showInformation: boolean = false;
 
@@ -32,7 +33,6 @@ export class HeaderComponent {
       window.location.reload();
     });
   }
-
 
   profile() {
     this.authService.getUserId();
