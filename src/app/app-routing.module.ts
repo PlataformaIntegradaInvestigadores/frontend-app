@@ -15,16 +15,16 @@ const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'profile',
-    loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
-  },
-  {
     path: 'home',
     loadChildren: () => import('src/app/search-engine/presentation/home-page/home-page.module').then(m => m.HomePageModule)
   },
   {
-    path:'admin',
-    loadChildren:() => import("src/app/search-engine/presentation/admin/admin.module").then( m => m.AdminModule)
+    path: 'admin',
+    loadChildren: () => import("src/app/search-engine/presentation/admin/admin.module").then(m => m.AdminModule)
+  },
+  {
+    path: 'profile/:id',
+    loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
   },
 
   /* Siempre al ultimo */
