@@ -3,7 +3,7 @@ import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray 
 import { CommonModule, NgFor } from '@angular/common';
 import { RecommendedTopic } from 'src/app/consensus/domain/entities/topic.interface';
 import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { WebSocketPhase2Service } from 'src/app/consensus/domain/services/websocket-phase2.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
@@ -25,7 +25,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   private socketSubscription: Subscription | undefined;
   private newTopicSubscription: Subscription | undefined;
   private notificationsSubscription: Subscription | undefined;
-  finalOrderedTopics: { id: number, topic_name: string }[] = [];
+  finalOrderedTopics: { id: number, topic_name: string, tags: string[] }[] = [];
 
   constructor(
     private topicService: TopicService,
@@ -33,6 +33,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private authService: AuthService,
     private webSocket1Service: WebSocketService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +79,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   }
 
   updateFinalOrderedTopics(): void {
-    this.finalOrderedTopics = this.recommendedTopics.map(topic => ({ id: topic.id, topic_name: topic.topic_name }));
+    this.finalOrderedTopics = this.recommendedTopics.map(topic => ({ id: topic.id, topic_name: topic.topic_name, tags: topic.tags ?? [] }));
     console.log('Final ordered topics:', this.finalOrderedTopics);
   }
 
@@ -142,6 +143,34 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
+
+  completeConsensusPhaseTwo(): void {
+    const userId = this.authService.getUserId();
+    if (this.groupId && userId) {
+      const finalTopicOrders = this.finalOrderedTopics.map((topic, index) => ({
+        idTopic: topic.id,
+        posFinal: index + 1,
+        label: topic.tags.join(', ')
+      }));
+  
+      console.log('Final topic orders:', JSON.stringify(finalTopicOrders, null, 2));
+  
+      this.topicService.saveFinalTopicOrder(this.groupId, userId, finalTopicOrders).subscribe(
+        response => {
+          console.log('Final topic order saved:', response);
+          // Redirigir a la nueva ruta
+          const currentUrl = this.router.url;
+          const newUrl = currentUrl.replace('valuation', 'decision');
+          this.router.navigateByUrl(newUrl);
+          console.log('Redirecting tooooooooooooooooooooooooooooo:', newUrl);
+        },
+        error => {
+          console.error('Error saving final topic order:', error);
+        }
+      );
+    }
+  }
+  
 
   connectWebSocket(): void {
     if (this.groupId) {

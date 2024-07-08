@@ -1,7 +1,7 @@
 export interface RecommendedTopic {
     id: number;
     topic_name: string;
-    group: number | null;
+    group?: number | null;
     tags?: string[];
 }
 

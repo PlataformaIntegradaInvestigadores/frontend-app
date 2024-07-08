@@ -189,6 +189,7 @@ export class TopicService {
     );
   }
 
+  // Método para notificar el cambio de etiqueta del tópico
   notifyTopicTagChange(groupId: string, userId: string, topicId: number, tag: string): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -203,6 +204,23 @@ export class TopicService {
       catchError(this.handleError)
     );
   }
+
+  // Método para guardar el orden final de los tópicos
+  saveFinalTopicOrder(groupId: string, userId: string, finalTopicOrders: any[]): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      final_topic_orders: finalTopicOrders
+    };
+    return this.http.post<any>(`${this.apiUrl}${groupId}/save-final-topic-order/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
+
 
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An unknown error occurred!';

@@ -54,6 +54,9 @@ export class WebSocketPhase2Service {
         case 'topic_tag':
           this.topicReceived.next(message.message);
           break;
+        case 'consensus_finalized':
+          this.topicReceived.next(message.message);
+          break;
         default:
           console.warn('Unknown message type:', type);
       }
