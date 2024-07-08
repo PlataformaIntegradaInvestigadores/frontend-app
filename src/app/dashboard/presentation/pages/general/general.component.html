@@ -1,18 +1,66 @@
-<div class="w-full flex flex-col justify-center">
-  <div class="flex w-full justify-center max-h-[170px]">
-    <app-evolution-line-chart [width]="1150" [height]="250" [multi]="lineChartInfo" (selectedYear)="updateData($event)"></app-evolution-line-chart>
+<div class="flex flex-col justify-center items-center mb-3">
+  <div>
+    <div class="flex mb-1 justify-between font-black">
+      <div class="border-2 border-blue-900 rounded-md mr-1">
+        <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Statistics in Ecuador</h3>
+        <div class="flex flex-col px-2 gap-y-2">
+          <div>
+            <label class="mr-3" *ngFor="let option of options">
+              <input type="radio" name="grupoOpciones" [(ngModel)]="selectedOption" [value]="option">
+              {{ option }}
+            </label>
+          </div>
+          <select class="flex text-center" [(ngModel)]="year" (change)="updateData(year)">
+            <option *ngFor="let year1 of yearOptions"  [value]="year1">{{ year1 }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="border-2 border-blue-900 rounded-md flex flex-col flex-grow">
+        <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Ecuador total contribution
+          until {{ year }}</h3>
+        <app1-summary [counts]="counts"></app1-summary>
+      </div>
+    </div>
+    <div class="max-h-60 border-blue-900 border-2 rounded-md mb-1">
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start ">Articles contribution's evolution in
+        Ecuador from 2000 until {{ year }}</h3>
+      <app-evolution-line-chart [width]="1100" [height]="250" [multi]="lineChartInfo"
+                                (selectedYear)="updateData($event)"></app-evolution-line-chart>
+    </div>
+    <div class=" border-blue-900 border-2 rounded-md mb-1">
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Affiliations with most articles
+        contribution's in Ecuador until {{ year }}</h3>
+      <app-bar-chart [width]="1100" [height]="300" [single]="barChartInfo"></app-bar-chart>
+    </div>
   </div>
-
-  <div class="flex flex-col justify-center pt-4">
-    <div class="max-h-[100px]">
-      <app1-summary [counts]="counts"></app1-summary>
+  <div class="flex border-blue-900 border-2 rounded-md mb-1">
+    <div>
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Topics with most article in Ecuador
+        until {{ year }}</h3>
+      <app-tree-map-chart [width]="500" [height]="400" [single]="treeMapInfo"></app-tree-map-chart>
     </div>
-    <div class="flex justify-center">
-      <app-bar-chart [width]="1150" [height]="200"></app-bar-chart>
-    </div>
-    <div class="flex justify-center">
-      <app-tree-map-chart [width]="550" [height]="450" [single]="treeMapInfo"></app-tree-map-chart>
+    <div>
       <app-ecuador-map></app-ecuador-map>
     </div>
   </div>
 </div>
+<!--  <div class="w-3/4">-->
+<!--    <p class="bg-blue-900 text-white p-1">Ecuador total contribution until {{year}}</p>-->
+<!--    <app1-summary [counts]="counts"></app1-summary>-->
+<!--  </div>-->
+
+<!--  <div class="flex flex-col justify-center pt-4">-->
+
+<!--    <div class="flex flex-col w-full justify-center max-h-[170px]">-->
+<!--      <p class="bg-blue-900 p-1">Articles contribution's evolution in Ecuador from 2000 until {{year}}</p>-->
+
+<!--    </div>-->
+<!--    <div class="flex justify-center">-->
+<!--      <app-bar-chart [width]="1150" [height]="200"></app-bar-chart>-->
+<!--    </div>-->
+<!--    <div class="flex justify-center">-->
+<!--      <app-tree-map-chart [width]="550" [height]="450" [single]="treeMapInfo"></app-tree-map-chart>-->
+<!--      <app-ecuador-map></app-ecuador-map>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

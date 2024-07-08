@@ -9,6 +9,8 @@ import {
   EvolutionLineChartComponent
 } from "../shared/components/visuals/evolution-line-chart/evolution-line-chart.component";
 import {LineChartModule} from "@swimlane/ngx-charts";
+import {FormsModule} from "@angular/forms";
+import {NgForOf} from "@angular/common";
 
 
 @NgModule({
@@ -23,6 +25,8 @@ import {LineChartModule} from "@swimlane/ngx-charts";
     ],
   imports: [
     SharedModule,
+    FormsModule,
+    NgForOf,
   ],
   providers: [VisualsService
     ],

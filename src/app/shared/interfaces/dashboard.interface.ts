@@ -48,3 +48,6 @@ export interface YearsResponse{
   topic: number;
 }
 
+export interface Year {
+  year: number;
+}

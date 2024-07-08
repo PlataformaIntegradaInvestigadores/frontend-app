@@ -12,13 +12,18 @@ export class GeneralComponent implements OnInit{
   lineChartInfo!:LineChartInfo[]
   counts!:DashboardCounts
   treeMapInfo!:NameValue[]
-  year:number = 2023
-
+  barChartInfo!:NameValue[]
+  options: string[] = ['Until', 'In'];
+  selectedOption: string = this.options[0];
+  yearOptions: number[] = []
+  year!:number
 
   constructor(private dashboardService:DashboardService) {
+    this.getYears()
   }
 
   ngOnInit(): void {
+
     this.dashboardService.getLineChartInfo().subscribe(data =>{
       this.lineChartInfo = data;
       }
@@ -27,20 +32,37 @@ export class GeneralComponent implements OnInit{
       this.counts = data;
       console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
-    this.dashboardService.getTreeMapInfo(this.year).subscribe(data => {
+    this.dashboardService.getTreeMapInfoAcumulated(this.year).subscribe(data => {
       this.treeMapInfo = data;
+      console.log(data)
+    })
+    this.dashboardService.getBarInfoAcumulated(this.year).subscribe(data => {
+      this.barChartInfo = data;
       console.log(data)
     })
   }
 
+  getYears() {
+    this.dashboardService.getYears().subscribe(data => {
+      this.yearOptions = data.map(item => item.year);
+      this.year = this.yearOptions[this.yearOptions.length - 1]; // Inicializamos con el último año
+      this.updateData(this.year); // Inicializamos los datos con el año seleccionado
+    });
+  }
+
   updateData(year:number){
     console.log(year)
+    this.year = year
     this.dashboardService.getCounts(year).subscribe(data => {
       this.counts = data;
       console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
-    this.dashboardService.getTreeMapInfo(year).subscribe(data => {
+    this.dashboardService.getTreeMapInfoAcumulated(year).subscribe(data => {
       this.treeMapInfo = data;
+    })
+    this.dashboardService.getBarInfoAcumulated(this.year).subscribe(data => {
+      this.barChartInfo = data;
+      console.log(data)
     })
   }
 

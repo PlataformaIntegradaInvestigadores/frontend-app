@@ -48,10 +48,11 @@ import {SummaryComponent} from "./components/summary/summary.component";
         LineChartModule,
         DashboardModule,
     ],
-  exports: [
-    CoauthorsGraphComponent,
+    exports: [
+        CoauthorsGraphComponent,
+        SummaryComponent,
 
-  ],
+    ],
   declarations: [
     AuthorListComponent,
     HomePageComponent,

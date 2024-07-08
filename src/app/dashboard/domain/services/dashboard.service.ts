@@ -4,12 +4,13 @@ import {
   DashboardCounts,
   LineChartInfo,
   NameValue,
-  Word,
+  Word, Year,
   YearsResponse
 } from "../../../shared/interfaces/dashboard.interface";
 import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {map} from "rxjs/operators";
+import {Topic} from "../../../shared/interfaces/author.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,17 @@ export class DashboardService implements OnInit {
 
   getTreeMapInfo(year:number): Observable<NameValue[]> {
     return this.getTopicsYear(year).pipe(
+      map(response => {
+        const info: NameValue[] = response.map(t => ({
+          name: t.text,
+          value: t.size
+        }));
+        return info
+      })
+    )
+  }
+  getTreeMapInfoAcumulated(year:number): Observable<NameValue[]> {
+    return this.getTopicsAcumulated(year).pipe(
       map(response => {
         const info: NameValue[] = response.map(t => ({
           name: t.text,
@@ -69,5 +81,28 @@ export class DashboardService implements OnInit {
     return this.http.get<Word[]>(`${this.apiUrl}/country/get_top_topics_year`, {params});
   }
 
+  getTopicsAcumulated(year: number): Observable<Word[]> {
+    let params = new HttpParams().set('year', year.toString());
+    return this.http.get<Word[]>(`${this.apiUrl}/country/get_top_topics`, {params});
+  }
 
+  getAffiliationInfoAcumulated(year: number): Observable<Word[]> {
+    let params = new HttpParams().set('year', year.toString());
+    return this.http.get<Word[]>(`${this.apiUrl}/affiliation/get_top_affiliations/`, {params});
+  }
+  getBarInfoAcumulated(year:number): Observable<NameValue[]> {
+    return this.getAffiliationInfoAcumulated(year).pipe(
+      map(response => {
+        const info: NameValue[] = response.map(t => ({
+          name: t.text,
+          value: t.size
+        }));
+        return info
+      })
+    )
+  }
+
+  get_years():Observable<Year[]>{
+    return this.http.get<Year[]>(`${this.apiUrl}/country/get_years/`)
+  }
 }
