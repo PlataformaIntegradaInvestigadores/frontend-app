@@ -77,7 +77,7 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
 
   navigateToGroup(groupId: string): void {
     if (!this.modalOpen) {
-      this.router.navigate([`/${this.userId}/my-groups/${groupId}/consensus`]);
+      this.router.navigate([`/profile/${this.userId}/my-groups/${groupId}/consensus`]);
     }
   }
 
