@@ -15,7 +15,7 @@ const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'profile',
+    path: ':id',
     loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
   },
   {

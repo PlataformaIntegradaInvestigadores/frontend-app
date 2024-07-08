@@ -109,9 +109,9 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
           if (response.length > 0) {
             this.recommendedTopics = response;
             console.log('Recommended topics:', this.recommendedTopics);
-          } /* else {
+          } else {
             this.getAndAssignRandomTopics();
-          } */
+          }
           console.log('Number of recommended topics:', this.recommendedTopics.length);
           this.initializeProperties();
         },
@@ -139,18 +139,19 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
   }
 
-  /* getAndAssignRandomTopics(): void {
+  getAndAssignRandomTopics(): void {
     this.topicService.getRandomRecommendedTopics(this.groupId).subscribe(
       response => {
         this.recommendedTopics = response;
         console.log('Randomly assigned topics:', this.recommendedTopics);
+        this.initializeProperties();
       },
       error => {
         console.error('Error assigning random topics:', error);
       }
     );
   }
- */
+
   connectWebSocket(): void {
     if (this.groupId) {
       console.log(`Connecting WebSocket for group: ${this.groupId}`);
