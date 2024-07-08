@@ -14,14 +14,14 @@ import { forkJoin, map } from 'rxjs';
   styleUrls: ['./list-group.component.css']
 })
 export class ListGroupComponent implements AfterViewInit, OnInit {
-  
+
   userId: string | null = null;
   groups : Group [] = []
   modalOpen: boolean = false;
   isOwnerMap: { [key: string]: boolean } = {};
   loading$ = this.loadingService.loading$;
 
-  constructor( 
+  constructor(
     private groupService : GroupService,
     private getGroupService: GetGroupsService,
     private router:Router,
@@ -77,7 +77,7 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
 
   navigateToGroup(groupId: string): void {
     if (!this.modalOpen) {
-      this.router.navigate([`/${this.userId}/my-groups/${groupId}/consensus`]);
+      this.router.navigate([`/profile/${this.userId}/my-groups/${groupId}/consensus`]);
     }
   }
 
@@ -91,7 +91,7 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
     this.updateIsOwnerMap();
   }
 
-  onGroupLeave(groupId: string) { 
+  onGroupLeave(groupId: string) {
     this.groups = this.groups.filter(group => group.id !== groupId);
     this.updateIsOwnerMap();
   }

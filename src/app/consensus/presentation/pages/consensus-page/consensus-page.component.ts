@@ -12,7 +12,7 @@ import { Group } from 'src/app/group/domain/entities/group.interface';
 })
 
 export class ConsensusPageComponent implements OnInit{
-  
+
   isDecisionPhase: boolean = false;
   group: Group | null = null;
   groupId: string | null = null;
@@ -21,7 +21,7 @@ export class ConsensusPageComponent implements OnInit{
   successMessage: string | null = null;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private consensusService: ConsensusService,
     private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
@@ -30,7 +30,7 @@ export class ConsensusPageComponent implements OnInit{
   ngOnInit() {
     initFlowbite();
     this.groupId = this.activatedRoute.snapshot.paramMap.get('groupId'); // Obtén el ID del grupo desde la URL
-    this.userId = this.activatedRoute.snapshot.paramMap.get('id'); 
+    this.userId = this.activatedRoute.snapshot.paramMap.get('id');
     //console.log('Group ID:', this.groupId);
     //console.log('User ID:', this.userId);
     if (this.groupId) {
@@ -62,7 +62,7 @@ export class ConsensusPageComponent implements OnInit{
     // Obtén la URL completa como una cadena
     const url = this.router.url;
     // Verifica si la URL corresponde a la fase de decisión
-    this.isDecisionPhase = url.includes(`/${this.userId}/my-groups/${this.groupId}/consensus/decision`);
+    this.isDecisionPhase = url.includes(`/profile/${this.userId}/my-groups/${this.groupId}/consensus/decision`);
   }
 
   onMemberDeleted(memberId: string): void {

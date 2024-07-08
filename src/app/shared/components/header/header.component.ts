@@ -37,6 +37,6 @@ export class HeaderComponent {
   profile() {
     this.authService.getUserId();
     this.userId = this.authService.getUserId();
-    this.router.navigate([`${this.userId}/about-me`]);
+    this.router.navigate([`/profile/${this.userId}/about-me`]);
   }
 }
