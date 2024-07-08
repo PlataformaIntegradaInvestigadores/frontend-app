@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, Output, SimpleChanges, Inject} from '@angular/core';
 import {BehaviorSubject, Observable, switchMap, tap} from "rxjs";
 import {Article, PaginationArticleResult} from "../../../../../shared/interfaces/article.interface";
 import {ArticleService} from "../../../../domain/services/article.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-article-information',
@@ -14,7 +15,6 @@ export class ArticleInformationComponent {
 
   @Input() query!: string
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>()
-  @Output() yearsSelected: EventEmitter<number[]> = new EventEmitter<number[]>()
 
   page = 1;
   size = 5;
@@ -37,7 +37,7 @@ export class ArticleInformationComponent {
   selectedType!: string
 
   constructor(private articleService: ArticleService,
-              private modalService: NgbModal) {
+              private modalService: NgbModal, @Inject(Router) private router: Router) {
   }
 
   ngOnInit() {
@@ -61,9 +61,7 @@ export class ArticleInformationComponent {
             this.years = []
             this.selectedYears = []
             this.selectedType = ''
-            console.log(articles.years)
             this.years = articles.years.sort((a,b) => b-a)
-            this.yearsSelected.emit(this.years)
           }
         })
       )
@@ -102,14 +100,18 @@ export class ArticleInformationComponent {
     this.refreshTable$.next({page: this.page, size: this.size, type: this.selectedType, years: this.selectedYears})
   }
 
-  openModal(content: any, articleId: number) {
+  openModal(content: any, articleId: string) {
     this.articleService.getArticleById(articleId).subscribe((article: Article) => {
       this.article = article
       this.modalService.open(content, {scrollable: true, size: "lg", centered: true}).result.then();
     })
   }
 
-  goToArticle(scopus: number) {
+  goToArticle(scopus: string) {
     window.open(`https://www.scopus.com/record/display.uri?eid=2-s2.0-${scopus}&origin=resultslist`, '_blank')
+  }
+  seeMoreInformation(scopusId:string){
+    console.log(scopusId);
+    this.router.navigate(['home/article/', scopusId]);
   }
 }

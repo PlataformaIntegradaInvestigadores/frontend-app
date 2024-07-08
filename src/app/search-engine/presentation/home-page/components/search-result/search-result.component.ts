@@ -18,14 +18,16 @@ export class SearchResultComponent implements OnInit{
   loading: boolean = false
   public countsLoaded:boolean = false;
   public topicsLoaded:boolean = false;
-
+  years:number[] = []
   counts!:DashboardCounts
   words!:Word[]
 
   constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title:Title, private dashboardService: VisualsService) {
     const {option, query} = route.snapshot.queryParams
-    if (option && query)
+    if (option && query){
       this.setSearch = {option, query}
+    }
+    this.searchValue = {option: 'au', query: ''}
   }
 
   onSearch(searchValue: Search) {
@@ -34,16 +36,14 @@ export class SearchResultComponent implements OnInit{
       query: searchValue.query.trim().replace(/\s\s+/g, ' ')
     };
   }
-  yearSelected(years: number[]) {
-    console.log(years)
+  setYears(years: number[]) {
+    this.years=years
   }
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
   }
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
     this.title.setTitle("Welcome")
     this.dashboardService.getCounts(2023).subscribe(data => {
       this.counts = data;
@@ -59,9 +59,10 @@ export class SearchResultComponent implements OnInit{
   topicClcked(se:Search){
     this.setSearch = {'option': se.option,'query':se.query}
     this.onSearch(se)
+
   }
 
   isAuthorSearch(){
-    return this.setSearch.option === 'au'
+    return this.searchValue.option === 'au'
   }
 }

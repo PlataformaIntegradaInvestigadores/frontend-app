@@ -45,30 +45,26 @@
     [ngSwitch]="searchValue.option"
     class="flex pb-5 flex-col justify-center items-center md:flex-row w-full"
   >
-    <app-filter-sidebar class="w-1/4" [code]="searchValue.option" *ngIf="!isAuthorSearch" [ngClass]="{'hidden':isAuthorSearch}"></app-filter-sidebar>
-    <div class="w-3/4 pt-2" [ngClass]="{'w-full m-5':isAuthorSearch}">
+    <app-filter-sidebar class="w-1/4" [code]="searchValue.option"  [ngClass]="{'hidden':isAuthorSearch()}" ></app-filter-sidebar>
+    <div class="w-3/4" [ngClass]="{'w-full':isAuthorSearch()}">
       <div>
         <!-- Most Relevant Authors Results -->
         <app-article-information
           *ngSwitchCase="'mrar'"
           query="{{ searchValue.query }}"
-          (yearsSelected)="($event)"
-        >
-        </app-article-information>
+
+        />
         <!-- Author Results -->
         <app-author-retrieve
           *ngSwitchCase="'au'"
           query="{{ searchValue.query }}"
 
-        >
-        </app-author-retrieve>
+        />
         <!-- Most Relevant Articles Results -->
         <app-most-relevant-authors-graph
           *ngSwitchCase="'mrau'"
           [query]="searchValue.query"
-        >
-          Si
-        </app-most-relevant-authors-graph>
+        />
       </div>
     </div>
   </div>

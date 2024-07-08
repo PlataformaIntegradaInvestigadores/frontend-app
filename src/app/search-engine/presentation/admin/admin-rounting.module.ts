@@ -15,7 +15,7 @@ const routes: Routes = [
   {
     path:'dashboard',
     component:AdminDashboardComponent,
-    canActivate: [loginGuard],
+    // canActivate: [loginGuard],
     children:[
       {
        path:'main-content',

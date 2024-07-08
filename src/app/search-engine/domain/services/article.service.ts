@@ -15,8 +15,8 @@ export class ArticleService {
   constructor(private http: HttpClient) {
   }
 
-  getArticleById(id: number): Observable<Article> {
-    return this.http.get<Article>(`${this.rootURL}api/v1/article/${id}/`)
+  getArticleById(id: string): Observable<Article> {
+    return this.http.get<Article>(`${this.rootURL}api/v1/articles/${id}/`)
   }
 
   getMostRelevantArticlesByQuery(query: string, page: number, size: number, typeFilter?: string, years?: number[]): Observable<PaginationArticleResult> {

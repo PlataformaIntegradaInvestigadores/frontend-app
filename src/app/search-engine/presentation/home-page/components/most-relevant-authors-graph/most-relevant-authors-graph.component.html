@@ -1,20 +1,18 @@
-<ng-container *ngIf="d3Nodes && d3Links">
-  <div class="flex pt-4 ">
-    <!--#region Graph -->
-    <div class="border-2 border-gray-400 rounded-2xl" *ngIf="showGraph">
-      <div class="w-[1100px]" #downloadEl>
-        <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>
-      </div>
+<div class="flex flex-col items-start">
+  <div class="flex flex-col justify-between w-full bg-white border-gray-300 rounded">
+    <div class="p-4">
+      <div><b>Nodos:</b> {{d3Nodes.length}}</div>
+      <div><b>Relaciones:</b> {{d3Links.length}}</div>
     </div>
-    <div *ngIf="d3Nodes.length > 0;" class="w-3/4 pl-2">
-      <div class="flex flex-col gap-y-3">
-        <div><b>Nodos:</b> {{d3Nodes.length}}</div>
-        <div><b>Relaciones:</b> {{d3Links.length}}</div>
-        <button type="button" class="bg-red-700 text-white" (click)="onDownloadGraph()">
-          <fa-icon [icon]="faDownload"></fa-icon>
-          Descargar
-        </button>
-      </div>
+    <button type="button" class="bg-red-700 text-white mt-2 px-4 py-2 rounded self-start" (click)="onDownloadGraph()" *ngIf="d3Nodes.length > 0;">
+      <fa-icon [icon]="faDownload"></fa-icon> Descargar
+    </button>
+  </div>
+
+  <div class="border-2 border-gray-400 rounded-2xl w-full mt-4" *ngIf="showGraph"> <!-- Añadido margen top para separación -->
+    <div class="w-full" #downloadEl>
+      <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>
     </div>
   </div>
-</ng-container>
+</div>
+

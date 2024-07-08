@@ -24,7 +24,7 @@ const routes: Routes = [
         component: AuthorListComponent,
       },
       {
-        path: 'article',
+        path: 'article/:scopusId',
         component: ArticlePageComponent
       },
     ],
