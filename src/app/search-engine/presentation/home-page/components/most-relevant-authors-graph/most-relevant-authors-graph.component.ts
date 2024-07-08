@@ -54,6 +54,7 @@ export class MostRelevantAuthorsGraphComponent {
     this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
       .pipe(
         tap((coauthors) => {
+          console.log(coauthors)
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;

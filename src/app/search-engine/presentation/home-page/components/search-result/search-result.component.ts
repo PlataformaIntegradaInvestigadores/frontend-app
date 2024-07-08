@@ -48,7 +48,6 @@ export class SearchResultComponent implements OnInit{
     this.dashboardService.getCounts(2023).subscribe(data => {
       this.counts = data;
       this.countsLoaded = true;
-      console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
     this.dashboardService.getTopics(100).subscribe(data => {
       this.words = data;
@@ -60,5 +59,9 @@ export class SearchResultComponent implements OnInit{
   topicClcked(se:Search){
     this.setSearch = {'option': se.option,'query':se.query}
     this.onSearch(se)
+  }
+
+  isAuthorSearch(){
+    return this.setSearch.option === 'au'
   }
 }

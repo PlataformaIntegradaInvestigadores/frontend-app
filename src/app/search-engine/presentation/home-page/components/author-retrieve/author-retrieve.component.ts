@@ -23,7 +23,6 @@ export class AuthorRetrieveComponent {
     this.authorService
       .getAuthorsByQuery(this.query, this.page, this.size)
       .subscribe((response) => {
-        console.log(response);
         this.items = response.data;
         this.total = response.total;
       });

@@ -1,57 +1,72 @@
 <div>
   <div class="w-full custom-bg">
-    <app-search-box (search)="onSearch($event)" [setSearch]="setSearch"
-                    class="flex w-full h-full items-center justify-center">
+    <app-search-box
+      (search)="onSearch($event)"
+      [setSearch]="setSearch"
+      class="flex w-full h-full items-center justify-center"
+    >
     </app-search-box>
     <div class="bg-primary_tailwind bg-opacity-55">
       <!--<div *ngIf="!countsLoaded" class="spinner-container min-h-20">
         <div class="loading-spinner"></div>
       </div> -->
-            <app-summary  class="text-white"></app-summary>
+      <app-summary class="text-white"></app-summary>
     </div>
   </div>
   <div *ngIf="!searchValue || !searchValue.query">
     <div class="bg-white">
-      <div class="flex flex-col  justify-center items-center py-2">
+      <div class="flex flex-col justify-center items-center py-2">
         <div class="w-4/5">
           <h1>Welcome to Centinela</h1>
           <p class="text-justify">
-            Centinela is a tool designed specifically to provide detailed academic information about Ecuadorian
-            researchers,
-            and offers
-            users three types of searches to access this information. Its main objective is to streamline and facilitate
-            the
-            understanding of the findings and results of relevant scientific research, allowing researchers to explore
-            the
-            relationships and occurrences between keywords used in these studies.
+            Centinela is a tool designed specifically to provide detailed
+            academic information about Ecuadorian researchers, and offers users
+            three types of searches to access this information. Its main
+            objective is to streamline and facilitate the understanding of the
+            findings and results of relevant scientific research, allowing
+            researchers to explore the relationships and occurrences between
+            keywords used in these studies.
           </p>
         </div>
       </div>
     </div>
     <div>
-      <app-ecuador-contribution *ngIf="topicsLoaded" (t)="topicClcked($event)"
-                                [words]="words"></app-ecuador-contribution>
+      <app-ecuador-contribution
+        *ngIf="topicsLoaded"
+        (t)="topicClcked($event)"
+        [words]="words"
+      ></app-ecuador-contribution>
     </div>
   </div>
 </div>
-<div class="w-full flex  justify-center items-center ">
-  <div *ngIf="searchValue && searchValue.query" [ngSwitch]="searchValue.option"
-       class="flex pb-5 flex-col justify-center items-center md:flex-row w-full">
-    <div class="w-3/4 pt-2">
-      <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page"
-                     class="w-full">
-      </mat-paginator>
-      class="flex pb-5 flex-col justify-center md:flex-row w-6/7">
-      <app-filter-sidebar [code]="searchValue.option"></app-filter-sidebar>
+<div class="w-full flex justify-center items-center">
+  <div
+    *ngIf="searchValue && searchValue.query"
+    [ngSwitch]="searchValue.option"
+    class="flex pb-5 flex-col justify-center items-center md:flex-row w-full"
+  >
+    <app-filter-sidebar class="w-1/4" [code]="searchValue.option" *ngIf="!isAuthorSearch" [ngClass]="{'hidden':isAuthorSearch}"></app-filter-sidebar>
+    <div class="w-3/4 pt-2" [ngClass]="{'w-full m-5':isAuthorSearch}">
       <div>
         <!-- Most Relevant Authors Results -->
-        <app-article-information *ngSwitchCase="'mrar'" query="{{searchValue.query}}" (yearsSelected)="($event)">
+        <app-article-information
+          *ngSwitchCase="'mrar'"
+          query="{{ searchValue.query }}"
+          (yearsSelected)="($event)"
+        >
         </app-article-information>
         <!-- Author Results -->
-        <app-author-retrieve *ngSwitchCase="'au'" query="{{searchValue.query}}">
+        <app-author-retrieve
+          *ngSwitchCase="'au'"
+          query="{{ searchValue.query }}"
+
+        >
         </app-author-retrieve>
         <!-- Most Relevant Articles Results -->
-        <app-most-relevant-authors-graph *ngSwitchCase="'mrau'" [query]="searchValue.query">
+        <app-most-relevant-authors-graph
+          *ngSwitchCase="'mrau'"
+          [query]="searchValue.query"
+        >
           Si
         </app-most-relevant-authors-graph>
       </div>
