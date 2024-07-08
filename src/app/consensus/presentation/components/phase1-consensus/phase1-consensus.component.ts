@@ -133,12 +133,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     }
   }
 
-  initializeProperties(): void {
-    this.rangeValues = new Array(this.recommendedTopics.length).fill(0);
-    this.showLabel = new Array(this.recommendedTopics.length).fill(false);
-    this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
-  }
-
+  
   getAndAssignRandomTopics(): void {
     this.topicService.getRandomRecommendedTopics(this.groupId).subscribe(
       response => {
@@ -149,12 +144,12 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       error => {
         console.error('Error assigning random topics:', error);
       }
-    );
-  }
-
-  connectWebSocket(): void {
-    if (this.groupId) {
-      console.log(`Connecting WebSocket for group: ${this.groupId}`);
+      );
+    }
+    
+    connectWebSocket(): void {
+      if (this.groupId) {
+        console.log(`Connecting WebSocket for group: ${this.groupId}`);
       const socket = this.webSocketService.connect(this.groupId);
       this.socketSubscription = socket.subscribe(message => {
         
@@ -237,27 +232,10 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         }, 0);
       }
     );
-    }
   }
+}
 
-
-  showLabels(index: number) {
-    this.showLabel[index] = true;
-  }
-
-  hideLabels(index: number) {
-    this.showLabel[index] = false;
-  }
-
-  showCheckTopic(index: number) {
-    this.showCheckTopics[index] = true;
-  }
-
-  hideCheckTopic(index: number) {
-    this.showCheckTopics[index] = false;
-  } 
-
-    // Enviar la experiencia del usuario al soltar la barra
+  // Enviar la experiencia del usuario al soltar la barra
   sendUserExpertise(index: number): void {
     const userId = this.authService.getUserId();
     if (userId && this.groupId) {
@@ -275,6 +253,30 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
+  
+
+initializeProperties(): void {
+  this.rangeValues = new Array(this.recommendedTopics.length).fill(0);
+  this.showLabel = new Array(this.recommendedTopics.length).fill(false);
+  this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
+}
+
+  showLabels(index: number) {
+    this.showLabel[index] = true;
+  }
+
+  hideLabels(index: number) {
+    this.showLabel[index] = false;
+  }
+
+  showCheckTopic(index: number) {
+    this.showCheckTopics[index] = true;
+  }
+
+  hideCheckTopic(index: number) {
+    this.showCheckTopics[index] = false;
+  } 
+
 
   onSliderChange(index: number, event: any): void {
     this.rangeValues[index] = event.target.value;

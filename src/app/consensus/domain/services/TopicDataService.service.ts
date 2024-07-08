@@ -172,6 +172,37 @@ export class TopicService {
     );
   } */
 
+  notifyTopicReorder(groupId: string, userId: string, topicId: string, originalPosition: number, newPosition: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      user_id: userId,
+      topic_id: topicId,
+      original_position: originalPosition,
+      new_position: newPosition
+    };
+    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    return this.http.post<any>(`${this.apiUrl}${groupId}/topic-reorder/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  notifyTopicTagChange(groupId: string, userId: string, topicId: number, tag: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      user_id: userId,
+      topic_id: topicId,
+      tag: tag
+    };
+    return this.http.post<any>(`${this.apiUrl}${groupId}/tag-topic/`, body, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An unknown error occurred!';

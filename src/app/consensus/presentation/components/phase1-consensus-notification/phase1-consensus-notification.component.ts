@@ -123,7 +123,6 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
           message: notification.notification_message
         }))
       ].sort((a, b) => b.date.getTime() - a.date.getTime());
-      console.log("NOTIFICACIONES urls", this.unifiedNotifications.map(notification => notification.profile_picture_url));
       console.log("ARREGLO CON LA DATA UNIDADAAAAADADAAA", this.unifiedNotifications);
     }
   

@@ -14,6 +14,7 @@ import { Group } from 'src/app/group/domain/entities/group.interface';
 export class ConsensusPageComponent implements OnInit{
   
   isDecisionPhase: boolean = false;
+  isPhaseTwo: boolean = false;
   group: Group | null = null;
   groupId: string | null = null;
   userId: string | null = null;
@@ -63,6 +64,7 @@ export class ConsensusPageComponent implements OnInit{
     const url = this.router.url;
     // Verifica si la URL corresponde a la fase de decisión
     this.isDecisionPhase = url.includes(`/${this.userId}/my-groups/${this.groupId}/consensus/decision`);
+    this.isPhaseTwo = url.includes(`/${this.userId}/my-groups/${this.groupId}/consensus/valuation`);
   }
 
   onMemberDeleted(memberId: string): void {
