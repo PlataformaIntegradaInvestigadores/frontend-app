@@ -4,6 +4,7 @@
 @import "tailwindcss/utilities";
 @import 'flowbite';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "~@angular/animations/animations";
 
 
 .auth_bg {

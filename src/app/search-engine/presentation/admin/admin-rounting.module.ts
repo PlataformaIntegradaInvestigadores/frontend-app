@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AdminComponent } from "./pages/login/admin.component";
 import { AdminDashboardComponent } from "./pages/admin-dashboard/admin-dashboard.component";
-import { CorpusComponent } from "./components/corpus/corpus.component";
+import {  UpdateCentinelaComponent } from "./components/update-centinela/update-centinela.component";
 import { ModelsComponent } from "./components/models/models.component";
 import { MainContentComponent } from "./components/main-content/main-content.component";
 import { loginGuard } from "src/guards/login.guard";
@@ -22,8 +22,8 @@ const routes: Routes = [
        component:MainContentComponent
       },
       {
-        path:'generate-corpus',
-        component:CorpusComponent
+        path:'update-centinela',
+        component:UpdateCentinelaComponent
       },
       {
         path:'generate-model',

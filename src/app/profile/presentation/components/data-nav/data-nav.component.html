@@ -22,7 +22,7 @@
             About {{ user?.first_name }}
           </a>
         </li>
-        <li *ngIf="user?.scopus_id">
+        <li *ngIf="user?.scopus_id || authorCentinela ">
           <a routerLink="./network" routerLinkActive="active" ariaCurrentWhenActive="page"
             class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
             aria-current="page">
@@ -33,7 +33,7 @@
             Network
           </a>
         </li>
-        <li *ngIf="user?.scopus_id">
+        <li *ngIf="user?.scopus_id || authorCentinela">
           <a routerLink="./article" routerLinkActive="active" ariaCurrentWhenActive="page"
             class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
             aria-current="page">
@@ -44,7 +44,7 @@
             Article
           </a>
         </li>
-        <li *ngIf="user?.scopus_id">
+        <li *ngIf="user?.scopus_id || authorCentinela">
           <a routerLink="./fingerprint" routerLinkActive="active" ariaCurrentWhenActive="page"
             class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
             <div class="w-4 h-4 mr-2">

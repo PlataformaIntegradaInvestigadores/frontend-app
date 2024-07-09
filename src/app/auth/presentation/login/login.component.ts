@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
         response => {
           const userId = this.authService.getUserId();
           if (userId) {
-            this.router.navigate([`/${userId}/about-me`]);
+            this.router.navigate([`/profile/${userId}/about-me`]);
           }
         },
         error => {
