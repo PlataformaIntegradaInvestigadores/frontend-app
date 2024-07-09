@@ -147,14 +147,16 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   completeConsensusPhaseTwo(): void {
     const userId = this.authService.getUserId();
     if (this.groupId && userId) {
+      // Invertir los valores de posFinal
+      const totalTopics = this.finalOrderedTopics.length;
       const finalTopicOrders = this.finalOrderedTopics.map((topic, index) => ({
         idTopic: topic.id,
-        posFinal: index + 1,
+        posFinal: totalTopics - index, // Invertir el valor de posFinal
         label: topic.tags.join(', ')
       }));
-  
+
       console.log('Final topic orders:', JSON.stringify(finalTopicOrders, null, 2));
-  
+
       this.topicService.saveFinalTopicOrder(this.groupId, userId, finalTopicOrders).subscribe(
         response => {
           console.log('Final topic order saved:', response);
@@ -162,7 +164,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
           const currentUrl = this.router.url;
           const newUrl = currentUrl.replace('valuation', 'decision');
           this.router.navigateByUrl(newUrl);
-          console.log('Redirecting tooooooooooooooooooooooooooooo:', newUrl);
+          console.log('Redirecting to:', newUrl);
         },
         error => {
           console.error('Error saving final topic order:', error);
@@ -170,6 +172,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
+
   
 
   connectWebSocket(): void {

@@ -220,6 +220,13 @@ export class TopicService {
   }
 
 
+  getConsensusResults(groupId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+  
+    });
+    return this.http.get(`${this.apiUrl}${groupId}/execute_consensus_calculations/`, { headers });
+  }
 
 
   private handleError(error: any): Observable<never> {

@@ -4,7 +4,7 @@
             <!-- <img class="w-9 h-9 rounded-full bg-black"  [src]="member?.profile_picture || '../../../../../assets/profile.png'" alt="{{ member?.first_name || 'User' }} image">
              -->
             
-             <a [routerLink]="['/', member?.id, 'about-me']">
+             <a [routerLink]="['/profile/', member?.id, 'about-me']">
                 <img class="w-9 h-9 rounded-full bg-black" [src]="member?.profile_picture || '../../../../../assets/profile.png'" alt="{{ member?.first_name || 'User' }} image">
             </a>            
 

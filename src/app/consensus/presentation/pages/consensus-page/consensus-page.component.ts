@@ -64,6 +64,7 @@ export class ConsensusPageComponent implements OnInit{
     const url = this.router.url;
     // Verifica si la URL corresponde a la fase de decisión
     this.isDecisionPhase = url.includes(`/profile/${this.userId}/my-groups/${this.groupId}/consensus/decision`);
+    this.isPhaseTwo = url.includes(`/profile/${this.userId}/my-groups/${this.groupId}/consensus/valuation`);
   }
 
   onMemberDeleted(memberId: string): void {
