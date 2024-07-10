@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges, Inject} from '@angular/core';
 import {BehaviorSubject, Observable, switchMap, tap} from "rxjs";
-import {Article, PaginationArticleResult} from "../../../../../shared/interfaces/article.interface";
+import {Article, ArticleResult, PaginationArticleResult} from "../../../../../shared/interfaces/article.interface";
 import {ArticleService} from "../../../../domain/services/article.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { PageEvent } from '@angular/material/paginator';
@@ -12,13 +12,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./article-information.component.css']
 })
 export class ArticleInformationComponent {
+  displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date', 'status' , 'citations'];
 
   @Input() query!: string
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>()
 
+  clickedRows = (row:ArticleResult ) => this.seeMoreInformation(row.scopus_id);
+
   page = 1;
-  size = 5;
+  size = 10;
   total = 0;
+  isLoadingResults = true;
 
   refreshTable$: BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>
     = new BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>({
@@ -45,6 +49,7 @@ export class ArticleInformationComponent {
       .pipe(
         tap(() => {
           this.loading.emit(true)
+          this.isLoadingResults = true
         }),
         switchMap(({page, size, type, years}) => {
             if (type) {
@@ -57,6 +62,7 @@ export class ArticleInformationComponent {
         tap((articles) => {
           console.log(articles);
           this.loading.emit(false)
+          this.isLoadingResults = false
           this.total=articles.total
           if (this.setYears) {
             this.years = []
@@ -108,11 +114,13 @@ export class ArticleInformationComponent {
     })
   }
 
-  goToArticle(scopus: string) {
-    window.open(`https://www.scopus.com/record/display.uri?eid=2-s2.0-${scopus}&origin=resultslist`, '_blank')
+
+
+  seeMoreInformation(scopusId: string) {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['home/article', scopusId])
+    );
+    window.open(url, '_blank');
   }
-  seeMoreInformation(scopusId:string){
-    console.log(scopusId);
-    this.router.navigate(['home/article/', scopusId]);
-  }
+
 }

@@ -30,6 +30,9 @@ import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {SummaryComponent} from "./components/summary/summary.component";
 import {SuggestionService} from "../../../dashboard/domain/services/suggestion.service";
 
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 @NgModule({
     imports: [
         MatSlideToggleModule,
@@ -48,6 +51,8 @@ import {SuggestionService} from "../../../dashboard/domain/services/suggestion.s
         CountUpModule,
         LineChartModule,
         DashboardModule,
+        MatTableModule,
+        MatProgressSpinnerModule
     ],
     exports: [
         CoauthorsGraphComponent,
