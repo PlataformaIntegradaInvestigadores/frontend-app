@@ -47,7 +47,8 @@
                     <members-consensus [group]="group" class="w-full mb-3"  ></members-consensus>
                     <phase1-consensus-notification class="w-full" *ngIf="!isDecisionPhase && !isPhaseTwo"></phase1-consensus-notification>
                     <phase2-consensus-notification class="w-full" *ngIf="isPhaseTwo"></phase2-consensus-notification>
-                    <satisfaction-level *ngIf="isDecisionPhase"></satisfaction-level>
+                    <satisfaction-level class="w-full" *ngIf="isDecisionPhase"></satisfaction-level>
+                    <phase3-consensus-notification class="w-full" *ngIf="isDecisionPhase" ></phase3-consensus-notification>
                 </div>
             </div>
         </div>

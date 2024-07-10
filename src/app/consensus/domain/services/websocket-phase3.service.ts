@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
 import { environment } from 'src/environments/environment';
 import { Subject } from 'rxjs';
+import { ConsensusResult } from '../entities/consensus-result.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { Subject } from 'rxjs';
 export class WebSocketPhase3Service {
 
   private groupSockets: { [key: string]: WebSocketSubject<any> } = {};
-  public notificationReceived: Subject<any> = new Subject<any>();
+  public notificationReceived: Subject<ConsensusResult> = new Subject<ConsensusResult>();
+  public userSatisfactionReceived: Subject<any> = new Subject<any>();
 
   connect(groupId: string): WebSocketSubject<any> {
     if (!this.groupSockets[groupId] || this.groupSockets[groupId].closed) {
@@ -30,11 +32,21 @@ export class WebSocketPhase3Service {
     console.log(`Message received on WebSocket 3 for group ${groupId}:`, JSON.stringify(message, null, 2));
 
     if (message && message.message) {
-      const { type, results } = message.message;
+      const { type, results, active_connections } = message.message;
+
+      console.log('Message typeeeeeeeeeeeeeeeeee:', type);
 
       switch (type) {
+        case 'connection_count':
+          console.log('Active connections 33333333:', active_connections);
+        break;
         case 'consensus_calculation_completed':
           this.notificationReceived.next(results);
+          break;
+        case 'user_satisfaction':
+          console.log('User satisfaction notification received 3333333333:', message.message);
+          this.userSatisfactionReceived.next(message.message);
+          
           break;
         default:
           console.warn('Unknown message type:', type);

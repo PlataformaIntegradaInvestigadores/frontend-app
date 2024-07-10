@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ConsensusResult } from 'src/app/consensus/domain/entities/consensus-result.interface';
 import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 import { WebSocketPhase3Service } from 'src/app/consensus/domain/services/websocket-phase3.service';
 
@@ -12,8 +13,9 @@ import { WebSocketPhase3Service } from 'src/app/consensus/domain/services/websoc
 export class Phase3ConsensusComponent implements OnInit, OnDestroy {
 
   groupId: string = '';
-  consensusResults: any[] = [];
+  consensusResults: ConsensusResult[] = [];
   private wsSubscription: Subscription | undefined;
+  activeConnections: number = 0;
 
   constructor(
     private topicDataService: TopicService,
@@ -48,15 +50,24 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
   }
 
   connectWebSocket(): void {
-    const socket = this.webSocketService.connect(this.groupId);
-    this.wsSubscription = this.webSocketService.notificationReceived.subscribe(
-      (results) => {
-        console.log('Consensus results received via WebSocket:', results);
-        this.consensusResults = results;
-      },
-      (error) => {
-        console.error('Error receiving consensus results via WebSocket:', error);
-      }
-    );
+    if(this.groupId){
+
+      console.log('Connecting to WebSocket for group PHASE 3:', this.groupId);
+
+      const socket = this.webSocketService.connect(this.groupId);
+      this.wsSubscription = socket.subscribe(
+        message => {
+          console.log('Message received:', message);
+
+          if (message.message.type === 'connection_count') {
+            this.activeConnections = message.message.active_connections;
+            console.log('Active connections PHASE 33333:', this.activeConnections);
+          }
+        },
+        (error) => {
+          console.error('Error receiving consensus results via WebSocket:', error);
+        }
+      );
+    }
   }
 }

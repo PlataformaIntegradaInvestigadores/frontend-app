@@ -19,6 +19,7 @@ import { BtnMailComponent } from './presentation/components/btn-mail/btn-mail.co
 import { SatisfactionLevelComponent } from './presentation/components/satisfaction-level/satisfaction-level.component';
 import { ProfilePageModule } from "../profile/profile-page.module";
 import { Phase2ConsensusNotificationComponent } from './presentation/components/phase2-consensus-notification/phase2-consensus-notification.component';
+import { Phase3ConsensusNotificationComponent } from './presentation/components/phase3-consensus-notification/phase3-consensus-notification.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { Phase2ConsensusNotificationComponent } from './presentation/components/
     UniqueIDDirective,
     BtnMailComponent,
     SatisfactionLevelComponent,
-    Phase2ConsensusNotificationComponent
+    Phase2ConsensusNotificationComponent,
+    Phase3ConsensusNotificationComponent
   ],
   imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule],
   exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],

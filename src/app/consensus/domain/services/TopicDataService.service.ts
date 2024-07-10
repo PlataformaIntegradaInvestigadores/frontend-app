@@ -228,6 +228,21 @@ export class TopicService {
     return this.http.get(`${this.apiUrl}${groupId}/execute_consensus_calculations/`, { headers });
   }
 
+  saveUserSatisfaction(groupId: string, userId: string, satisfactionLevel: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    const body = { satisfaction_level: satisfactionLevel };
+    return this.http.post(`${this.apiUrl}${groupId}/user_satisfaction/`, body, { headers });
+  }
+
+  getUserSatisfactionNotifications(groupId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    return this.http.get(`${this.apiUrl}${groupId}/satisfaction/notifications/`, { headers });
+  }
+
 
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An unknown error occurred!';
