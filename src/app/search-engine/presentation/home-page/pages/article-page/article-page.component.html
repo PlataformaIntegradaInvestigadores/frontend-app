@@ -3,8 +3,8 @@
     <h1>
       {{ article?.title }}
     </h1>
-    <div class="flex w-full justify-end mt-3">
-      <a class="text-amber-300 hover:text-amber-500 text-[17px]">VIEW ARTICLE IN SCOPUS</a>
+    <div class="flex w-full justify-end mt-3 hover:cursor-pointer" (click)="goToArticle(article?.scopus_id)" >
+      <a class="text-amber-300 hover:text-amber-500 text-[17px] ">VIEW ARTICLE IN SCOPUS</a>
     </div>
     <h2 class="inline">Authors:</h2>
     <div class="flex flex-wrap gap-x-3">

@@ -29,6 +29,9 @@ import {LineChartModule} from "@swimlane/ngx-charts";
 import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {SummaryComponent} from "./components/summary/summary.component";
 
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 @NgModule({
     imports: [
         MatSlideToggleModule,
@@ -47,6 +50,8 @@ import {SummaryComponent} from "./components/summary/summary.component";
         CountUpModule,
         LineChartModule,
         DashboardModule,
+        MatTableModule,
+        MatProgressSpinnerModule
     ],
   exports: [
     CoauthorsGraphComponent,

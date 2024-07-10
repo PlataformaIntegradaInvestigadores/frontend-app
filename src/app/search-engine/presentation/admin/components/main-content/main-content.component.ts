@@ -199,7 +199,6 @@ export class MainContentComponent implements OnInit {
 
       },
       error: (error) => {
-        console.log(error);
         if (error.status === 0) {
           this.corpusStatus = {
             success: false,
@@ -222,8 +221,9 @@ export class MainContentComponent implements OnInit {
             success: false,
             message: error.error.detail,
           };
-          this.loadingCorpus = false;
         }
+
+        this.loadingCorpus = false;
       },
       complete: () => {
         console.log('Request complete');
@@ -265,9 +265,9 @@ export class MainContentComponent implements OnInit {
           };
           this.loadingModel = false;
         }
+        this.loadingModel = false
       },
       complete: () => {
-        console.log('Request complete');
       },
     });
   }

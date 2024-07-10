@@ -1,4 +1,5 @@
 export interface Article {
+  scopus_id: string
   title: string
   abstract: string
   publication_date: Date
