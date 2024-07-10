@@ -4,3 +4,7 @@
 .green-icon {
   color: rgb(28, 245, 28);
 }
+.small-spinner {
+  width: 24px;
+  height: 24px;
+}

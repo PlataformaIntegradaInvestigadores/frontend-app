@@ -13,7 +13,7 @@ export class UpdateCentinelaService {
 
 
   updateAuthorsCentinela() :Observable<Status>{
-    return this.httpClient.get<Status>(`${this.RootUrl}api/v1/information/update/author-information/`);
+    return this.httpClient.post<Status>(`${this.RootUrl}api/v1/information/update/author-information/`,{});
   }
   searchArticlesCentinela() :Observable<Status>{
     return this.httpClient.get<Status>(`${this.RootUrl}api/v1/scopus-integration/`);

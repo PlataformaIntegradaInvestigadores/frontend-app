@@ -14,9 +14,9 @@ import { FingerprintComponent } from './profile/presentation/components/fingerpr
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HomePageModule } from "./search-engine/presentation/home-page/home-page.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {  HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
@@ -28,6 +28,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ContactComponent,
     ArticleComponent,
     FingerprintComponent,
+
   ],
   imports: [
     AppRoutingModule,
@@ -40,7 +41,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     HttpClientModule,
     BrowserModule,
     NoopAnimationsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -24,10 +24,10 @@ export class DashboardAdminService {
   }
 
   generateCorpus(): Observable<Status> {
-    return this.httpClient.get<Status>(`${this.rootURL}api/v1/generate-corpus/`);
+    return this.httpClient.post<Status>(`${this.rootURL}api/v1/generate-corpus/`,{});
   }
 
   generateModel(): Observable<Status> {
-    return this.httpClient.get<Status>(`${this.rootURL}api/v1/generate-model/`);
+    return this.httpClient.post<Status>(`${this.rootURL}api/v1/generate-model/`, {});
   }
 }

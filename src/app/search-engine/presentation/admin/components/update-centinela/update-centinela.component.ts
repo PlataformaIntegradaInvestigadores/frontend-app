@@ -9,7 +9,11 @@ import { UpdateCentinelaService } from 'src/app/search-engine/domain/services/up
 })
 export class UpdateCentinelaComponent {
   integrationStatus:Status | undefined;
-  loading :boolean = true;
-   constructor(private updateCentinelaService: UpdateCentinelaService) {}
+  loading :boolean = false;
+   constructor(private updateCentinelaService: UpdateCentinelaService) {
+   }
+
+
+
 
 }
