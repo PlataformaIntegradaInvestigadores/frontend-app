@@ -19,7 +19,6 @@ export class DashboardService implements OnInit {
 
   private apiUrl = 'http://localhost:8000/api/v1/dashboard';
 
-  years_response!: Observable<YearsResponse>
 
   constructor(private http: HttpClient) {
   }
@@ -72,13 +71,18 @@ export class DashboardService implements OnInit {
     return this.http.get<DashboardCounts>(`${this.apiUrl}/country/get_acumulated/`, {params});
   }
 
+  getCountsYear(year: number): Observable<DashboardCounts> {
+    let params = new HttpParams().set('year', year.toString());
+    return this.http.get<DashboardCounts>(`${this.apiUrl}/country/get_year/`, {params});
+  }
+
   getYears(): Observable<YearsResponse[]> {
     return this.http.get<YearsResponse[]>(`${this.apiUrl}/country/get_last_years/`);
   }
 
   getTopicsYear(year: number): Observable<Word[]> {
     let params = new HttpParams().set('year', year.toString());
-    return this.http.get<Word[]>(`${this.apiUrl}/country/get_top_topics_year`, {params});
+    return this.http.get<Word[]>(`${this.apiUrl}/country/get_top_topics_year/`, {params});
   }
 
   getTopicsAcumulated(year: number): Observable<Word[]> {
@@ -102,7 +106,106 @@ export class DashboardService implements OnInit {
     )
   }
 
-  get_years():Observable<Year[]>{
-    return this.http.get<Year[]>(`${this.apiUrl}/country/get_years/`)
+  getBarInfoYear(year:number):Observable<NameValue[]>{
+    return this.getTopAffiliationsYear(year).pipe(
+      map(response => {
+        const info:NameValue[] = response.map(t => ({
+          name: t.text,
+          value: t.size
+        }));
+        return info
+      })
+    )
   }
+
+  getTopAffiliationsYear(year: number):Observable<Word[]>{
+    let params = new HttpParams().set('year', year.toString());
+    return this.http.get<Word[]>(`${this.apiUrl}/affiliation/get_top_affiliations_year/`,{params})
+  }
+
+  getTreeMap(): Observable<NameValue[]> {
+    return this.getTopics(30).pipe(
+      map(response => {
+        const info: NameValue[] = response.map(t => ({
+          name: t.text,
+          value: t.size
+        }));
+        return info
+      })
+    )
+  }
+
+  private getTopics(number_top: number) {
+    let params = new HttpParams().set('number_top', number_top.toString());
+    return this.http.get<Word[]>(`${this.apiUrl}/country/get_topics/`, {params});
+  }
+
+  getBarInfo():Observable<NameValue[]>{
+    return this.getTopAffiliations().pipe(
+      map(response => {
+        const info:NameValue[] = response.map(t => ({
+          name: t.text,
+          value: t.size
+        }));
+        return info
+      })
+    )
+  }
+
+  getTopAffiliations():Observable<Word[]>{
+    return this.http.get<Word[]>(`${this.apiUrl}/affiliation/get_affiliations/`)
+  }
+
+  getLineChartInfoYear(year: number): Observable<LineChartInfo[]> {
+    return this.getYear(year).pipe(
+      map(response => {
+        const series: NameValue[] = response.map(cy => ({
+          name: cy.year.toString(),
+          value: cy.article
+        }));
+        return [{
+          name: 'Ecuador',
+          series: series
+        }];
+      })
+    );
+  }
+
+  getYear(year: number): Observable<YearsResponse[]> {
+    let params = new HttpParams().set('year', year.toString());
+    return this.http.get<YearsResponse[]>(`${this.apiUrl}/country/get_year_info/`, {params});
+  }
+
+  getLineChartInfoRange(year: number): Observable<LineChartInfo[]> {
+    return this.getYearsRange(year).pipe(
+      map(response => {
+        const series: NameValue[] = response.map(cy => ({
+          name: cy.year.toString(),
+          value: cy.article
+        }));
+        return [{
+          name: 'Ecuador',
+          series: series
+        }];
+      })
+    );
+  }
+
+  getYearsRange(year: number): Observable<YearsResponse[]> {
+    let params = new HttpParams().set('year', year.toString());
+    return this.http.get<YearsResponse[]>(`${this.apiUrl}/country/get_range_info/`, {params});
+  }
+
+  getProvinces():string{
+    return `${this.apiUrl}/province/get_provinces/`;
+  }
+  getProvincesYear(year:number):string{
+    return `${this.apiUrl}/province/get_provinces_year/?year=${year}`;
+  }
+
+  getProvincesAcumulated(year:number):string{
+    return `${this.apiUrl}/province/get_provinces_acumulated/?year=${year}`;
+  }
+
+
 }

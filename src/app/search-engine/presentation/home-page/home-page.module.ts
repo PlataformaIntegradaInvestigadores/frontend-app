@@ -28,6 +28,7 @@ import {CountUpModule} from "ngx-countup";
 import {LineChartModule} from "@swimlane/ngx-charts";
 import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {SummaryComponent} from "./components/summary/summary.component";
+import {SuggestionService} from "../../../dashboard/domain/services/suggestion.service";
 
 @NgModule({
     imports: [
@@ -69,6 +70,6 @@ import {SummaryComponent} from "./components/summary/summary.component";
     EcuadorContributionComponent,
     SummaryComponent
   ],
-  providers: [VisualsService,HttpClientModule],
+  providers: [VisualsService,HttpClientModule, SuggestionService],
 })
 export class HomePageModule {}

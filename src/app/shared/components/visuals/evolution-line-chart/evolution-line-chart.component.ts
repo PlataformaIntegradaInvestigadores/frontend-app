@@ -7,7 +7,7 @@ import {LineChartInfo, NameValue} from "../../../interfaces/dashboard.interface"
   templateUrl: './evolution-line-chart.component.html',
   styleUrls: ['./evolution-line-chart.component.css']
 })
-export class EvolutionLineChartComponent implements OnChanges {
+export class EvolutionLineChartComponent {
   @Input() multi!: LineChartInfo[];
   @Input() width!: number;
   @Input() height!: number;
@@ -28,48 +28,14 @@ export class EvolutionLineChartComponent implements OnChanges {
     name: 'custom',
     selectable: true,
     group: ScaleType.Ordinal,
-    domain: []
+    domain: ['#0000ff']
   };
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['multi']) {
-      this.assignColors();
-    }
-  }
 
   onSelect(event: NameValue): void {
     console.log('Selected item:', event); // Log para verificar el elemento seleccionado
     this.selectedYear.emit(event.name);
     this.selectedItem = event;
-    this.assignColors();
-  }
-
-  assignColors() {
-    if (!this.multi) return;
-    console.log("aa")
-    let color = ''
-    const colors = ['#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
-    const highlightedColor = '#ff0000'; // Color resaltado para la serie seleccionada
-    this.colorScheme.domain = this.multi.map((series, index) => {
-      if(this.selectedItem !== null){
-        series.series.some(item =>{
-          if(item.name === this.selectedItem!.name){
-            console.log('entroooo')
-            color = highlightedColor;
-            console.log('colorrrr1' + color)
-          }else{
-
-            color = '#ffff00'
-            console.log('colorrrr2' + color)
-          }
-        })
-        console.log('colorrrr3' + color)
-        return color;
-      }else{
-        return '#0000ff'
-      }
-
-    });
   }
 }
 // export class EvolutionLineChartComponent {

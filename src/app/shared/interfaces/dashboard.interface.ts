@@ -51,3 +51,17 @@ export interface YearsResponse{
 export interface Year {
   year: number;
 }
+
+export interface AffiliationInfo {
+  scopus_id:      number;
+  name:           string;
+  total_articles: number;
+}
+
+export interface Affiliation {
+  id:             string;
+  scopus_id:      number;
+  name:           string;
+  year:           number;
+  total_articles: number;
+}

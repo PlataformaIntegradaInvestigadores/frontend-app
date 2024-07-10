@@ -15,10 +15,10 @@ export class SummaryComponent {
   }
 
   getSummary(){
-    this.summaryService.getSummary().subscribe((summary)=>{
-      this.authorsCount = summary.authors;
-      this.articlesCount = summary.articles;
-      this.topicsCount = summary.topics;
-    });
+    // this.summaryService.getSummary().subscribe((summary)=>{
+    //   this.authorsCount = summary.authors;
+    //   this.articlesCount = summary.articles;
+    //   this.topicsCount = summary.topics;
+    // });
   }
 }

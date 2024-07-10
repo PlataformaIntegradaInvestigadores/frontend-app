@@ -1,17 +1,18 @@
-<div class="flex flex-col justify-center items-center mb-3">
-  <div>
+
+<div class="flex flex-col justify-center items-center mb-3 ">
+  <div class="gap-y-3">
     <div class="flex mb-1 justify-between font-black">
       <div class="border-2 border-blue-900 rounded-md mr-1">
         <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Statistics in Ecuador</h3>
         <div class="flex flex-col px-2 gap-y-2">
           <div>
-            <label class="mr-3" *ngFor="let option of options">
+            <label class="mr-3" *ngFor="let option of options" (change)="updateData(year)">
               <input type="radio" name="grupoOpciones" [(ngModel)]="selectedOption" [value]="option">
               {{ option }}
             </label>
           </div>
           <select class="flex text-center" [(ngModel)]="year" (change)="updateData(year)">
-            <option *ngFor="let year1 of yearOptions"  [value]="year1">{{ year1 }}</option>
+            <option *ngFor="let year1 of yearOptions" [value]="year1">{{ year1 }}</option>
           </select>
         </div>
       </div>
@@ -33,34 +34,45 @@
       <app-bar-chart [width]="1100" [height]="300" [single]="barChartInfo"></app-bar-chart>
     </div>
   </div>
-  <div class="flex border-blue-900 border-2 rounded-md mb-1">
-    <div>
+  <div class="flex">
+    <div class="border-blue-900 border-2 rounded-md mb-1 mr-2">
       <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Topics with most article in Ecuador
         until {{ year }}</h3>
-      <app-tree-map-chart [width]="500" [height]="400" [single]="treeMapInfo"></app-tree-map-chart>
+      <app-tree-map-chart [width]="550" [height]="400" [single]="treeMapInfo"></app-tree-map-chart>
     </div>
-    <div>
-      <app-ecuador-map></app-ecuador-map>
+    <div class="border-blue-900 border-2 rounded-md mb-1">
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Provinces contribution until {{ year }}</h3>
+      <app-ecuador-map [response]="provinces"></app-ecuador-map>
+    </div>
+  </div>
+  <div class="flex flex-col justify-center border-2 border-blue-900 rounded-2">
+    <h3 class="bg-blue-900 text-white">More Statistics:</h3>
+    <div class="flex gap-x-5 px-5 pb-2">
+      <div class="flex flex-col items-center justify-center">
+        <div class="flex justify-center">
+          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">apartment</mat-icon>
+          <dt class="mb-2 text-3xl md:text-4xl pr-5">
+          </dt>
+        </div>
+        <dd class="font-light">Affiliations</dd>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <div class="flex justify-center">
+          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">school</mat-icon>
+          <dt class="mb-2 text-3xl md:text-4xl pr-5">
+          </dt>
+        </div>
+        <dd class="font-light">Knowledge Areas</dd>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <div class="flex justify-center">
+          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">public</mat-icon>
+          <dt class="mb-2 text-3xl md:text-4xl pr-5">
+          </dt>
+        </div>
+        <dd class="font-light">Province</dd>
+      </div>
     </div>
   </div>
 </div>
-<!--  <div class="w-3/4">-->
-<!--    <p class="bg-blue-900 text-white p-1">Ecuador total contribution until {{year}}</p>-->
-<!--    <app1-summary [counts]="counts"></app1-summary>-->
-<!--  </div>-->
 
-<!--  <div class="flex flex-col justify-center pt-4">-->
-
-<!--    <div class="flex flex-col w-full justify-center max-h-[170px]">-->
-<!--      <p class="bg-blue-900 p-1">Articles contribution's evolution in Ecuador from 2000 until {{year}}</p>-->
-
-<!--    </div>-->
-<!--    <div class="flex justify-center">-->
-<!--      <app-bar-chart [width]="1150" [height]="200"></app-bar-chart>-->
-<!--    </div>-->
-<!--    <div class="flex justify-center">-->
-<!--      <app-tree-map-chart [width]="550" [height]="450" [single]="treeMapInfo"></app-tree-map-chart>-->
-<!--      <app-ecuador-map></app-ecuador-map>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
