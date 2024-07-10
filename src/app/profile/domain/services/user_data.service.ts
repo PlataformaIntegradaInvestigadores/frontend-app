@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from 'src/app/profile/domain/entities/user.interfaces';
+import { Author } from 'src/app/shared/interfaces/author.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class UserDataService {
   }
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   public user$: Observable<User | null> = this.userSubject.asObservable();
+  public author: Author | undefined;
 
   constructor() { }
 
@@ -26,11 +28,16 @@ export class UserDataService {
    * Establece el usuario actual.
    * @param user - El usuario a establecer.
    */
-  setUser(user: User | null): void {
-    if (user && user.id && !user.isOwnProfile) {
+  setUser(user: User | null, author:Author |undefined): void {
+
+    if ( user?.id && !user.isOwnProfile) {
       user.isOwnProfile = this.isCurrentUser(user.id);
     }
     this.userSubject.next(user);
+
+    if(author){
+      this.author = author;
+    }
   }
 
   /**

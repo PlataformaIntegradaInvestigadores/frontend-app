@@ -23,10 +23,13 @@ export class SearchResultComponent implements OnInit {
   words!: Word[]
   provinces: string = 'http://localhost:8000/api/v1/dashboard/province/get_provinces/'
 
+
   constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title: Title, private visualsService: VisualsService) {
     const {option, query} = route.snapshot.queryParams
-    if (option && query)
+    if (option && query){
       this.setSearch = {option, query}
+    }
+    this.searchValue = {option: 'au', query: ''}
   }
 
   onSearch(searchValue: Search) {
@@ -45,13 +48,10 @@ export class SearchResultComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
     this.title.setTitle("Welcome")
     this.visualsService.getCounts(2023).subscribe(data => {
       this.counts = data;
       this.countsLoaded = true;
-      console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
     this.visualsService.getTopics(100).subscribe(data => {
       this.words = data;
@@ -63,5 +63,10 @@ export class SearchResultComponent implements OnInit {
   topicClcked(se: Search) {
     this.setSearch = {'option': se.option, 'query': se.query}
     this.onSearch(se)
+
+  }
+
+  isAuthorSearch(){
+    return this.searchValue.option === 'au'
   }
 }

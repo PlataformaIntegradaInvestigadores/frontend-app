@@ -38,12 +38,12 @@ export class AuthorService {
       );
   }
 
-  getAuthorById(id: number): Observable<Author> {
-    return this.http.get<Author>(`${this.rootURL}author/${id}`);
+  getAuthorById(id: string): Observable<Author> {
+    return this.http.get<Author>(`${this.rootURL}api/v1/authors/authors/${id}`);
   }
 
   getCoauthorsById(id: number): Observable<Coauthors> {
-    return this.http.get<Coauthors>(`${this.rootURL}coauthors/${id}`);
+    return this.http.get<Coauthors>(`${this.rootURL}api/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
   }
 
   getMostRelevantAuthors(

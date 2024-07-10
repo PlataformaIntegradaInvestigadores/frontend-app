@@ -8,10 +8,11 @@ export interface Article {
   doi: string
   author_count: number
   affiliation_count: number
+  citations: number
 }
 
 export interface ArticleResult {
-  scopus_id: number
+  scopus_id:string
   title: string
   authors: string[]
   publication_date: Date

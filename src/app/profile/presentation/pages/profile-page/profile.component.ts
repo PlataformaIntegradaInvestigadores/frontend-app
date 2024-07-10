@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 import { UserProfile, User } from 'src/app/profile/domain/entities/user.interfaces';
+import { AuthorService } from 'src/app/search-engine/domain/services/author.service';
+import { Author } from 'src/app/shared/interfaces/author.interface';
 
 @Component({
   selector: 'app-profile',
@@ -17,19 +19,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
   user: User | null = null;
   isOwnProfile: boolean = false;
   private routeSub: Subscription = new Subscription();
+  authorCentinela: Author | undefined;
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
     private userDataService: UserDataService,
-    private titleService: Title
+    private titleService: Title,
+    private authorService:AuthorService
   ) { }
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
       this.getUserData();
+      this.getAuthorInformation();
     });
   }
 
@@ -47,7 +52,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       next: (data: UserProfile) => {
         this.user = { ...data, id: this.userId, isOwnProfile: this.isOwnProfile };
         this.checkIfOwnProfile();
-        this.userDataService.setUser(this.user); // Establecemos el usuario en UserDataService
+        this.userDataService.setUser(this.user, this.authorCentinela); // Establecemos el usuario en UserDataService
         this.setTitle();
         console.log('User data:', this.user);
       },
@@ -74,6 +79,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.user) {
       const title = `${this.user.first_name} ${this.user.last_name}`;
       this.titleService.setTitle(title);
+    }
+  }
+
+  getAuthorInformation(){
+    try {
+        this.authorService.getAuthorById(this.userId).subscribe((data) => {
+          this.authorCentinela = data;
+        }
+      );
+    } catch (error) {
+      console.log(error)
     }
   }
 }

@@ -18,13 +18,15 @@ export interface Author {
   name: string,
   email: string,
   affiliation: string,
-  num_articles:number,
+  articles:number,
   topics:string [],
   scopus_id: number,
   first_name: string
   last_name: string
   auth_name: string
   initials: string
+  current_affiliation: string
+  citation_count: number
 }
 
 export interface Coauthors {

@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { UserProfile, ScopusData } from 'src/app/profile/domain/entities/user.interfaces';
+import { Author } from 'src/app/shared/interfaces/author.interface';
 
 @Component({
   selector: 'app-profile-data',
@@ -7,17 +8,20 @@ import { UserProfile, ScopusData } from 'src/app/profile/domain/entities/user.in
   styleUrls: ['./profile-data.component.css']
 })
 export class ProfileDataComponent implements OnChanges {
-  @Input() user: UserProfile | null = null;
+  @Input() user: UserProfile | undefined;
   @Input() isOwnProfile: boolean = false;
+  @Input() authorCentinela: Author | undefined;
 
   showForm = false;
   isLoggedIn: boolean = false;
   scopusData: ScopusData = { citations: 0, documents: 0 };
-
+  constructor(){
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['user']) {
       this.checkLoginStatus();
     }
+    console.log('author', this.authorCentinela)
   }
 
   /**
