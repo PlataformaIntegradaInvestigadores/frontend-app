@@ -16,6 +16,7 @@ export class SummaryComponent {
 
   getSummary(){
     this.summaryService.getSummary().subscribe((summary)=>{
+      console.log(summary)
       this.authorsCount = summary.authors;
       this.articlesCount = summary.articles;
       this.topicsCount = summary.topics;

@@ -19,8 +19,12 @@ export class VisualsService {
   }
 
   getTopics(number_top: number): Observable<Word[]> {
-    let params = new HttpParams().set('number', number_top.toString());
-    return this.http.get<Word[]>(`${this.apiUrl}/country/get_top_topics/`, {params});
+    let params = new HttpParams().set('number_top', number_top.toString());
+    return this.http.get<Word[]>(`${this.apiUrl}/country/get_topics/`, {params});
+  }
+
+  getProvinces():Observable<any>{
+    return this.http.get<YearsResponse[]>(`${this.apiUrl}/province/get_provinces/`);
   }
 
 

@@ -31,11 +31,8 @@
       </div>
     </div>
     <div>
-      <app-ecuador-contribution
-        *ngIf="topicsLoaded"
-        (t)="topicClcked($event)"
-        [words]="words"
-      ></app-ecuador-contribution>
+      <app-ecuador-contribution *ngIf="topicsLoaded" (t)="topicClcked($event)"
+                                [words]="words" [provinces]="provinces"></app-ecuador-contribution>
     </div>
   </div>
 </div>
@@ -45,8 +42,8 @@
     [ngSwitch]="searchValue.option"
     class="flex pb-5 flex-col justify-center items-center md:flex-row w-full"
   >
-    <app-filter-sidebar class="w-1/4" [code]="searchValue.option"  [ngClass]="{'hidden':isAuthorSearch()}" ></app-filter-sidebar>
-    <div class="w-3/4" [ngClass]="{'w-full':isAuthorSearch()}">
+<!--    <app-filter-sidebar class="w-1/4" [code]="searchValue.option"  [ngClass]="{'hidden':isAuthorSearch()}" ></app-filter-sidebar>-->
+    <div class="w-full" [ngClass]="{'w-full':isAuthorSearch()}">
       <div>
         <!-- Most Relevant Authors Results -->
         <app-article-information

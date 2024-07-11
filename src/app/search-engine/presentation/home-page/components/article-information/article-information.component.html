@@ -1,137 +1,99 @@
-<!--
-<div *ngIf="articles$ | async as articles">
-  <ng-container *ngFor="let item of articles.data">
-    <div
-      class="flex flex-col md:flex-row items-center border-2 border-black w-full my-2 p-3 rounded-md"
+<div class="flex">
+  <div *ngIf="years && years.length > 0" class="col-lg-2 px-0">
+    <div class="rounded border-2 border-black">
+
+      <!-- Title -->
+      <div class="text-center py-3 title border-2 border-b-black">
+        FILTROS
+      </div>
+
+      <!-- Years -->
+      <div class="py-2 px-3 subtitle border-2 border-b-black">
+        Año de publicación
+      </div>
+      <div class="py-3 px-3 d-flex flex-column gap-3 max-h-100 overflow-scroll">
+        <div class="d-flex flex-nowrap gap-3" *ngFor="let year of years">
+          <input [id]="year" type="checkbox" (click)="onClickCheckbox($event)">
+          <label [for]="year">{{year}}</label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="container mat-elevation-z8">
+    <div *ngIf="isLoadingResults" class="loading-shade">
+      <div *ngIf="isLoadingResults">
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <div *ngIf="articles$ | async as response">
+        <table
+          mat-table
+          [dataSource]="response.data"
+          class="example-table"
+          matSort
+          matSortActive="publication_date"
+          matSortDisableClear
+          matSortDirection="desc"
+        >
+          <!-- Title Column -->
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Title</th>
+            <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+          </ng-container>
+
+          <!-- Author Count Column -->
+          <ng-container matColumnDef="author_count">
+            <th mat-header-cell *matHeaderCellDef>Authors</th>
+            <td mat-cell *matCellDef="let row">{{ row.author_count }}</td>
+          </ng-container>
+
+          <!-- Affiliation Count Column -->
+          <ng-container matColumnDef="affiliation_count">
+            <th mat-header-cell *matHeaderCellDef>Affiliations</th>
+            <td mat-cell *matCellDef="let row">{{ row.affiliation_count }}</td>
+          </ng-container>
+
+          <!-- Publication Date Column -->
+          <ng-container matColumnDef="publication_date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+              Publication Date
+            </th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.publication_date | date }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let row">No updated</td>
+          </ng-container>
+          <ng-container matColumnDef="citations">
+            <th mat-header-cell *matHeaderCellDef>Citations</th>
+            <td mat-cell *matCellDef="let row">{{ row.citations }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            (click)="clickedRows(row)"
+            class="hover:cursor-pointer hover:bg-gray-200"
+          ></tr>
+        </table>
+      </div>
+    </div>
+
+    <mat-paginator
+      [length]="total"
+      [pageSize]="size"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page"
+      class="w-full"
+      (page)="onChangePagination($event)"
     >
-      <div class="flex justify-center items-center text-center font-bold w-2/4">
-        {{ item.title }}
-      </div>
-      <div
-        class="flex flex-col flex-wrap text-center items-center justify-center w-2/4"
-      >
-        <mat-icon>person</mat-icon>
-        <div>
-          {{ item.author_count }}
-        </div>
-        <div class="flex text-center">
-          <div class="flex justify-center items-center">Authors</div>
-        </div>
-      </div>
-
-      <div
-        class="flex flex-col flex-grow text-center justify-center items-center w-2/5"
-      >
-        <mat-icon>apartment</mat-icon>
-        <div class="flex flex-grow items-center justify-center">
-          {{ item.affiliation_count }}
-        </div>
-        <div>Afiliation</div>
-      </div>
-
-      <div class="flex justify-center items-center w-1/2">
-        <div
-          class="flex flex-grow flex-col text-center items-center justify-center"
-        >
-          <mat-icon>calendar_month</mat-icon>
-          <div>{{ item.publication_date }}</div>
-          <div>Publication-Date</div>
-        </div>
-        <div
-          class="flex flex-col text-center items-center justify-center w-2/5"
-        >
-          <mat-icon class="mr-1">trending_up</mat-icon>
-          <div>{{ item.scopus_id }}</div>
-          <div>Citations</div>
-        </div>
-      </div>
-
-      <div class="flex justify-center flex-col w-2/5">
-        <button mat-flat-button color="primary" class="my-2" (click)="goToArticle(item.scopus_id)" >
-          See in Scopus
-        </button>
-
-        <button mat-flat-button color="primary" (click)="seeMoreInformation(item.scopus_id)">
-          See More Information
-        </button>
-      </div>
-    </div>
-  </ng-container>
-</div>
--->
-<div class="container mat-elevation-z1 w-full h-full">
-  <div *ngIf="isLoadingResults" class="loading-shade">
-    <div *ngIf="isLoadingResults">
-      <mat-spinner></mat-spinner>
-    </div>
+    </mat-paginator>
   </div>
-
-  <div class="table-container">
-    <ng-container *ngIf="articles$ | async as response">
-      <table
-        mat-table
-        [dataSource]="response.data"
-        class="example-table"
-        matSort
-        matSortActive="publication_date"
-        matSortDisableClear
-        matSortDirection="desc"
-      >
-        <!-- Title Column -->
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>Title</th>
-          <td mat-cell *matCellDef="let row">{{ row.title }}</td>
-        </ng-container>
-
-        <!-- Author Count Column -->
-        <ng-container matColumnDef="author_count">
-          <th mat-header-cell *matHeaderCellDef>Authors</th>
-          <td mat-cell *matCellDef="let row">{{ row.author_count }}</td>
-        </ng-container>
-
-        <!-- Affiliation Count Column -->
-        <ng-container matColumnDef="affiliation_count">
-          <th mat-header-cell *matHeaderCellDef>Affiliations</th>
-          <td mat-cell *matCellDef="let row">{{ row.affiliation_count }}</td>
-        </ng-container>
-
-        <!-- Publication Date Column -->
-        <ng-container matColumnDef="publication_date">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-            Publication Date
-          </th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.publication_date | date }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let row">No updated</td>
-        </ng-container>
-        <ng-container matColumnDef="citations">
-          <th mat-header-cell *matHeaderCellDef>Citations</th>
-          <td mat-cell *matCellDef="let row">{{ row.affiliation_count }}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns" ></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          (click)="clickedRows(row)"
-          class="hover:cursor-pointer hover:bg-gray-200"
-        ></tr>
-      </table>
-    </ng-container>
-  </div>
-
-  <mat-paginator
-    [length]="total"
-    [pageSize]="size"
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    aria-label="Select page"
-    class="w-full"
-    (page)="onChangePagination($event)"
-  >
-  </mat-paginator>
 </div>

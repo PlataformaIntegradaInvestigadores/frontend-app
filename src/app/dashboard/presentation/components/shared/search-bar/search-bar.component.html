@@ -1,0 +1,21 @@
+<div class="w-full flex flex-col justify-center items-center relative ">
+  <input
+    class="p-2 w-2/4 border-2 border-black rounded-md"
+    [(ngModel)]="searchQuery"
+    (ngModelChange)="onSearchChange($event)"
+    placeholder="Buscar afiliación por nombre"
+    autocomplete="off"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+  >
+  <div *ngIf="showSuggestions && affiliations.length > 0"
+       class="max-w-screen-sm max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50">
+    <div
+      class="flex flex-col justify-start items-start w-auto">
+      <button class="hover:bg-gray-400 w-full" *ngFor="let affiliation of affiliations" (click)="emitEntity(affiliation.scopus_id.toString())">{{affiliation.scopus_id}}
+        {{ affiliation.name }} ({{ affiliation.total_articles }} articles)
+      </button>
+    </div>
+  </div>
+</div>
+

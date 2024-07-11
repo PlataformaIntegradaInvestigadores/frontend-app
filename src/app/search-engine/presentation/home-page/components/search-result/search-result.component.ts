@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Search} from "../../../../../shared/interfaces/search-type.interface";
 import {ActivatedRoute} from "@angular/router";
-import { Title } from '@angular/platform-browser';
+import {Title} from '@angular/platform-browser';
 import {VisualsService} from "../../../../../shared/domain/services/visuals.service";
 import {DashboardCounts, Word} from "../../../../../shared/interfaces/dashboard.interface";
 import {query} from "@angular/animations";
@@ -11,18 +11,20 @@ import {query} from "@angular/animations";
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.css']
 })
-export class SearchResultComponent implements OnInit{
+export class SearchResultComponent implements OnInit {
   showComponent: boolean = true
   searchValue!: Search
   setSearch!: Search
   loading: boolean = false
-  public countsLoaded:boolean = false;
-  public topicsLoaded:boolean = false;
-  years:number[] = []
-  counts!:DashboardCounts
-  words!:Word[]
+  public countsLoaded: boolean = false;
+  public topicsLoaded: boolean = false;
 
-  constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title:Title, private dashboardService: VisualsService) {
+  counts!: DashboardCounts
+  words!: Word[]
+  provinces: string = 'http://localhost:8000/api/v1/dashboard/province/get_provinces/'
+
+
+  constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title: Title, private visualsService: VisualsService) {
     const {option, query} = route.snapshot.queryParams
     if (option && query){
       this.setSearch = {option, query}
@@ -36,28 +38,30 @@ export class SearchResultComponent implements OnInit{
       query: searchValue.query.trim().replace(/\s\s+/g, ' ')
     };
   }
-  setYears(years: number[]) {
-    this.years=years
+
+  yearSelected(years: number[]) {
+    console.log(years)
   }
+
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
   }
 
   ngOnInit(): void {
     this.title.setTitle("Welcome")
-    this.dashboardService.getCounts(2023).subscribe(data => {
+    this.visualsService.getCounts(2023).subscribe(data => {
       this.counts = data;
       this.countsLoaded = true;
     });
-    this.dashboardService.getTopics(100).subscribe(data => {
+    this.visualsService.getTopics(100).subscribe(data => {
       this.words = data;
       this.topicsLoaded = true;
       console.log(this.words);
     });
   }
 
-  topicClcked(se:Search){
-    this.setSearch = {'option': se.option,'query':se.query}
+  topicClcked(se: Search) {
+    this.setSearch = {'option': se.option, 'query': se.query}
     this.onSearch(se)
 
   }

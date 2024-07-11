@@ -1,13 +1,15 @@
-<ngx-charts-line-chart
-  [view]="[width, height]"
-  [showXAxisLabel]="showXAxisLabel"
-  [showYAxisLabel]="showYAxisLabel"
-  [scheme]="colorScheme"
-  [xAxis]="xAxis"
-  [yAxis]="yAxis"
-  [xAxisLabel]="xAxisLabel"
-  [yAxisLabel]="yAxisLabel"
-  [timeline]="timeline"
-  [results]="multi"
-  (select)="onSelect($event)">
-</ngx-charts-line-chart>
+<div class="flex justify-center items-center ">
+  <ngx-charts-line-chart
+    [view]="[width, height]"
+    [showXAxisLabel]="showXAxisLabel"
+    [showYAxisLabel]="showYAxisLabel"
+    [scheme]="colorScheme"
+    [xAxis]="xAxis"
+    [yAxis]="yAxis"
+    [xAxisLabel]="xAxisLabel"
+    [yAxisLabel]="yAxisLabel"
+    [timeline]="timeline"
+    [results]="multi"
+    (select)="onSelect($event)">
+  </ngx-charts-line-chart>
+</div>

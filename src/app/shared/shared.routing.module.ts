@@ -16,10 +16,6 @@ const routes: Routes = [
         component: SearchResultComponent, // El componente app-author-retrieve se mostrará solo en la página principal
       },
       {
-        path: 'analitica',
-        component: AnaliticaComponent,
-      },
-      {
         path: 'author-list',
         component: AuthorListComponent,
       },
@@ -27,8 +23,13 @@ const routes: Routes = [
         path: 'article/:scopusId',
         component: ArticlePageComponent
       },
+      {
+        path: 'analitica',
+        loadChildren: () => import('src/app/dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
     ],
   },
+
   {
     path: '**',
     redirectTo: '',

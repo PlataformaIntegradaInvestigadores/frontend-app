@@ -7,42 +7,96 @@ import {DashboardCounts, LineChartInfo, NameValue} from "../../../../shared/inte
   templateUrl: './general.component.html',
   styleUrls: ['./general.component.css']
 })
-export class GeneralComponent implements OnInit{
+export class GeneralComponent implements OnInit {
 
-  lineChartInfo!:LineChartInfo[]
-  counts!:DashboardCounts
-  treeMapInfo!:NameValue[]
-  year:number = 2023
+  lineChartInfo!: LineChartInfo[]
+  counts!: DashboardCounts
+  treeMapInfo!: NameValue[]
+  barChartInfo!: NameValue[]
+  provinces!: string
+  options: string[] = ['Until', 'In'];
+  selectedOption: string = this.options[0];
+  yearOptions: number[] = []
+  year!: number
 
-
-  constructor(private dashboardService:DashboardService) {
+  constructor(private dashboardService: DashboardService) {
+    this.getYears()
   }
 
   ngOnInit(): void {
-    this.dashboardService.getLineChartInfo().subscribe(data =>{
-      this.lineChartInfo = data;
+    this.dashboardService.getLineChartInfo().subscribe(data => {
+        this.lineChartInfo = data;
       }
-    )
+    );
     this.dashboardService.getCounts(this.year).subscribe(data => {
       this.counts = data;
       console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
-    this.dashboardService.getTreeMapInfo(this.year).subscribe(data => {
+    this.dashboardService.getTreeMap().subscribe(data => {
       this.treeMapInfo = data;
       console.log(data)
-    })
-  }
-
-  updateData(year:number){
-    console.log(year)
-    this.dashboardService.getCounts(year).subscribe(data => {
-      this.counts = data;
-      console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
-    this.dashboardService.getTreeMapInfo(year).subscribe(data => {
-      this.treeMapInfo = data;
-    })
+    this.dashboardService.getBarInfo().subscribe(data => {
+      this.barChartInfo = data;
+      console.log(data)
+    });
+    this.provinces = 'http://localhost:8000/api/v1/dashboard/province/get_provinces/'
   }
 
+  getYears() {
+    this.dashboardService.getYears().subscribe(data => {
+      this.yearOptions = data.map(item => item.year);
+      this.year = this.yearOptions[this.yearOptions.length - 1]; // Inicializamos con el último año
+      this.updateData(this.year); // Inicializamos los datos con el año seleccionado
+    });
+  }
 
+  updateData(year: number) {
+    console.log(year)
+    console.log(this.selectedOption)
+    this.year = year
+    if (this.selectedOption === 'Until') {
+      if (this.year.toString() === this.yearOptions[this.yearOptions.length - 1].toString()) {
+        this.dashboardService.getTreeMap().subscribe(data => {
+          this.treeMapInfo = data
+        });
+        this.dashboardService.getBarInfo().subscribe(data => {
+          this.barChartInfo = data;
+        });
+        this.provinces = this.dashboardService.getProvinces()
+        console.log(this.provinces)
+      } else {
+        this.dashboardService.getTreeMapInfoAcumulated(year).subscribe(data => {
+          this.treeMapInfo = data;
+        });
+        this.dashboardService.getBarInfoAcumulated(year).subscribe(data => {
+          this.barChartInfo = data;
+        });
+
+        this.provinces = this.dashboardService.getProvincesAcumulated(year)
+        console.log(this.provinces)
+      }
+      this.dashboardService.getCounts(year).subscribe(data => {
+        this.counts = data;
+      });
+      this.dashboardService.getLineChartInfoRange(year).subscribe(data =>{
+        this.lineChartInfo = data;
+      });
+
+    } else if (this.selectedOption === 'In') {
+      this.dashboardService.getCountsYear(year).subscribe(data => {
+        this.counts = data;
+      });
+      this.dashboardService.getBarInfoYear(year).subscribe(data => {
+        this.barChartInfo = data
+      });
+      this.dashboardService.getTreeMapInfo(year).subscribe(data => {
+        this.treeMapInfo = data
+      });
+      this.dashboardService.getLineChartInfoYear(year).subscribe(data =>{
+        this.lineChartInfo = data
+      });
+      this.provinces = this.dashboardService.getProvincesYear(year);
+    }
+  }
 }
