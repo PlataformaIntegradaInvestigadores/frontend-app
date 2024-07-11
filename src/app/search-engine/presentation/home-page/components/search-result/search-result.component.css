@@ -1,8 +1,8 @@
 .custom-bg {
-    background-image: url('src/assets/img.png');
-    background-size: auto 100%;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image: url("src/assets/img.png");
+  background-size: auto 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .spinner-container {
   display: flex;
@@ -21,12 +21,16 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-*{
-  margin: 0 5px 0 5px ;
-  padding: 0;
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }

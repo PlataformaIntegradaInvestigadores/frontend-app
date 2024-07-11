@@ -114,7 +114,6 @@ export class ArticleInformationComponent {
   }
 
 
-
   seeMoreInformation(scopusId: string) {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['home/article', scopusId])

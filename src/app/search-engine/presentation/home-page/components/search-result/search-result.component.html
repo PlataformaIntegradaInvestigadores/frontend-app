@@ -56,16 +56,19 @@
         />
         <!-- Author Results -->
         <app-author-retrieve
+      class="p-2"
           *ngSwitchCase="'au'"
           query="{{ searchValue.query }}"
 
         />
         <!-- Most Relevant Articles Results -->
         <app-most-relevant-authors-graph
+      class="p-2"
           *ngSwitchCase="'mrau'"
           [query]="searchValue.query"
         />
       </div>
     </div>
   </div>
+
 </div>

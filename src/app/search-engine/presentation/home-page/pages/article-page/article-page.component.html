@@ -9,7 +9,7 @@
     <h2 class="inline">Authors:</h2>
     <div class="flex flex-wrap gap-x-3">
       <ng-container class="flex justify-between items-baseline" *ngFor="let au of article?.authors">
-        <h3 class="cursor-pointer hover:font-semibold" routerLink="/profile/admin/">{{ au.name }}</h3>
+        <h3 class="cursor-pointer hover:font-semibold" (click)="goToAuthor(au.scopusId)">{{ au.name }}</h3>
       </ng-container>
     </div>
     <h2 class="inline">Affiliations:</h2>

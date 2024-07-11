@@ -28,13 +28,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private userDataService: UserDataService,
     private titleService: Title,
     private authorService:AuthorService
-  ) { }
+  ) {
+
+   }
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
       this.getUserData();
       this.getAuthorInformation();
+      this.setTitle();
     });
   }
 
@@ -86,6 +89,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     try {
         this.authorService.getAuthorById(this.userId).subscribe((data) => {
           this.authorCentinela = data;
+          this.titleService.setTitle(`${data.first_name} ${data.last_name}`);
         }
       );
     } catch (error) {

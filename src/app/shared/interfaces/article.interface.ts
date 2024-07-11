@@ -3,7 +3,7 @@ export interface Article {
   title: string
   abstract: string
   publication_date: Date
-  authors: { scopus_id: string, name: string }[]
+  authors: { scopusId: string, name: string }[]
   affiliations: string[]
   topics: string[]
   doi: string

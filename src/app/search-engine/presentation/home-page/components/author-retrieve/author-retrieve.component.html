@@ -1,71 +1,81 @@
-<mat-paginator
-  [length]="total"
-  [pageSize]="size"
-  [pageSizeOptions]="[5, 10, 25, 100]"
-  aria-label="Select page"
-  class="w-full"
-  (page)="onPageChange($event)"
->
-</mat-paginator>
-<ng-container *ngFor="let item of items" class="">
-  <div
-    class="flex flex-col md:flex-row items-center border-2 border-black w-full my-2 p-3 rounded-md"
-  >
-    <!-- Profile Author -->
-    <div class="photo w-24 h-24 md:w-1/12 md:h-auto flex-shrink-0">
-      <img
-        [src]="item.photo || './assets/profile.png'"
-        alt="Author image profile"
-        class="w-full h-full object-cover rounded-full md:rounded-none"
-      />
-    </div>
-
-    <!-- Información del autor -->
-    <div class="text-center md:text-left md:w-1/4 md:pl-4">
-      <div class="author-names text-lg font-semibold">{{ item.name }}</div>
-      <div class="author-current-affiliation text-sm text-gray-600">
-        {{ item.current_affiliation }}
-      </div>
-    </div>
-
-    <!-- Publicaciones, citas y temas -->
-    <div class="flex justify-around w-full md:w-3/4 mt-4 md:mt-0">
-      <div class="text-center flex flex-col items-center md:flex-row md:w-1/4">
-        <mat-icon class="mr-1 hidden md:block">article</mat-icon>
-        <div>
-          <div>{{ item.articles }}</div>
-          <p class="text-sm">Articles</p>
-        </div>
-      </div>
-      <div class="text-center flex flex-col items-center md:flex-row md:w-1/4">
-        <mat-icon class="mr-1 hidden md:block">trending_up</mat-icon>
-        <div>
-          <div>{{ item.citations }}</div>
-          <p class="text-sm">Citations</p>
-        </div>
-      </div>
-      <div class="text-center flex flex-col items-center md:flex-row md:w-1/4">
-        <mat-icon class="mr-1 hidden md:block">topic</mat-icon>
-        <div>
-          <div>{{ item.topics }}</div>
-          <p class="text-sm">Topics</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Buttons -->
-    <div class="flex flex-col items-center mt-4 md:mt-0 md:w-1/4 md:pl-4">
-      <button mat-flat-button color="primary" class="my-2 w-full md:w-full" (click)="goToScopus(item.scopus_id)">
-        Scopus Profile
-      </button>
-      <button
-        mat-flat-button
-        color="primary"
-        class="w-full md:w-full"
-        (click)="goToAuthor(item.scopus_id)"
-      >
-        More Information
-      </button>
+<div class="container mat-elevation-z1 w-full h-full">
+  <div *ngIf="isLoading" class="loading-shade">
+    <div *ngIf="isLoading">
+      <mat-spinner></mat-spinner>
     </div>
   </div>
-</ng-container>
+  <div class="table-container">
+    <ng-container *ngIf="authors | async as response">
+      <table
+        mat-table
+        [dataSource]="response.data"
+        class="example-table"
+        matSort
+        matSortActive="publication_date"
+        matSortDisableClear
+        matSortDirection="desc"
+      >
+        <!-- Title Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="current_affiliation">
+          <th mat-header-cell *matHeaderCellDef>Affiliation</th>
+          <td mat-cell *matCellDef="let row">{{ row.current_affiliation }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="articles">
+          <th mat-header-cell *matHeaderCellDef>Articles</th>
+          <td mat-cell *matCellDef="let row">{{ row.articles }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="topics">
+          <th mat-header-cell *matHeaderCellDef>Topics</th>
+          <td mat-cell *matCellDef="let row">{{ row.topics }}</td>
+        </ng-container>
+
+         <ng-container matColumnDef="affiliations">
+          <th mat-header-cell *matHeaderCellDef>Affiliations</th>
+          <td mat-cell *matCellDef="let row">{{ row.affiliations }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="citation_count">
+          <th mat-header-cell *matHeaderCellDef>Citations</th>
+          <td mat-cell *matCellDef="let row">{{ row.citation_count }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="updated">
+          <th mat-header-cell *matHeaderCellDef>Updated</th>
+          <td mat-cell *matCellDef="let row">{{ row.updated }}</td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" ></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="hover:cursor-pointer hover:bg-gray-200"
+          (click)="goToAuthor(row.scopus_id)"
+        ></tr>
+      </table>
+    </ng-container>
+  </div>
+
+  <mat-paginator
+    [length]="total"
+    [pageSize]="size"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    aria-label="Select page"
+    class="w-full"
+    (page)="onChangePagination($event)"
+  >
+  </mat-paginator>
+  <ng-container *ngIf="!isLoading && total === 0">
+    <div class="flex justify-center text-center">
+      <mat-icon>sentiment_very_dissatisfied</mat-icon>
+      <p class="text-2xl">No results found</p>
+    </div>
+  </ng-container>
+</div>

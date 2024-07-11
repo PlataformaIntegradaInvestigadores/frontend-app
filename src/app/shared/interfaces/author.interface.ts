@@ -4,6 +4,9 @@ export interface AuthorResult {
   affiliations: string[]
   articles: number
   topics: string[]
+  current_affiliation: string
+  citation_count: number
+  updated:boolean
 }
 
 export interface Topic{
