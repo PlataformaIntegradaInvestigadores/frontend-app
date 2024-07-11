@@ -1,17 +1,49 @@
-<div class="flex flex-col items-start">
-  <div class="flex flex-col justify-between w-full bg-white border-gray-300 rounded">
-    <div class="p-4">
-      <div><b>Nodos:</b> {{d3Nodes.length}}</div>
-      <div><b>Relaciones:</b> {{d3Links.length}}</div>
+<div class="flex justify-center">
+  <div class="filters rounded w-1/5 m-2">
+    <!-- Title -->
+    <div class="text-center border-bot py-3 title ">
+      FILTROS
     </div>
-    <button type="button" class="bg-red-700 text-white mt-2 px-4 py-2 rounded self-start" (click)="onDownloadGraph()" *ngIf="d3Nodes.length > 0;">
-      <fa-icon [icon]="faDownload"></fa-icon> Descargar
-    </button>
-  </div>
 
-  <div class="border-2 border-gray-400 rounded-2xl w-full mt-4" *ngIf="showGraph"> <!-- Añadido margen top para separación -->
-    <div class="w-full" #downloadEl>
-      <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>
+    <!-- Authors number -->
+    <div class="border-bot py-2 px-3 subtitle ">
+      Número de autores
+    </div>
+    <div class="border-bot py-3 px-3">
+      <input id="authorsRange" type="range" class="form-range" min="10" max="200" step="10"
+             [(ngModel)]="authorsNumber" (change)="onAuthorsNumberChange()">
+      <label for="authorsRange" class="form-label">Autores: {{authorsNumber}}</label>
+    </div>
+
+    <!-- Affiliations -->
+    <div class="border-bot py-2 px-3 subtitle">
+      Afiliaciones
+    </div>
+    <div class="py-3 px-3 d-flex flex-column gap-3 affiliations-container">
+      <div class="d-flex flex-nowrap gap-3" *ngFor="let aff of affiliations">
+        <input [id]="aff.scopusId" type="checkbox" (click)="onClickCheckbox($event)">
+        <label [for]="aff.scopusId">{{aff.name}}</label>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col items-start">
+    <div class="flex flex-col justify-between w-full bg-white border-gray-300 rounded">
+      <div class="p-4">
+        <div><b>Nodos:</b> {{d3Nodes.length}}</div>
+        <div><b>Relaciones:</b> {{d3Links.length}}</div>
+      </div>
+      <button type="button" class="bg-red-700 text-white mt-2 px-4 py-2 rounded self-start" (click)="onDownloadGraph()"
+              *ngIf="d3Nodes.length > 0;">
+        <fa-icon [icon]="faDownload"></fa-icon>
+        Descargar
+      </button>
+    </div>
+
+    <div class="border-2 border-gray-400 rounded-2xl w-full mt-4" *ngIf="showGraph">
+      <!-- Añadido margen top para separación -->
+      <div class="w-full" #downloadEl>
+        <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>
+      </div>
     </div>
   </div>
 </div>

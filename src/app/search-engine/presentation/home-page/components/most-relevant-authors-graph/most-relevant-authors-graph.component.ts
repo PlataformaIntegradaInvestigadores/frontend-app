@@ -86,6 +86,7 @@ export class MostRelevantAuthorsGraphComponent {
     } else {
       this.selectedAffiliations.splice(this.selectedAffiliations.indexOf(item), 1)
     }
+    this.onClickAffiliationsFilter('include')
   }
 
   onClickAffiliationsFilter(type: string) {

@@ -23,7 +23,6 @@ export class ArticleInformationComponent {
   size = 10;
   total = 0;
   isLoadingResults = true;
-
   refreshTable$: BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>
     = new BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>({
     page: this.page,
@@ -99,6 +98,7 @@ export class ArticleInformationComponent {
     } else {
       this.selectedYears.splice(this.selectedYears.indexOf(item), 1)
     }
+    this.onClickYearsFilter('include')
   }
 
   onClickYearsFilter(type: string) {
@@ -124,3 +124,4 @@ export class ArticleInformationComponent {
   }
 
 }
+
