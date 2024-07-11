@@ -11,7 +11,7 @@ import { Author } from 'src/app/shared/interfaces/author.interface';
 export class NetworkComponent implements OnInit {
 
   author: Author | undefined;
-  scopusId: string | null = null;
+  scopusId!: number;
 
   constructor(private route: ActivatedRoute, private authorService: AuthorService) {
     console.log(this.author)
@@ -19,7 +19,8 @@ export class NetworkComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.parent?.paramMap.subscribe(params => {
-      this.scopusId = params.get('id');
+      this.scopusId = parseInt(params?.get('id')!);
+      console.log(this.scopusId)
       if (this.scopusId) {
         this.getAuthor();
       }
@@ -28,9 +29,10 @@ export class NetworkComponent implements OnInit {
 
   getAuthor(): void {
     if (this.scopusId) {
-      this.authorService.getAuthorById(this.scopusId).subscribe(
+      this.authorService.getAuthorById(this.scopusId.toString()).subscribe(
         data => {
           this.author = data;
+          console.log(this.author)
         },
         error => {
           console.error('Error fetching author', error);

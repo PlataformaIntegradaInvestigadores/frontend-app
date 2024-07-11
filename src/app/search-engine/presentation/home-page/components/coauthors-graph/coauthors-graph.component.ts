@@ -1,14 +1,15 @@
-import { Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
+import {Component, ElementRef, Inject, Input, ViewChild} from '@angular/core';
 
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
-import { DOCUMENT } from '@angular/common';
+import {faDownload} from '@fortawesome/free-solid-svg-icons';
+import {DOCUMENT} from '@angular/common';
 import {
   Author,
   AuthorNode,
 } from '../../../../../shared/interfaces/author.interface';
-import { Node, Link } from '../../../../../shared/d3';
-import { AuthorService } from '../../../../domain/services/author.service';
+import {Node, Link} from '../../../../../shared/d3';
+import {AuthorService} from '../../../../domain/services/author.service';
 import * as htmlToImage from 'html-to-image';
+
 @Component({
   selector: 'app-coauthors-graph',
   templateUrl: './coauthors-graph.component.html',
@@ -44,18 +45,23 @@ export class CoauthorsGraphComponent {
   ngOnInit() {
     this.authorService
       .getCoauthorsById(this.author.scopus_id)
-      .subscribe((coauthors) => {
+      .subscribe(coauthors => {
+        console.log('dentro xd: ' + this.author.scopus_id)
         console.log(coauthors);
-        this.apiNodes = coauthors.nodes;
+        this.apiNodes = coauthors.data.nodes;
+        console.log('coauthors: ' + this.apiNodes)
+        console.log("Verificando el tipo")
+        console.log(typeof this.author.scopus_id)
         this.apiNodes.push({
-          scopus_id: this.author.scopus_id,
+          scopus_id: parseInt(String(this.author.scopus_id)),
           initials: this.author.initials,
           first_name: this.author.first_name,
           last_name: this.author.last_name,
           weight: 0,
         });
         this.setupNodes();
-        this.setupLinks(coauthors.links);
+        console.log(coauthors.data.links);
+        this.setupLinks(coauthors.data.links);
         this.showGraph = true;
       });
   }
@@ -67,8 +73,8 @@ export class CoauthorsGraphComponent {
           node.scopus_id,
           this.apiNodes.length,
           this.truncarCadena(node.first_name) +
-            ' ' +
-            this.truncarCadena(node.last_name),
+          ' ' +
+          this.truncarCadena(node.last_name),
           {
             enablePopover: true,
             title: 'Autor',
@@ -102,8 +108,9 @@ export class CoauthorsGraphComponent {
     links: { source: number; target: number; collabStrength: number }[]
   ) {
     links.forEach((link) => {
-      console.log(link);
+      console.log("asasasadssa: " + link.source + '   ' + link.target + "   " + link.collabStrength);
       this.d3Nodes[this.getIndexByScopusId(link.source)].degree++;
+      console.log('degreeeeeee: ' + this.d3Nodes)
       this.d3Nodes[this.getIndexByScopusId(link.target)].degree++;
       this.d3Links.push(
         new Link(link.source, link.target, link.collabStrength * 5)
@@ -112,7 +119,8 @@ export class CoauthorsGraphComponent {
   }
 
   getIndexByScopusId(scopusId: any) {
-    console.log(this.apiNodes.map((node) => node.scopus_id).indexOf(scopusId));
+    console.log('scopus: ' + scopusId);
+    console.log('index: ' + this.apiNodes.map((node) => node.scopus_id).indexOf(scopusId));
     return this.apiNodes.map((node) => node.scopus_id).indexOf(scopusId);
   }
 

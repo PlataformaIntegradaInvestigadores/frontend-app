@@ -3,8 +3,8 @@ import {BehaviorSubject, catchError, Observable, switchMap, tap} from "rxjs";
 import {Article, ArticleResult, PaginationArticleResult} from "../../../../../shared/interfaces/article.interface";
 import {ArticleService} from "../../../../domain/services/article.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import { PageEvent } from '@angular/material/paginator';
-import { Router } from '@angular/router';
+import {PageEvent} from '@angular/material/paginator';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-article-information',
@@ -12,12 +12,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./article-information.component.css']
 })
 export class ArticleInformationComponent {
-  displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date', 'status' , 'citations'];
+  displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date', 'status', 'citations'];
 
   @Input() query!: string
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>()
 
-  clickedRows = (row:ArticleResult ) => this.seeMoreInformation(row.scopus_id);
+  clickedRows = (row: ArticleResult) => this.seeMoreInformation(row.scopus_id);
 
   page = 1;
   size = 10;
@@ -61,17 +61,17 @@ export class ArticleInformationComponent {
         tap((articles) => {
           this.loading.emit(false)
           this.isLoadingResults = false
-          this.total=articles.total
+          this.total = articles.total
           if (this.setYears) {
             this.years = []
             this.selectedYears = []
             this.selectedType = ''
-            this.years = articles.years.sort((a,b) => b-a)
+            this.years = articles.years.sort((a, b) => b - a)
             this.isLoadingResults = false
           }
         }),
         catchError((error) => {
-          console.error('Error fetching data',error)
+          console.error('Error fetching data', error)
           this.isLoadingResults = false
           this.loading.emit(false)
           return []
@@ -87,7 +87,7 @@ export class ArticleInformationComponent {
   }
 
 
-  onChangePagination(event:PageEvent) {
+  onChangePagination(event: PageEvent) {
     this.setYears = false
     this.page = event.pageIndex + 1
     this.size = event.pageSize
@@ -108,10 +108,13 @@ export class ArticleInformationComponent {
   }
 
   onClickYearsFilter(type: string) {
-    this.setYears = false
-    this.selectedType = type
-    this.refreshTable$.next({page: this.page, size: this.size, type: this.selectedType, years: this.selectedYears})
-    console.log(this.selectedYears)
+    if (this.selectedYears.length > 0) {
+      this.setYears = false
+      this.selectedType = type
+      this.refreshTable$.next({page: this.page, size: this.size, type: this.selectedType, years: this.selectedYears})
+    }else{
+      this.refreshTable$.next({page: this.page, size: this.size})
+    }
 
   }
 
