@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges, Inject} from '@angular/core';
-import {BehaviorSubject, Observable, switchMap, tap} from "rxjs";
+import {BehaviorSubject, catchError, Observable, switchMap, tap} from "rxjs";
 import {Article, ArticleResult, PaginationArticleResult} from "../../../../../shared/interfaces/article.interface";
 import {ArticleService} from "../../../../domain/services/article.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
@@ -59,7 +59,6 @@ export class ArticleInformationComponent {
           }
         ),
         tap((articles) => {
-          console.log(articles);
           this.loading.emit(false)
           this.isLoadingResults = false
           this.total=articles.total
@@ -68,7 +67,14 @@ export class ArticleInformationComponent {
             this.selectedYears = []
             this.selectedType = ''
             this.years = articles.years.sort((a,b) => b-a)
+            this.isLoadingResults = false
           }
+        }),
+        catchError((error) => {
+          console.error('Error fetching data',error)
+          this.isLoadingResults = false
+          this.loading.emit(false)
+          return []
         })
       )
   }
@@ -105,15 +111,9 @@ export class ArticleInformationComponent {
     this.setYears = false
     this.selectedType = type
     this.refreshTable$.next({page: this.page, size: this.size, type: this.selectedType, years: this.selectedYears})
-  }
+    console.log(this.selectedYears)
 
-  openModal(content: any, articleId: string) {
-    this.articleService.getArticleById(articleId).subscribe((article: Article) => {
-      this.article = article
-      this.modalService.open(content, {scrollable: true, size: "lg", centered: true}).result.then();
-    })
   }
-
 
   seeMoreInformation(scopusId: string) {
     const url = this.router.serializeUrl(
