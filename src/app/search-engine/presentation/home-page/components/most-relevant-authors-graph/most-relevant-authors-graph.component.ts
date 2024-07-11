@@ -52,13 +52,10 @@ export class MostRelevantAuthorsGraphComponent {
   refreshGraph() {
     this.showGraph = false
     this.loading.emit(true)
-    console.log(this.query)
     this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
       .pipe(
         tap((coauthors) => {
           coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
-          console.log(coauthors)
-          console.log(this.noResults)
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
@@ -80,6 +77,7 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   onClickCheckbox(event: any) {
+
     let item = Number(event.target.id)
     if (event.target.checked) {
       this.selectedAffiliations.push(item)
@@ -135,6 +133,7 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   getIndexByScopusId(scopusId: any) {
+    console.log(this.apiNodes.map(node => node.scopus_id).indexOf(scopusId))
     return this.apiNodes.map(node => node.scopus_id).indexOf(scopusId)
   }
 

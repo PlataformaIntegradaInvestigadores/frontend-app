@@ -31,8 +31,12 @@
       </div>
     </div>
     <div>
-      <app-ecuador-contribution *ngIf="topicsLoaded" (t)="topicClcked($event)"
-                                [words]="words" [provinces]="provinces"></app-ecuador-contribution>
+      <app-ecuador-contribution
+        *ngIf="topicsLoaded"
+        (t)="topicClcked($event)"
+        [words]="words"
+        [provinces]="provinces"
+      ></app-ecuador-contribution>
     </div>
   </div>
 </div>
@@ -42,30 +46,23 @@
     [ngSwitch]="searchValue.option"
     class="flex pb-5 flex-col justify-center items-center md:flex-row w-full"
   >
-<!--    <app-filter-sidebar class="w-1/4" [code]="searchValue.option"  [ngClass]="{'hidden':isAuthorSearch()}" ></app-filter-sidebar>-->
-    <div class="w-full" [ngClass]="{'w-full':isAuthorSearch()}">
-      <div>
-        <!-- Most Relevant Authors Results -->
-        <app-article-information
-          *ngSwitchCase="'mrar'"
-          query="{{ searchValue.query }}"
-
-        />
-        <!-- Author Results -->
-        <app-author-retrieve
-      class="p-2"
-          *ngSwitchCase="'au'"
-          query="{{ searchValue.query }}"
-
-        />
-        <!-- Most Relevant Articles Results -->
-        <app-most-relevant-authors-graph
-      class="p-2"
-          *ngSwitchCase="'mrau'"
-          [query]="searchValue.query"
-        />
-      </div>
+    <div class="w-full">
+      <!-- Most Relevant Authors Results -->
+      <app-article-information
+        *ngSwitchCase="'mrar'"
+        query="{{ searchValue.query }}"
+      />
+      <!-- Author Results -->
+      <app-author-retrieve
+        *ngSwitchCase="'au'"
+        query="{{ searchValue.query }}"
+      />
+      <!-- Most Relevant Articles Results -->
+      <app-most-relevant-authors-graph
+        class="p-2"
+        *ngSwitchCase="'mrau'"
+        [query]="searchValue.query"
+      />
     </div>
   </div>
-
 </div>
