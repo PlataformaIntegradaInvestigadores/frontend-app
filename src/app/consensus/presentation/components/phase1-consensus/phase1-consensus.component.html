@@ -1,8 +1,8 @@
 
 <div class="container mx-auto mb-2 rounded-xl border p-4 shadow-md bg-white">
-    <div class="flex justify-between items-center mb-2.5">
-        <div class="mb-3 text-xl font-bold">Your group recomendation</div>
-        <div class="mb-3 text-xl font-bold">Active Connections: {{ activeConnections }}</div>
+    <div class="flex justify-between items-center mb-4">
+        <div class="text-xl font-bold">Your group recomendation</div>
+        <div class="text-lg font-bold">Active Connections: {{ activeConnections }}</div>
         <button id="btn-next" 
           class="transition duration-300 bg-primary_tailwind font-bold text-white hover:bg-gray-100 hover:text-gray-300 focus:ring-2 focus:outline-none focus:ring-primary_tailwind rounded-full text-sm px-2 py-1.5 ml-1 text-center inline-flex items-center" 
           (click)="completeConsensusPhaseOne()">
@@ -116,11 +116,6 @@
                             <path d="M5.44,4.15l14.65,7a1,1,0,0,1,0,1.8l-14.65,7A1,1,0,0,1,4.10,18.54l2.72-6.13a1.06,1.06,0,0,0,0-.82L4.10,5.46A1,1,0,0,1,5.44,4.15Z" style="fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
                           </svg>
                         </button>
-                        <button type="button" (click)="removeLastUserAddedTopic" class="absolute right-2 bg-primary_tailwind text-text-red-500 font-medium rounded-lg text-sm px-1.5 py-1 m-1 flex items-center">
-                          <svg width="18px" height="18px" viewBox="0 0 48 48" version="1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 48 48">
-                            <path fill="#F87171" d="M24,6C14.1,6,6,14.1,6,24s8.1,18,18,18s18-8.1,18-18S33.9,6,24,6z M24,10c3.1,0,6,1.1,8.4,2.8L12.8,32.4 C11.1,30,10,27.1,10,24C10,16.3,16.3,10,24,10z M24,38c-3.1,0-6-1.1-8.4-2.8l19.6-19.6C36.9,18,38,20.9,38,24C38,31.7,31.7,38,24,38 z"/>
-                          </svg>
-                        </button>
                       </div>
                     </form>
                   </div>
@@ -145,4 +140,21 @@
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
     </svg>
   </button>
+</div>
+
+<!-- Modal -->
+<div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-80 dark:bg-gray-800">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold dark:text-white">Confirm Completion</h3>
+      <button (click)="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+        &times;
+      </button>
+    </div>
+    <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">Are you sure you have completed Phase One?</p>
+    <div class="flex justify-end space-x-4">
+      <button (click)="cancelPhaseCompletion()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Cancel</button>
+      <button (click)="confirmPhaseCompletion()" class="px-4 py-2 bg-primary_tailwind text-white rounded hover:bg-primary_tailwind-dark">Confirm</button>
+    </div>
+  </div>
 </div>

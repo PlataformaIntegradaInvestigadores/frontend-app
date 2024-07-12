@@ -77,9 +77,11 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
 
   navigateToGroup(groupId: string): void {
     if (!this.modalOpen) {
+      console.log(`Navigating to group DEPURARION: ${groupId}`); // Añadido para depuración
       this.router.navigate([`/profile/${this.userId}/my-groups/${groupId}/consensus`]);
     }
   }
+
 
   onModalOpenChange(open: boolean) {
     this.modalOpen = open;

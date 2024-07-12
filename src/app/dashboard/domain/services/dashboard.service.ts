@@ -16,7 +16,7 @@ import {map} from "rxjs/operators";
 })
 export class DashboardService implements OnInit {
 
-  private apiUrl = 'http://localhost:8000/api/v1/dashboard';
+  private apiUrl = 'http://localhost:8010/api/v1/dashboard';
 
   years_response!: Observable<YearsResponse>
 
