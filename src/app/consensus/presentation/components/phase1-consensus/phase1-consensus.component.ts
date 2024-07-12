@@ -7,7 +7,6 @@ import { TopicService } from 'src/app/consensus/domain/services/TopicDataService
 import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketService.service';
 import { ChangeDetectorRef } from '@angular/core';
 
-
 @Component({
   selector: 'phase1-consensus',
   templateUrl: './phase1-consensus.component.html',
@@ -16,7 +15,7 @@ import { ChangeDetectorRef } from '@angular/core';
 export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   rangeValues: number[] = [];
-  showSliders:boolean = false;
+  showSliders: boolean = false;
   showLabel: boolean[] = [];
   showCheckTopics: boolean[] = [];
   newTopic: string = '';
@@ -40,16 +39,13 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   notifications: any[] = [];
 
-
-
   constructor(
     private topicService: TopicService,
     private webSocketService: WebSocketService,
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef,
-
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -69,11 +65,9 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
     this.newTopicSubscription = this.webSocketService.newTopicReceived.subscribe(topic => {
       console.log('New topic received para ingresar:', topic);
-      // Verificar si el tópico ya existe antes de agregarlo
       if (!this.recommendedTopics.some(t => t.topic_name === topic.topic_name)) {
         this.recommendedTopics.push(topic);
         this.rangeValues = [...this.rangeValues, 0]; // Fix: Assign the value directly to the array
-
         this.cdr.detectChanges();
       } else {
         console.log('Tópico ya existe en la lista:', topic.topic_name);
@@ -83,7 +77,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         console.log("Se pusheo la notificacion al arreglo")
         console.log(this.notifications)
         this.cdr.detectChanges();
-      } 
+      }
     });
 
     this.newNotificationSubscription = this.webSocketService.notificationsReceived.subscribe(notification => {
@@ -93,7 +87,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     });
 
     console.log('Current URL:', this.router.url);
-
   }
 
   ngOnDestroy(): void {
@@ -149,7 +142,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       }
     );
   }
-  
+
   connectWebSocket(): void {
     if (this.groupId) {
       console.log(`Connecting WebSocket for group: ${this.groupId}`);
@@ -159,11 +152,11 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
         if (message.message.type === 'connection_count') {
           this.activeConnections = message.message.active_connections;
-          this.cdr.detectChanges();  // Forzar detección de cambios
+          this.cdr.detectChanges();
         }
 
         if (message.message.type === 'new_topic') {
-          const newTopic = message.message.topic_name;       
+          const newTopic = message.message.topic_name;
           this.topicService.updateTopics(newTopic);
           this.cdr.detectChanges();
         }
@@ -210,14 +203,14 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
           console.error('Error adding new topic:', error);
 
           if (error.status === 403) {
-            this.errorMessage = "Only one research topic can be entered.";
-          } else if (error.status === 400 ) {
+            this.errorMessage = error.error.error;
+          } else if (error.status === 400) {
             this.errorMessage = "This topic already exists in the group.";
           } else {
-            this.errorMessage = "This topic already exists in the group.";
+            this.errorMessage = "An error occurred.";
           }
 
-          this.showError = true;  // Mostrar el mensaje de error
+          this.showError = true;
 
           setTimeout(() => {
             const errorElement = document.getElementById('error-message');
@@ -226,7 +219,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
             }
             setTimeout(() => {
               this.showError = false;
-              this.cdr.detectChanges();  // Forzar detección de cambios
+              this.cdr.detectChanges();
             }, 8000);
           }, 0);
         }
@@ -271,7 +264,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   hideCheckTopic(index: number) {
     this.showCheckTopics[index] = false;
-  } 
+  }
 
   onSliderChange(index: number, event: any): void {
     this.rangeValues[index] = event.target.value;
@@ -338,48 +331,14 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* removeLastUserAddedTopic(): void {
-    if (this.userAddedTopicsIndexes.length > 0) {
-      const lastIndex = this.userAddedTopicsIndexes.pop();
-      if (lastIndex !== undefined) {
-        this.addedTopics.splice(lastIndex, 1);
-        this.rangeValues.splice(lastIndex, 1);
-        this.showLabel.splice(lastIndex, 1);
-        this.showCheckTopics.splice(lastIndex, 1);
-        this.userAddedTopicsIndexes = this.userAddedTopicsIndexes.map(index => index > lastIndex ? index - 1 : index);
-      }
-    } else {
-      alert('No user-added topics to remove.');
-    }
-  } */
-
   toggleExpertise(): void {
     this.showSliders = !this.showSliders;
   }
 
-  toggleAddTopicForm(): void { 
+  toggleAddTopicForm(): void {
     this.showAddTopicForm = !this.showAddTopicForm;
   }
 
-  /* completeConsensusPhaseOne(): void {
-    const userId = this.authService.getUserId();
-    if (this.groupId && userId) {
-      this.topicService.notifyPhaseOneCompleted(this.groupId, userId).subscribe(
-        response => {
-          console.log('Consensus completed notification sent:', response);
-          const phaseKey = `phase_${this.groupId}`;
-          localStorage.setItem(phaseKey, '1');
-          const currentUrl = this.router.url;
-          const newUrl = currentUrl.replace('recommend-topics', 'valuation');
-          this.router.navigateByUrl(newUrl);
-        },
-        error => {
-          console.error('Error sending consensus completed notification:', error);
-        }
-      );
-    }
-  }
- */
   completeConsensusPhaseOne(): void {
     this.showModal = true;
   }

@@ -2,9 +2,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { RecommendedTopic, TopicAddedUser } from '../entities/topic.interface';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class TopicService {
   private topicsSubject = new BehaviorSubject<TopicAddedUser[]>([]);
   topics$ = this.topicsSubject.asObservable();
   
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private authService: AuthService) { 
     
     console.log('TopicService.apiUrl', this.apiUrl);
   }
@@ -61,28 +62,31 @@ export class TopicService {
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
       'Content-Type': 'application/json'
     });
-    const body = {
-      topic: topicName,  // Asegúrate de que el nombre del campo es correcto
-      user_id: localStorage.getItem('userId')  // Incluye el user_id en el cuerpo de la solicitud
-    };
-    
+    const userId = this.authService.getUserId();
+    const body = { topic: topicName, user_id: userId };
+
     // Imprimir la estructura de datos que se enviará
     console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
-    
-    return this.http.post<any>(`${this.apiUrl}${groupId}/add-topic/`, body, { headers }).pipe(
-      tap(response => {
-        const currentTopics = this.topicsSubject.getValue();
-        this.topicsSubject.next([...currentTopics, response]);
+
+    return this.http.get<any>(`${this.apiUrl}${groupId}/current-phase/`, { headers }).pipe(
+      switchMap(phaseResponse => {
+        if (phaseResponse.phase >= 2) {
+          return throwError({ status: 403, error: { error: 'A user in this group is already in phase 2, adding new topics is not allowed.' } });
+        } else {
+          return this.http.post<any>(`${this.apiUrl}${groupId}/add-topic/`, body, { headers }).pipe(
+            tap(response => {
+              const currentTopics = this.topicsSubject.getValue();
+              this.topicsSubject.next([...currentTopics, response]);
+            })
+          );
+        }
       }),
       catchError(error => {
-        /* if (error.status === 403) {
-          // Mostrar mensaje de error específico
-          alert("Solo puedes ingresar un topico de investación");
-        } */
         return throwError(() => error);
       })
     );
-}
+  }
+
   
 
   updateTopics(newTopic: TopicAddedUser): void {

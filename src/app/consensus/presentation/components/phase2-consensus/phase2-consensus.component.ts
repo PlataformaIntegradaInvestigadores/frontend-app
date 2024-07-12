@@ -22,9 +22,9 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   recommendedTopics: RecommendedTopic[] = [];
   groupId: string = '';
   activeConnections: number = 0;
-  private socketSubscription: Subscription | undefined;
-  private newTopicSubscription: Subscription | undefined;
-  private notificationsSubscription: Subscription | undefined;
+  private socketSubscription?: Subscription;
+  private newTopicSubscription?: Subscription;
+  private notificationsSubscription?: Subscription;
   finalOrderedTopics: { id: number, topic_name: string, tags: string[] }[] = [];
 
   showModalPhaseTwo: boolean = false;
@@ -52,10 +52,14 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   }
 
   loadRecommendedTopics(): void {
-    const groupId = this.groupId;
-    this.topicService.getRecommendedTopicsByGroup(groupId).subscribe(
+    if (!this.groupId) return;
+  
+    this.topicService.getRecommendedTopicsByGroup(this.groupId).subscribe(
       (topics) => {
-        this.recommendedTopics = topics.map(topic => ({ ...topic, tags: [] }));
+        this.recommendedTopics = topics.map(topic => {
+          const savedTags = localStorage.getItem(`topic_${topic.id}_tags`);
+          return { ...topic, tags: savedTags ? JSON.parse(savedTags) : [] };
+        });
         this.updateFinalOrderedTopics();
         console.log('Recommended topics:', this.recommendedTopics);
       },
@@ -71,11 +75,10 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       const newTopic = this.recommendedTopics[event.currentIndex];
 
       console.log(`Topic moved: "${previousTopic.topic_name}" from position ${event.previousIndex + 1} to ${event.currentIndex + 1}`);
-      
-      // Notificar el movimiento del tópico
+
       this.sendTopicMovedNotification(previousTopic, event.previousIndex, event.currentIndex);
     }
-    
+
     moveItemInArray(this.recommendedTopics, event.previousIndex, event.currentIndex);
     this.updateFinalOrderedTopics();
   }
@@ -89,25 +92,34 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
     const userId = this.authService.getUserId();
     const positiveTags = ['Novel', 'Attractive', 'Trend'];
     const negativeTags = ['Obsolete', 'Unfamiliar'];
-
+  
     if (!topic.tags) {
       topic.tags = [];
     }
-
+  
     if (positiveTags.includes(tag)) {
       topic.tags = topic.tags.filter(t => !negativeTags.includes(t));
     } else if (negativeTags.includes(tag)) {
       topic.tags = topic.tags.filter(t => !positiveTags.includes(t));
     }
-
+  
     if (topic.tags.includes(tag)) {
       topic.tags = topic.tags.filter(t => t !== tag);
     } else {
       topic.tags.push(tag);
     }
-
+  
+    if (tag === 'Novel' && topic.tags.includes('Obsolete')) {
+      topic.tags = topic.tags.filter(t => t !== 'Obsolete');
+    } else if (tag === 'Obsolete' && topic.tags.includes('Novel')) {
+      topic.tags = topic.tags.filter(t => t !== 'Novel');
+    }
+  
+    // Guardar estado en localStorage
+    localStorage.setItem(`topic_${topic.id}_tags`, JSON.stringify(topic.tags));
+  
     console.log(`Toggled tag "${tag}" for topic "${topic.topic_name}". Current tags: ${topic.tags}`);
-
+  
     if (tag === 'Novel') {
       this.recommendedTopics = this.recommendedTopics.filter(t => t.id !== topic.id);
       this.recommendedTopics.unshift(topic);
@@ -115,9 +127,9 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       this.recommendedTopics = this.recommendedTopics.filter(t => t.id !== topic.id);
       this.recommendedTopics.push(topic);
     }
-
+  
     this.updateFinalOrderedTopics();
-
+  
     if (this.groupId && userId) {
       this.topicService.notifyTopicTagChange(this.groupId, userId, topic.id, tag).subscribe(
         response => {
@@ -158,17 +170,17 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       const totalTopics = this.finalOrderedTopics.length;
       const finalTopicOrders = this.finalOrderedTopics.map((topic, index) => ({
         idTopic: topic.id,
-        posFinal: totalTopics - index, // Invertir el valor de posFinal
+        posFinal: totalTopics - index,
         label: topic.tags.join(', ')
       }));
-  
+
       console.log('Final topic orders:', JSON.stringify(finalTopicOrders, null, 2));
-  
+
       this.topicService.saveFinalTopicOrder(this.groupId, userId, finalTopicOrders).subscribe(
         response => {
           console.log('Final topic order saved:', response);
           const phaseKey = `phase_${this.groupId}`;
-          localStorage.setItem(phaseKey, '2'); // Actualizar la fase en el localStorage
+          localStorage.setItem(phaseKey, '2');
           const currentUrl = this.router.url;
           const newUrl = currentUrl.replace('valuation', 'decision');
           this.router.navigateByUrl(newUrl);
@@ -189,8 +201,6 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   connectWebSocket(): void {
     if (this.groupId) {
       console.log(`Connecting WebSocket for group PHASE 2: ${this.groupId}`);
-      
-      // Cerrar WebSocket de fase 1 antes de conectar a fase 2
       this.webSocket1Service.close(this.groupId);
 
       const socket = this.webSocketService.connect(this.groupId);
@@ -201,7 +211,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
 
           if (message.message.type === 'connection_count') {
             this.activeConnections = message.message.active_connections;
-            console.log('Active connections PHASE 2222222:', this.activeConnections);
+            console.log('Active connections PHASE 2:', this.activeConnections);
           }
         },
         err => console.error(`WebSocket error for group ${this.groupId}:`, err),
@@ -211,7 +221,6 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       this.newTopicSubscription = this.webSocketService.topicReceived.subscribe(
         msg => {
           console.log('Nuevo tópico recibido en fase 2:', msg);
-          //this.recommendedTopics.push(msg);
           this.updateFinalOrderedTopics();
         }
       );
@@ -219,7 +228,6 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       this.notificationsSubscription = this.webSocketService.notificationReceived.subscribe(
         msg => {
           console.log('Nueva notificación recibida en fase 2:', msg);
-          // Manejar las notificaciones recibidas aquí
         }
       );
     }
@@ -229,15 +237,9 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
     if (this.groupId) {
       console.log(`Disconnecting WebSocket for group: ${this.groupId}`);
       this.webSocketService.close(this.groupId);
-      if (this.socketSubscription) {
-        this.socketSubscription.unsubscribe();
-      }
-      if (this.newTopicSubscription) {
-        this.newTopicSubscription.unsubscribe();
-      }
-      if (this.notificationsSubscription) {
-        this.notificationsSubscription.unsubscribe();
-      }
+      this.socketSubscription?.unsubscribe();
+      this.newTopicSubscription?.unsubscribe();
+      this.notificationsSubscription?.unsubscribe();
     }
   }
 }

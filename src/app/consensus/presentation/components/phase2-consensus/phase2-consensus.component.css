@@ -51,3 +51,23 @@
     min-height: 60px;
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
+
+  .button-active {
+    background-color: var(--tw-bg-opacity);
+    color: white;
+  }
+  
+  .button-hover:hover {
+    background-color: var(--tw-bg-opacity);
+    color: white;
+  }
+  
+  .bg-primary_tailwind-dark:hover {
+    background-color: #2c5282;
+  }
+  
+  .active-ring {
+    box-shadow: 0 0 0 3px var(--tw-ring-color);
+    @import 'tailwindcss/utilities';
+  }
+  

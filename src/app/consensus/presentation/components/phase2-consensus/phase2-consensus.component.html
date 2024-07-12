@@ -52,11 +52,11 @@
               <div class="flex flex-col justify-center w-11/12">
                 <div class="flex-col mb-3">{{i + 1}}. {{topic.topic_name}}</div>
                 <div class="flex flex-wrap justify-center gap-2">
-                  <button (click)="toggleTag(topic, 'Novel')" class="cursor-pointer bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400">Novel</button>
-                  <button (click)="toggleTag(topic, 'Attractive')"  class="cursor-pointer bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400">Attractive</button>
-                  <button (click)="toggleTag(topic, 'Trend')"  class="cursor-pointer bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400">Trend</button>
-                  <button (click)="toggleTag(topic, 'Obsolete')"  class="cursor-pointer bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400">Obsolete</button>
-                  <button (click)="toggleTag(topic, 'Unfamiliar')"  class="cursor-pointer bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400">Unfamiliar</button>
+                  <button (click)="toggleTag(topic, 'Novel')" [ngClass]="{'bg-blue-500 text-white': topic.tags?.includes('Novel'), 'bg-blue-100 text-blue-800': !topic.tags?.includes('Novel')}" class="cursor-pointer text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400 hover:bg-blue-200">Novel</button>
+                  <button (click)="toggleTag(topic, 'Attractive')" [ngClass]="{'bg-green-500 text-white': topic.tags?.includes('Attractive'), 'bg-blue-100 text-blue-800': !topic.tags?.includes('Attractive')}" class="cursor-pointer text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400 hover:bg-green-200">Attractive</button>
+                  <button (click)="toggleTag(topic, 'Trend')" [ngClass]="{'bg-yellow-500 text-white': topic.tags?.includes('Trend'), 'bg-blue-100 text-blue-800': !topic.tags?.includes('Trend')}" class="cursor-pointer text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400 hover:bg-yellow-200">Trend</button>
+                  <button (click)="toggleTag(topic, 'Obsolete')" [ngClass]="{'bg-red-500 text-white': topic.tags?.includes('Obsolete'), 'bg-blue-100 text-blue-800': !topic.tags?.includes('Obsolete')}" class="cursor-pointer text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400 hover:bg-red-200">Obsolete</button>
+                  <button (click)="toggleTag(topic, 'Unfamiliar')" [ngClass]="{'bg-gray-500 text-white': topic.tags?.includes('Unfamiliar'), 'bg-blue-100 text-blue-800': !topic.tags?.includes('Unfamiliar')}" class="cursor-pointer text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-400 hover:bg-gray-200">Unfamiliar</button>
                 </div>
               </div>
             </div>
