@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { Subscription } from 'rxjs';
@@ -15,51 +15,69 @@ export class SatisfactionLevelComponent implements OnInit, OnDestroy {
   isDecisionPhase: boolean = false;
   private wsSubscription: Subscription | undefined;
   showAlreadyVotedNotification = false;
-  cdr: any;
+  groupId = this.activatedRoute.snapshot.paramMap.get('groupId') || '';
+
+  satisfactionCounts: any = {
+    Unsatisfied: 0,
+    'Slightly Unsatisfied': 0,
+    Neutral: 0,
+    'Slightly Satisfied': 0,
+    Satisfied: 0
+  };
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private topicService: TopicService,
     private webSocketService: WebSocketPhase3Service,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     initFlowbite();
-    this.router.events.subscribe(() => {
-      this.updateComponentVisibility();
-    });
-
-    this.updateComponentVisibility();
     this.connectWebSocket();
+    this.loadSatisfactionCounts();
   }
 
   ngOnDestroy(): void {
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
+    this.webSocketService.close(this.groupId);
   }
 
-  updateComponentVisibility() {
-    const url = this.router.url;
-    this.isDecisionPhase = url.includes('/profile/my-groups/1/consensus/decision');
-  }
 
   connectWebSocket(): void {
-    const groupId = this.activatedRoute.snapshot.paramMap.get('groupId') || '';
-    if (groupId) {
-      const socket = this.webSocketService.connect(groupId);
+    if (this.groupId) {
+      const socket = this.webSocketService.connect(this.groupId);
       this.wsSubscription = this.webSocketService.userSatisfactionReceived.subscribe(
         (message) => {
-          console.log('WebSocket message received:', message);
-          // Aquí puedes actualizar cualquier lógica de la UI si es necesario
+          this.updateSatisfactionCounts(message.counts);
+          this.cdr.detectChanges();
         },
         (error) => {
           console.error('Error receiving WebSocket message:', error);
         }
       );
     }
+  }
+
+  loadSatisfactionCounts(): void {
+    const groupId = this.activatedRoute.snapshot.paramMap.get('groupId') || '';
+    this.topicService.getSatisfactionCounts(groupId).subscribe(
+      counts => {
+        this.satisfactionCounts = counts.counts;
+        this.cdr.detectChanges();
+      },
+      error => {
+        console.error('Error loading satisfaction counts:', error);
+      }
+    );
+  }
+
+  updateSatisfactionCounts(counts: any): void {
+    this.satisfactionCounts = counts;
   }
 
   submitSatisfaction(level: string): void {

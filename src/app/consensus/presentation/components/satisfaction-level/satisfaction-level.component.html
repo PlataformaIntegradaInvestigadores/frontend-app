@@ -4,7 +4,7 @@
         <p class="text-sm text-gray-900">How satisfied are you with the consensus results?</p>
         <div class="emoji-ratings flex flex-wrap sm:flex-nowrap justify-center gap-2 mt-4">
             <div class="gap-y-3 flex flex-col items-center">
-                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">0</div>
+                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">{{ satisfactionCounts.Unsatisfied || 0 }}</div>
                 <button  (click)="submitSatisfaction('Unsatisfied')" class="text-3xl emoji-button emoji-selected focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Very Satisfied">
                     <svg width="45" height="45" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.9989 29.9978C25.3333 29.9978 29.9978 23.7303 29.9978 15.9989C29.9978 8.26751 25.3333 2 15.9989 2C6.66443 2 2 8.26751 2 15.9989C2 23.7303 6.66443 29.9978 15.9989 29.9978Z" fill="#FFB02E"/>
@@ -18,7 +18,7 @@
                 <p class="text-xs text-gray-600">Unsatisfied</p>
             </div>
             <div class="gap-y-3 flex flex-col items-center">
-                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">0</div>
+                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">{{ satisfactionCounts['Slightly Unsatisfied'] || 0 }}</div>
                 <button  (click)="submitSatisfaction('Slightly Unsatisfied')" class="text-3xl emoji-button focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Slightly Unsatisfied">
                     <svg width="45" height="45" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.9989 29.9978C25.3333 29.9978 29.9978 23.7303 29.9978 15.9989C29.9978 8.26751 25.3333 2 15.9989 2C6.66443 2 2 8.26751 2 15.9989C2 23.7303 6.66443 29.9978 15.9989 29.9978Z" fill="#FFB02E"/>
@@ -31,7 +31,7 @@
                 </button>
             </div>
             <div class="gap-y-3 flex flex-col items-center">
-                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">0</div>
+                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">{{ satisfactionCounts.Neutral || 0 }}</div>
                 <button  (click)="submitSatisfaction('Neutral')"  class="text-3xl emoji-button focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Neutral">
                     <svg width="45" height="45" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.9989 29.9978C25.3333 29.9978 29.9978 23.7303 29.9978 15.9989C29.9978 8.26751 25.3333 2 15.9989 2C6.66443 2 2 8.26751 2 15.9989C2 23.7303 6.66443 29.9978 15.9989 29.9978Z" fill="#FFB02E"/>
@@ -44,7 +44,7 @@
                 </button>
             </div>
             <div class="gap-y-3 flex flex-col items-center">
-                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">0</div>
+                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">{{ satisfactionCounts['Slightly Satisfied'] || 0 }}</div>
                 <button  (click)="submitSatisfaction('Slightly Satisfied')" class="text-3xl emoji-button focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Satisfied">
                     <svg width="45" height="45" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.9989 29.9978C25.3333 29.9978 29.9978 23.7303 29.9978 15.9989C29.9978 8.26751 25.3333 2 15.9989 2C6.66443 2 2 8.26751 2 15.9989C2 23.7303 6.66443 29.9978 15.9989 29.9978Z" fill="#FFB02E"/>
@@ -57,7 +57,7 @@
                 </button>
             </div>
             <div class="gap-y-3 flex flex-col items-center">
-                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">0</div>
+                <div class="bg-gray-200 text-center w-8 h-8 rounded-full flex items-center justify-center mb-1">{{ satisfactionCounts.Satisfied || 0 }}</div>
                 <button (click)="submitSatisfaction('Satisfied')" class="text-3xl emoji-button emoji-selected focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-label="Very Satisfied">
                     <svg width="45" height="45" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.9989 29.9978C25.3333 29.9978 29.9978 23.7303 29.9978 15.9989C29.9978 8.26751 25.3333 2 15.9989 2C6.66443 2 2 8.26751 2 15.9989C2 23.7303 6.66443 29.9978 15.9989 29.9978Z" fill="#FFB02E"/>

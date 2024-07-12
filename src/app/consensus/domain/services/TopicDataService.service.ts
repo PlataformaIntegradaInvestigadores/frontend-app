@@ -243,6 +243,20 @@ export class TopicService {
     return this.http.get(`${this.apiUrl}${groupId}/satisfaction/notifications/`, { headers });
   }
 
+  getSatisfactionCounts(groupId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    return this.http.get(`${this.apiUrl}${groupId}/satisfaction-counts/`, { headers });
+  }
+
+  getUserCurrentPhase(groupId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    return this.http.get(`${this.apiUrl}${groupId}/current-phase/`, { headers });
+  }
+
 
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An unknown error occurred!';
