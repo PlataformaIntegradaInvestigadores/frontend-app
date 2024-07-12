@@ -7,6 +7,7 @@ import { TopicService } from 'src/app/consensus/domain/services/TopicDataService
 import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketService.service';
 import { ChangeDetectorRef } from '@angular/core';
 
+
 @Component({
   selector: 'phase1-consensus',
   templateUrl: './phase1-consensus.component.html',
@@ -39,13 +40,15 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   notifications: any[] = [];
 
 
+
   constructor(
     private topicService: TopicService,
     private webSocketService: WebSocketService,
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+
   ) { }
 
   ngOnInit(): void {
@@ -89,6 +92,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     });
 
     console.log('Current URL:', this.router.url);
+
   }
 
   ngOnDestroy(): void {
@@ -100,7 +104,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       this.newTopicSubscription.unsubscribe();
     }
   }
-
 
   loadTopics(): void {
     if (this.groupId) {
@@ -133,7 +136,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     }
   }
 
-  
   getAndAssignRandomTopics(): void {
     this.topicService.getRandomRecommendedTopics(this.groupId).subscribe(
       response => {
@@ -144,15 +146,14 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       error => {
         console.error('Error assigning random topics:', error);
       }
-      );
-    }
-    
-    connectWebSocket(): void {
-      if (this.groupId) {
-        console.log(`Connecting WebSocket for group: ${this.groupId}`);
+    );
+  }
+  
+  connectWebSocket(): void {
+    if (this.groupId) {
+      console.log(`Connecting WebSocket for group: ${this.groupId}`);
       const socket = this.webSocketService.connect(this.groupId);
       this.socketSubscription = socket.subscribe(message => {
-        
         console.log('Message received: entro al subscriptor', message);
 
         if (message.message.type === 'connection_count') {
@@ -190,7 +191,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     if (this.newTopic.trim() && userId && this.groupId) {
       this.topicService.addNewTopic(this.groupId, this.newTopic.trim()).subscribe(
         response => {
-          /* Mensaje enviado desde el front al backend */
           console.log('New topic added enviado por el front:', response);
           this.newTopic = '';
           this.webSocketService.sendMessage(this.groupId, {
@@ -218,32 +218,28 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
           this.showError = true;  // Mostrar el mensaje de error
 
-          // Desplazar hacia el mensaje de error
           setTimeout(() => {
             const errorElement = document.getElementById('error-message');
             if (errorElement) {
               errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-            // Configurar temporizador para ocultar el mensaje de error después de 5 segundos
             setTimeout(() => {
               this.showError = false;
               this.cdr.detectChanges();  // Forzar detección de cambios
             }, 8000);
-        }, 0);
-      }
-    );
+          }, 0);
+        }
+      );
+    }
   }
-}
 
-  // Enviar la experiencia del usuario al soltar la barra
   sendUserExpertise(index: number): void {
     const userId = this.authService.getUserId();
     if (userId && this.groupId) {
       const topicId = this.recommendedTopics[index].id;
       const expertiseLevel = this.rangeValues[index];
       console.log('User expertise:', userId, topicId, expertiseLevel);
-      this.topicService.notifyExpertice(this.groupId, topicId, userId,  expertiseLevel).subscribe(
-        
+      this.topicService.notifyExpertice(this.groupId, topicId, userId, expertiseLevel).subscribe(
         response => {
           console.log('User expertise updated successfully:', response);
         },
@@ -253,13 +249,12 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
-  
 
-initializeProperties(): void {
-  this.rangeValues = new Array(this.recommendedTopics.length).fill(0);
-  this.showLabel = new Array(this.recommendedTopics.length).fill(false);
-  this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
-}
+  initializeProperties(): void {
+    this.rangeValues = new Array(this.recommendedTopics.length).fill(0);
+    this.showLabel = new Array(this.recommendedTopics.length).fill(false);
+    this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
+  }
 
   showLabels(index: number) {
     this.showLabel[index] = true;
@@ -277,19 +272,14 @@ initializeProperties(): void {
     this.showCheckTopics[index] = false;
   } 
 
-
   onSliderChange(index: number, event: any): void {
     this.rangeValues[index] = event.target.value;
   }
 
-
   getGradient(value: number): string {
-    /* #172554  == hsl(223, 58%, 20%) */
-    /* #1E3C8B == hsl(227, 65%, 34%) */
-    const hue = 227;  // Tono fijo del color final
-    const saturation = 65; // Saturación fija del color final
-    // A medida que el valor aumenta, la luminosidad disminuye hacia 20% (oscuro)
-    let lightness = 80 - (80 - 34) * (value / 100); // Invertir la interpolación
+    const hue = 227;
+    const saturation = 65;
+    let lightness = 80 - (80 - 34) * (value / 100);
     return `linear-gradient(90deg, hsl(${hue}, ${saturation}%, ${lightness}%) 0%, hsl(${hue}, ${saturation}%, ${lightness}%) 100%)`;
   }
 
@@ -349,13 +339,12 @@ initializeProperties(): void {
 
   removeLastUserAddedTopic(): void {
     if (this.userAddedTopicsIndexes.length > 0) {
-      const lastIndex = this.userAddedTopicsIndexes.pop(); // Obtener y eliminar el último índice
+      const lastIndex = this.userAddedTopicsIndexes.pop();
       if (lastIndex !== undefined) {
         this.addedTopics.splice(lastIndex, 1);
         this.rangeValues.splice(lastIndex, 1);
         this.showLabel.splice(lastIndex, 1);
         this.showCheckTopics.splice(lastIndex, 1);
-        // Actualizar los índices de los tópicos agregados por el usuario
         this.userAddedTopicsIndexes = this.userAddedTopicsIndexes.map(index => index > lastIndex ? index - 1 : index);
       }
     } else {
@@ -377,7 +366,8 @@ initializeProperties(): void {
       this.topicService.notifyPhaseOneCompleted(this.groupId, userId).subscribe(
         response => {
           console.log('Consensus completed notification sent:', response);
-          // Redirigir a la nueva ruta
+          const phaseKey = `phase_${this.groupId}`;
+          localStorage.setItem(phaseKey, '1');
           const currentUrl = this.router.url;
           const newUrl = currentUrl.replace('recommend-topics', 'valuation');
           this.router.navigateByUrl(newUrl);

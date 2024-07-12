@@ -63,6 +63,10 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
             this.activeConnections = message.message.active_connections;
             console.log('Active connections PHASE 33333:', this.activeConnections);
           }
+
+          if (message.message.type === 'consensus_calculation_completed') {
+            this.consensusResults = message.message.results;
+            console.log('Updated Consensus Results:', this.consensusResults);          }
         },
         (error) => {
           console.error('Error receiving consensus results via WebSocket:', error);
