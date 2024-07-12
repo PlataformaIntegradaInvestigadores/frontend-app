@@ -19,6 +19,7 @@ export class NavbarConsensusComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router
   ) {}
+  
 
   ngOnInit(): void {
     this.routerSubscription = this.router.events.subscribe(() => {

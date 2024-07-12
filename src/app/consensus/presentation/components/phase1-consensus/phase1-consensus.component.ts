@@ -24,6 +24,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   combinedChecksState: boolean[] = [];
   enableCombinedSearch: boolean = false;
   showAddTopicForm: boolean = false;
+  showModal: boolean = false;
 
   groupId: string = '';
   recommendedTopics: RecommendedTopic[] = [];
@@ -337,7 +338,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeLastUserAddedTopic(): void {
+  /* removeLastUserAddedTopic(): void {
     if (this.userAddedTopicsIndexes.length > 0) {
       const lastIndex = this.userAddedTopicsIndexes.pop();
       if (lastIndex !== undefined) {
@@ -350,7 +351,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     } else {
       alert('No user-added topics to remove.');
     }
-  }
+  } */
 
   toggleExpertise(): void {
     this.showSliders = !this.showSliders;
@@ -360,7 +361,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.showAddTopicForm = !this.showAddTopicForm;
   }
 
-  completeConsensusPhaseOne(): void {
+  /* completeConsensusPhaseOne(): void {
     const userId = this.authService.getUserId();
     if (this.groupId && userId) {
       this.topicService.notifyPhaseOneCompleted(this.groupId, userId).subscribe(
@@ -378,4 +379,37 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
+ */
+  completeConsensusPhaseOne(): void {
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+  }
+
+  confirmPhaseCompletion(): void {
+    const userId = this.authService.getUserId();
+    if (this.groupId && userId) {
+      this.topicService.notifyPhaseOneCompleted(this.groupId, userId).subscribe(
+        response => {
+          console.log('Consensus completed notification sent:', response);
+          const phaseKey = `phase_${this.groupId}`;
+          localStorage.setItem(phaseKey, '1');
+          const currentUrl = this.router.url;
+          const newUrl = currentUrl.replace('recommend-topics', 'valuation');
+          this.router.navigateByUrl(newUrl);
+          this.closeModal();
+        },
+        error => {
+          console.error('Error sending consensus completed notification:', error);
+        }
+      );
+    }
+  }
+
+  cancelPhaseCompletion(): void {
+    this.closeModal();
+  }
+
 }

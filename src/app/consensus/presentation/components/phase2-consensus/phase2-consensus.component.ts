@@ -27,6 +27,8 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   private notificationsSubscription: Subscription | undefined;
   finalOrderedTopics: { id: number, topic_name: string, tags: string[] }[] = [];
 
+  showModalPhaseTwo: boolean = false;
+
   constructor(
     private topicService: TopicService,
     private webSocketService: WebSocketPhase2Service,
@@ -82,8 +84,6 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
     this.finalOrderedTopics = this.recommendedTopics.map(topic => ({ id: topic.id, topic_name: topic.topic_name, tags: topic.tags ?? [] }));
     console.log('Final ordered topics:', this.finalOrderedTopics);
   }
-
-  
 
   toggleTag(topic: RecommendedTopic, tag: string): void {
     const userId = this.authService.getUserId();
@@ -145,6 +145,14 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   }
 
   completeConsensusPhaseTwo(): void {
+    this.showModalPhaseTwo = true;
+  }
+
+  closeModalPhaseTwo(): void {
+    this.showModalPhaseTwo = false;
+  }
+
+  confirmPhaseTwoCompletion(): void {
     const userId = this.authService.getUserId();
     if (this.groupId && userId) {
       const totalTopics = this.finalOrderedTopics.length;
@@ -165,6 +173,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
           const newUrl = currentUrl.replace('valuation', 'decision');
           this.router.navigateByUrl(newUrl);
           console.log('Redirecting to:', newUrl);
+          this.closeModalPhaseTwo();
         },
         error => {
           console.error('Error saving final topic order:', error);
@@ -172,7 +181,10 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
-  
+
+  cancelPhaseTwoCompletion(): void {
+    this.closeModalPhaseTwo();
+  }
 
   connectWebSocket(): void {
     if (this.groupId) {
