@@ -1,33 +1,33 @@
-<div class="flex">
-  <div *ngIf="years && years.length > 0" class="col-lg-2 px-0">
-    <div class="rounded border-2 border-black">
+<div class="flex justify-center items-center">
+  <div *ngIf="years && years.length > 0" class="col-lg-2  px-0">
+    <div class="rounded mx-4 mt-10 mat-elevation-z8">
 
       <!-- Title -->
-      <div class="text-center py-3 title border-2 border-b-black">
+      <div class="text-center py-3 font-bold border-b-gray-400 border-b-2">
         FILTROS
       </div>
 
       <!-- Years -->
-      <div class="py-2 px-3 subtitle border-2 border-b-black">
+      <div class="py-2 px-3 font-semibold border-b-gray-400 border-b-2">
         Año de publicación
       </div>
-      <div class="py-3 px-3 d-flex flex-column gap-3 max-h-100 overflow-scroll">
-        <div class="d-flex flex-nowrap gap-3" *ngFor="let year of years">
-          <input [id]="year" type="checkbox" (click)="onClickCheckbox($event)">
-          <label [for]="year">{{year}}</label>
+      <div class="py-3 px-3 flex flex-col gap-3 max-h-100 overflow-y-scroll">
+        <div class="flex gap-3" *ngFor="let year of years">
+          <input [id]="year" type="checkbox" (click)="onClickCheckbox($event)" class="form-checkbox h-5 w-5">
+          <label [for]="year" class="ml-2">{{year}}</label>
         </div>
       </div>
 
     </div>
   </div>
-  <div class="container mat-elevation-z8">
+  <div class="container border-b-gray-400 border-b-2">
     <div *ngIf="isLoadingResults" class="loading-shade">
       <div *ngIf="isLoadingResults">
         <mat-spinner></mat-spinner>
       </div>
     </div>
 
-    <div class="table-container">
+    <div class="table-container mat-elevation-z8">
       <div *ngIf="articles$ | async as response">
         <table
           mat-table

@@ -16,6 +16,10 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { AffiliationComponent } from './presentation/pages/affiliation/affiliation.component';
 import {MatIconModule} from "@angular/material/icon";
 import {DashboardRoutingModule} from "./dashboard-routing.module";
+import { TopicComponent } from './presentation/pages/topic/topic.component';
+import {RouterModule} from "@angular/router";
+import { DashboardPageComponent } from './presentation/pages/dashboard-page/dashboard-page.component';
+import {CountUpModule} from "ngx-countup";
 
 
 @NgModule({
@@ -23,23 +27,27 @@ import {DashboardRoutingModule} from "./dashboard-routing.module";
     GeneralComponent,
     SearchBarComponent,
     AffiliationComponent,
+    TopicComponent,
+    DashboardPageComponent,
   ],
   exports: [
     GeneralComponent,
     SearchBarComponent,
     AffiliationComponent
   ],
-  imports: [
-    DashboardRoutingModule,
-    FormsModule,
-    NgForOf,
-    NgIf,
-    MatInputModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    SharedModule,
-  ],
+    imports: [
+        DashboardRoutingModule,
+        RouterModule,
+        FormsModule,
+        NgForOf,
+        NgIf,
+        MatInputModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        SharedModule,
+        CountUpModule,
+    ],
   providers: [VisualsService
     ],
 })

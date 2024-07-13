@@ -23,11 +23,27 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   @Input()
   words!:Word[]
 
+  @Input()
+  size = 7
+
+  @Input()
+  x = 150
+
+  @Input()
+  y = 230
+
+  @Input()
+  padding = 0.25
+
+  @Input()
+  min = 100
+
   constructor(private el: ElementRef) {
   }
 
   ngOnInit(): void {
-
+    console.log(this.min)
+    console.log(this.size)
   }
 
   ngAfterViewInit(): void {
@@ -37,10 +53,12 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   private generateWordCloud(): void {
     const layout = cloud()
       .size([this.width - 50, this.height -60])
-      .words(this.words.map(d => ({text: d.text, size: (d.size > 50? d.size: 50 || d.size < 800? d.size: 800)})))
-      .padding(0.25)
+      .words(this.words.map(d => ({text: d.text, size: Math.min(d.size, 500) || Math.max(d.size,this.min)})))
+      .padding(this.padding)
       .rotate(0)
-      .fontSize(d => (d.size || 50) / 6)
+      .fontSize(d =>
+        (d.size || 400) / this.size
+      )
       .on('end', words => this.draw(words));
 
     layout.start();
@@ -49,8 +67,7 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   private draw(words: any[]): void {
     const svg = d3.select(this.svgElement.nativeElement)
 
-    const g = svg.select('g');
-
+    const g = svg.select('g').attr('transform', `translate(${this.x}, ${this.y})`)
     const colorScale = scaleSequential(interpolateViridis).domain([0, words.length - 1]);
 
     const text: any = g

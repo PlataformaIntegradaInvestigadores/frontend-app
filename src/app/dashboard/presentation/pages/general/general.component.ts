@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DashboardService} from "../../../domain/services/dashboard.service";
 import {DashboardCounts, LineChartInfo, NameValue} from "../../../../shared/interfaces/dashboard.interface";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-general',
@@ -19,8 +20,13 @@ export class GeneralComponent implements OnInit {
   yearOptions: number[] = []
   year!: number
 
-  constructor(private dashboardService: DashboardService) {
+  constructor(private router: Router, private route: ActivatedRoute, private dashboardService: DashboardService) {
     this.getYears()
+  }
+  navigateTo(path: string) {
+    const currentRoute = this.route.snapshot.routeConfig!.path;
+    console.log(currentRoute)
+    this.router.navigate([`${currentRoute}/${path}`]);
   }
 
   ngOnInit(): void {
@@ -30,15 +36,15 @@ export class GeneralComponent implements OnInit {
     );
     this.dashboardService.getCounts(this.year).subscribe(data => {
       this.counts = data;
-      console.log(this.counts); // Aquí puedes ver la respuesta en la consola
+      // console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
     this.dashboardService.getTreeMap().subscribe(data => {
       this.treeMapInfo = data;
-      console.log(data)
+      // console.log(data)
     });
     this.dashboardService.getBarInfo().subscribe(data => {
       this.barChartInfo = data;
-      console.log(data)
+      // console.log(data)
     });
     this.provinces = 'http://localhost:8000/api/v1/dashboard/province/get_provinces/'
   }
@@ -52,8 +58,6 @@ export class GeneralComponent implements OnInit {
   }
 
   updateData(year: number) {
-    console.log(year)
-    console.log(this.selectedOption)
     this.year = year
     if (this.selectedOption === 'Until') {
       if (this.year.toString() === this.yearOptions[this.yearOptions.length - 1].toString()) {
@@ -64,7 +68,6 @@ export class GeneralComponent implements OnInit {
           this.barChartInfo = data;
         });
         this.provinces = this.dashboardService.getProvinces()
-        console.log(this.provinces)
       } else {
         this.dashboardService.getTreeMapInfoAcumulated(year).subscribe(data => {
           this.treeMapInfo = data;
@@ -72,9 +75,7 @@ export class GeneralComponent implements OnInit {
         this.dashboardService.getBarInfoAcumulated(year).subscribe(data => {
           this.barChartInfo = data;
         });
-
         this.provinces = this.dashboardService.getProvincesAcumulated(year)
-        console.log(this.provinces)
       }
       this.dashboardService.getCounts(year).subscribe(data => {
         this.counts = data;

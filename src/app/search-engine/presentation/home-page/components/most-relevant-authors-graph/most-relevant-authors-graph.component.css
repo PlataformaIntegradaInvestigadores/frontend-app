@@ -23,14 +23,6 @@
   display: none;
 }
 
-input[type="checkbox"] {
-  -ms-transform: scale(1.9); /* IE */
-  -moz-transform: scale(1.9); /* FF */
-  -webkit-transform: scale(1.9); /* Safari and Chrome */
-  -o-transform: scale(1.9); /* Opera */
-  transform: scale(1.9);
-}
-
 .title {
   font-size: 1.2rem;
   font-weight: bold;
@@ -137,4 +129,17 @@ input[type="range"]:focus::-ms-fill-upper {
   margin:0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 600px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

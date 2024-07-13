@@ -1,14 +1,84 @@
-<div>SIIII</div>
-<!--<app-search-bar (entity)="getScopusId($event)"></app-search-bar>-->
-<!--<div class="flex justify-center items-center p-3">-->
-<!--  <app-bar-chart *ngIf="!charged" [single]="affiliations" [width]="1400" [height]="500"></app-bar-chart>-->
-<!--  <div *ngIf="charged">-->
-<!--    <h1>{{affiliation}}</h1>-->
-<!--    <h3>Evolution of contribution over the years</h3>-->
-<!--    <app-evolution-line-chart  [multi]="lineChartAffiliation" [width]="1000"-->
-<!--                              [height]="400"></app-evolution-line-chart>-->
-<!--    <h3>Most knowledge areas</h3>-->
-<!--    <app-tree-map-chart  [single]="treeMapInfo" [width]="1000"-->
-<!--                        [height]="400" ></app-tree-map-chart>-->
-<!--  </div>-->
-<!--</div>-->
+<app-search-bar (entity)="getScopusId($event)" code="affiliation"></app-search-bar>
+<div class="flex justify-center items-center p-3">
+  <div *ngIf="!charged" class="flex flex-col rounded-md border-2 border-blue-900">
+    <h2 class="bg-blue-900 text-white flex justify-center items-center">Affiliations with most articles in Ecuador</h2>
+    <app-bar-chart [single]="affiliations" [width]="1400" [height]="500"></app-bar-chart>
+  </div>
+  <div class="gap-y-3" *ngIf="charged">
+    <div class="flex flex-col border-2 border-blue-900 rounded-md justify-center items-center gap-x-5">
+      <h1 class="flex justify-center items-center bg-blue-900 text-white w-full ">{{affiliation}}</h1>
+      <!--      <div>-->
+      <!--        <div class="flex items-center justify-center gap-x-3 rounded-md mb-2 h-fit">-->
+      <!--          <h3 class="flex m-0 justify-start items-start">Statistics</h3>-->
+      <!--          <div class="flex justify-center items-center">-->
+      <!--            <label class="mr-3" *ngFor="let option of options" (change)="updateData(year)">-->
+      <!--              <input type="radio" name="grupoOpciones" [(ngModel)]="selectedOption" [value]="option">-->
+      <!--              {{ option }}-->
+      <!--            </label>-->
+      <!--          </div>-->
+      <!--          <select class="flex text-center" [(ngModel)]="year" (change)="updateData(year)">-->
+      <!--            <option *ngFor="let year1 of yearOptions" [value]="year1">{{ year1 }}</option>-->
+      <!--          </select>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <div class="flex justify-between mb-2">
+        <div class="flex flex-col ml-4 gap-y-2 justify-between pb-3">
+          <div class="border-2 border-blue-900 rounded-md mb-2">
+            <h3 class="flex bg-blue-900 text-white p-1 items-center justify-center">Statistics</h3>
+            <div class="flex flex-col justify-center items-center p-2 gap-y-2">
+              <div>
+                <label class="mr-3" *ngFor="let option of options" (change)="updateData(year)">
+                  <input type="radio" name="grupoOpciones" [(ngModel)]="selectedOption" [value]="option">
+                  {{ option }}
+                </label>
+              </div>
+              <select class="flex text-center" [(ngModel)]="year" (change)="updateData(year)">
+                <option *ngFor="let year1 of yearOptions" [value]="year1">{{ year1 }}</option>
+              </select>
+            </div>
+          </div>
+          <div class=" flex flex-col justify-center border-2 border-blue-900 rounded-md w-full">
+            <h3 class="flex bg-blue-900 text-white p-2 justify-center items-center">Summary</h3>
+            <div class="flex flex-col items-center justify-center mb-4">
+              <div class="flex justify-center">
+                <mat-icon style="font-size: 40px; width: 50px; height: 50px;">article</mat-icon>
+                <dt class="mb-2 text-3xl md:text-4xl text-center  pr-5">
+                  <span [countUp]="10000"></span>
+                </dt>
+              </div>
+              <dd class="font-light">Articles</dd>
+            </div>
+            <div class="flex flex-col items-center justify-center pb-1">
+              <div class="flex justify-center">
+                <mat-icon style="font-size: 40px; width: 50px; height: 50px;">school</mat-icon>
+                <dt class="mb-2 text-3xl md:text-4xl pr-5">
+                  <span [countUp]="200"></span>
+                </dt>
+              </div>
+              <dd class="font-light">Knowledge Areas</dd>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex pb-3 px-3">
+
+          <div class="border-2 border-blue-900 max-h-[390px] rounded-md">
+            <h3 class="flex bg-blue-900 w-full text-white px-1 items-center justify-center">Evolution of contribution
+              over the years</h3>
+            <app-evolution-line-chart [multi]="lineChartAffiliation" [width]="1000"
+                                      [height]="400"></app-evolution-line-chart>
+          </div>
+        </div>
+      </div>
+      <div class="px-3 w-full pb-3">
+        <div class="border-blue-900 border-2 rounded-md flex w-full flex-col justify-center items-center ">
+          <h3 class="text-white flex text-center w-full bg-blue-900 p-1 items-center justify-center">Most knowledge
+            areas</h3>
+          <app-tree-map-chart [single]="treeMapInfo" [width]="1150"
+                              [height]="400"></app-tree-map-chart>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

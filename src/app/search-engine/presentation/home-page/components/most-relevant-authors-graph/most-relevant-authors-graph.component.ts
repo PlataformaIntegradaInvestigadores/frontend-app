@@ -27,10 +27,10 @@ export class MostRelevantAuthorsGraphComponent {
   showGraph: boolean = false
 
   authorsNumber: number = 50
-  affiliations: { scopusId: number, name: string }[] = []
+  affiliations!: { scopusId: number, name: string }[]
   selectedAffiliations: number[] = []
   noResults = false;
-
+  isLoadingResults = false;
 
   @ViewChild("downloadEl") downloadEl!: ElementRef;
   faDownload = faDownload
@@ -52,15 +52,11 @@ export class MostRelevantAuthorsGraphComponent {
   refreshGraph() {
     this.showGraph = false
     this.loading.emit(true)
-    console.log(this.query)
     this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
       .pipe(
         tap((coauthors) => {
-          console.log(coauthors)
+          this.affiliations = []
           coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
-          console.log('dentro: '+ this.authorsNumber);
-          console.log(coauthors)
-          console.log(this.noResults)
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
