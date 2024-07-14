@@ -8,6 +8,10 @@ export interface DashboardCounts {
   affiliation: number;
   topic: number;
 }
+export interface AffiliationCounts{
+  articles: number;
+  topics: number;
+}
 export interface DashboardCountsYear{
   year: number;
   author: number;

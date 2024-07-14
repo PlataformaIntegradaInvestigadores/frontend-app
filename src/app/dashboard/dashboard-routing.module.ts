@@ -20,7 +20,7 @@ const routes: Routes =[
         component: AffiliationComponent,
       },
       {
-        path: 'topic',
+        path: 'topic:name',
         component: TopicComponent,
       },
     ],

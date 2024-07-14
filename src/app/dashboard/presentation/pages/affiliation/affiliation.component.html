@@ -43,7 +43,7 @@
               <div class="flex justify-center">
                 <mat-icon style="font-size: 40px; width: 50px; height: 50px;">article</mat-icon>
                 <dt class="mb-2 text-3xl md:text-4xl text-center  pr-5">
-                  <span [countUp]="10000"></span>
+                  <span [countUp]="articles"></span>
                 </dt>
               </div>
               <dd class="font-light">Articles</dd>
@@ -52,7 +52,7 @@
               <div class="flex justify-center">
                 <mat-icon style="font-size: 40px; width: 50px; height: 50px;">school</mat-icon>
                 <dt class="mb-2 text-3xl md:text-4xl pr-5">
-                  <span [countUp]="200"></span>
+                  <span [countUp]="topics"></span>
                 </dt>
               </div>
               <dd class="font-light">Knowledge Areas</dd>
@@ -66,7 +66,7 @@
             <h3 class="flex bg-blue-900 w-full text-white px-1 items-center justify-center">Evolution of contribution
               over the years</h3>
             <app-evolution-line-chart [multi]="lineChartAffiliation" [width]="1000"
-                                      [height]="400"></app-evolution-line-chart>
+                                      [height]="400" (selectedYear)="updateData($event)"></app-evolution-line-chart>
           </div>
         </div>
       </div>
