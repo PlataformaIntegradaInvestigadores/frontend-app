@@ -57,6 +57,13 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
               notification.type === 'consensus_completed') {
                 
           console.log("Reconocio el topic:visited o combined_search", notification.notification_message);
+          
+          const existingNotificationIndex = this.notificationsLoaded.findIndex(n => n.id === notification.id);
+          if (existingNotificationIndex !== -1) {
+            // Remove the existing notification
+            this.notificationsLoaded.splice(existingNotificationIndex, 1);
+          }
+          
           const visitedNotification: NotificationGeneral = {
             id: notification.id,
             user_id: notification.user_id,

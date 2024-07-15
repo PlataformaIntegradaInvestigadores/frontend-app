@@ -1,7 +1,13 @@
 <li class="py-3 sm:py-4 pr-4 pl-2">
     <div class="flex items-center ">
         <div class="flex-shrink-0">
-            <img class="w-9 h-9 rounded-full bg-black"  [src]="member?.profile_picture || '../../../../../assets/profile.png'" alt="{{ member?.first_name || 'User' }} image">
+            <!-- <img class="w-9 h-9 rounded-full bg-black"  [src]="member?.profile_picture || '../../../../../assets/profile.png'" alt="{{ member?.first_name || 'User' }} image">
+             -->
+            
+             <a [routerLink]="['/profile/', member?.id, 'about-me']">
+                <img class="w-9 h-9 rounded-full bg-black" [src]="member?.profile_picture || '../../../../../assets/profile.png'" alt="{{ member?.first_name || 'User' }} image">
+            </a>            
+
         </div>
         <div class="flex-1 min-w-0 ms-3">
             <p class="text-sm font-medium text-gray-900 truncate dark:text-white">

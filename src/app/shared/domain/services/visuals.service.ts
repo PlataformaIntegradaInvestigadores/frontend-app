@@ -8,7 +8,7 @@ import {DashboardCounts, Word, YearsResponse} from "../../interfaces/dashboard.i
 })
 export class VisualsService {
 
-  private apiUrl = 'http://localhost:8000/api/v1/dashboard';
+  private apiUrl = 'http://localhost:8010/api/v1/dashboard';
 
   constructor(private http: HttpClient) {
   }
