@@ -39,6 +39,8 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   notifications: any[] = [];
 
+  userPhase: number = -1; 
+
   constructor(
     private topicService: TopicService,
     private webSocketService: WebSocketService,
@@ -51,9 +53,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.parent?.paramMap.subscribe(params => {
       this.groupId = params.get('groupId') || '';
-      console.log('Group ID:', this.groupId);
-      this.loadTopics();
-      this.connectWebSocket();
+      this.checkUserPhase(); // Llama a esta función para verificar la fase del usuario
     });
 
     this.topicsSubscription = this.topicService.topics$.subscribe(
@@ -64,29 +64,42 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     );
 
     this.newTopicSubscription = this.webSocketService.newTopicReceived.subscribe(topic => {
-      console.log('New topic received para ingresar:', topic);
+  
       if (!this.recommendedTopics.some(t => t.topic_name === topic.topic_name)) {
         this.recommendedTopics.push(topic);
         this.rangeValues = [...this.rangeValues, 0]; // Fix: Assign the value directly to the array
         this.cdr.detectChanges();
       } else {
-        console.log('Tópico ya existe en la lista:', topic.topic_name);
+
       }
       if (!this.notifications.some(t => t.notification_message === topic.notification_message)) {
         this.notifications.push(topic);
-        console.log("Se pusheo la notificacion al arreglo")
-        console.log(this.notifications)
         this.cdr.detectChanges();
       }
     });
 
     this.newNotificationSubscription = this.webSocketService.notificationsReceived.subscribe(notification => {
-      console.log('Notification INTERACTIVIDAD DE USUARIO received:', notification);
+
       this.notifications.push(notification);
       this.cdr.detectChanges();
     });
 
-    console.log('Current URL:', this.router.url);
+
+  }
+
+  checkUserPhase(): void {
+    this.topicService.getUserCurrentPhase(this.groupId).subscribe(
+      response => {
+        this.userPhase = response.phase;
+        if (this.userPhase === 0) {
+          this.loadTopics();
+          this.connectWebSocket();
+        }
+      },
+      error => {
+        console.error('Error fetching user phase:', error);
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -105,11 +118,10 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         response => {
           if (response.length > 0) {
             this.recommendedTopics = response;
-            console.log('Recommended topics:', this.recommendedTopics);
+            //console.log('Recommended topics:', this.recommendedTopics);
           } else {
             this.getAndAssignRandomTopics();
           }
-          console.log('Number of recommended topics:', this.recommendedTopics.length);
           this.initializeProperties();
         },
         error => {
@@ -120,8 +132,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       this.topicService.getTopicsAddedByGroup(this.groupId).subscribe(
         response => {
           this.addedTopics = response;
-          console.log('Added topics:', this.addedTopics);
-          console.log('Number of added topics:', this.addedTopics.length);
         },
         error => {
           console.error('Error loading added topics:', error);
@@ -134,7 +144,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.topicService.getRandomRecommendedTopics(this.groupId).subscribe(
       response => {
         this.recommendedTopics = response;
-        console.log('Randomly assigned topics:', this.recommendedTopics);
+  
         this.initializeProperties();
       },
       error => {
@@ -145,10 +155,9 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   connectWebSocket(): void {
     if (this.groupId) {
-      console.log(`Connecting WebSocket for group: ${this.groupId}`);
+
       const socket = this.webSocketService.connect(this.groupId);
       this.socketSubscription = socket.subscribe(message => {
-        console.log('Message received: entro al subscriptor', message);
 
         if (message.message.type === 'connection_count') {
           this.activeConnections = message.message.active_connections;
@@ -163,15 +172,12 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
       }, err => {
         console.error(`WebSocket error for group ${this.groupId}:`, err);
-      }, () => {
-        console.log(`WebSocket connection closed for group ${this.groupId}`);
-      });
+      },);
     }
   }
 
   disconnectWebSocket(): void {
     if (this.groupId) {
-      console.log(`Disconnecting WebSocket for group: ${this.groupId}`);
       this.webSocketService.close(this.groupId);
       if (this.socketSubscription) {
         this.socketSubscription.unsubscribe();
@@ -185,7 +191,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     if (this.newTopic.trim() && userId && this.groupId) {
       this.topicService.addNewTopic(this.groupId, this.newTopic.trim()).subscribe(
         response => {
-          console.log('New topic added enviado por el front:', response);
           this.newTopic = '';
           this.webSocketService.sendMessage(this.groupId, {
             type: 'new_topic',
@@ -197,7 +202,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
               added_at: response.added_at
             }
           });
-          console.log('New topic message sent to WebSocket:', response);
         },
         error => {
           console.error('Error adding new topic:', error);
@@ -232,15 +236,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     if (userId && this.groupId) {
       const topicId = this.recommendedTopics[index].id;
       const expertiseLevel = this.rangeValues[index];
-      console.log('User expertise:', userId, topicId, expertiseLevel);
-      this.topicService.notifyExpertice(this.groupId, topicId, userId, expertiseLevel).subscribe(
-        response => {
-          console.log('User expertise updated successfully:', response);
-        },
-        error => {
-          console.error('Error updating user expertise:', error);
-        }
-      );
+      this.topicService.notifyExpertice(this.groupId, topicId, userId, expertiseLevel).subscribe();
     }
   }
 
@@ -286,7 +282,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     if (this.groupId && topic.id && userId) {
       this.topicService.notifyTopicVisited(this.groupId, topic.id.toString(), userId).subscribe(
         response => {
-          console.log('Topic visited notification sent:', response);
+          //console.log('Topic visited notification sent:', response);
         },
         error => {
           console.error('Error sending topic visited notification:', error);
@@ -310,7 +306,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         const topicIds = selectedTopics.map(topic => topic.id.toString());
         this.topicService.notifyCombinedSearch(this.groupId, topicIds, userId).subscribe(
           response => {
-            console.log('Combined search notification sent:', response);
+            //console.log('Combined search notification sent:', response);
           },
           error => {
             console.error('Error sending combined search notification:', error);
@@ -352,7 +348,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     if (this.groupId && userId) {
       this.topicService.notifyPhaseOneCompleted(this.groupId, userId).subscribe(
         response => {
-          console.log('Consensus completed notification sent:', response);
           const phaseKey = `phase_${this.groupId}`;
           localStorage.setItem(phaseKey, '1');
           const currentUrl = this.router.url;

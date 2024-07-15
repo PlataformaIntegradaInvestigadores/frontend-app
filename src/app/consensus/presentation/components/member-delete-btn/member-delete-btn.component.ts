@@ -24,7 +24,6 @@ export class MemberDeleteBtnComponent implements OnInit{
   ngOnInit(): void {
     initFlowbite();
     this.groupId = this.activatedRoute.snapshot.paramMap.get('groupId');
-    console.log('Delete Btn Init: groupId:', this.groupId, 'memberId:', this.member?.id);
   }
 
   openModal(): void {
@@ -42,15 +41,10 @@ export class MemberDeleteBtnComponent implements OnInit{
   }
 
   deleteMember(): void {
-    //console.log('Deleting member group:', this.groupId);
-    //console.log('Deleting member:', this.memberId);
     if (this.groupId && this.member?.id) {
       this.consensusService.removeMember(this.groupId, this.member.id)
         .subscribe(
           response => {
-            // Maneja la respuesta exitosa, posiblemente actualizando la lista de miembros
-            console.log('Member will be deleted', this.member?.id);
-            console.log('Member removed successfully:', response);
             this.memberDeleted.emit(this.member?.id ?? ''); // Emitir el evento con un valor predeterminado
             this.closeModal();
           },

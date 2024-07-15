@@ -42,29 +42,23 @@ export class Phase3ConsensusNotificationComponent {
   loadNotifications(): void {
     this.topicService.getUserSatisfactionNotifications(this.groupId).subscribe(
       notifications => {
-        console.log('Notification 3333333333:', notifications);
         notifications.forEach((notification: any) => {
-          console.log('Notification 444444444444:', notification);
           // Convertir `created_at` a objeto Date
           notification.created_at = new Date(notification.created_at);
           this.satisfactionNotifications.push(notification);
-          console.log('ARREGLO SATISAFACCION 3333333333:', this.satisfactionNotifications);
         });
-        console.log('ARREGLO SATISAFACCION 33333444444:', this.satisfactionNotifications);
         this.cdr.detectChanges();
       },
       error => {
         console.error('Error loading notifications:', error);
       }
     );
-    console.log('Notificationssssss 3333333333:', this.satisfactionNotifications);
   }
   
 
 
   connectWebSocket(): void {
     if (this.groupId) {
-      console.log('Connecting to WebSocket for group PHASE 3:', this.groupId);
       const socket = this.webSocketService.connect(this.groupId);
       this.wsSubscription = this.webSocketService.userSatisfactionReceived.subscribe(
         msg => {

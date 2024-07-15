@@ -20,7 +20,6 @@ export class ViewAllMembersComponent  implements OnInit{
   
   ngOnInit(): void {
     initFlowbite();
-    console.log('ViewAllMembers Init');
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.closeModal();
@@ -29,7 +28,6 @@ export class ViewAllMembersComponent  implements OnInit{
   }
 
   onMemberDeleted(memberId: string): void {
-    console.log('Member deleted:', memberId);
     if (this.members) {
       this.members = this.members.filter(member => member.id !== memberId);
     }

@@ -49,12 +49,9 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
     });
 
     this.newNotificationSubscription = this.webSocketService.notificationReceived.subscribe((notification: any) => {
-      console.log("WEBSOCKET 222222222222222 ", this.webSocketService.notificationReceived);
-      console.log("Reconocio la notificacion", notification);
+
 
       if (  notification.type === 'topic_reorder') {
-              
-        console.log("Reconocio el TOPIC_REOREDERRRRR:", notification.notification_message);
         
         const existingNotificationIndex = this.notificationsLoaded.findIndex(n => n.id === notification.id);
         if (existingNotificationIndex !== -1) {
@@ -73,7 +70,7 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
         this.notificationsLoaded.unshift(visitedNotification);
         this.updateUnifiedNotifications();
         this.cdr.detectChanges();
-        console.log("NOTIFICACIONES VISITADAS", this.notificationsWS);
+
       }
 
     });
@@ -94,7 +91,6 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
           created_at: new Date(notification.created_at)
         }));
         
-        console.log("NOTIFICACIONES CARGADAS", this.notificationsLoaded);
         this.updateUnifiedNotifications();
         this.cdr.detectChanges();
       },
@@ -107,7 +103,7 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
   connectWebSocket(): void {
     if (this.groupId) {
       this.newNotificationSubscription = this.webSocketService.notificationReceived.subscribe((notification: any) => {
-        console.log("Nueva notificación recibida en websocket 2:", notification);
+
 
         const existingNotificationIndex = this.notificationsLoaded.findIndex(n => n.id === notification.id);
         if (existingNotificationIndex !== -1) {
@@ -145,7 +141,6 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
         message: notification.notification_message
       }))
     ].sort((a, b) => b.date.getTime() - a.date.getTime());
-    console.log("ARREGLO CON LA DATA UNIFICADA22222222", this.unifiedNotifications);
   }
 
   formatDate(date: Date): string {
