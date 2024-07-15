@@ -4,14 +4,14 @@
     <app-header></app-header>
   </div>
   <div class="bg-gray-50">
-    <app-profile-data [user]="user" [isOwnProfile]="isOwnProfile"></app-profile-data>
+    <app-profile-data [user]="user!" [authorCentinela]="authorCentinela" [isOwnProfile]="isOwnProfile"></app-profile-data>
   </div>
   <div class="bg-slate-200 border-y border-gray-200">
-    <app-data-nav [user]="user" [isOwnProfile]="isOwnProfile"></app-data-nav>
+    <app-data-nav [user]="user" [isOwnProfile]="isOwnProfile"  [authorCentinela]="authorCentinela"></app-data-nav>
   </div>
   <div class="bg-gray-100">
     <div class="container mx-auto max-w-screen-xl px-3 pt-4">
-      <router-outlet></router-outlet>
+      <router-outlet ></router-outlet>
     </div>
   </div>
 </div>

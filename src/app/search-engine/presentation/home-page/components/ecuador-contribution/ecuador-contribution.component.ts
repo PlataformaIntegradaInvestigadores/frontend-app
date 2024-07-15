@@ -15,6 +15,8 @@ export class EcuadorContributionComponent {
 
   @Input()
   public words!: Word[]
+  @Input()
+  public provinces!: string
 
   emitT(top: string){
     const search: Search = {'option':'mrar', 'query': top}

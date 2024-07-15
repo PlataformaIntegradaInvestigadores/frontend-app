@@ -28,6 +28,10 @@ import {CountUpModule} from "ngx-countup";
 import {LineChartModule} from "@swimlane/ngx-charts";
 import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {SummaryComponent} from "./components/summary/summary.component";
+import {SuggestionService} from "../../../dashboard/domain/services/suggestion.service";
+
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     imports: [
@@ -47,11 +51,14 @@ import {SummaryComponent} from "./components/summary/summary.component";
         CountUpModule,
         LineChartModule,
         DashboardModule,
+        MatTableModule,
+        MatProgressSpinnerModule
     ],
-  exports: [
-    CoauthorsGraphComponent,
+    exports: [
+        CoauthorsGraphComponent,
+        SummaryComponent,
 
-  ],
+    ],
   declarations: [
     AuthorListComponent,
     HomePageComponent,
@@ -68,6 +75,6 @@ import {SummaryComponent} from "./components/summary/summary.component";
     EcuadorContributionComponent,
     SummaryComponent
   ],
-  providers: [VisualsService,HttpClientModule],
+  providers: [VisualsService,HttpClientModule, SuggestionService],
 })
 export class HomePageModule {}

@@ -7,7 +7,6 @@ import {Title} from '@angular/platform-browser'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  #title = 'centinela-application-frontend';
   constructor(private title:Title){
   }
 

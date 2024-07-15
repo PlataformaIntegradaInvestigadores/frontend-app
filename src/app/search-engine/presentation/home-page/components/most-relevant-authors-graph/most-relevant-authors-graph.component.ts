@@ -1,7 +1,7 @@
 import {Component, ElementRef, EventEmitter, Inject, Input, Output, SimpleChanges, ViewChild} from "@angular/core";
-import {Link,Node} from "../../../../../shared/d3";
+import {Link, Node} from "../../../../../shared/d3";
 import {AuthorNode, Coauthors} from "../../../../../shared/interfaces/author.interface";
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import {faDownload} from "@fortawesome/free-solid-svg-icons";
 import {DOCUMENT} from "@angular/common";
 import {AuthorService} from "../../../../domain/services/author.service";
 import {tap} from "rxjs";
@@ -27,8 +27,10 @@ export class MostRelevantAuthorsGraphComponent {
   showGraph: boolean = false
 
   authorsNumber: number = 50
-  affiliations: { scopusId: number, name: string }[] = []
+  affiliations!: { scopusId: number, name: string }[]
   selectedAffiliations: number[] = []
+  noResults = false;
+  isLoadingResults = false;
 
   @ViewChild("downloadEl") downloadEl!: ElementRef;
   faDownload = faDownload
@@ -50,10 +52,11 @@ export class MostRelevantAuthorsGraphComponent {
   refreshGraph() {
     this.showGraph = false
     this.loading.emit(true)
-    console.log(this.query)
     this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
       .pipe(
         tap((coauthors) => {
+          this.affiliations = []
+          coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
@@ -71,6 +74,7 @@ export class MostRelevantAuthorsGraphComponent {
 
   onAuthorsNumberChange() {
     this.selectedAffiliations = []
+    console.log(this.authorsNumber);
     this.refreshGraph()
   }
 
@@ -81,32 +85,51 @@ export class MostRelevantAuthorsGraphComponent {
     } else {
       this.selectedAffiliations.splice(this.selectedAffiliations.indexOf(item), 1)
     }
+    console.log(this.selectedAffiliations)
+    this.onClickAffiliationsFilter('include')
   }
 
   onClickAffiliationsFilter(type: string) {
     this.showGraph = false
-    this.loading.emit(true)
-    this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber, type, this.selectedAffiliations)
-      .pipe(
-        tap((coauthors) => {
-          this.setupGraph(coauthors);
-          this.showGraph = true;
-          this.loading.emit(false);
-        })
-      ).subscribe();
-
+    if (this.selectedAffiliations.length > 0) {
+      this.loading.emit(true)
+      this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber, type, this.selectedAffiliations)
+        .pipe(
+          tap((coauthors) => {
+            console.log('dentro2: '+ this.authorsNumber)
+            this.setupGraph(coauthors);
+            this.showGraph = true;
+            this.loading.emit(false);
+          })
+        ).subscribe();
+    }else{
+      this.loading.emit(true)
+      console.log(this.query)
+      this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
+        .pipe(
+          tap((coauthors) => {
+            coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
+            console.log('dentro2: xd'+ this.authorsNumber)
+            this.affiliations = coauthors.affiliations;
+            this.setupGraph(coauthors);
+            this.showGraph = true;
+            this.loading.emit(false);
+          })
+        ).subscribe();
+    }
   }
 
   getD3Nodes() {
     return this.apiNodes.map((node, index) => {
-      return new Node(node.scopus_id, this.apiNodes.length,this.truncateString(node.first_name) + " \n" + this.truncateString(node.last_name), {
+      return new Node(node.scopus_id, this.apiNodes.length, this.truncateString(node.first_name) + " \n" + this.truncateString(node.last_name), {
         enablePopover: true,
         title: 'Autor',
-        content: node.first_name+ " " + node.last_name,
+        content: node.first_name + " " + node.last_name,
         link: 'author/' + node.scopus_id
       }, this.apiNodes.length - index)
     })
   }
+
   truncateString(text: string): string {
     const spaceIndex = text.indexOf(' ');
     const dashIndex = text.indexOf('-');
@@ -120,6 +143,7 @@ export class MostRelevantAuthorsGraphComponent {
       return text;
     }
   }
+
   getD3Links(links: { source: number, target: number, collabStrength: number }[]) {
     return links.map(link => {
       this.d3Nodes[this.getIndexByScopusId(link.source)].degree++

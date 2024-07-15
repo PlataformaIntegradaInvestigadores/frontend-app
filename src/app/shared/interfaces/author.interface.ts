@@ -4,6 +4,9 @@ export interface AuthorResult {
   affiliations: string[]
   articles: number
   topics: string[]
+  current_affiliation: string
+  citation_count: number
+  updated:boolean
 }
 
 export interface Topic{
@@ -18,17 +21,34 @@ export interface Author {
   name: string,
   email: string,
   affiliation: string,
-  num_articles:number,
+  articles:number,
   topics:string [],
   scopus_id: number,
   first_name: string
   last_name: string
   auth_name: string
   initials: string
+  current_affiliation: string
+  citation_count: number
+}
+
+export interface CoauthorInfo {
+  data: Data;
+}
+
+export interface Data {
+  nodes: AuthorNode[];
+  links: Link[];
+}
+
+export interface Link {
+  source:         number;
+  target:         number;
+  collabStrength: number;
 }
 
 export interface Coauthors {
-  links: { source: number, target: number, collabStrength: number }[]
+  links: Link[]
   nodes: AuthorNode[]
   affiliations: { scopusId: number, name: string }[]
 }

@@ -14,9 +14,17 @@
             scientific
             and technological landscape.
           </p>
-          <app-word-cloud class="hidden md:flex justify-center" (eventEmitter)="emitT($event)" [words]="words"></app-word-cloud>
+          <div class="border-2 border-blue-900 rounded-2 items-center justify-center">
+            <h3 class="bg-blue-900 text-white p-2">Most investigated topics in Ecuador</h3>
+            <app-word-cloud class="hidden md:flex justify-center" (eventEmitter)="emitT($event)"
+                            [words]="words"></app-word-cloud>
+          </div>
         </div>
-        <app-ecuador-map ></app-ecuador-map>
+        <div class="border-2 border-blue-900 bg-gray-100 rounded-2">
+          <h3 class="bg-blue-900 text-white p-2">Contribution history by province</h3>
+          <app-ecuador-map [response]="provinces" [width]="550" [height]="370" [scale]="3500" [x]="-76.7"
+                           [y]="-2.7"></app-ecuador-map>
+        </div>
       </div>
     </div>
   </div>
