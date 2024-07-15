@@ -41,7 +41,7 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
     this.topicDataService.getConsensusResults(this.groupId).subscribe(
       (results) => {
         this.consensusResults = results.results;
-        console.log('Consensus Results:', this.consensusResults);
+
       },
       (error) => {
         console.error('Error loading consensus results:', error);
@@ -52,21 +52,20 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
   connectWebSocket(): void {
     if(this.groupId){
 
-      console.log('Connecting to WebSocket for group PHASE 3:', this.groupId);
 
       const socket = this.webSocketService.connect(this.groupId);
       this.wsSubscription = socket.subscribe(
         message => {
-          console.log('Message received:', message);
+       
 
           if (message.message.type === 'connection_count') {
             this.activeConnections = message.message.active_connections;
-            console.log('Active connections PHASE 33333:', this.activeConnections);
+         
           }
 
           if (message.message.type === 'consensus_calculation_completed') {
             this.consensusResults = message.message.results;
-            console.log('Updated Consensus Results:', this.consensusResults);          }
+   }
         },
         (error) => {
           console.error('Error receiving consensus results via WebSocket:', error);

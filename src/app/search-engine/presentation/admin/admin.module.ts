@@ -15,6 +15,8 @@ import { SidebarDashboardComponent } from './components/sidebar/sidebar.componen
 import { FooterDashboardComponent } from './components/footer/footer.component';
 import { HeaderDashboardComponent } from './components/header/header.component';
 import { MainContentComponent } from './components/main-content/main-content.component';
+import { UpdateCentinelaComponent } from './components/update-centinela/update-centinela.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -28,6 +30,8 @@ import { MainContentComponent } from './components/main-content/main-content.com
     MatFormFieldModule,
     MatInputModule,
     AdminRoutingModule,
+    CommonModule,
+    MatProgressSpinnerModule
   ],
   exports: [],
   declarations: [
@@ -37,6 +41,7 @@ import { MainContentComponent } from './components/main-content/main-content.com
     HeaderDashboardComponent,
     SidebarDashboardComponent,
     MainContentComponent,
+    UpdateCentinelaComponent
   ],
   providers: [],
 })

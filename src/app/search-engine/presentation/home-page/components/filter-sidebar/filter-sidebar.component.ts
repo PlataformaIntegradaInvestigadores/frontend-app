@@ -8,7 +8,10 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 export class FilterSidebarComponent {
   @Input()
   code!: String;
-  years: number[] = [2020, 2021, 2022, 2023, 2024];
+
+  @Input()
+  years: number[] = [];
+
   selectedYears: number[] = [];
 
   affiliations = [
@@ -39,5 +42,9 @@ export class FilterSidebarComponent {
     }
     this.yearsSelected.emit(this.selectedYears);
   }
-
+  yearSelected(years: number[]) {
+    console.log(years)
+    this.years=years
+    console.log(this.years)
+  }
 }

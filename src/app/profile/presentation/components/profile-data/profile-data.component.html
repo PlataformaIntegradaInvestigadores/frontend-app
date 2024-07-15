@@ -1,10 +1,10 @@
 <!-- profile-data.component.html -->
 <div *ngIf="user"
-  class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
+     class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
   <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
     <div class="flex justify-center md:justify-start w-full md:w-1/4">
       <div class="relative w-32 h-40 sm:w-40 sm:h-48 overflow-hidden rounded border-4 border-gray-200 shadow-xl">
-        <img class="object-cover w-full h-full bg-primary_tailwind" [attr.src]="user.profile_picture || 'assets/profile.png'"
+        <img class="object-cover w-full h-full " [attr.src]="user.profile_picture || 'assets/profile.png'"
           alt="Profile Picture">
       </div>
     </div>
@@ -73,7 +73,7 @@
       </div>
     </div>
     <div *ngIf="user.scopus_id; else noScopusId"
-      class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1 mt-2">
+         class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1 mt-2">
       <div class="w-full">
         <div>
           <strong class="block text-md sm:text-lg font-bold mb-1">Citations</strong>
@@ -111,8 +111,94 @@
     </ng-template>
   </div>
   <button *ngIf="isOwnProfile"
-    class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
-    (click)="toggleForm()">
+          class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
+          (click)="toggleForm()">
+    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2">
+    <span class="hidden md:inline">Edit Profile</span>
+  </button>
+  <div *ngIf="showForm" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
+    <app-data-form [user]="user" (formSubmitted)="toggleForm()" (formClosed)="toggleForm()"></app-data-form>
+  </div>
+</div>
+<div *ngIf="authorCentinela"
+     class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
+  <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
+    <div class="flex justify-center md:justify-start w-full md:w-1/4">
+      <div class="relative w-32 h-40 sm:w-40 sm:h-48 overflow-hidden rounded border-4 border-gray-200 shadow-xl">
+        <img class="object-cover w-full h-full" [src]="'./assets/profile.png'"
+             alt="Profile Picture">
+      </div>
+    </div>
+    <div
+      class="w-full flex flex-col sm:flex-row md:flex-col md:flex-grow justify-center md:justify-start gap-x-4 gap-y-2">
+      <div class="w-full md:border-r pr-7">
+        <div class="text-center">
+          <strong
+            class="block text-xl sm:text-2xl font-bold mb-2">{{ authorCentinela.first_name }} {{ authorCentinela.last_name }}</strong>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+          <ng-container *ngIf="authorCentinela.current_affiliation">
+            <div class="break-words">
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institution</strong>
+              <p class="text-sm sm:text-base text-gray-900">{{ authorCentinela.current_affiliation}}</p>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="authorCentinela.topics">
+            <div class="break-words">
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Investigation Field</strong>
+              <p class="text-sm sm:text-base text-gray-900">{{ authorCentinela.topics[0] }}</p>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="authorCentinela.email">
+            <div class="break-words">
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institutional Email</strong>
+              <p class="text-sm sm:text-base text-gray-900">{{authorCentinela.email }}</p>
+            </div>
+          </ng-container>
+        </div>
+
+        <ng-container *ngIf="years">
+          <div class="border-2 border-blue-900 rounded-2 justify-center items-center ">
+            <h3 class="bg-blue-900 text-white p-2 ">Annual article contribution </h3>
+            <div class="max-h-[230px]">
+              <app-evolution-line-chart [multi]="years" [width]="300" [height]="300"></app-evolution-line-chart>
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+    <div *ngIf="authorCentinela.scopus_id; else noScopusId"
+         class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1 mt-2">
+      <div class="w-full">
+        <div>
+          <strong class="block text-md sm:text-lg font-bold mb-1">Citations</strong>
+          <p>{{ authorCentinela.citation_count}}</p>
+          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1">SCOPUS ID</strong>
+          <p>{{ authorCentinela.scopus_id }}</p>
+          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1">Documents</strong>
+          <p>{{ authorCentinela.articles}}</p>
+        </div>
+      </div>
+    </div>
+    <ng-template #noScopusId>
+      <div *ngIf="isOwnProfile" class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1">
+        <div class="w-full px-3 text-center">
+          <strong class="block text-sm font-bold mb-1 text-green-500">Keep Going!</strong>
+          <p class="text-xs text-gray-500 text-justify">
+            You don't have a Scopus ID listed yet, but every step you take in your research brings you closer to
+            achieving it.
+            If you have a Scopus ID, please update your profile and add it to enhance your academic visibility.
+            Keep up the great work!
+          </p>
+        </div>
+      </div>
+
+    </ng-template>
+  </div>
+  <button *ngIf="isOwnProfile"
+          class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
+          (click)="toggleForm()">
     <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2">
     <span class="hidden md:inline">Edit Profile</span>
   </button>

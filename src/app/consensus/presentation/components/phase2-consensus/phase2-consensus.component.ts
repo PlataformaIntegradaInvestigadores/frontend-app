@@ -41,7 +41,6 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.parent?.paramMap.subscribe(params => {
       this.groupId = params.get('groupId') || '';
-      console.log('Group ID:', this.groupId);
       this.loadRecommendedTopics();
       this.connectWebSocket();
     });
@@ -61,7 +60,6 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
           return { ...topic, tags: savedTags ? JSON.parse(savedTags) : [] };
         });
         this.updateFinalOrderedTopics();
-        console.log('Recommended topics:', this.recommendedTopics);
       },
       (error) => {
         console.error('Error loading recommended topics:', error);
@@ -74,7 +72,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       const previousTopic = this.recommendedTopics[event.previousIndex];
       const newTopic = this.recommendedTopics[event.currentIndex];
 
-      console.log(`Topic moved: "${previousTopic.topic_name}" from position ${event.previousIndex + 1} to ${event.currentIndex + 1}`);
+      //console.log(`Topic moved: "${previousTopic.topic_name}" from position ${event.previousIndex + 1} to ${event.currentIndex + 1}`);
 
       this.sendTopicMovedNotification(previousTopic, event.previousIndex, event.currentIndex);
     }
@@ -85,7 +83,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
 
   updateFinalOrderedTopics(): void {
     this.finalOrderedTopics = this.recommendedTopics.map(topic => ({ id: topic.id, topic_name: topic.topic_name, tags: topic.tags ?? [] }));
-    console.log('Final ordered topics:', this.finalOrderedTopics);
+
   }
 
   toggleTag(topic: RecommendedTopic, tag: string): void {
@@ -117,9 +115,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   
     // Guardar estado en localStorage
     localStorage.setItem(`topic_${topic.id}_tags`, JSON.stringify(topic.tags));
-  
-    console.log(`Toggled tag "${tag}" for topic "${topic.topic_name}". Current tags: ${topic.tags}`);
-  
+
     if (tag === 'Novel') {
       this.recommendedTopics = this.recommendedTopics.filter(t => t.id !== topic.id);
       this.recommendedTopics.unshift(topic);
@@ -131,28 +127,14 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
     this.updateFinalOrderedTopics();
   
     if (this.groupId && userId) {
-      this.topicService.notifyTopicTagChange(this.groupId, userId, topic.id, tag).subscribe(
-        response => {
-          console.log('Tag change notification sent:', response);
-        },
-        error => {
-          console.error('Error sending tag change notification:', error);
-        }
-      );
+      this.topicService.notifyTopicTagChange(this.groupId, userId, topic.id, tag).subscribe(  );
     }
   }
 
   sendTopicMovedNotification(topic: RecommendedTopic, previousIndex: number, currentIndex: number): void {
     if (this.groupId) {
       const userId = this.authService.getUserId();
-      this.topicService.notifyTopicReorder(this.groupId, userId || "", topic.id.toString(), previousIndex + 1, currentIndex + 1).subscribe(
-        response => {
-          console.log('Topic reorder notification sent:', response);
-        },
-        error => {
-          console.error('Error sending topic reorder notification:', error);
-        }
-      );
+      this.topicService.notifyTopicReorder(this.groupId, userId || "", topic.id.toString(), previousIndex + 1, currentIndex + 1).subscribe();
     }
   }
 
@@ -173,18 +155,18 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
         posFinal: totalTopics - index,
         label: topic.tags.join(', ')
       }));
-
-      console.log('Final topic orders:', JSON.stringify(finalTopicOrders, null, 2));
-
+  
       this.topicService.saveFinalTopicOrder(this.groupId, userId, finalTopicOrders).subscribe(
         response => {
-          console.log('Final topic order saved:', response);
           const phaseKey = `phase_${this.groupId}`;
           localStorage.setItem(phaseKey, '2');
+          
+          // Limpiar el localStorage antes de la redirección
+          this.clearLocalStorage();
+  
           const currentUrl = this.router.url;
           const newUrl = currentUrl.replace('valuation', 'decision');
           this.router.navigateByUrl(newUrl);
-          console.log('Redirecting to:', newUrl);
           this.closeModalPhaseTwo();
         },
         error => {
@@ -193,6 +175,17 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
+  
+
+  clearLocalStorage(): void {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('topic_') && key.endsWith('_tags')) {
+        localStorage.removeItem(key);
+      }
+    }
+  }
+  
 
   cancelPhaseTwoCompletion(): void {
     this.closeModalPhaseTwo();
@@ -200,34 +193,28 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
 
   connectWebSocket(): void {
     if (this.groupId) {
-      console.log(`Connecting WebSocket for group PHASE 2: ${this.groupId}`);
       this.webSocket1Service.close(this.groupId);
 
       const socket = this.webSocketService.connect(this.groupId);
 
       this.socketSubscription = socket.subscribe(
         message => {
-          console.log('Message received:', message);
 
           if (message.message.type === 'connection_count') {
             this.activeConnections = message.message.active_connections;
-            console.log('Active connections PHASE 2:', this.activeConnections);
           }
         },
         err => console.error(`WebSocket error for group ${this.groupId}:`, err),
-        () => console.log(`WebSocket connection closed for group ${this.groupId}`)
       );
 
       this.newTopicSubscription = this.webSocketService.topicReceived.subscribe(
         msg => {
-          console.log('Nuevo tópico recibido en fase 2:', msg);
           this.updateFinalOrderedTopics();
         }
       );
 
       this.notificationsSubscription = this.webSocketService.notificationReceived.subscribe(
         msg => {
-          console.log('Nueva notificación recibida en fase 2:', msg);
         }
       );
     }
@@ -235,7 +222,6 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
 
   disconnectWebSocket(): void {
     if (this.groupId) {
-      console.log(`Disconnecting WebSocket for group: ${this.groupId}`);
       this.webSocketService.close(this.groupId);
       this.socketSubscription?.unsubscribe();
       this.newTopicSubscription?.unsubscribe();

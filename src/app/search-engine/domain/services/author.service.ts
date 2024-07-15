@@ -1,21 +1,30 @@
 import { Injectable } from '@angular/core';
 
 import { map, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {
   Author,
-  AuthorResult,
+  AuthorResult, CoauthorInfo,
   Coauthors,
   PaginationAuthorResult,
   RandItem
 } from "../../../shared/interfaces/author.interface";
 import { environment } from 'src/environments/environment';
+import {
+  AuthorYears,
+  LineChartInfo,
+  NameValue,
+  Word,
+  YearsResponse
+} from "../../../shared/interfaces/dashboard.interface";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorService {
   rootURL: string = environment.apiCentinela;
+  // dashURL: string = environment.apiDashboard;
+
 
   constructor(private http: HttpClient) {}
 
@@ -38,12 +47,12 @@ export class AuthorService {
       );
   }
 
-  getAuthorById(id: number): Observable<Author> {
-    return this.http.get<Author>(`${this.rootURL}author/${id}`);
+  getAuthorById(id: string): Observable<Author> {
+    return this.http.get<Author>(`${this.rootURL}api/v1/authors/authors/${id}`);
   }
 
-  getCoauthorsById(id: number): Observable<Coauthors> {
-    return this.http.get<Coauthors>(`${this.rootURL}coauthors/${id}`);
+  getCoauthorsById(id: number): Observable<CoauthorInfo> {
+    return this.http.get<CoauthorInfo>(`${this.rootURL}api/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
   }
 
   getMostRelevantAuthors(
@@ -54,7 +63,7 @@ export class AuthorService {
   ): Observable<Coauthors> {
     let bodyParams: any = {
       topic: topic,
-      authors_number: 50,
+      authors_number: authors_number,
     };
 
     if (typeFilter) {
@@ -76,11 +85,46 @@ export class AuthorService {
     return author;
   }
 
-  getRandomAuthors(): Observable<RandItem[]> {
-    return this.http.get<RandItem[]>(`${this.rootURL}random-authors`);
-  }
+  // getRandomAuthors(): Observable<RandItem[]> {
+  //   return this.http.get<RandItem[]>(`${this.rootURL}random-authors`);
+  // }
 
   getRandomTopics(): Observable<RandItem[]> {
     return this.http.get<RandItem[]>(`${this.rootURL}random-topics`);
   }
+  getTopicsById(scopus_id:number): Observable<NameValue[]> {
+    let params = new HttpParams().set('scopus_id', scopus_id.toString());
+    return this.http.get<Word[]>(`${this.rootURL}api/v1/dashboard/author/get_topics/`, {params}).pipe(
+      map(response => {
+        const series: NameValue[] = response.map(t => ({
+          name: t.text.toString(),
+          value: t.size
+        }));
+        return series
+      }));
+  }
+
+  getYears(scopus_id: string): Observable<AuthorYears[]> {
+    let params = new HttpParams().set('scopus_id', scopus_id.toString())
+    return this.http.get<AuthorYears[]>(`${this.rootURL}api/v1/dashboard/author/get_author_years/`, {params});
+  }
+
+  getLineChartInfo(scopus_id:string, name: string): Observable<LineChartInfo[]> {
+    return this.getYears(scopus_id).pipe(
+      map(response => {
+        console.log("asfadfs: " + response)
+        const series: NameValue[] = response.map(au => ({
+          name: au.year.toString(),
+          value: au.total_articles
+        }));
+        console.log(series)
+        return [{
+          name: name,
+          series: series
+        }];
+      })
+    );
+  }
+
+
 }

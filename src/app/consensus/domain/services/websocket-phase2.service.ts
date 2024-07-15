@@ -19,15 +19,11 @@ export class WebSocketPhase2Service {
    */
   connect(groupId: string): WebSocketSubject<any> {
     if (!this.groupSockets[groupId] || this.groupSockets[groupId].closed) {
-      console.log(`Creating new WebSocket connection for group PHASE 2: ${groupId}`);
       this.groupSockets[groupId] = webSocket(`${environment.wsUrl}/phase2/groups/${groupId}/`);
       this.groupSockets[groupId].subscribe(
         message => this.handleMessage(groupId, message),
-        error => console.error(`WebSocket error on group ${groupId}:`, error),
-        () => console.log(`WebSocket connection closed for group ${groupId}`)
       );
     } else {
-      console.log(`Reusing existing WebSocket connection for group: ${groupId}`);
     }
     return this.groupSockets[groupId];
   }
@@ -38,17 +34,15 @@ export class WebSocketPhase2Service {
    * @param message - The received message.
    */
   private handleMessage(groupId: string, message: any): void {
-    console.log(`Message received on WebSocket 2 for group ${groupId}:`, JSON.stringify(message, null, 2));
+    //console.log(`Message received on WebSocket 2 for group ${groupId}:`, JSON.stringify(message, null, 2));
 
     if (message && message.message) {
       const { type, topic_name, notification_message, active_connections } = message.message;
 
       switch (type) {
         case 'connection_count':
-          console.log('Active connections 222222222222222:', active_connections);
           break;
         case 'topic_reorder':
-          console.log('Topic reorder notification received222222222222222:', message.message);
           this.topicReceived.next(message.message);
           break;
         case 'topic_tag':
@@ -71,7 +65,6 @@ export class WebSocketPhase2Service {
    */
   sendMessage(groupId: string, message: any): void {
     if (this.groupSockets[groupId]) {
-      console.log(`Sending message to group ${groupId}:`, message);
       this.groupSockets[groupId].next(message);
     } else {
       console.warn(`No WebSocket connection found for group ${groupId} to send message.`);
@@ -84,7 +77,6 @@ export class WebSocketPhase2Service {
    */
   close(groupId: string): void {
     if (this.groupSockets[groupId]) {
-      console.log(`Closing WebSocket connection for group: ${groupId}`);
       this.groupSockets[groupId].complete();
       delete this.groupSockets[groupId];
     } else {
@@ -96,7 +88,6 @@ export class WebSocketPhase2Service {
    * Close all WebSocket connections.
    */
   closeAll(): void {
-    console.log('Closing all WebSocket connections for phase 2');
     for (const groupId in this.groupSockets) {
       this.groupSockets[groupId].complete();
     }

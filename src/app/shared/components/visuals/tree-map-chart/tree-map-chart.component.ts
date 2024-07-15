@@ -9,44 +9,7 @@ import {NameValue} from "../../../interfaces/dashboard.interface";
 export class TreeMapChartComponent {
   @Input()
   single!: NameValue[]
-  //   = [
-  //   {
-  //     "name": "Data Mining",
-  //     "value": 50
-  //   },
-  //   {
-  //     "name": "Machine Learning",
-  //     "value": 70
-  //   },
-  //   {
-  //     "name": "Deep Learning",
-  //     "value": 65
-  //   },
-  //   {
-  //     "name": "Artificial Intelligence",
-  //     "value": 80
-  //   },
-  //   {
-  //     "name": "Big Data",
-  //     "value": 55
-  //   },
-  //   {
-  //     "name": "Natural Language Processing",
-  //     "value": 60
-  //   },
-  //   {
-  //     "name": "Computer Vision",
-  //     "value": 75
-  //   },
-  //   {
-  //     "name": "Bioinformatics",
-  //     "value": 50
-  //   },
-  //   {
-  //     "name": "Cybersecurity",
-  //     "value": 70
-  //   }
-  // ]
+
   @Input()
   width!:number;
   @Input()
@@ -66,5 +29,6 @@ export class TreeMapChartComponent {
   onSelect(event: any) {
     console.log(event);
   }
+
 
 }

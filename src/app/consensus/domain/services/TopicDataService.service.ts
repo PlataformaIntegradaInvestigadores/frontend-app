@@ -16,8 +16,6 @@ export class TopicService {
   topics$ = this.topicsSubject.asObservable();
   
   constructor(private http: HttpClient, private authService: AuthService) { 
-    
-    console.log('TopicService.apiUrl', this.apiUrl);
   }
 
   getRandomRecommendedTopics(groupId: string): Observable<RecommendedTopic[]> {
@@ -66,7 +64,7 @@ export class TopicService {
     const body = { topic: topicName, user_id: userId };
 
     // Imprimir la estructura de datos que se enviará
-    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    //console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
 
     return this.http.get<any>(`${this.apiUrl}${groupId}/current-phase/`, { headers }).pipe(
       switchMap(phaseResponse => {
@@ -103,8 +101,6 @@ export class TopicService {
       topic_id: topicId,
       user_id: userId
     };
-    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
-    console.log('URL:', `${this.apiUrl}${groupId}/topic-visited/`);
     return this.http.post<any>(`${this.apiUrl}${groupId}/topic-visited/`, body, { headers }).pipe(
       catchError(this.handleError)
     );
@@ -119,8 +115,6 @@ export class TopicService {
       topics: topicIds,
       user_id: userId
     };
-    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
-    console.log('URL:', `${this.apiUrl}${groupId}/combined-search/`);
     return this.http.post<any>(`${this.apiUrl}${groupId}/combined-search/`, body, { headers }).pipe(
       catchError(this.handleError)
     );
@@ -137,8 +131,6 @@ export class TopicService {
       user_id: userId,
       expertise_level: expertiseLevel
     };
-    console.log('Datos que se enviarán: EXPERTICE', JSON.stringify(body, null, 2));
-    console.log('URL:', `${this.apiUrl}${groupId}/user-expertise/`);
     return this.http.post<any>(`${this.apiUrl}${groupId}/user-expertise/`, body, { headers }).pipe(
       catchError(this.handleError)
     );
@@ -152,29 +144,11 @@ export class TopicService {
     const body = {
       user_id: userId
     };
-    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    //console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
     return this.http.post<any>(`${this.apiUrl}${groupId}/phase-one-completed/`, body, { headers }).pipe(
       catchError(this.handleError)
     );
   }
-
-  /* updateUserExpertise(groupId: string, userId: string, topicId: number, expertiseLevel: number): Observable<any> {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-      'Content-Type': 'application/json'
-    });
-    const body = {
-      user_id: userId,
-      topic_id: topicId,
-      expertise: expertiseLevel
-    };
-
-    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
-    console.log('URL:', `${this.apiUrl}${groupId}/user-expertise/`);
-    return this.http.post<any>(`${this.apiUrl}${groupId}/user-expertise/`, body, { headers }).pipe(
-      catchError(this.handleError)
-    );
-  } */
 
   notifyTopicReorder(groupId: string, userId: string, topicId: string, originalPosition: number, newPosition: number): Observable<any> {
     const headers = new HttpHeaders({
@@ -187,7 +161,6 @@ export class TopicService {
       original_position: originalPosition,
       new_position: newPosition
     };
-    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
     return this.http.post<any>(`${this.apiUrl}${groupId}/topic-reorder/`, body, { headers }).pipe(
       catchError(this.handleError)
     );

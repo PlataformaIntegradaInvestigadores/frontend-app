@@ -25,7 +25,6 @@ export class BtnMenuGroupComponent {
   }
 
   ngOnChanges(): void {
-    console.log('isOwner:', this.isOwner);
   }
 
  @HostListener('document:click', ['$event'])
@@ -33,18 +32,15 @@ export class BtnMenuGroupComponent {
      if (this.menuOpen && !this.modalOpen) {
       this.menuOpen = false;
       this.modalService.setModalOpen(false);
-      console.debug('Menu closed by clicking outside');
     }
   }
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
     this.modalService.setModalOpen(this.menuOpen);
-    console.debug('Menu toggled', this.menuOpen);
   }
 
   deleteGroup() {
-    console.debug('Opening delete group modal');
     this.showDeleteGroupModal = true;
     this.modalService.setModalOpen(true);
   }
@@ -56,7 +52,6 @@ export class BtnMenuGroupComponent {
 
   onConfirmLeave() {
     this.groupService.leaveGroup(this.groupId).subscribe(() => {
-      console.log('Left the group');
       this.showConfirmLeaveModal = false;
       this.modalService.setModalOpen(false);
       this.groupLeaveed.emit(this.groupId);  // Emitir un evento para notificar al componente padre
@@ -71,7 +66,6 @@ export class BtnMenuGroupComponent {
 
   onConfirmDelete() {
     this.groupService.deleteGroup(this.groupId).subscribe(() => {
-      console.log('Group deleted');
       this.showDeleteGroupModal = false;
       this.modalService.setModalOpen(false);
       this.groupDeleted.emit(this.groupId);  // Emitir un evento para notificar al componente padre

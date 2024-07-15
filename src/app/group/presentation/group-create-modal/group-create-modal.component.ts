@@ -84,11 +84,11 @@ export class GroupCreateModalComponent {
         groupData.users = this.selectedUsers.map(user => user.id);
       }
 
-      console.log('Creating group', groupData);
+
 
       this.groupService.createGroup(groupData).subscribe(
         response => {
-          console.log('Group created successfully', response);
+         
           
           window.location.reload();
       

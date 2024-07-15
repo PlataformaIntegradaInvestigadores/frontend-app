@@ -30,7 +30,7 @@ export class CardGroupComponent  {
   }
 
   ngOnChanges(): void {
-    console.log('Group:', this.group);
+
     if (this.group) {
       this.getCurrentPhase(this.group.id);
     }

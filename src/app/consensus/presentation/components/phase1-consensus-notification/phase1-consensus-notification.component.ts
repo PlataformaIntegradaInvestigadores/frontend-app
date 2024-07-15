@@ -48,16 +48,12 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
       });
       
       this.newNotificationSubscription = this.webSocketService.notificationsReceived.subscribe((notification: any) => {
-        console.log("WEBSOCKET 222222222222222 ", this.webSocketService.notificationsReceived);
-        console.log("Reconocio la notificacion", notification);
 
         if (  notification.type === 'topic_visited' || 
               notification.type === 'combined_search' || 
               notification.type === 'user_expertise' || 
               notification.type === 'consensus_completed') {
-                
-          console.log("Reconocio el topic:visited o combined_search", notification.notification_message);
-          
+
           const existingNotificationIndex = this.notificationsLoaded.findIndex(n => n.id === notification.id);
           if (existingNotificationIndex !== -1) {
             // Remove the existing notification
@@ -75,7 +71,7 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
           this.notificationsLoaded.unshift(visitedNotification);
           this.updateUnifiedNotifications();
           this.cdr.detectChanges();
-          console.log("NOTIFICACIONES VISITADAS", this.notificationsWS);
+
         }
 
       });
@@ -97,8 +93,7 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
             ...notification,
             created_at: new Date(notification.created_at)
           }));
-          
-          console.log("NOTIFICACIONES CARGADAS", this.notificationsLoaded);
+      
           this.updateUnifiedNotifications();
           this.cdr.detectChanges();
         },
@@ -123,7 +118,7 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
           message: notification.notification_message
         }))
       ].sort((a, b) => b.date.getTime() - a.date.getTime());
-      console.log("ARREGLO CON LA DATA UNIDADAAAAADADAAA", this.unifiedNotifications);
+
     }
   
   
