@@ -70,4 +70,15 @@
     box-shadow: 0 0 0 3px var(--tw-ring-color);
     @import 'tailwindcss/utilities';
   }
-  
+
+  #btn-next  {
+    border: solid #1E3C8B 1px !important;
+  }
+    
+  #btn-next:hover{
+    color: #1E3C8B;
+  }
+  #btn-next:hover svg {
+    fill: #1E3C8B ; /* Cambia el color de relleno del SVG a blanco */
+    stroke: #1E3C8B; /* Cambia el color del stroke a blanco */  
+  }
