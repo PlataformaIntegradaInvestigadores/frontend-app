@@ -11,13 +11,14 @@ import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {map} from "rxjs/operators";
 import {Topic} from "../../../shared/interfaces/author.interface";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService implements OnInit {
 
-  private apiUrl = 'http://localhost:8000/api/v1/dashboard';
+  private apiUrl = environment.apiCentinela+'/api/v1/dashboard';
 
 
   constructor(private http: HttpClient) {

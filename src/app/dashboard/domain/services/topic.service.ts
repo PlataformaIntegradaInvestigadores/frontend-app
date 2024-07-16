@@ -9,12 +9,13 @@ import {
   YearsResponse
 } from "../../../shared/interfaces/dashboard.interface";
 import {map} from "rxjs/operators";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TopicService {
-  private apiUrl = 'http://localhost:8000/api/v1/dashboard';
+  private apiUrl = environment.apiCentinela+'api/v1/dashboard';
 
   constructor(private http: HttpClient) {
   }

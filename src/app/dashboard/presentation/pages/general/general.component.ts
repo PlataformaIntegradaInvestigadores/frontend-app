@@ -4,6 +4,7 @@ import {DashboardCounts, LineChartInfo, NameValue} from "../../../../shared/inte
 import {ActivatedRoute, Router} from "@angular/router";
 import {LowerCasePipe} from "@angular/common";
 import {AffiliationService} from "../../../domain/services/affiliation.service";
+import {environment} from "../../../../../environments/environment";
 
 @Component({
   selector: 'app-general',
@@ -44,7 +45,7 @@ export class GeneralComponent implements OnInit{
       this.barChartInfo = data;
       // console.log(data)
     });
-    this.provinces = 'http://localhost:8000/api/v1/dashboard/province/get_provinces/'
+    this.provinces = environment.apiCentinela+'api/v1/dashboard/province/get_provinces/'
   }
 
   isCharged(){

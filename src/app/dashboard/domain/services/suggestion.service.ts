@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {AffiliationInfo, TopicInfo} from "../../../shared/interfaces/dashboard.interface";
 import {HttpClient, HttpParams} from "@angular/common/http";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SuggestionService {
-  private apiUrl = 'http://localhost:8000/api/v1/dashboard/';
+  private apiUrl = environment.apiCentinela+'/api/v1/dashboard/';
   constructor(private http: HttpClient) { }
 
   searchAffiliations(query: string): Observable<AffiliationInfo[]> {
