@@ -20,11 +20,8 @@ export class MemberItemComponent implements OnInit{
   
   ngOnInit(): void {
     initFlowbite();
-    console.log('Member ITEM:', this.idOwnerGroup);
     this.authenticatedUserId = this.authService.getUserId();
-    console.log('Authenticated user ID:', this.authenticatedUserId);
     this.updateShowDeleteButton();
-    console.log('Member data in MemberItem:', this.member);
   }
 
   private updateShowDeleteButton(): void {

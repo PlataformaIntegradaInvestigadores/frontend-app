@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { map, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {
   Author,
   AuthorResult, CoauthorInfo,
@@ -10,12 +10,21 @@ import {
   RandItem
 } from "../../../shared/interfaces/author.interface";
 import { environment } from 'src/environments/environment';
+import {
+  AuthorYears,
+  LineChartInfo,
+  NameValue,
+  Word,
+  YearsResponse
+} from "../../../shared/interfaces/dashboard.interface";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorService {
   rootURL: string = environment.apiCentinela;
+  // dashURL: string = environment.apiDashboard;
+
 
   constructor(private http: HttpClient) {}
 
@@ -77,11 +86,46 @@ export class AuthorService {
     return author;
   }
 
-  getRandomAuthors(): Observable<RandItem[]> {
-    return this.http.get<RandItem[]>(`${this.rootURL}random-authors`);
-  }
+  // getRandomAuthors(): Observable<RandItem[]> {
+  //   return this.http.get<RandItem[]>(`${this.rootURL}random-authors`);
+  // }
 
   getRandomTopics(): Observable<RandItem[]> {
     return this.http.get<RandItem[]>(`${this.rootURL}random-topics`);
   }
+  getTopicsById(scopus_id:number): Observable<NameValue[]> {
+    let params = new HttpParams().set('scopus_id', scopus_id.toString());
+    return this.http.get<Word[]>(`${this.rootURL}api/v1/dashboard/author/get_topics/`, {params}).pipe(
+      map(response => {
+        const series: NameValue[] = response.map(t => ({
+          name: t.text.toString(),
+          value: t.size
+        }));
+        return series
+      }));
+  }
+
+  getYears(scopus_id: string): Observable<AuthorYears[]> {
+    let params = new HttpParams().set('scopus_id', scopus_id.toString())
+    return this.http.get<AuthorYears[]>(`${this.rootURL}api/v1/dashboard/author/get_author_years/`, {params});
+  }
+
+  getLineChartInfo(scopus_id:string, name: string): Observable<LineChartInfo[]> {
+    return this.getYears(scopus_id).pipe(
+      map(response => {
+        console.log("asfadfs: " + response)
+        const series: NameValue[] = response.map(au => ({
+          name: au.year.toString(),
+          value: au.total_articles
+        }));
+        console.log(series)
+        return [{
+          name: name,
+          series: series
+        }];
+      })
+    );
+  }
+
+
 }

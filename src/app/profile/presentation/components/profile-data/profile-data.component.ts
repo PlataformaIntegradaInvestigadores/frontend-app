@@ -1,32 +1,57 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { UserProfile, ScopusData } from 'src/app/profile/domain/entities/user.interfaces';
-import { Author } from 'src/app/shared/interfaces/author.interface';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {UserProfile, ScopusData} from 'src/app/profile/domain/entities/user.interfaces';
+import {Author} from 'src/app/shared/interfaces/author.interface';
+import {LineChartInfo, Year} from "../../../../shared/interfaces/dashboard.interface";
+import {AuthorService} from "../../../../search-engine/domain/services/author.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-profile-data',
   templateUrl: './profile-data.component.html',
   styleUrls: ['./profile-data.component.css']
 })
-export class ProfileDataComponent implements OnChanges {
+export class ProfileDataComponent implements OnChanges, OnInit {
   @Input() user: UserProfile | undefined;
   @Input() isOwnProfile: boolean = false;
   @Input() authorCentinela: Author | undefined;
 
   showForm = false;
   isLoggedIn: boolean = false;
-  scopusData: ScopusData = { citations: 0, documents: 0 };
-  constructor(){
+  scopusData: ScopusData = {citations: 0, documents: 0};
+
+  idRoute!: string
+
+  years: LineChartInfo[] | undefined
+
+  name!: string
+
+  constructor(private authorService: AuthorService, private route: ActivatedRoute) {
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['user']) {
       this.checkLoginStatus();
     }
-    console.log('author', this.authorCentinela)
   }
 
-  /**
-   * Alterna el formulario de edición.
-   */
+  ngOnInit() {
+    this.route.parent?.paramMap.subscribe(params => {
+      this.idRoute = params?.get('id')!;
+      if (this.isNumeric(this.idRoute)) {
+        this.authorService.getAuthorById(this.idRoute).subscribe(data => {
+          this.name = data.auth_name
+          this.authorService.getLineChartInfo(this.idRoute, this.name).subscribe(data => {
+            this.years = data
+          })
+        })
+      }
+    });
+  }
+
+  isNumeric(value: string): boolean {
+    return /^\d+$/.test(value);
+  }
+
   toggleForm(): void {
     this.showForm = !this.showForm;
   }

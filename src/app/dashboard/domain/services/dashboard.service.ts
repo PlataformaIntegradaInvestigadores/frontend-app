@@ -17,7 +17,7 @@ import {Topic} from "../../../shared/interfaces/author.interface";
 })
 export class DashboardService implements OnInit {
 
-  private apiUrl = 'http://localhost:8000/api/v1/dashboard';
+  private apiUrl = 'http://localhost:8010/api/v1/dashboard';
 
 
   constructor(private http: HttpClient) {

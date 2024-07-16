@@ -12,8 +12,8 @@
        class="max-w-screen-sm max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50">
     <div
       class="flex flex-col justify-start items-start w-auto">
-      <button class="hover:bg-gray-400 w-full" *ngFor="let affiliation of affiliations" (click)="emitEntity(affiliation.scopus_id.toString())">{{affiliation.scopus_id}}
-        {{ affiliation.name }} ({{ affiliation.total_articles }} articles)
+      <button class="hover:bg-gray-400 w-full flex justify-start items-start" *ngFor="let affiliation of affiliations" (click)="selectSuggestion(affiliation)">
+        {{ affiliation.name }}
       </button>
     </div>
   </div>
