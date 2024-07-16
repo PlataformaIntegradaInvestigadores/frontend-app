@@ -31,8 +31,12 @@
       </div>
     </div>
     <div>
-      <app-ecuador-contribution *ngIf="topicsLoaded" (t)="topicClcked($event)"
-                                [words]="words" [provinces]="provinces"></app-ecuador-contribution>
+      <app-ecuador-contribution
+        *ngIf="topicsLoaded"
+        (t)="topicClcked($event)"
+        [words]="words"
+        [provinces]="provinces"
+      ></app-ecuador-contribution>
     </div>
   </div>
 </div>
