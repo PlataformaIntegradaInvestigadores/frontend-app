@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NameValue} from "../../../interfaces/dashboard.interface";
 
 @Component({
@@ -14,6 +14,7 @@ export class TreeMapChartComponent {
   width!:number;
   @Input()
   height!:number;
+  @Output() selectedTopic = new EventEmitter<any>();
 
   // options
   gradient: boolean = false;
@@ -26,9 +27,10 @@ export class TreeMapChartComponent {
   constructor() {
   }
 
-  onSelect(event: any) {
-    console.log(event);
-  }
 
+  onSelect(event: NameValue): void {
+    console.log('Selected item:', event); // Log para verificar el elemento seleccionado
+    this.selectedTopic.emit(event.name);
+  }
 
 }

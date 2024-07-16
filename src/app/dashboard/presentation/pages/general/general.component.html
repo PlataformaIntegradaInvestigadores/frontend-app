@@ -1,4 +1,8 @@
-<div class="flex flex-col justify-center items-center mb-3 ">
+<div class="w-full h-full flex justify-center items-center" *ngIf="!isCharged()">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="flex flex-col justify-center items-center mb-3 " *ngIf="isCharged()">
+  <h1 class="flex items-center justify-center">Ecuador Statistics</h1>
   <div class="gap-y-3">
     <div class="flex mb-1 justify-between font-black">
       <div class="border-2 border-blue-900 rounded-md mr-1">
@@ -17,39 +21,43 @@
       </div>
       <div class="border-2 border-blue-900 rounded-md flex flex-col flex-grow">
         <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Ecuador total contribution
-          until {{ year }}</h3>
+          {{selectedOption| lowercase}} {{ year }}</h3>
         <app1-summary [counts]="counts"></app1-summary>
       </div>
     </div>
     <div class="max-h-60 border-blue-900 border-2 rounded-md mb-1">
-      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start ">Articles contribution's evolution in
-        Ecuador from 2000 until {{ year }}</h3>
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start " *ngIf="year.toString()==='2000'">Articles contribution in
+        Ecuador in  {{ year }}</h3>
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start " *ngIf="selectedOption==='In'">Articles contribution in
+        Ecuador {{selectedOption|lowercase}}  {{ year }}</h3>
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start " *ngIf="selectedOption==='Until' && year.toString()!=='2000'">Articles contribution evolution in
+        Ecuador from {{yearOptions[0]}} {{selectedOption|lowercase}}  {{ year }}</h3>
       <app-evolution-line-chart [width]="1100" [height]="250" [multi]="lineChartInfo"
                                 (selectedYear)="updateData($event)"></app-evolution-line-chart>
     </div>
     <div class=" border-blue-900 border-2 rounded-md mb-1">
       <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Affiliations with most articles
-        contribution's in Ecuador until {{ year }}</h3>
-      <app-bar-chart [width]="1100" [height]="300" [single]="barChartInfo"></app-bar-chart>
+        contribution's in Ecuador {{selectedOption| lowercase}} {{ year }}</h3>
+      <app-bar-chart [width]="1100" [height]="300" [single]="barChartInfo" (selectedAffiliation)="getId($event)"></app-bar-chart>
     </div>
   </div>
   <div class="flex">
     <div class="border-blue-900 border-2 rounded-md mb-1 mr-2">
-      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Topics with most article in Ecuador
-        until {{ year }}</h3>
-      <app-tree-map-chart [width]="550" [height]="400" [single]="treeMapInfo"></app-tree-map-chart>
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Topics with most articles in Ecuador
+        {{selectedOption| lowercase}} {{ year }}</h3>
+      <app-tree-map-chart [width]="550" [height]="400" [single]="treeMapInfo" (selectedTopic)="onSearchTopic($event)"></app-tree-map-chart>
     </div>
     <div class="border-blue-900 border-2 rounded-md mb-1">
-      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Provinces contribution until {{ year }}</h3>
+      <h3 class="flex bg-blue-900 text-white p-1 justify-start items-start">Provinces contribution {{selectedOption| lowercase}} {{ year }}</h3>
       <app-ecuador-map [response]="provinces"></app-ecuador-map>
     </div>
   </div>
   <div class="flex flex-col justify-center border-2 border-blue-900 rounded-2">
-    <h3 class="bg-blue-900 text-white flex justify-center items-center">More Statistics:</h3>
+    <h3 class="bg-blue-900 text-white flex justify-center items-center">More Statistics about:</h3>
     <div class="flex gap-x-5 px-5 pb-2">
       <div class="flex items-center justify-center gap-x-4">
         <div class="flex flex-col items-center justify-center" routerLinkActive="active">
-          <div class="flex justify-center items-center" routerLink="affiliation" style="cursor: pointer;">
+          <div class="flex justify-center items-center" routerLink="affiliations" style="cursor: pointer;">
             <mat-icon style="font-size: 40px; width: 50px; height: 50px;">apartment</mat-icon>
           </div>
           <dd class="font-light">Affiliations</dd>
@@ -61,40 +69,9 @@
           </div>
           <dd class="font-light">Knowledge Areas</dd>
         </div>
-
-        <div class="flex flex-col items-center justify-center">
-          <div class="flex justify-center items-center"  routerLink="province" style="cursor: pointer;">
-            <mat-icon style="font-size: 40px; width: 50px; height: 50px;">public</mat-icon>
-          </div>
-          <dd class="font-light">Province</dd>
-        </div>
-<!--        <router-outlet></router-outlet>-->
-<!--        <div class="flex justify-center">-->
-<!--          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">apartment</mat-icon>-->
-<!--          <dt class="mb-2 text-3xl md:text-4xl pr-5">-->
-<!--          </dt>-->
-<!--        </div>-->
-<!--        <dd class="font-light">Affiliations</dd>-->
-<!--      </div>-->
-<!--      <div class="flex flex-col items-center justify-center">-->
-<!--        <div class="flex justify-center">-->
-<!--          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">school</mat-icon>-->
-<!--          <dt class="mb-2 text-3xl md:text-4xl pr-5">-->
-<!--          </dt>-->
-<!--        </div>-->
-<!--        <dd class="font-light">Knowledge Areas</dd>-->
-<!--      </div>-->
-<!--      <div class="flex flex-col items-center justify-center">-->
-<!--        <div class="flex justify-center">-->
-<!--          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">public</mat-icon>-->
-<!--          <dt class="mb-2 text-3xl md:text-4xl pr-5">-->
-<!--          </dt>-->
-<!--        </div>-->
-<!--        <dd class="font-light">Province</dd>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+      </div>
+    </div>
+  </div>
 </div>
-
 
 

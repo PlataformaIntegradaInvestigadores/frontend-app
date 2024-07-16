@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
-import {AffiliationInfo} from "../../../shared/interfaces/dashboard.interface";
+import {AffiliationInfo, TopicInfo} from "../../../shared/interfaces/dashboard.interface";
 import {HttpClient, HttpParams} from "@angular/common/http";
 
 @Injectable({
@@ -13,5 +13,9 @@ export class SuggestionService {
   searchAffiliations(query: string): Observable<AffiliationInfo[]> {
     let params = new HttpParams().set('query', query);
     return this.http.get<AffiliationInfo[]>(`${this.apiUrl}affiliation/search/`, { params });
+  }
+  searchTopics(query: string): Observable<TopicInfo[]>{
+    let params = new HttpParams().set('query', query);
+    return this.http.get<TopicInfo[]>(`${this.apiUrl}country/search/`, { params });
   }
 }

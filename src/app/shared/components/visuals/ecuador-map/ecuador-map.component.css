@@ -1,0 +1,40 @@
+.bg-white {
+  width: 100%;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.border-blue-900 {
+  border-color: #2a4365; /* Ejemplo de color */
+}
+
+.border-gray {
+  border-color: #d1d5db; /* Ejemplo de color */
+}
+
+@media (max-width: 768px) {
+  .w-4/5 {
+  width: 100%;
+}
+
+  .gap-x-3 {
+    gap: 0.75rem;
+  }
+
+  .p-2 {
+    padding: 0.5rem;
+  }
+
+  .my-3 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .text-md {
+    font-size: 1rem;
+  }
+}
