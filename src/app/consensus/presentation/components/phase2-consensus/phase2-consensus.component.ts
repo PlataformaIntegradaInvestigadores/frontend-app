@@ -29,6 +29,8 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
 
   showModalPhaseTwo: boolean = false;
 
+  userPhase: number = 1; 
+
   constructor(
     private topicService: TopicService,
     private webSocketService: WebSocketPhase2Service,
@@ -43,11 +45,23 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       this.groupId = params.get('groupId') || '';
       this.loadRecommendedTopics();
       this.connectWebSocket();
+      this.checkUserPhase(); 
     });
   }
 
   ngOnDestroy(): void {
     this.disconnectWebSocket();
+  }
+
+  checkUserPhase(): void {
+    this.topicService.getUserCurrentPhase(this.groupId).subscribe(
+      response => {
+        this.userPhase = response.phase;
+      },
+      error => {
+        console.error('Error fetching user phase:', error);
+      }
+    );
   }
 
   loadRecommendedTopics(): void {

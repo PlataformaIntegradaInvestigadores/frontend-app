@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 import { WebSocketPhase3Service } from 'src/app/consensus/domain/services/websocket-phase3.service';
+
 @Component({
   selector: 'satisfaction-level',
   templateUrl: './satisfaction-level.component.html',
@@ -15,6 +16,9 @@ export class SatisfactionLevelComponent implements OnInit, OnDestroy {
   isDecisionPhase: boolean = false;
   private wsSubscription: Subscription | undefined;
   showAlreadyVotedNotification = false;
+  showModal = false;
+  selectedSatisfactionLevel: string = '';
+  hasVoted = false; // Nuevo estado para verificar si el usuario ha votado
   groupId = this.activatedRoute.snapshot.paramMap.get('groupId') || '';
 
   satisfactionCounts: any = {
@@ -46,7 +50,6 @@ export class SatisfactionLevelComponent implements OnInit, OnDestroy {
     }
     this.webSocketService.close(this.groupId);
   }
-
 
   connectWebSocket(): void {
     if (this.groupId) {
@@ -80,6 +83,26 @@ export class SatisfactionLevelComponent implements OnInit, OnDestroy {
     this.satisfactionCounts = counts;
   }
 
+  openModal(level: string): void {
+    if (!this.hasVoted) { // Solo abrir el modal si el usuario no ha votado
+      this.selectedSatisfactionLevel = level;
+      this.showModal = true;
+    } else {
+      this.showAlreadyVotedNotification = true;
+      setTimeout(() => {
+        this.showAlreadyVotedNotification = false;
+        this.cdr.detectChanges();
+      }, 4000);
+    }
+  }
+
+  confirmVote(confirm: boolean): void {
+    if (confirm) {
+      this.submitSatisfaction(this.selectedSatisfactionLevel);
+    }
+    this.showModal = false;
+  }
+
   submitSatisfaction(level: string): void {
     const groupId = this.activatedRoute.snapshot.paramMap.get('groupId') || '';
     const userId = this.authService.getUserId();
@@ -87,6 +110,7 @@ export class SatisfactionLevelComponent implements OnInit, OnDestroy {
       this.topicService.saveUserSatisfaction(groupId, userId, level).subscribe(
         response => {
           console.log('User satisfaction saved:', response);
+          this.hasVoted = true; // Actualizar el estado para indicar que el usuario ha votado
         },
         error => {
           if (error.status === 500) {
@@ -99,5 +123,9 @@ export class SatisfactionLevelComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  closeNotification(): void {
+    this.showAlreadyVotedNotification = false;
   }
 }
