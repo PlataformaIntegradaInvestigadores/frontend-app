@@ -1,2 +1,18 @@
-<!-- article.component.html -->
-<p>article works!</p>
+<table class="article-table">
+  <thead>
+  <tr>
+    <th>Títle</th>
+    <th>Publicaction date</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let article of articles" (click)="seeMoreInformation(article.scopus_id.toString())">
+    <td>{{article.title}}</td>
+    <td>{{article.publication_date}}</td>
+  </tr>
+  </tbody>
+</table>
+<!--<div class="flex gap-x-5" *ngFor="let article of articles">-->
+<!--  <p>{{article.title}}</p>-->
+<!--  <p>{{article.publication_date}}</p>-->
+<!--</div>-->

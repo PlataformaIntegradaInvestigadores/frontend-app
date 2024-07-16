@@ -124,8 +124,9 @@ export class DashboardService implements OnInit {
   }
 
   getTreeMap(): Observable<NameValue[]> {
-    return this.getTopics(30).pipe(
+    return this.getTopics(10).pipe(
       map(response => {
+        console.log(response)
         const info: NameValue[] = response.map(t => ({
           name: t.text,
           value: t.size
@@ -137,6 +138,7 @@ export class DashboardService implements OnInit {
 
   private getTopics(number_top: number) {
     let params = new HttpParams().set('number_top', number_top.toString());
+    console.log('si')
     return this.http.get<Word[]>(`${this.apiUrl}/country/get_topics/`, {params});
   }
 

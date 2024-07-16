@@ -3,17 +3,31 @@
     class="p-2 w-2/4 border-2 border-black rounded-md"
     [(ngModel)]="searchQuery"
     (ngModelChange)="onSearchChange($event)"
-    placeholder="Buscar afiliación por nombre"
+    [placeholder]="ph"
     autocomplete="off"
     (focus)="onFocus()"
     (blur)="onBlur()"
   >
   <div *ngIf="showSuggestions && affiliations.length > 0"
-       class="max-w-screen-sm max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50">
-    <div
-      class="flex flex-col justify-start items-start w-auto">
-      <button class="hover:bg-gray-400 w-full flex justify-start items-start" *ngFor="let affiliation of affiliations" (click)="selectSuggestion(affiliation)">
+       class="max-w-screen-sm min-w-max max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50"
+       [ngSwitch]="code">
+
+    <div *ngSwitchCase="'affiliation'"
+         class="flex flex-col justify-start items-start w-auto">
+      <button class="hover:bg-gray-400 w-full flex justify-start items-start" *ngFor="let affiliation of affiliations"
+              (click)="selectSuggestion(affiliation)">
         {{ affiliation.name }}
+      </button>
+    </div>
+  </div>
+  <div *ngIf="showSuggestions && topics.length > 0"
+       class="max-w-screen-sm max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50"
+       [ngSwitch]="code">
+    <div *ngSwitchCase="'topic'"
+         class="flex flex-col justify-start items-start w-auto">
+      <button class="hover:bg-gray-400 w-full flex justify-start items-start" *ngFor="let topic of topics"
+              (click)="selectSuggestion(topic)">
+        {{ topic.name }}
       </button>
     </div>
   </div>

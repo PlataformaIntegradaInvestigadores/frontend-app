@@ -26,3 +26,9 @@ export interface PaginationArticleResult {
   years: number[]
   total: number
 }
+
+export interface ArticlesResponse {
+  title: string;
+  publication_date: string;
+  scopus_id: string;
+}

@@ -1,0 +1,31 @@
+.article-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 18px;
+  text-align: left;
+}
+
+.article-table th, .article-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.article-table thead {
+  background-color: #f2f2f2;
+}
+
+.article-table th {
+  background-color: #f2f2f2;
+  color: #333;
+  font-weight: bold;
+}
+
+.article-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.article-table tr:hover {
+  background-color: #e9e9e9;
+  cursor: pointer;
+}

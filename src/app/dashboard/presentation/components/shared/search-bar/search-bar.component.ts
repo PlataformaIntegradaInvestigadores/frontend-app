@@ -15,6 +15,8 @@ export class SearchBarComponent implements OnInit {
   provinces: any[] = []
   searchTerms = new Subject<string>();
   showSuggestions: boolean = false;
+  @Input()
+  ph!:string
 
   @Output()
   entity: EventEmitter<string> = new EventEmitter<string>();
@@ -44,7 +46,18 @@ export class SearchBarComponent implements OnInit {
           );
         break;
       case 'topic':
-        // Lógica para topics
+        this.debouncerSubscription = this.searchTerms
+          .pipe(
+            debounceTime(1000),
+            distinctUntilChanged(),
+          ).subscribe(query => {
+              this.suggestionService.searchTopics(query).subscribe(tops => {
+                  this.topics = tops;
+                  this.showSuggestions = true;
+                }
+              )
+            }
+          );
         break;
       case 'province':
         // Lógica para provinces
@@ -71,10 +84,21 @@ export class SearchBarComponent implements OnInit {
     this.entity.emit(entity);
   }
 
-  selectSuggestion(affiliation: any): void {
-    this.searchQuery = `${affiliation.scopus_id} ${affiliation.name}`;
-    this.showSuggestions = false;
-    this.emitEntity(affiliation.scopus_id.toString());
+  selectSuggestion(entity: any): void {
+    switch (this.code){
+      case 'affiliation':
+        this.searchQuery = `${entity.name}`;
+        this.showSuggestions = false;
+        this.emitEntity(entity.scopus_id.toString());
+        break;
+      case 'topic':
+        this.searchQuery = `${entity.name}`;
+        this.showSuggestions = false;
+        this.emitEntity(entity.name.toString());
+        break;
+      case 'province':
+        break;
+    }
   }
 }
 // export class SearchBarComponent implements OnInit {

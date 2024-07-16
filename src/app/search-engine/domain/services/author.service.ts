@@ -17,6 +17,7 @@ import {
   Word,
   YearsResponse
 } from "../../../shared/interfaces/dashboard.interface";
+import {ArticlesResponse} from "../../../shared/interfaces/article.interface";
 
 @Injectable({
   providedIn: 'root',
@@ -112,7 +113,6 @@ export class AuthorService {
   getLineChartInfo(scopus_id:string, name: string): Observable<LineChartInfo[]> {
     return this.getYears(scopus_id).pipe(
       map(response => {
-        console.log("asfadfs: " + response)
         const series: NameValue[] = response.map(au => ({
           name: au.year.toString(),
           value: au.total_articles
@@ -126,5 +126,9 @@ export class AuthorService {
     );
   }
 
+  getArticles(scopus_id:string):Observable<ArticlesResponse[]>{
+    let params = new HttpParams().set('author_id', scopus_id.toString())
+    return this.http.get<ArticlesResponse[]>(`${this.rootURL}api/v1/articles/find-articles-by-author-id/`, {params});
+  }
 
 }

@@ -9,7 +9,7 @@ import {
 } from "../shared/components/visuals/evolution-line-chart/evolution-line-chart.component";
 import {LineChartModule} from "@swimlane/ngx-charts";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
+import {LowerCasePipe, NgForOf, NgIf, NgSwitch, NgSwitchCase, TitleCasePipe} from "@angular/common";
 import { SearchBarComponent } from './presentation/components/shared/search-bar/search-bar.component';
 import {MatInputModule} from "@angular/material/input";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
@@ -20,6 +20,9 @@ import { TopicComponent } from './presentation/pages/topic/topic.component';
 import {RouterModule} from "@angular/router";
 import { DashboardPageComponent } from './presentation/pages/dashboard-page/dashboard-page.component';
 import {CountUpModule} from "ngx-countup";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { AffiliationDashboardComponent } from './presentation/pages/affiliation-dashboard/affiliation-dashboard.component';
+import { TopicDashboardComponent } from './presentation/pages/topic-dashboard/topic-dashboard.component';
 
 
 @NgModule({
@@ -29,25 +32,33 @@ import {CountUpModule} from "ngx-countup";
     AffiliationComponent,
     TopicComponent,
     DashboardPageComponent,
+    AffiliationDashboardComponent,
+    TopicDashboardComponent,
   ],
   exports: [
     GeneralComponent,
     SearchBarComponent,
-    AffiliationComponent
+    AffiliationComponent,
+    AffiliationDashboardComponent
   ],
-    imports: [
-        DashboardRoutingModule,
-        RouterModule,
-        FormsModule,
-        NgForOf,
-        NgIf,
-        MatInputModule,
-        MatAutocompleteModule,
-        ReactiveFormsModule,
-        MatIconModule,
-        SharedModule,
-        CountUpModule,
-    ],
+  imports: [
+    DashboardRoutingModule,
+    RouterModule,
+    FormsModule,
+    NgForOf,
+    NgIf,
+    MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    SharedModule,
+    CountUpModule,
+    NgSwitch,
+    NgSwitchCase,
+    MatProgressSpinnerModule,
+    LowerCasePipe,
+    TitleCasePipe,
+  ],
   providers: [VisualsService
     ],
 })
