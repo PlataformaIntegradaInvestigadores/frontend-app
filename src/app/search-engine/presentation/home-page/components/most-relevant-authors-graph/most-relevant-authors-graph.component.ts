@@ -79,6 +79,7 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   onClickCheckbox(event: any) {
+
     let item = Number(event.target.id)
     if (event.target.checked) {
       this.selectedAffiliations.push(item)
@@ -153,6 +154,7 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   getIndexByScopusId(scopusId: any) {
+    console.log(this.apiNodes.map(node => node.scopus_id).indexOf(scopusId))
     return this.apiNodes.map(node => node.scopus_id).indexOf(scopusId)
   }
 
