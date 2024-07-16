@@ -27,13 +27,6 @@ export class BtnMenuGroupComponent {
   ngOnChanges(): void {
   }
 
- @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-     if (this.menuOpen && !this.modalOpen) {
-      this.menuOpen = false;
-      this.modalService.setModalOpen(false);
-    }
-  }
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
@@ -77,4 +70,15 @@ export class BtnMenuGroupComponent {
     this.showDeleteGroupModal = false;
     this.modalService.setModalOpen(false);
   }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+  if (this.menuOpen) {
+    const targetElement = event.target as HTMLElement;
+    if (!targetElement.closest('.relative')) {
+      this.menuOpen = false;
+      this.modalService.setModalOpen(false);
+    }
+  }
+}
 }
