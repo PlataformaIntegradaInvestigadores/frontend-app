@@ -13,6 +13,7 @@ export class EcuadorContributionComponent {
   t:EventEmitter<Search> = new EventEmitter<Search>();
 
 
+
   @Input()
   public words!: Word[]
   @Input()

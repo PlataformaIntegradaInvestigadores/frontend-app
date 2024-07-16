@@ -1,14 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {DashboardService} from "../../../domain/services/dashboard.service";
 import {DashboardCounts, LineChartInfo, NameValue} from "../../../../shared/interfaces/dashboard.interface";
 import {ActivatedRoute, Router} from "@angular/router";
+import {LowerCasePipe} from "@angular/common";
+import {AffiliationService} from "../../../domain/services/affiliation.service";
 
 @Component({
   selector: 'app-general',
   templateUrl: './general.component.html',
   styleUrls: ['./general.component.css']
 })
-export class GeneralComponent implements OnInit {
+export class GeneralComponent implements OnInit{
 
   lineChartInfo!: LineChartInfo[]
   counts!: DashboardCounts
@@ -20,14 +22,10 @@ export class GeneralComponent implements OnInit {
   yearOptions: number[] = []
   year!: number
 
-  constructor(private router: Router, private route: ActivatedRoute, private dashboardService: DashboardService) {
+  constructor(private router: Router, private route: ActivatedRoute, private dashboardService: DashboardService, private affiliationService:AffiliationService) {
     this.getYears()
   }
-  navigateTo(path: string) {
-    const currentRoute = this.route.snapshot.routeConfig!.path;
-    console.log(currentRoute)
-    this.router.navigate([`${currentRoute}/${path}`]);
-  }
+
 
   ngOnInit(): void {
     this.dashboardService.getLineChartInfo().subscribe(data => {
@@ -36,11 +34,11 @@ export class GeneralComponent implements OnInit {
     );
     this.dashboardService.getCounts(this.year).subscribe(data => {
       this.counts = data;
-      // console.log(this.counts); // Aquí puedes ver la respuesta en la consola
+      console.log(this.counts); // Aquí puedes ver la respuesta en la consola
     });
     this.dashboardService.getTreeMap().subscribe(data => {
+      console.log('cossjd' + this.treeMapInfo)
       this.treeMapInfo = data;
-      // console.log(data)
     });
     this.dashboardService.getBarInfo().subscribe(data => {
       this.barChartInfo = data;
@@ -49,6 +47,9 @@ export class GeneralComponent implements OnInit {
     this.provinces = 'http://localhost:8000/api/v1/dashboard/province/get_provinces/'
   }
 
+  isCharged(){
+    return this.lineChartInfo&&this.counts&&this.treeMapInfo&&this.barChartInfo&&this.provinces
+  }
   getYears() {
     this.dashboardService.getYears().subscribe(data => {
       this.yearOptions = data.map(item => item.year);
@@ -100,4 +101,22 @@ export class GeneralComponent implements OnInit {
       this.provinces = this.dashboardService.getProvincesYear(year);
     }
   }
+  onSearchEntity(event: string) {
+    this.router.navigate(['home/analitica/dashboard/by-affiliation', event]).then(nav => {
+        console.log('')
+      }
+    )
+  }
+  getId(name: string) {
+    this.affiliationService.getId(name).subscribe(data => {
+      this.onSearchEntity(data.scopus_id);
+    });
+  }
+  onSearchTopic(event: string) {
+    this.router.navigate(['home/analitica/dashboard/by-topic', event]).then(nav => {
+        console.log('')
+      }
+    )
+  }
+
 }

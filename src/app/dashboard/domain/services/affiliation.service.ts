@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {
-  Affiliation, AffiliationCounts,
+  Affiliation, AffiliationCounts, AffiliationId,
   AffiliationInfo,
   LineChartInfo,
   NameValue, Word,
@@ -159,5 +159,11 @@ export class AffiliationService {
         return info
       })
     )
+  }
+
+  getId(name:string){
+    let params = new HttpParams()
+      .set('name', name)
+    return this.http.get<AffiliationId>(`${this.apiUrl}/affiliation/get_by_name/`, {params});
   }
 }

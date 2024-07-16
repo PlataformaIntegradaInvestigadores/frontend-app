@@ -23,6 +23,10 @@ export interface Word{
   text: string;
   size: number;
 }
+
+export interface AffiliationId{
+  scopus_id: string
+}
 export interface LineChartInfo{
   name: string;
   series: NameValue[]
@@ -77,3 +81,21 @@ export interface AuthorYears {
   total_articles: number;
 }
 
+
+
+export interface TopicSummary {
+  articles:     number;
+  affiliations: number;
+}
+
+export interface TopicInfo {
+  name:           string;
+  total_articles: number;
+}
+
+export interface TopicResponse {
+  id:             string;
+  topic_name:     string;
+  year:           number;
+  total_articles: number;
+}

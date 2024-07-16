@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NameValue} from "../../../interfaces/dashboard.interface";
 
 @Component({
@@ -13,6 +13,8 @@ export class BarChartComponent {
   width!: number;
   @Input()
   height!:number;
+  @Output() selectedAffiliation = new EventEmitter<any>();
+
 
   // options
   showXAxis = true;
@@ -31,7 +33,9 @@ export class BarChartComponent {
   constructor() {
   }
 
-  onSelect(event: any) {
-    console.log(event);
+  onSelect(event: NameValue): void {
+    console.log('Selected item:', event.name); // Log para verificar el elemento seleccionado
+    this.selectedAffiliation.emit(event.name);
+
   }
 }
