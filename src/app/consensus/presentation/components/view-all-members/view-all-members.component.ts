@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { UserG } from 'src/app/group/domain/entities/user.interface';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'view-all-members',
@@ -11,17 +13,21 @@ export class ViewAllMembersComponent  implements OnInit{
 
   @Input() members: UserG[] | null = [];
   @Input() idOwnerGroup: string | null = null;
-  @Output() memberDeleted = new EventEmitter<string>(); // Añadir Output para emitir eventos
+  @Output() memberDeleted = new EventEmitter<string>(); 
+  private routerSubscription: Subscription | undefined;
 
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, private router: Router) {}
   
   ngOnInit(): void {
     initFlowbite();
-    console.log('ViewAllMembers Init');
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.closeModal();
+      }
+    });
   }
 
   onMemberDeleted(memberId: string): void {
-    console.log('Member deleted:', memberId);
     if (this.members) {
       this.members = this.members.filter(member => member.id !== memberId);
     }

@@ -21,6 +21,7 @@ export class DashboardService implements OnInit {
   private apiUrl = environment.apiCentinela+'/api/v1/dashboard';
 
 
+
   constructor(private http: HttpClient) {
   }
 
