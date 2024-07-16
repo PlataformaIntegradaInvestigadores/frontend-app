@@ -6,6 +6,7 @@ import { RecommendedTopic, TopicAddedUser } from 'src/app/consensus/domain/entit
 import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketService.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'phase1-consensus',
@@ -39,7 +40,8 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   notifications: any[] = [];
 
-  userPhase: number = -1; 
+  userPhase: number = 0; 
+
 
   constructor(
     private topicService: TopicService,
@@ -51,6 +53,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    initFlowbite();
     this.route.parent?.paramMap.subscribe(params => {
       this.groupId = params.get('groupId') || '';
       this.checkUserPhase(); // Llama a esta función para verificar la fase del usuario

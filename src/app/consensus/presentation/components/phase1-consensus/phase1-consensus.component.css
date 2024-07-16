@@ -3,11 +3,10 @@
 }
 
 input::placeholder {
-    text-align: left; /* Alinear el texto a la derecha */
+    text-align: left; /* Alinear el texto a la izquierda */
 }
 
 /* Circulo de la barra de nivel */
-/* Estilos generales para el thumb */
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none; /* Desactivar la apariencia por defecto */
     appearance: none;
@@ -37,20 +36,20 @@ input[type="range"]::-ms-thumb {
     border: none;
 }
 
-#btn-combined-search, #btn-expertice, #btn-add-topic, #btn-next  {
+/* Estilos para los botones */
+#btn-combined-search, #btn-expertice, #btn-add-topic, #btn-next {
     border: solid #1E3C8B 1px !important;
 }
 
-#btn-next:hover{
+#btn-next:hover {
     color: #1E3C8B;
 }
+
 #btn-next:hover svg {
-    fill: #1E3C8B ; /* Cambia el color de relleno del SVG a blanco */
-    stroke: #1E3C8B; /* Cambia el color del stroke a blanco */
-    
+    fill: #1E3C8B; /* Cambia el color de relleno del SVG */
+    stroke: #1E3C8B; /* Cambia el color del stroke */
 }
 
-/* Cambia el color del path cuando el mouse está sobre el botón */
 #btn-expertice:hover .svg-path {
     stroke: #ffffff; /* Cambia el color del stroke a blanco */
 }
@@ -61,7 +60,7 @@ input[type="range"]::-ms-thumb {
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+}
 
 @media (max-width: 640px) {
     .movil-margin-cero {
@@ -72,5 +71,5 @@ input[type="range"]::-ms-thumb {
 
 .active-ring {
     border: 1px solid #1E3C8B; /* Cambia #1E3C8B por el color de tu elección */
-    box-shadow: 0 0 0 2px rgba(30, 60, 139, 0.5); /* Esto es un ejemplo, ajusta los valores y colores como desees */
-  }
+    box-shadow: 0 0 0 2px rgba(30, 60, 139, 0.5); /* Ajusta los valores y colores según sea necesario */
+}
