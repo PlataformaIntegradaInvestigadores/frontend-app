@@ -32,8 +32,23 @@ export interface Author {
   citation_count: number
 }
 
+export interface CoauthorInfo {
+  data: Data;
+}
+
+export interface Data {
+  nodes: AuthorNode[];
+  links: Link[];
+}
+
+export interface Link {
+  source:         number;
+  target:         number;
+  collabStrength: number;
+}
+
 export interface Coauthors {
-  links: { source: number, target: number, collabStrength: number }[]
+  links: Link[]
   nodes: AuthorNode[]
   affiliations: { scopusId: number, name: string }[]
 }

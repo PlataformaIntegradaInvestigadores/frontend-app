@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
   Author,
-  AuthorResult,
+  AuthorResult, CoauthorInfo,
   Coauthors,
   PaginationAuthorResult,
   RandItem
@@ -42,8 +42,8 @@ export class AuthorService {
     return this.http.get<Author>(`${this.rootURL}api/v1/authors/authors/${id}`);
   }
 
-  getCoauthorsById(id: number): Observable<Coauthors> {
-    return this.http.get<Coauthors>(`${this.rootURL}api/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
+  getCoauthorsById(id: number): Observable<CoauthorInfo> {
+    return this.http.get<CoauthorInfo>(`${this.rootURL}api/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
   }
 
   getMostRelevantAuthors(
@@ -54,7 +54,7 @@ export class AuthorService {
   ): Observable<Coauthors> {
     let bodyParams: any = {
       topic: topic,
-      authors_number: 50,
+      authors_number: authors_number,
     };
 
     if (typeFilter) {
