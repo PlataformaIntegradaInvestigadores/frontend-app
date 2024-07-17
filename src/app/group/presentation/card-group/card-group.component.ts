@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { Router } from '@angular/router';
 import { Group } from '../../domain/entities/group.interface';
 import { ModalService } from '../../domain/services/modalService.service';
+import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 
 @Component({
   selector: 'card-group',
@@ -18,13 +19,41 @@ export class CardGroupComponent  {
   @Output() groupLeaveed = new EventEmitter<string>();
   modalOpen: boolean = false;
 
-  constructor(private router: Router, private modalService: ModalService) {
+  currentPhase: string | null = null;
+
+  constructor(
+    private router: Router, 
+    private modalService: ModalService,
+    private topicService: TopicService) 
+  {
     this.modalService.modalOpen$.subscribe(isOpen => this.modalOpen = isOpen);
   }
 
   ngOnChanges(): void {
-    console.log('Group:', this.group);
-    //console.log('Is Owner:', this.isOwner);
+
+    if (this.group) {
+      this.getCurrentPhase(this.group.id);
+    }
+  }
+
+  getCurrentPhase(groupId: string): void {
+    this.topicService.getUserCurrentPhase(groupId).subscribe(
+      response => {
+        this.currentPhase = this.transformPhase(response.phase);
+      },
+      error => {
+        console.error('Error fetching current phase:', error);
+      }
+    );
+  }
+  
+  transformPhase(phase: number): string {
+    switch(phase) {
+      case 0: return '1 of 3';
+      case 1: return '2 of 3';
+      case 2: return '3 of 3 complete';
+      default: return 'Unknown phase';
+    }
   }
 
   onNavigate() {
@@ -40,4 +69,5 @@ export class CardGroupComponent  {
   onGroupLeaveed(groupId: string) {
     this.groupLeaveed.emit(groupId);
   }
+
 }

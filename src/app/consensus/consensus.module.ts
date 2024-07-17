@@ -18,6 +18,8 @@ import { FormsModule } from "@angular/forms";
 import { BtnMailComponent } from './presentation/components/btn-mail/btn-mail.component';
 import { SatisfactionLevelComponent } from './presentation/components/satisfaction-level/satisfaction-level.component';
 import { ProfilePageModule } from "../profile/profile-page.module";
+import { Phase2ConsensusNotificationComponent } from './presentation/components/phase2-consensus-notification/phase2-consensus-notification.component';
+import { Phase3ConsensusNotificationComponent } from './presentation/components/phase3-consensus-notification/phase3-consensus-notification.component';
 
 
 @NgModule({
@@ -34,7 +36,9 @@ import { ProfilePageModule } from "../profile/profile-page.module";
     MemberDeleteBtnComponent,
     UniqueIDDirective,
     BtnMailComponent,
-    SatisfactionLevelComponent
+    SatisfactionLevelComponent,
+    Phase2ConsensusNotificationComponent,
+    Phase3ConsensusNotificationComponent
   ],
   imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule],
   exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],

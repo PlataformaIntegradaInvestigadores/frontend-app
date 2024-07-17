@@ -14,14 +14,14 @@ import { forkJoin, map } from 'rxjs';
   styleUrls: ['./list-group.component.css']
 })
 export class ListGroupComponent implements AfterViewInit, OnInit {
-  
+
   userId: string | null = null;
   groups : Group [] = []
   modalOpen: boolean = false;
   isOwnerMap: { [key: string]: boolean } = {};
   loading$ = this.loadingService.loading$;
 
-  constructor( 
+  constructor(
     private groupService : GroupService,
     private getGroupService: GetGroupsService,
     private router:Router,
@@ -33,7 +33,6 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId');
-    console.log('Authenticated User ID:', this.userId);
     if (this.userId) {
       this.loadGroups();
     }
@@ -55,9 +54,7 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
         forkJoin(groupRequests).subscribe(
           groupsWithOwners => {
             this.groups = groupsWithOwners;
-            console.log('Groups loaded:', this.groups);
             this.updateIsOwnerMap();
-            console.log('isOwnerMap:', this.isOwnerMap);
           },
           error => console.error('Error fetching group owners:', error)
         );
@@ -70,16 +67,18 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
     if (this.userId) {
       this.groups.forEach(group => {
         this.isOwnerMap[group.id] = this.userId === group.admin_id;
-        console.log(`Group ID: ${group.id},Auth ID: ${this.userId}, Admin ID: ${group.admin_id}, isOwner: ${this.isOwnerMap[group.id]}`);
+        //console.log(`Group ID: ${group.id},Auth ID: ${this.userId}, Admin ID: ${group.admin_id}, isOwner: ${this.isOwnerMap[group.id]}`);
       });
     }
   }
 
   navigateToGroup(groupId: string): void {
     if (!this.modalOpen) {
-      this.router.navigate([`/${this.userId}/my-groups/${groupId}/consensus`]);
+      //console.log(`Navigating to group DEPURARION: ${groupId}`); // Añadido para depuración
+      this.router.navigate([`/profile/${this.userId}/my-groups/${groupId}/consensus`]);
     }
   }
+
 
   onModalOpenChange(open: boolean) {
     this.modalOpen = open;
@@ -91,7 +90,7 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
     this.updateIsOwnerMap();
   }
 
-  onGroupLeave(groupId: string) { 
+  onGroupLeave(groupId: string) {
     this.groups = this.groups.filter(group => group.id !== groupId);
     this.updateIsOwnerMap();
   }
@@ -99,7 +98,6 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
   deleteGroup(groupId: string) {
     this.groupService.deleteGroup(groupId).subscribe(
       () => {
-        console.log('Group deleted successfully');
         this.onGroupDeleted(groupId);  // Actualizar la lista localmente
       },
       error => {
@@ -111,7 +109,7 @@ export class ListGroupComponent implements AfterViewInit, OnInit {
   leaveGroup(groupId: string) {
     this.groupService.leaveGroup(groupId).subscribe(
       () => {
-        console.log('Left the group');
+        //console.log('Left the group');
         this.onGroupLeave(groupId);  // Actualizar la lista localmente
       },
       error => {

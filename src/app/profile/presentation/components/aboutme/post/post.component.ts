@@ -62,26 +62,33 @@ export class PostComponent implements OnInit {
     formData.append('description', newPost.description);
     formData.append('created_at', newPost.created_at);
     newPost.files.forEach((file: File) => {
-      formData.append('files', file, file.name);
+        formData.append('files', file, file.name);
+    });
+
+    // Log para verificar el contenido de formData
+    formData.forEach((value, key) => {
+        console.log(key + ': ', value);
     });
 
     this.postService.createPost(formData).subscribe(
-      response => {
-        this.posts.push(response);
-        this.isLoading = false;
-        this.success = 'Post created successfully!';
-        this.loadPosts(this.user!.id!);  // Recargar publicaciones
-        setTimeout(() => {
-          this.success = null;
-        }, 3000);
-      },
-      error => {
-        console.error('Error creating post:', error);
-        this.error = 'Failed to create post';
-        this.isLoading = false;
-      }
+        response => {
+            console.log('Post created:', response);
+            this.posts.push(response);
+            this.isLoading = false;
+            this.success = 'Post created successfully!';
+            this.loadPosts(this.user!.id!);  // Recargar publicaciones
+            setTimeout(() => {
+                this.success = null;
+            }, 3000);
+        },
+        error => {
+            console.error('Error creating post:', error);
+            this.error = 'Failed to create post';
+            this.isLoading = false;
+        }
     );
-  }
+}
+
 
   /**
    * Elimina una publicación específica.

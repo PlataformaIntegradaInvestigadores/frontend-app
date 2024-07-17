@@ -84,33 +84,14 @@ export class GroupCreateModalComponent {
         groupData.users = this.selectedUsers.map(user => user.id);
       }
 
-      console.log('Creating group', groupData);
+
 
       this.groupService.createGroup(groupData).subscribe(
         response => {
-          console.log('Group created successfully', response);
-          const groupId = response.id; // Assuming the response contains the group ID
-
-          // Adding recommended topics to the group
-          this.topicService.getRandomRecommendedTopics(groupId).subscribe(
-            topics => {
-              topics.forEach(topic => {
-                this.topicService.addNewTopic(groupId, topic.topic_name).subscribe(
-                  topicResponse => {
-                    console.log('Topic added successfully', topicResponse);
-                  },
-                  error => {
-                    console.error('Error adding topic', error);
-                  }
-                );
-              });
-              window.location.reload();
-            },
-            error => {
-              console.error('Error fetching recommended topics', error);
-            }
-          );
-
+         
+          
+          window.location.reload();
+      
         },
         error => {
           console.error('Error creating group', error);
