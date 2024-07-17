@@ -38,6 +38,7 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   @Input()
   min = 100
 
+
   constructor(private el: ElementRef) {
   }
 
@@ -53,7 +54,7 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   private generateWordCloud(): void {
     const layout = cloud()
       .size([this.width - 50, this.height -60])
-      .words(this.words.map(d => ({text: d.text, size: Math.min(d.size, 500) || Math.max(d.size,this.min)})))
+      .words(this.words.map(d => ({text: d.text, size:Math.max(d.size,100)||Math.min(d.size,200)})))
       .padding(this.padding)
       .rotate(0)
       .fontSize(d =>
