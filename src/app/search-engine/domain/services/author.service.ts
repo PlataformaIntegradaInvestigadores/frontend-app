@@ -72,7 +72,7 @@ export class AuthorService {
       bodyParams['affiliations'] = affiliations;
     }
     let data = this.http.post<Coauthors>(
-      `${this.rootURL}/api/v1/authors/authors/most_relevant_authors/`,
+      `${this.rootURL}api/v1/authors/authors/most_relevant_authors/`,
       bodyParams
     );
     console.log(bodyParams);
@@ -114,6 +114,7 @@ export class AuthorService {
   getLineChartInfo(scopus_id:string, name: string): Observable<LineChartInfo[]> {
     return this.getYears(scopus_id).pipe(
       map(response => {
+        console.log(response);
         const series: NameValue[] = response.map(au => ({
           name: au.year.toString(),
           value: au.total_articles

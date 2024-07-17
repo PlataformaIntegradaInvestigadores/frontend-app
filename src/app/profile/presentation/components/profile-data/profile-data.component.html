@@ -158,10 +158,9 @@
         </div>
 
         <ng-container *ngIf="years">
-          <div class="border-2 border-blue-900 rounded-2 justify-center items-center ">
-            <h3 class="bg-blue-900 text-white p-2 ">Annual article contribution </h3>
-            <div class="max-h-[230px]">
-              <app-evolution-line-chart [multi]="years" [width]="300" [height]="300"></app-evolution-line-chart>
+          <div *ngIf="charged" class=" justify-center items-center ">
+            <div class="max-h-fit" *ngIf="years[0].series.length>1">
+              <app-evolution-line-chart  [multi]="years" [width]="300" [height]="300" [boolean]="true"></app-evolution-line-chart>
             </div>
           </div>
         </ng-container>

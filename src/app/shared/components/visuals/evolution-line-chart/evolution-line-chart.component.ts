@@ -12,6 +12,7 @@ export class EvolutionLineChartComponent {
   @Input() width!: number;
   @Input() height!: number;
   @Output() selectedYear = new EventEmitter<any>();
+  @Input() boolean = false;
 
   selectedSeries: string | null = null;
   selectedItem: NameValue | null = null;

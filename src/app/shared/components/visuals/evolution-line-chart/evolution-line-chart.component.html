@@ -1,4 +1,4 @@
-<div class="flex justify-center items-center ">
+<div *ngIf="boolean" class="flex justify-center items-start overflow-hidden w-full  h-[200px]">
   <ngx-charts-line-chart
     [view]="[width, height]"
     [showXAxisLabel]="showXAxisLabel"
@@ -11,5 +11,21 @@
     [timeline]="timeline"
     [results]="multi"
     (select)="onSelect($event)">
+  </ngx-charts-line-chart>
+</div>
+
+<div *ngIf="!boolean" class="flex justify-center items-start overflow-hidden w-full">
+  <ngx-charts-line-chart
+          [view]="[width, height]"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [scheme]="colorScheme"
+          [xAxis]="xAxis"
+          [yAxis]="yAxis"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          [timeline]="timeline"
+          [results]="multi"
+          (select)="onSelect($event)">
   </ngx-charts-line-chart>
 </div>
