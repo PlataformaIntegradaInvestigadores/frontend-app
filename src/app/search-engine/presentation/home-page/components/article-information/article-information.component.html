@@ -1,15 +1,15 @@
-<div class="flex justify-center items-center">
-  <div *ngIf="years && years.length > 0" class="col-lg-2  px-0">
+<div class="flex justify-center">
+  <div  class="col-lg-2  px-0">
     <div class="rounded mx-4 mt-10 mat-elevation-z8">
 
       <!-- Title -->
       <div class="text-center py-3 font-bold border-b-gray-400 border-b-2">
-        FILTROS
+        FILTERS
       </div>
 
       <!-- Years -->
       <div class="py-2 px-3 font-semibold border-b-gray-400 border-b-2">
-        Año de publicación
+        Publication year
       </div>
       <div class="py-3 px-3 flex flex-col gap-3 max-h-100 overflow-y-scroll">
         <div class="flex gap-3" *ngFor="let year of years">
@@ -21,12 +21,11 @@
     </div>
   </div>
   <div class="container border-b-gray-400 border-b-2">
-    <div *ngIf="isLoadingResults" class="loading-shade">
+    <div *ngIf="isLoadingResults">
       <div *ngIf="isLoadingResults">
         <mat-spinner></mat-spinner>
       </div>
     </div>
-
     <div class="table-container mat-elevation-z8">
       <div *ngIf="articles$ | async as response">
         <table
