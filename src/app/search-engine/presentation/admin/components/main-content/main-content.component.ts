@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   ArticleComparator,
   AuthorComparator,
   Status,
 } from 'src/app/search-engine/domain/entities/author.comparator.interface';
-import { DashboardAdminService } from 'src/app/search-engine/domain/services/dashboard-admin.service';
-import { UpdateCentinelaService } from 'src/app/search-engine/domain/services/update-centinela.service';
+import {DashboardAdminService} from 'src/app/search-engine/domain/services/dashboard-admin.service';
+import {UpdateCentinelaService} from 'src/app/search-engine/domain/services/update-centinela.service';
 
 @Component({
   selector: 'app-main-content',
@@ -31,16 +31,23 @@ export class MainContentComponent implements OnInit {
   loadingAuthorsComparator: boolean = false;
   loadingModel: boolean = false;
   loadingCorpus: boolean = false;
+  authorsNumberNoSqlDb: number = 0
+  lastYearInfoNoSqlDB: number = 0
+  messageNoSqlDb: string = '';
+  isErrorUpdatingNoSqlDb: boolean = false;
+  populating:boolean = false
 
   constructor(
     private dashboardAdminService: DashboardAdminService,
-    private updateCentinela: UpdateCentinelaService
-  ) {}
+    private updateCentinela: UpdateCentinelaService,
+  ) {
+  }
 
   ngOnInit(): void {
     this.getAuthorComparator();
     this.getArticlesComparator();
     this.getModelCorpusObserver();
+    this.getNoSqlDbYears();
   }
 
   getAuthorComparator() {
@@ -127,7 +134,7 @@ export class MainContentComponent implements OnInit {
       return;
     }
 
-    const { authors_no_updated, total_authors } = this.authorComparator;
+    const {authors_no_updated, total_authors} = this.authorComparator;
 
     if (total_authors === 0) {
       this.authorPercentage = 0;
@@ -140,14 +147,14 @@ export class MainContentComponent implements OnInit {
   calculateArticlePercentage() {
     const HUNDRED = 100;
 
-    if(!this.articleComparator) {
+    if (!this.articleComparator) {
       this.articlePercentage = 0;
       return;
     }
 
-    const { total_centinela, total_scopus} = this.articleComparator;
+    const {total_centinela, total_scopus} = this.articleComparator;
 
-    if(total_scopus === 0) {
+    if (total_scopus === 0) {
       this.articlePercentage = 0;
       return;
     }
@@ -188,12 +195,13 @@ export class MainContentComponent implements OnInit {
       },
     });
   }
+
   generateCorpus() {
     this.loadingCorpus = true;
     this.dashboardAdminService.generateCorpus().subscribe({
       next: (data) => {
         this.corpusStatus = data;
-      this.corpusStatus.message = 'Corpus generated successfully';
+        this.corpusStatus.message = 'Corpus generated successfully';
         this.getModelCorpusObserver();
         this.loadingCorpus = false;
 
@@ -231,7 +239,7 @@ export class MainContentComponent implements OnInit {
     });
   }
 
-  generateModel(){
+  generateModel() {
     this.loadingModel = true;
     this.dashboardAdminService.generateModel().subscribe({
       next: (data) => {
@@ -354,6 +362,35 @@ export class MainContentComponent implements OnInit {
         }
         this.loadingArticles = false;
       },
+    });
+  }
+
+  getNoSqlDbYears() {
+    this.dashboardAdminService.getNoSqlDbYears().subscribe(data => {
+      let yearOptions = data.map(item => item.year);
+      this.lastYearInfoNoSqlDB = yearOptions[yearOptions.length - 1];
+      this.getNoSqlInfo(this.lastYearInfoNoSqlDB)
+    });
+  }
+
+  getNoSqlInfo(year: number) {
+    this.dashboardAdminService.getNoSqlDbCounts(this.lastYearInfoNoSqlDB).subscribe(data => {
+      this.authorsNumberNoSqlDb = data.author
+    })
+  }
+
+  populateNoSqlDb() {
+    this.populating = true
+    this.dashboardAdminService.populateNoSqlDb().subscribe({
+      next: (response) => {
+        this.messageNoSqlDb = response.message;
+        this.isErrorUpdatingNoSqlDb = false;
+        this.populating = false
+      },
+      error: (error) => {
+        this.messageNoSqlDb = error.error.error;
+        this.isErrorUpdatingNoSqlDb = true;
+      }
     });
   }
 }

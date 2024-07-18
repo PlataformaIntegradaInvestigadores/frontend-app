@@ -75,7 +75,6 @@ export class AuthorService {
       `${this.rootURL}api/v1/authors/authors/most_relevant_authors/`,
       bodyParams
     );
-    console.log(bodyParams);
     return data;
   }
 

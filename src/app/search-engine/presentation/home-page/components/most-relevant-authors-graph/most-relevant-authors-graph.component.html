@@ -1,26 +1,29 @@
-<div class="flex justify-center">
-  <div class="rounded max-w-64 mat-elevation-z8 m-2 h-fit" *ngIf="affiliations && affiliations.length > 0">
+<div *ngIf="!showGraph">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="flex justify-center" *ngIf="showGraph">
+  <div class="rounded max-w-72 mat-elevation-z8 m-2 h-fit" *ngIf="affiliations && affiliations.length > 0">
     <!-- Title -->
     <div class="text-center py-3 font-bold border-b-gray-400 border-b-2">
-      FILTROS
+      FILTERS
     </div>
 
     <!-- Authors number -->
     <div class="py-2 px-3 subtitle border-b-gray-400 border-b-2">
-      Número de autores
+      Number of authors
     </div>
     <div class="py-3 px-3 border-b-gray-400 border-b-2">
       <input id="authorsRange" type="range" class="form-range" min="10" max="200" step="10"
              [(ngModel)]="authorsNumber" (change)="onAuthorsNumberChange()">
-      <label for="authorsRange" class="form-label">Autores: {{authorsNumber}}</label>
+      <label for="authorsRange" class="form-label">Authors: {{authorsNumber}}</label>
     </div>
 
     <!-- Affiliations -->
     <div class="py-2 px-3 subtitle border-b-gray-400 border-b-2">
-      Afiliaciones
+      Affiliations
     </div>
     <div class="py-3 px-3 flex flex-col gap-3 max-h-96 overflow-scroll">
-      <div class="gap-3" *ngFor="let aff of affiliations">
+      <div class="flex gap-3" *ngFor="let aff of affiliations">
         <input [id]="aff.scopusId" type="checkbox" (click)="onClickCheckbox($event)">
         <label [for]="aff.scopusId">{{aff.name}}</label>
       </div>
@@ -28,18 +31,23 @@
   </div>
 
 
-  <div class=" container flex flex-col w-4/5 items-start">
+  <div class=" container flex flex-col ml-4 items-start">
     <div class="flex flex-col justify-between w-full bg-white border-gray-300 rounded">
+      <div *ngIf="!showGraph" class="loading-shade">
+        <div *ngIf="!showGraph">
+          <mat-spinner></mat-spinner>
+        </div>
+      </div>
       <ng-container *ngIf="showGraph">
         <div class="pt-2">
-          <div><b>Nodos:</b> {{d3Nodes.length}}</div>
-          <div><b>Relaciones:</b> {{d3Links.length}}</div>
+          <div><b>Nodes:</b> {{d3Nodes.length}}</div>
+          <div><b>Relations:</b> {{d3Links.length}}</div>
         </div>
-        <button type="button" class="bg-red-700 text-white mt-2 pl-4 py-2 rounded self-start"
+        <button type="button" class="bg-red-700 text-white mt-2 p-3 rounded self-start"
                 (click)="onDownloadGraph()"
                 *ngIf="d3Nodes.length > 0;">
           <fa-icon [icon]="faDownload"></fa-icon>
-          Descargar
+          Download
         </button>
       </ng-container>
     </div>
