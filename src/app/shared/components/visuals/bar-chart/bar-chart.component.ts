@@ -46,12 +46,15 @@ export class BarChartComponent implements OnInit {
   color = '#440154'
   ngOnInit() {
     if(this.single){
+      console.log('single' + this.single)
       this.colorScheme = this.visualsService.createColorScheme(this.single.length)
     }
   }
 
   constructor(private visualsService:VisualsService) {
+    console.log('constructor: ' + this.single)
   }
+
 
   onSelect(event: NameValue): void {
     console.log('Selected item:', event.name); // Log para verificar el elemento seleccionado

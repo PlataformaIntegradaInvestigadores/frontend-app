@@ -65,7 +65,10 @@ export class TopicDashboardComponent {
         );
         this.topicService.getBarMapInfo(topic).subscribe(
             data => {
-                this.barMapInfo = data
+              // console.log(data.length)
+              // console.log(data[0].name)
+              this.barMapInfo = data
+
             }
         );
         this.charged = true
@@ -175,6 +178,6 @@ export class TopicDashboardComponent {
     }
 
     isCharged() {
-        return this.articles && this.barMapInfo&&this.yearOptions.length>0&&this.year
+        return this.articles && this.barMapInfo.length > 0&&this.yearOptions.length>0&&this.year
     }
 }
