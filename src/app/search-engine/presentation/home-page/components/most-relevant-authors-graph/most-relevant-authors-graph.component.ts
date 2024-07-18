@@ -97,7 +97,8 @@ export class MostRelevantAuthorsGraphComponent {
       this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber, type, this.selectedAffiliations)
         .pipe(
           tap((coauthors) => {
-            console.log('dentro2: '+ this.authorsNumber)
+            console.log(coauthors);
+            // console.log('dentro2: '+ this.authorsNumber)
             this.setupGraph(coauthors);
             this.showGraph = true;
             this.loading.emit(false);

@@ -8,3 +8,10 @@
   width: 24px;
   height: 24px;
 }
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
