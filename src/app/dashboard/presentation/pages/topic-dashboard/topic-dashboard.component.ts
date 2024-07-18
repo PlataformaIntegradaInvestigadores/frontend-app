@@ -175,6 +175,6 @@ export class TopicDashboardComponent {
     }
 
     isCharged() {
-        return this.articles && this.barMapInfo&&this.yearOptions.length>0
+        return this.articles && this.barMapInfo&&this.yearOptions.length>0&&this.year
     }
 }

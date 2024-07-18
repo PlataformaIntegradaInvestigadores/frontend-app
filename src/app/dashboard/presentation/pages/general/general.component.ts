@@ -35,7 +35,7 @@ export class GeneralComponent implements OnInit{
     );
     this.dashboardService.getCounts(this.year).subscribe(data => {
       this.counts = data;
-      console.log(this.counts); // Aquí puedes ver la respuesta en la consola
+      console.log(this.counts);
     });
     this.dashboardService.getTreeMap().subscribe(data => {
       console.log('cossjd' + this.treeMapInfo)

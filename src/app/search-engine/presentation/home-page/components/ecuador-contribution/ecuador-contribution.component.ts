@@ -28,6 +28,6 @@ export class EcuadorContributionComponent {
   constructor(private dashboardService: VisualsService) { }
 
   ngOnInit() {
-
+    console.log(this.provinces)
   }
 }
