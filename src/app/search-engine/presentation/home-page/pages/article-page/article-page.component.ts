@@ -33,6 +33,7 @@ export class ArticlePageComponent {
 
   retrieveArticle() {
     this.articleService.getArticleById(this.scopusId).subscribe((article) => {
+      console.log(article);
       this.article = article;
       this.setArticleTitle();
     });
