@@ -11,12 +11,10 @@ import { WebSocketPhase3Service } from 'src/app/consensus/domain/services/websoc
   styleUrls: ['./phase3-consensus-notification.component.css']
 })
 export class Phase3ConsensusNotificationComponent {
-
   satisfactionNotifications: any[] = [];
   groupId: string = '';
   private wsSubscription: Subscription | undefined;
-  
-  
+
   constructor(
     private webSocketService: WebSocketPhase3Service,
     private topicService: TopicService,
@@ -47,6 +45,8 @@ export class Phase3ConsensusNotificationComponent {
           notification.created_at = new Date(notification.created_at);
           this.satisfactionNotifications.push(notification);
         });
+        // Ordenar notificaciones por `created_at` de más reciente a más antigua
+        this.sortNotifications();
         this.cdr.detectChanges();
       },
       error => {
@@ -54,15 +54,12 @@ export class Phase3ConsensusNotificationComponent {
       }
     );
   }
-  
-
 
   connectWebSocket(): void {
     if (this.groupId) {
       const socket = this.webSocketService.connect(this.groupId);
       this.wsSubscription = this.webSocketService.userSatisfactionReceived.subscribe(
         msg => {
-  
           // Convertir `added_at` a objeto Date si existe
           if (msg.added_at) {
             msg.added_at = new Date(msg.added_at);
@@ -71,6 +68,8 @@ export class Phase3ConsensusNotificationComponent {
           msg.created_at = msg.created_at ? new Date(msg.created_at) : msg.added_at;
 
           this.satisfactionNotifications.push(msg);
+          // Ordenar notificaciones por `created_at` de más reciente a más antigua
+          this.sortNotifications();
           this.cdr.detectChanges();
         },
         error => {
@@ -79,7 +78,10 @@ export class Phase3ConsensusNotificationComponent {
       );
     }
   }
-  
+
+  sortNotifications(): void {
+    this.satisfactionNotifications.sort((a, b) => b.created_at - a.created_at);
+  }
 
   formatDate(date: Date): string {
     const now = new Date();
