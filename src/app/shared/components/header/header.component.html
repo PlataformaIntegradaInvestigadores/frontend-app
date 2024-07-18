@@ -26,16 +26,16 @@
           Home
         </a>
       </li>
-<!--      <li class="mb-2 md:mb-0 md:mr-2" *ngIf="showInformation">-->
-<!--        <a routerLink="./author-list" routerLinkActive="active"-->
-<!--          class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base">-->
-<!--          <div class="w-4 h-4 mr-2">-->
-<!--            <img src="assets/svg-header/authors.svg" alt="Authors icon"-->
-<!--              class="w-4 h-4 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300">-->
-<!--          </div>-->
-<!--          Authors-->
-<!--        </a>-->
-<!--      </li>-->
+      <!--      <li class="mb-2 md:mb-0 md:mr-2" *ngIf="showInformation">-->
+      <!--        <a routerLink="./author-list" routerLinkActive="active"-->
+      <!--          class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base">-->
+      <!--          <div class="w-4 h-4 mr-2">-->
+      <!--            <img src="assets/svg-header/authors.svg" alt="Authors icon"-->
+      <!--              class="w-4 h-4 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300">-->
+      <!--          </div>-->
+      <!--          Authors-->
+      <!--        </a>-->
+      <!--      </li>-->
       <li class="mb-2 md:mb-0 md:mr-2" *ngIf="showInformation">
         <a routerLink="./analitica" routerLinkActive="active"
           class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base">
@@ -47,7 +47,8 @@
         </a>
       </li>
       <div class="flex flex-col md:flex-row md:ml-auto">
-        <li class="mb-2 md:mb-0 flex justify-start md:justify-center items-center md:mr-2 cursor-pointer" *ngIf="!showLogin">
+        <li class="mb-2 md:mb-0 flex justify-start md:justify-center items-center md:mr-2 cursor-pointer"
+          *ngIf="!showLogin">
           <a class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base"
             (click)="profile()">
             <div class="w-4 h-4 mr-2">
@@ -66,9 +67,14 @@
         </li>
         <li class="mb-2 md:mb-0 flex justify-start items-start md:items-center md:mr-2" *ngIf="showLogin">
           <button
+            class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-lg text-base transition-colors duration-200 ease-in-out text-black focus:outline-none focus:ring-2 focus:ring-offset-2 mr-4"
+            routerLink="/register">
+            Sing Up
+          </button>
+          <button
             class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-lg text-base transition-colors duration-200 ease-in-out bg-primary_tailwind text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             routerLink="/login">
-            Login
+            Log In
           </button>
         </li>
       </div>
