@@ -2,13 +2,14 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DashboardCounts, Word, YearsResponse} from "../../interfaces/dashboard.interface";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class VisualsService {
 
-  private apiUrl = 'http://localhost:8010/api/v1/dashboard';
+  private apiUrl = environment.apiCentinela+'api/v1/dashboard';
 
   constructor(private http: HttpClient) {
   }

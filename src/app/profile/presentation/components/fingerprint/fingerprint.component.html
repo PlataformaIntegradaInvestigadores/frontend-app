@@ -1,4 +1,4 @@
-<div *ngIf="words" class="flex justify-center items-center">
+<div *ngIf="words.length > 1" class="flex justify-center items-center">
 <!--  <app-word-cloud [words]="words" [width]="1000" [height]="500" [x]="100" [y]="100" [size]="1" [padding]="0.5" [min]="400" ></app-word-cloud>-->
   <app-tree-map-chart [width]="900" [height]="500" [single]="words"></app-tree-map-chart>
 </div>
