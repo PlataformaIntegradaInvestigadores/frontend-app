@@ -1,8 +1,5 @@
-<div *ngIf="!showGraph">
-  <mat-spinner></mat-spinner>
-</div>
-<div class="flex justify-center" *ngIf="showGraph">
-  <div class="rounded max-w-72 mat-elevation-z8 m-2 h-fit" *ngIf="affiliations && affiliations.length > 0">
+<div class="flex justify-center gap-x-5">
+  <div class="rounded max-w-72 mat-elevation-z8 h-fit" *ngIf="affiliations && affiliations.length > 0">
     <!-- Title -->
     <div class="text-center py-3 font-bold border-b-gray-400 border-b-2">
       FILTERS
@@ -31,9 +28,9 @@
   </div>
 
 
-  <div class=" container flex flex-col ml-4 items-start">
+  <div class="ml-4">
     <div class="flex flex-col justify-between w-full bg-white border-gray-300 rounded">
-      <div *ngIf="!showGraph" class="loading-shade">
+      <div *ngIf="!showGraph">
         <div *ngIf="!showGraph">
           <mat-spinner></mat-spinner>
         </div>
