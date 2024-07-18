@@ -52,7 +52,7 @@
             placeholder="    Search Centinela user..." class="p-2 min-w-full border border-gray-300 rounded-md px-10">
           <i *ngIf="!searchQuery" class="fa fa-search absolute left-3 top-3 text-gray-500"></i>
           <div *ngIf="searchOpen && searchQuery && filteredUsers.length > 0"
-            class="absolute left-0 right-0 z-10 bg-white border border-gray-300 rounded-md mt-2 max-h-60 overflow-auto">
+            class="absolute left-0 right-0 z-10 bg-white border border-gray-300 rounded-md mt-2 max-h-60 overflow-auto min-w-fit">
             <div *ngFor="let user of filteredUsers" class="p-2 hover:bg-gray-200 cursor-pointer">
               <a [href]="generateUserGroupUrl(user.id)" target="_blank" class="flex items-center"
                 (click)="closeSearch()">
