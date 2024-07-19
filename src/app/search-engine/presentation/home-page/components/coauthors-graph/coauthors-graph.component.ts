@@ -55,7 +55,6 @@ export class CoauthorsGraphComponent {
           weight: 0,
         });
         this.setupNodes();
-        console.log(coauthors.data.links);
         this.setupLinks(coauthors.data.links);
         this.showGraph = true;
       });
@@ -77,7 +76,7 @@ export class CoauthorsGraphComponent {
               node.first_name && node.last_name
                 ? `${node.first_name} ${node.last_name}`
                 : node.last_name || '',
-            link: 'author/' + node.scopus_id,
+            link: 'profile/' + node.scopus_id,
           }
         )
       );

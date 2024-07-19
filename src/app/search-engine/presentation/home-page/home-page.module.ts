@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
-import { AuthorListComponent } from './pages/author-list/author-list.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { AuthorInformationComponent } from './components/author-information/author-information.component';
 import { AuthorTopicsComponent } from './components/author-topics/author-topics.component';
 import { CommonModule } from '@angular/common';
 import { AnaliticaComponent } from './components/analitica/analitica.component';
@@ -29,6 +27,7 @@ import {LineChartModule} from "@swimlane/ngx-charts";
 import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {SummaryComponent} from "./components/summary/summary.component";
 import {SuggestionService} from "../../../dashboard/domain/services/suggestion.service";
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -52,7 +51,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         LineChartModule,
         DashboardModule,
         MatTableModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatTooltipModule
+
     ],
     exports: [
         CoauthorsGraphComponent,
@@ -60,10 +61,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
     ],
   declarations: [
-    AuthorListComponent,
     HomePageComponent,
     AnaliticaComponent,
-    AuthorInformationComponent,
     AuthorTopicsComponent,
     AuthorRetrieveComponent,
     SearchResultComponent,

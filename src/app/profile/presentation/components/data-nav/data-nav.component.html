@@ -12,7 +12,7 @@
     </button>
     <div [ngClass]="{'hidden': !navOpen, 'block': navOpen}" class="w-full md:block md:w-auto" id="navbar-default">
       <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0 rtl:space-x-reverse">
-        <li *ngIf="isLoggedIn">
+        <li *ngIf="isLoggedIn && !authorCentinela">
           <a routerLink="./about-me" routerLinkActive="active" ariaCurrentWhenActive="page"
             class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
             <div class="w-4 h-4 mr-2">

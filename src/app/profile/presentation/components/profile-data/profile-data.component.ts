@@ -1,9 +1,9 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {UserProfile, ScopusData} from 'src/app/profile/domain/entities/user.interfaces';
-import {Author} from 'src/app/shared/interfaces/author.interface';
-import {LineChartInfo, Year} from "../../../../shared/interfaces/dashboard.interface";
-import {AuthorService} from "../../../../search-engine/domain/services/author.service";
-import {ActivatedRoute} from "@angular/router";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { UserProfile, ScopusData } from 'src/app/profile/domain/entities/user.interfaces';
+import { Author } from 'src/app/shared/interfaces/author.interface';
+import { LineChartInfo, Year } from "../../../../shared/interfaces/dashboard.interface";
+import { AuthorService } from "../../../../search-engine/domain/services/author.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'app-profile-data',
@@ -17,8 +17,8 @@ export class ProfileDataComponent implements OnChanges, OnInit {
 
   showForm = false;
   isLoggedIn: boolean = false;
-  scopusData: ScopusData = {citations: 0, documents: 0};
-
+  scopusData: ScopusData = { citations: 0, documents: 0 };
+  isAuthor: boolean = false;
   idRoute!: string
 
   years: LineChartInfo[] | undefined
@@ -33,6 +33,7 @@ export class ProfileDataComponent implements OnChanges, OnInit {
     if (changes['user']) {
       this.checkLoginStatus();
     }
+    this.isAuthor = this.isNumeric(this.idRoute);
   }
 
   ngOnInit() {
@@ -48,6 +49,7 @@ export class ProfileDataComponent implements OnChanges, OnInit {
         })
       }
     });
+    this.isAuthor = this.isNumeric(this.idRoute);
   }
 
   isNumeric(value: string): boolean {
@@ -89,4 +91,8 @@ export class ProfileDataComponent implements OnChanges, OnInit {
   get hasUserDetails(): boolean {
     return !!this.user && !!(this.user.institution || this.user.website || this.user.investigation_camp || this.user.email_institution);
   }
+  goToScopus(scopus_id: string | number | undefined) {
+    window.open(`https://www.scopus.com/authid/detail.uri?authorId=${scopus_id}`, '_blank');
+  }
+
 }
