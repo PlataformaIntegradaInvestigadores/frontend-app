@@ -1,8 +1,6 @@
 <!-- profile-data.component.html -->
-<div
-  *ngIf="user"
-  class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative"
->
+<div *ngIf="user && !isAuthor"
+     class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
   <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
     <div class="flex justify-center md:justify-start w-full md:w-1/4">
       <div
@@ -53,13 +51,8 @@
           </ng-container>
           <ng-container *ngIf="user.investigation_camp">
             <div class="break-words">
-              <strong
-                class="block text-base sm:text-lg font-semibold mb-2 text-gray-700"
-                >Investigation Field</strong
-              >
-              <p class="text-sm sm:text-base text-gray-900">
-                {{ user.investigation_camp }}
-              </p>
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Research Field</strong>
+              <p class="text-sm sm:text-base text-gray-900">{{ user.investigation_camp }}</p>
             </div>
           </ng-container>
           <ng-container *ngIf="user.email_institution">
@@ -187,11 +180,8 @@
   </div>
 </div>
 
-<!-- Profile for users of centinela -->
-<div
-  *ngIf="authorCentinela"
-  class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative"
->
+<div *ngIf="authorCentinela && isAuthor"
+     class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
   <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
     <!-- Profile Picture -->
     <div class="flex justify-center md:justify-start w-full md:w-1/4">
@@ -205,16 +195,32 @@
         />
       </div>
     </div>
-
-    <!-- Main Content -->
-    <div class="w-full flex flex-col md:flex-row md:gap-4 md:mt-4">
-      <!-- Author Information -->
-      <div class="w-full md:w-2/5 border-r border-gray-300 pr-4 md:pr-7">
-        <div class="text-center mb-4">
-          <strong class="block text-xl sm:text-2xl font-bold"
-            >{{ authorCentinela.first_name }}
-            {{ authorCentinela.last_name }}</strong
-          >
+    <div
+      class="w-full flex flex-col sm:flex-row md:flex-col md:flex-grow justify-center md:justify-start gap-x-4 gap-y-2">
+      <div class="w-full md:border-r pr-7">
+        <div class="text-center">
+          <strong
+            class="block text-xl sm:text-2xl font-bold mb-2">{{ authorCentinela.first_name }} {{ authorCentinela.last_name }}</strong>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+          <ng-container *ngIf="authorCentinela.current_affiliation">
+            <div class="break-words">
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institution</strong>
+              <p class="text-sm sm:text-base text-gray-900">{{ authorCentinela.current_affiliation}}</p>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="authorCentinela.topics">
+            <div class="break-words">
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Research Field</strong>
+              <p class="text-sm sm:text-base text-gray-900">{{ authorCentinela.topics[0] }}</p>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="authorCentinela.email">
+            <div class="break-words">
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institutional Email</strong>
+              <p class="text-sm sm:text-base text-gray-900">{{authorCentinela.email }}</p>
+            </div>
+          </ng-container>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">

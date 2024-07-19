@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, tap, switchMap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User, LoginCredentials, AuthResponse } from '../entities/interfaces';
+import { User as Users } from 'src/app/group/presentation/user.interface';
 import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
@@ -110,7 +111,7 @@ export class AuthService {
    * Obtiene una lista de usuarios.
    * @returns Un Observable que emite la lista de usuarios.
    */
-  getUsers(): Observable<User[]> {
+  getUsers(): Observable<Users[]> {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
       return throwError(() => new Error('Access token not found'));
@@ -118,7 +119,7 @@ export class AuthService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${accessToken}`
     });
-    return this.http.get<User[]>(`${this.apiUrl}/users/`, { headers }).pipe(
+    return this.http.get<Users[]>(`${this.apiUrl}/users/`, { headers }).pipe(
       catchError(error => {
         if (error.status === 401 && error.error.code === 'token_not_valid') {
           return this.refreshAccessToken().pipe(

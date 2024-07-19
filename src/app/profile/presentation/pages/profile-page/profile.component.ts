@@ -27,17 +27,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userDataService: UserDataService,
     private titleService: Title,
-    private authorService:AuthorService
-  ) {
-
-   }
+    private authorService: AuthorService
+  ) { }
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
-      this.getUserData();
-      this.getAuthorInformation();
-      this.setTitle();
+      this.loadUserData();
     });
   }
 
@@ -48,19 +44,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene los datos del usuario y actualiza el estado del componente.
+   * Carga los datos del usuario si están disponibles, de lo contrario, carga los datos del autor.
    */
-  private getUserData(): void {
+  private loadUserData(): void {
     this.userService.getUserById(this.userId).subscribe({
       next: (data: UserProfile) => {
         this.user = { ...data, id: this.userId, isOwnProfile: this.isOwnProfile };
+        this.authorCentinela = undefined;  // Limpiar datos del autor
         this.checkIfOwnProfile();
-        this.userDataService.setUser(this.user, this.authorCentinela); // Establecemos el usuario en UserDataService
+        this.userDataService.setUser(this.user, this.authorCentinela);
         this.setTitle();
         console.log('User data:', this.user);
       },
       error: (err) => {
         console.error('Error fetching user data', err);
+        this.loadAuthorData(); // Si ocurre un error, cargar los datos del autor
+      }
+    });
+  }
+
+  /**
+   * Carga los datos del autor.
+   */
+  private loadAuthorData(): void {
+    this.authorService.getAuthorById(this.userId).subscribe({
+      next: (data: Author) => {
+        this.authorCentinela = data;
+        this.user = null;  // Limpiar datos del usuario
+        this.titleService.setTitle(`${data.first_name} ${data.last_name}`);
+        console.log('Author data:', this.authorCentinela);
+      },
+      error: (err) => {
+        console.error('Error fetching author data', err);
       }
     });
   }
@@ -76,24 +91,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Establece el título de la página usando el nombre y apellido del usuario.
+   * Establece el título de la página usando el nombre y apellido del usuario o del autor.
    */
   private setTitle(): void {
     if (this.user) {
       const title = `${this.user.first_name} ${this.user.last_name}`;
       this.titleService.setTitle(title);
-    }
-  }
-
-  getAuthorInformation(){
-    try {
-        this.authorService.getAuthorById(this.userId).subscribe((data) => {
-          this.authorCentinela = data;
-          this.titleService.setTitle(`${data.first_name} ${data.last_name}`);
-        }
-      );
-    } catch (error) {
-      console.log(error)
+    } else if (this.authorCentinela) {
+      const title = `${this.authorCentinela.first_name} ${this.authorCentinela.last_name}`;
+      this.titleService.setTitle(title);
     }
   }
 }
