@@ -81,6 +81,6 @@ export class HeaderComponent {
   }
 
   generateUserGroupUrl(userId: string): string {
-    return `/profile/${userId}/my-groups`;
+    return `/profile/${userId}/about-me`;
   }
 }
