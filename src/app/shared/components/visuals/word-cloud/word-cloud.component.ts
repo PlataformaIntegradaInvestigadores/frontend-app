@@ -43,8 +43,8 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    console.log(this.min)
-    console.log(this.size)
+    // console.log(this.min)
+    // console.log(this.size)
   }
 
   ngAfterViewInit(): void {

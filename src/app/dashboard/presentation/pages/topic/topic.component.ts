@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./topic.component.css']
 })
 export class TopicComponent {
-  tops: NameValue[]=[]
+  tops!: NameValue[]
   constructor(private dashboardService:DashboardService, private topicService: TopicService, private router: Router) {
     this.dashboardService.getTreeMap().subscribe(data =>{
       this.tops = data
@@ -19,19 +19,16 @@ export class TopicComponent {
   }
   onSearchEntity(event: string) {
     this.router.navigate(['home/analitica/dashboard/by-topic', event]).then(nav => {
-        console.log('')
       }
     )
   }
   navigateGeneral() {
     this.router.navigate(['home/analitica/dashboard/']).then(nav => {
-        console.log('')
       }
     )
   }
   navigateAffiliation() {
     this.router.navigate(['home/analitica/dashboard/affiliations/']).then(nav => {
-        console.log('')
       }
     )
   }

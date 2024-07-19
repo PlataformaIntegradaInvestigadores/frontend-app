@@ -32,7 +32,6 @@ export class AffiliationDashboardComponent {
 
   onSearchEntity(event: string) {
     this.router.navigate(['home/analitica/dashboard/by-affiliation', event]).then(nav => {
-        console.log('')
       }
     )
   }
@@ -40,8 +39,6 @@ export class AffiliationDashboardComponent {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const id = params['id'];
-      console.log(params)
-      console.log(id);
       if (id) {
         this.getScopusId(id);
       }
@@ -122,19 +119,16 @@ export class AffiliationDashboardComponent {
   }
   onSearchTopic(event: string) {
     this.router.navigate(['home/analitica/dashboard/by-topic', event]).then(nav => {
-        console.log('')
       }
     )
   }
   navigateGeneral() {
     this.router.navigate(['home/analitica/dashboard/']).then(nav => {
-        console.log('')
       }
     )
   }
   navigateTopic() {
     this.router.navigate(['home/analitica/dashboard/topic/']).then(nav => {
-        console.log('')
       }
     )
   }

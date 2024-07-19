@@ -59,9 +59,6 @@ export class SearchBarComponent implements OnInit {
             }
           );
         break;
-      case 'province':
-        // Lógica para provinces
-        break;
     }
   }
 

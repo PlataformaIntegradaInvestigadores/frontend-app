@@ -34,7 +34,7 @@ export class EvolutionLineChartComponent {
 
 
   onSelect(event: NameValue): void {
-    console.log('Selected item:', event); // Log para verificar el elemento seleccionado
+    // console.log('Selected item:', event); // Log para verificar el elemento seleccionado
     this.selectedYear.emit(event.name);
     this.selectedItem = event;
   }
