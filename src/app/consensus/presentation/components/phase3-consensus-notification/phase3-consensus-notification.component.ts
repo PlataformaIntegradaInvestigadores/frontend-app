@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 import { WebSocketPhase3Service } from 'src/app/consensus/domain/services/websocket-phase3.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'phase3-consensus-notification',
@@ -66,6 +67,8 @@ export class Phase3ConsensusNotificationComponent {
           }
           // Convertir `created_at` a objeto Date si no es null, de lo contrario usar `added_at`
           msg.created_at = msg.created_at ? new Date(msg.created_at) : msg.added_at;
+     
+          msg.profile_picture_url= this.getProfilePictureUrl(msg.profile_picture_url)
 
           this.satisfactionNotifications.push(msg);
           // Ordenar notificaciones por `created_at` de más reciente a más antigua
@@ -94,4 +97,10 @@ export class Phase3ConsensusNotificationComponent {
       return date.toLocaleDateString(); // MM/DD/YYYY format
     }
   }
+
+  getProfilePictureUrl(url: string | undefined): string {
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    return url ? `${baseUrl}${url}` : '../../../../../assets/profile.png';
+  }
+
 }
