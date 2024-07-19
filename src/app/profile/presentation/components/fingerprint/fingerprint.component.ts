@@ -26,7 +26,6 @@ export class FingerprintComponent implements OnInit {
   ngOnInit() {
     this.route.parent?.paramMap.subscribe(params => {
       let id = parseInt(params?.get('id')!);
-      console.log(this.scopusId)
       if(this.isNumeric(id.toString())){
         this.scopusId = id;
       }else{
@@ -50,7 +49,6 @@ export class FingerprintComponent implements OnInit {
     this.authorService.getTopicsById(this.scopusId).subscribe(
       data => {
         this.words = data
-        console.log(this.words)
       }
     )
   }

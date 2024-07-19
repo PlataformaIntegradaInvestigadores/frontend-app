@@ -46,12 +46,7 @@ export class CoauthorsGraphComponent {
     this.authorService
       .getCoauthorsById(this.author.scopus_id)
       .subscribe(coauthors => {
-        console.log('dentro xd: ' + this.author.scopus_id)
-        console.log(coauthors);
         this.apiNodes = coauthors.data.nodes;
-        console.log('coauthors: ' + this.apiNodes)
-        console.log("Verificando el tipo")
-        console.log(typeof this.author.scopus_id)
         this.apiNodes.push({
           scopus_id: parseInt(String(this.author.scopus_id)),
           initials: this.author.initials,
@@ -108,9 +103,7 @@ export class CoauthorsGraphComponent {
     links: { source: number; target: number; collabStrength: number }[]
   ) {
     links.forEach((link) => {
-      console.log("asasasadssa: " + link.source + '   ' + link.target + "   " + link.collabStrength);
       this.d3Nodes[this.getIndexByScopusId(link.source)].degree++;
-      console.log('degreeeeeee: ' + this.d3Nodes)
       this.d3Nodes[this.getIndexByScopusId(link.target)].degree++;
       this.d3Links.push(
         new Link(link.source, link.target, link.collabStrength * 5)
@@ -119,8 +112,6 @@ export class CoauthorsGraphComponent {
   }
 
   getIndexByScopusId(scopusId: any) {
-    console.log('scopus: ' + scopusId);
-    console.log('index: ' + this.apiNodes.map((node) => node.scopus_id).indexOf(scopusId));
     return this.apiNodes.map((node) => node.scopus_id).indexOf(scopusId);
   }
 

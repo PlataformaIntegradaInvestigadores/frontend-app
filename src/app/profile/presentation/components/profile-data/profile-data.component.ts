@@ -42,14 +42,12 @@ export class ProfileDataComponent implements OnChanges, OnInit {
         this.authorService.getAuthorById(this.idRoute).subscribe(data => {
           this.name = data.auth_name
           this.authorService.getLineChartInfo(this.idRoute, this.name).subscribe(data => {
-            // this.years = []
             this.years = data
             this.charged = true
           })
         })
       }
     });
-    console.log(this.years)
   }
 
   isNumeric(value: string): boolean {

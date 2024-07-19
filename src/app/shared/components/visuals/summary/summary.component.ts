@@ -12,7 +12,7 @@ export class SummaryComponent implements OnInit{
   counts!: DashboardCounts;
 
   ngOnInit(): void {
-    console.log(this.counts.author)
+    // console.log(this.counts.author)
   }
 
 

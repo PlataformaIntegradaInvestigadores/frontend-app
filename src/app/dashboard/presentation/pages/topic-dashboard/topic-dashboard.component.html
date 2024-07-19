@@ -3,7 +3,7 @@
 <div class="w-full h-full flex justify-center items-center" *ngIf="!isCharged()">
     <mat-spinner></mat-spinner>
 </div>
-<div class="flex justify-center items-center p-3" *ngIf="isCharged">
+<div class="flex justify-center items-center p-3" *ngIf="isCharged()">
     <div class="gap-y-3">
         <div class="flex flex-col justify-center items-center gap-x-5">
             <h1 class="flex justify-center items-center w-full ">{{topic_name|titlecase}} Statistics</h1>

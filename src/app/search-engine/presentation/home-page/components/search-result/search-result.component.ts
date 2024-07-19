@@ -41,7 +41,6 @@ export class SearchResultComponent implements OnInit {
   }
 
   yearSelected(years: number[]) {
-    console.log(years)
   }
 
   ngAfterContentChecked(): void {
@@ -57,7 +56,6 @@ export class SearchResultComponent implements OnInit {
     this.visualsService.getTopics(100).subscribe(data => {
       this.words = data;
       this.topicsLoaded = true;
-      console.log(this.words);
     });
   }
 

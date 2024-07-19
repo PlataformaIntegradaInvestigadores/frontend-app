@@ -1,8 +1,10 @@
-<ngx-charts-tree-map
-  [view]="[width,height]"
-  [results]="single"
-  [gradient]="gradient"
-  [animations]="animations"
-  [scheme]=colorScheme
-  (select)="onSelect($event)">
-</ngx-charts-tree-map>
+<div *ngIf="colorsCharged">
+  <ngx-charts-tree-map
+    [view]="[width,height]"
+    [results]="single"
+    [gradient]="gradient"
+    [animations]="animations"
+    [scheme]=colorScheme
+    (select)="onSelect($event)">
+  </ngx-charts-tree-map>
+</div>

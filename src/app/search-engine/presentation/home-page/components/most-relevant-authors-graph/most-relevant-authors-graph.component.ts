@@ -86,7 +86,7 @@ export class MostRelevantAuthorsGraphComponent {
     } else {
       this.selectedAffiliations.splice(this.selectedAffiliations.indexOf(item), 1)
     }
-    console.log(this.selectedAffiliations)
+    // console.log(this.selectedAffiliations)
     this.onClickAffiliationsFilter('include')
   }
 
@@ -111,7 +111,7 @@ export class MostRelevantAuthorsGraphComponent {
         .pipe(
           tap((coauthors) => {
             coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
-            console.log('dentro2: xd'+ this.authorsNumber)
+            // console.log('dentro2: xd'+ this.authorsNumber)
             this.affiliations = coauthors.affiliations;
             this.setupGraph(coauthors);
             this.showGraph = true;
