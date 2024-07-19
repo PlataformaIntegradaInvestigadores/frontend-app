@@ -57,7 +57,7 @@ export class MostRelevantAuthorsGraphComponent {
         tap((coauthors) => {
           this.affiliations = []
           coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
-          this.affiliations = coauthors.affiliations;
+          // this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
           this.loading.emit(false);
