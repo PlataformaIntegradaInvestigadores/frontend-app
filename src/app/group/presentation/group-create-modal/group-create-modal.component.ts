@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 import { GroupService } from 'src/app/group/domain/entities/group.service';
+import { User } from 'src/app/group/presentation/user.interface';  // Import the User interface
 
 @Component({
   selector: 'app-group-create-modal',
@@ -14,10 +15,11 @@ export class GroupCreateModalComponent {
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
   groupForm: FormGroup;
-  users: any[] = [];
-  filteredUsers: any[] = [];
-  selectedUsers: any[] = [];
+  users: User[] = [];  // Use the User interface
+  filteredUsers: User[] = [];  // Use the User interface
+  selectedUsers: User[] = [];  // Use the User interface
   searchQuery: string = '';
+  isConfirmationModalOpen = false;  // Track the state of the confirmation modal
 
   constructor(
     private fb: FormBuilder,
@@ -44,7 +46,7 @@ export class GroupCreateModalComponent {
   }
 
   loadUsers() {
-    this.authService.getUsers().subscribe(users => {
+    this.authService.getUsers().subscribe((users: User[]) => {  // Use the User interface
       this.users = users;
       this.filteredUsers = users;
     });
@@ -58,7 +60,7 @@ export class GroupCreateModalComponent {
     );
   }
 
-  onUserSelect(user: any) {
+  onUserSelect(user: User) {  // Use the User interface
     if (!this.selectedUsers.includes(user)) {
       this.selectedUsers.push(user);
       const userSearchControl = this.groupForm.get('userSearch');
@@ -69,12 +71,22 @@ export class GroupCreateModalComponent {
     }
   }
 
-  removeUser(user: any) {
+  removeUser(user: User) {  // Use the User interface
     this.selectedUsers = this.selectedUsers.filter(u => u !== user);
     this.filterUsers();
   }
 
-  onSubmit() {
+  openConfirmationModal() {
+    if (this.groupForm.valid && this.selectedUsers.length > 0) {
+      this.isConfirmationModalOpen = true;
+    }
+  }
+
+  closeConfirmationModal() {
+    this.isConfirmationModalOpen = false;
+  }
+
+  confirmCreateGroup() {
     if (this.groupForm.valid) {
       const groupData: any = {
         title: this.groupForm.get('title')?.value,
@@ -84,14 +96,9 @@ export class GroupCreateModalComponent {
         groupData.users = this.selectedUsers.map(user => user.id);
       }
 
-
-
       this.groupService.createGroup(groupData).subscribe(
         response => {
-         
-          
           window.location.reload();
-      
         },
         error => {
           console.error('Error creating group', error);
@@ -112,5 +119,4 @@ export class GroupCreateModalComponent {
     const input = event.target as HTMLInputElement;
     input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
   }
-
 }
