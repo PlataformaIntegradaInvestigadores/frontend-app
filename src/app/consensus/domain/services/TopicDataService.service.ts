@@ -64,7 +64,7 @@ export class TopicService {
     const body = { topic: topicName, user_id: userId };
 
     // Imprimir la estructura de datos que se enviará
-    //console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
+    console.log('Datos que se enviarán:', JSON.stringify(body, null, 2));
 
     return this.http.get<any>(`${this.apiUrl}${groupId}/current-phase/`, { headers }).pipe(
       switchMap(phaseResponse => {

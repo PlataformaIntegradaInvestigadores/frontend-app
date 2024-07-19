@@ -191,6 +191,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   addTopic(): void {
     const userId = this.authService.getUserId();
+    console.log('Inicio ADD tOPIC', this.newTopic.trim(), userId, this.groupId);
     if (this.newTopic.trim() && userId && this.groupId) {
       this.topicService.addNewTopic(this.groupId, this.newTopic.trim()).subscribe(
         response => {
@@ -230,7 +231,9 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
             }, 8000);
           }, 0);
         }
+        
       );
+      console.log('Fin ADD tOPIC');
     }
   }
 
