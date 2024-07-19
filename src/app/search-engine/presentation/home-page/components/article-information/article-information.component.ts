@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./article-information.component.css']
 })
 export class ArticleInformationComponent {
-  displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date', 'status', 'citations'];
+  displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date'];
 
   @Input() query!: string
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>()

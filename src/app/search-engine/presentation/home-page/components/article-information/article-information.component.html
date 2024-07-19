@@ -1,6 +1,6 @@
 <div class="flex justify-center">
-  <div  class="col-lg-2  px-0">
-    <div class="rounded mx-4 mt-10 mat-elevation-z8">
+  <div  class="col-lg-2  px-0 mt-3">
+    <div class="rounded mx-4 mat-elevation-z8">
 
       <!-- Title -->
       <div class="text-center py-3 font-bold border-b-gray-400 border-b-2">
@@ -20,7 +20,8 @@
 
     </div>
   </div>
-  <div class="container border-b-gray-400 border-b-2">
+
+  <div class="container border-b-gray-400 border-b-2 mt-3">
     <div *ngIf="isLoadingResults">
       <div *ngIf="isLoadingResults">
         <mat-spinner></mat-spinner>
@@ -64,16 +65,8 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Status</th>
-            <td mat-cell *matCellDef="let row">No updated</td>
-          </ng-container>
-          <ng-container matColumnDef="citations">
-            <th mat-header-cell *matHeaderCellDef>Citations</th>
-            <td mat-cell *matCellDef="let row">{{ row.citations }}</td>
-          </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="border-2 border-green-500"></tr>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr
             mat-row
             *matRowDef="let row; columns: displayedColumns"

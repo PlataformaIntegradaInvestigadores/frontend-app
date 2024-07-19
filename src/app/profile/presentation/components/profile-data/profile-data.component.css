@@ -1,0 +1,10 @@
+.color-text{
+  background-color: #FF7F50;
+  color: #F7EEDD;
+}
+
+.color-text:hover{
+  background-color: #FF6347;
+  color: #F7EEDD;
+  cursor: pointer;
+}

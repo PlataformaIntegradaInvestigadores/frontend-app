@@ -52,8 +52,6 @@ export class ProfileDataComponent implements OnChanges, OnInit {
       }
     });
     this.isAuthor = this.isNumeric(this.idRoute);
-    console.log(this.isAuthor)
-    console.log(this.years)
   }
 
   isNumeric(value: string): boolean {
@@ -95,4 +93,8 @@ export class ProfileDataComponent implements OnChanges, OnInit {
   get hasUserDetails(): boolean {
     return !!this.user && !!(this.user.institution || this.user.website || this.user.investigation_camp || this.user.email_institution);
   }
+  goToScopus(scopus_id: string | number | undefined) {
+    window.open(`https://www.scopus.com/authid/detail.uri?authorId=${scopus_id}`, '_blank');
+  }
+
 }
