@@ -4,7 +4,7 @@ import { AuthService } from '../../domain/services/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
 import { Router } from "@angular/router";
 import { User } from '../../domain/entities/interfaces';
-import * as CryptoJS from 'crypto-js';
+// import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-register',

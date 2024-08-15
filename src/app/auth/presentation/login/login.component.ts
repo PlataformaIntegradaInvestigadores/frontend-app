@@ -5,7 +5,7 @@ import { AuthService } from '../../domain/services/auth.service';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../domain/services/error.service';
 import { LoginCredentials } from '../../domain/entities/interfaces';
-import * as CryptoJS from 'crypto-js';
+// import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-login',
