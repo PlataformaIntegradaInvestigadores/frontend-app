@@ -43,7 +43,8 @@ export class LoginComponent implements OnInit {
       const encryptedPassword = CryptoJS.SHA256(formData.password).toString();
       const loginData: LoginCredentials = {
         username: formData.username,
-        password: encryptedPassword
+        // password: encryptedPassword
+        password: formData.password
       };
 
       this.authService.login(loginData).subscribe(

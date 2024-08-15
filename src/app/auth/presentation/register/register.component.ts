@@ -43,15 +43,18 @@ export class RegisterComponent implements OnInit {
     }
 
     const formValues = { ...this.registerForm.value };
+
+    //encriptar la contraseña
     const encryptedPassword = CryptoJS.SHA256(formValues.password).toString();
     delete formValues.confirm_password;
     delete formValues.agree_terms;
 
     const user: User = {
       ...formValues,
-      password: encryptedPassword,
+      // password: encryptedPassword,
+      password: formValues.password,
       scopus_id: formValues.scopus_id ? formValues.scopus_id : null,
-      id: null // Si necesitas inicializar el ID a null
+      id: null
     };
 
     this.authService.register(user).subscribe({
