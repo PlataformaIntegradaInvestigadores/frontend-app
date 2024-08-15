@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       const formData = this.loginForm.value;
       // Encriptar la contraseña
-      const encryptedPassword = CryptoJS.SHA256(formData.password).toString();
+      // const encryptedPassword = CryptoJS.SHA256(formData.password).toString();
       const loginData: LoginCredentials = {
         username: formData.username,
         // password: encryptedPassword
