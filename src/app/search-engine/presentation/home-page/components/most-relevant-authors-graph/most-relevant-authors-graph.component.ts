@@ -57,6 +57,9 @@ export class MostRelevantAuthorsGraphComponent {
         tap((coauthors) => {
           this.affiliations = []
           coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
+          if (coauthors.nodes.length == 0) {
+            this.authorsNumber = 0;
+          }
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
@@ -127,7 +130,7 @@ export class MostRelevantAuthorsGraphComponent {
         enablePopover: true,
         title: 'Autor',
         content: node.first_name + " " + node.last_name,
-        link: 'author/' + node.scopus_id
+        link: 'profile/' + node.scopus_id
       }, this.apiNodes.length - index)
     })
   }
@@ -155,7 +158,6 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   getIndexByScopusId(scopusId: any) {
-    console.log(this.apiNodes.map(node => node.scopus_id).indexOf(scopusId))
     return this.apiNodes.map(node => node.scopus_id).indexOf(scopusId)
   }
 
