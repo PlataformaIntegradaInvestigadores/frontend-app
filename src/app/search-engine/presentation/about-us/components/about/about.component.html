@@ -1,0 +1,20 @@
+<div class="flex h-screen">
+  <aside class="w-1/4  text-white p-4">
+    <nav>
+      <ul>
+        <li class="mb-2">
+          <a [routerLink]="'getting-started'" class="block p-2 bg-gray-700 rounded hover:bg-gray-600">Getting Started</a>
+        </li>
+        <li class="mb-2">
+          <a [routerLink]="'author-search'" class="block p-2 bg-gray-700 rounded hover:bg-gray-600">Búsqueda Autores</a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="w-3/4 p-4 flex justify-center">
+    <router-outlet ></router-outlet>
+  </main>
+</div>
+

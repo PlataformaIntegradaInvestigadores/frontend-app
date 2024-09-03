@@ -22,6 +22,11 @@ const routes: Routes = [
         path: 'analitica',
         loadChildren: () => import('src/app/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
+      {
+        path: 'about-us',
+        loadChildren: () => import('src/app/search-engine/presentation/about-us/about-us.module').then(m => m.AboutUsModule)
+      }
+
     ],
   },
 
