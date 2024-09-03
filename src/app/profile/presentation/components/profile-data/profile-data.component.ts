@@ -17,7 +17,7 @@ export class ProfileDataComponent implements OnChanges, OnInit {
 
   showForm = false;
   isLoggedIn: boolean = false;
-  scopusData: ScopusData = { citations: 0, documents: 0 };
+  scopusData: ScopusData = { citations: 0, articles: 0 };
   isAuthor: boolean = false;
   idRoute!: string
 
@@ -34,6 +34,11 @@ export class ProfileDataComponent implements OnChanges, OnInit {
       this.checkLoginStatus();
     }
     this.isAuthor = this.isNumeric(this.idRoute);
+    this.authorService.getAuthorById(this.user?.scopus_id!).subscribe(data => {
+      this.scopusData.citations = data.citation_count;
+      this.scopusData.articles = data.articles;
+    })
+
   }
 
   ngOnInit() {
