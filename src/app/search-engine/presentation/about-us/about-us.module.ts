@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { GettingStartedComponent } from './components/getting-started/getting-started.component';
 import { AuthorSearchComponent } from './components/author-search/author-search.component';
 import { AboutComponent } from './components/about/about.component';
+import { RelevantArticlesComponent } from './components/relevant-articles/relevant-articles.component';
+import { RelevantAuthorsComponent } from './components/relevant-authors/relevant-authors.component';
 
 
 @NgModule({
@@ -15,7 +17,9 @@ import { AboutComponent } from './components/about/about.component';
   declarations: [
   GettingStartedComponent,
   AuthorSearchComponent,
-  AboutComponent
+  AboutComponent,
+  RelevantArticlesComponent,
+  RelevantAuthorsComponent
   ],
   providers: [],
 })
