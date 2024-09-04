@@ -1,10 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NotificationAdd, NotificationGeneral } from 'src/app/consensus/domain/entities/notificationAdd.interface';
 import { GetNotificationAddTopicService } from 'src/app/consensus/domain/services/GetNotificationAddTopicService.service';
 import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketService.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'phase1-consensus-notification',
@@ -34,17 +35,31 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
         this.loadNotifications();
       });
   
-      /* Lo que trae el webscoket */
+      /* Notificar que se agrego un topico en el grupo */
       this.newNotificationSubscription = this.webSocketService.newTopicReceived.subscribe((topic: any) => {
         const notification: NotificationAdd = {
           ...topic,
           added_at: new Date(topic.added_at)
         };
         if (!this.notificationsWS.some(t => t.notification_message === notification.notification_message)) {
-          this.notificationsWS.unshift(notification);
+          
+          const addTopicNotification: NotificationAdd = {
+            id: notification.id,
+            user_id: notification.user_id,
+            group_id: notification.group_id,
+            type: notification.type,
+            topic_name: notification.topic_name,
+            notification_message: notification.notification_message,
+            added_at: new Date(notification.added_at),
+            profile_picture_url: this.getProfilePictureUrl(notification.profile_picture_url)
+          };
+          
+          this.notificationsWS.unshift(addTopicNotification);
           this.updateUnifiedNotifications();
           this.cdr.detectChanges();
         }
+        console.log('New topic received:', topic);
+        console.log('Notifications:', this.unifiedNotifications);
       });
       
       this.newNotificationSubscription = this.webSocketService.notificationsReceived.subscribe((notification: any) => {
@@ -66,7 +81,8 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
             group_id: notification.group_id,
             notification_type: notification.type,
             message: notification.notification_message,
-            created_at: new Date(notification.added_at)
+            created_at: new Date(notification.added_at),
+            profile_picture_url: this.getProfilePictureUrl(notification.profile_picture_url)
           };
           this.notificationsLoaded.unshift(visitedNotification);
           this.updateUnifiedNotifications();
@@ -133,4 +149,10 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
       return date.toLocaleDateString(); // MM/DD/YYYY format
     }
   }
+
+  getProfilePictureUrl(url: string | undefined): string {
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    return url ? `${baseUrl}${url}` : '../../../../../assets/profile.png';
+  }
+
 }
