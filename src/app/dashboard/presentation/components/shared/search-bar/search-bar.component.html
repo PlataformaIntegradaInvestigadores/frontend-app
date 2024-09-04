@@ -9,22 +9,22 @@
     (blur)="onBlur()"
   >
   <div *ngIf="showSuggestions && affiliations.length > 0"
-       class="max-w-screen-sm min-w-max max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50"
+       class="w-2/5 max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50"
        [ngSwitch]="code">
 
     <div *ngSwitchCase="'affiliation'"
-         class="flex flex-col justify-start items-start w-auto">
-      <button class="hover:bg-gray-400 w-full flex justify-start items-start" *ngFor="let affiliation of affiliations"
+         class="flex flex-col flex-grow justify-start items-start ">
+      <button class="hover:bg-gray-400 w-full flex flex-grow justify-start items-start" *ngFor="let affiliation of affiliations"
               (click)="selectSuggestion(affiliation)">
         {{ affiliation.name }}
       </button>
     </div>
   </div>
   <div *ngIf="showSuggestions && topics.length > 0"
-       class="max-w-screen-sm max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50"
+       class="w-2/5 max-h-40 bg-white border-2 p-2 border-black flex overflow-y-scroll absolute top-10 z-50"
        [ngSwitch]="code">
     <div *ngSwitchCase="'topic'"
-         class="flex flex-col justify-start items-start w-auto">
+         class="flex flex-col flex-grow justify-start items-start min-w-max">
       <button class="hover:bg-gray-400 w-full flex justify-start items-start" *ngFor="let topic of topics"
               (click)="selectSuggestion(topic)">
         {{ topic.name }}

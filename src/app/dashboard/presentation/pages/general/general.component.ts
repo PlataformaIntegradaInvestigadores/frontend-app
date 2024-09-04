@@ -35,15 +35,13 @@ export class GeneralComponent implements OnInit{
     );
     this.dashboardService.getCounts(this.year).subscribe(data => {
       this.counts = data;
-      console.log(this.counts); // Aquí puedes ver la respuesta en la consola
+      console.log(this.counts);
     });
     this.dashboardService.getTreeMap().subscribe(data => {
-      console.log('cossjd' + this.treeMapInfo)
       this.treeMapInfo = data;
     });
     this.dashboardService.getBarInfo().subscribe(data => {
       this.barChartInfo = data;
-      // console.log(data)
     });
     this.provinces = environment.apiCentinela+'api/v1/dashboard/province/get_provinces/'
   }
@@ -104,7 +102,6 @@ export class GeneralComponent implements OnInit{
   }
   onSearchEntity(event: string) {
     this.router.navigate(['home/analitica/dashboard/by-affiliation', event]).then(nav => {
-        console.log('')
       }
     )
   }
@@ -115,7 +112,6 @@ export class GeneralComponent implements OnInit{
   }
   onSearchTopic(event: string) {
     this.router.navigate(['home/analitica/dashboard/by-topic', event]).then(nav => {
-        console.log('')
       }
     )
   }

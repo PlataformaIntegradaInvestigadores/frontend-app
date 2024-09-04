@@ -17,6 +17,7 @@ import { HeaderDashboardComponent } from './components/header/header.component';
 import { MainContentComponent } from './components/main-content/main-content.component';
 import { UpdateCentinelaComponent } from './components/update-centinela/update-centinela.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { LoggerComponent } from './components/logger/logger.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatInputModule,
     AdminRoutingModule,
     CommonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    FormsModule
   ],
   exports: [],
   declarations: [
@@ -41,7 +43,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     HeaderDashboardComponent,
     SidebarDashboardComponent,
     MainContentComponent,
-    UpdateCentinelaComponent
+    UpdateCentinelaComponent,
+    LoggerComponent
   ],
   providers: [],
 })

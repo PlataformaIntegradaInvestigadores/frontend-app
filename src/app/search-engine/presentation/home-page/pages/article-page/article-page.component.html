@@ -3,30 +3,41 @@
     <h1>
       {{ article?.title }}
     </h1>
-    <div class="flex w-full justify-end mt-3 hover:cursor-pointer" (click)="goToArticle(article?.scopus_id)" >
-      <a class="text-amber-300 hover:text-amber-500 text-[17px] ">VIEW ARTICLE IN SCOPUS</a>
+    <div class="flex w-full justify-end">
+      <a
+        (click)="goToArticle(article?.scopus_id)"
+        class="hover:cursor-pointer h-10 w-2/12 rounded-md flex items-center justify-center color-text">
+        VIEW ARTICLE IN SCOPUS
+      </a>
     </div>
     <h2 class="inline">Authors:</h2>
     <div class="flex flex-wrap gap-x-3">
-      <ng-container class="flex justify-between items-baseline" *ngFor="let au of article?.authors">
-        <h3 class="cursor-pointer hover:font-semibold" (click)="goToAuthor(au.scopusId)">{{ au.name }}</h3>
+      <ng-container
+        class="flex justify-between items-baseline"
+        *ngFor="let au of article?.authors">
+        <h3
+          class="cursor-pointer hover:font-semibold"
+          (click)="goToAuthor(au.scopusId)">
+          {{ au.name }}
+        </h3>
       </ng-container>
     </div>
     <h2 class="inline">Affiliations:</h2>
     <div class="flex flex-wrap gap-x-3">
-        <ng-container class="flex justify-between items-baseline flex-col" *ngFor="let aff of article?.affiliations">
-          <h3>{{ aff }}</h3>
-        </ng-container>
+      <ng-container
+        class="flex justify-between items-baseline flex-col"
+        *ngFor="let aff of article?.affiliations">
+        <h3>{{ aff }}</h3>
+      </ng-container>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3">
-
-      <div class="">
+      <div class>
         <h2 class="inline">Publication date:</h2>
         <h3>
           {{ article?.publication_date }}
         </h3>
       </div>
-      <div class="">
+      <div class>
         <h2 class="inline">Citations:</h2>
         <h3>
           {{ article?.citations || 0 }}
@@ -47,7 +58,5 @@
         </ng-container>
       </div>
     </div>
-
   </div>
 </div>
-

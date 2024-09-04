@@ -10,7 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./affiliation.component.css']
 })
 export class AffiliationComponent implements OnInit {
-  affiliations: NameValue[] = []
+  affiliations!: NameValue[]
   yearOptions!: number[]
 
   constructor(
@@ -23,7 +23,6 @@ export class AffiliationComponent implements OnInit {
 
   onSearchEntity(event: string) {
     this.router.navigate(['home/analitica/dashboard/by-affiliation', event]).then(nav => {
-        console.log('')
       }
     )
   }
@@ -47,13 +46,11 @@ export class AffiliationComponent implements OnInit {
   }
   navigateGeneral() {
     this.router.navigate(['home/analitica/dashboard/']).then(nav => {
-        console.log('')
       }
     )
   }
   navigateTopic() {
     this.router.navigate(['home/analitica/dashboard/topic/']).then(nav => {
-        console.log('')
       }
     )
   }

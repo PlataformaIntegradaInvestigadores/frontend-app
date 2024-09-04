@@ -30,4 +30,8 @@ Una vez dentro instalar cualquier dependencia necesaria
 
 `npm install @types/angular`
 
+## Notas
+- Para acceder al panel de administración y extraer los datos de Scopus. Dirigirse a la ruta 
+    `admin/` e iniciar el proceso de extracción.
+
 ## Importante: despues de hacer cada instalacion, no olvidar hacer el build del contenedor

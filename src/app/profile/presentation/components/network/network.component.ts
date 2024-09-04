@@ -50,7 +50,6 @@ export class NetworkComponent implements OnInit {
       this.authorService.getAuthorById(this.scopusId.toString()).subscribe(
         data => {
           this.author = data;
-          console.log(this.author)
         },
         error => {
           console.error('Error fetching author', error);

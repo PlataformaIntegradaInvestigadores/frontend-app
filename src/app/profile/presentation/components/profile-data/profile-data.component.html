@@ -1,132 +1,198 @@
 <!-- profile-data.component.html -->
-<div *ngIf="user"
+<div *ngIf="user && !isAuthor"
      class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
   <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
     <div class="flex justify-center md:justify-start w-full md:w-1/4">
-      <div class="relative w-32 h-40 sm:w-40 sm:h-48 overflow-hidden rounded border-4 border-gray-200 shadow-xl">
-        <img class="object-cover w-full h-full " [attr.src]="user.profile_picture || 'assets/profile.png'"
-          alt="Profile Picture">
+      <div
+        class="relative w-32 h-40 sm:w-40 sm:h-48 overflow-hidden rounded border-4 border-gray-200 shadow-xl"
+      >
+        <img
+          class="object-cover w-full h-full"
+          [attr.src]="user.profile_picture || 'assets/profile.png'"
+          alt="Profile Picture"
+        />
       </div>
     </div>
     <div
-      class="w-full flex flex-col sm:flex-row md:flex-col md:flex-grow justify-center md:justify-start gap-x-4 gap-y-2">
+      class="w-full flex flex-col sm:flex-row md:flex-col md:flex-grow justify-center md:justify-start gap-x-4 gap-y-2"
+    >
       <div class="w-full md:border-r pr-7">
         <div class="text-center">
-          <strong class="block text-xl sm:text-2xl font-bold mb-2">{{ user.first_name }} {{ user.last_name }}</strong>
+          <strong class="block text-xl sm:text-2xl font-bold mb-2"
+            >{{ user.first_name }} {{ user.last_name }}</strong
+          >
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
           <ng-container *ngIf="user.institution">
             <div class="break-words">
-              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institution</strong>
-              <p class="text-sm sm:text-base text-gray-900">{{ user.institution }}</p>
+              <strong
+                class="block text-base sm:text-lg font-semibold mb-2 text-gray-700"
+                >Institution</strong
+              >
+              <p class="text-sm sm:text-base text-gray-900">
+                {{ user.institution }}
+              </p>
             </div>
           </ng-container>
           <ng-container *ngIf="user.website">
             <div class="break-words">
-              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Website</strong>
+              <strong
+                class="block text-base sm:text-lg font-semibold mb-2 text-gray-700"
+                >Website</strong
+              >
               <p class="text-sm sm:text-base text-gray-900">
-                <a href="{{ user.website }}" class="text-blue-500 hover:underline">{{ user.website }}</a>
+                <a
+                  href="{{ user.website }}"
+                  class="text-blue-500 hover:underline"
+                  >{{ user.website }}</a
+                >
               </p>
             </div>
           </ng-container>
           <ng-container *ngIf="user.investigation_camp">
             <div class="break-words">
-              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Investigation Field</strong>
+              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Research Field</strong>
               <p class="text-sm sm:text-base text-gray-900">{{ user.investigation_camp }}</p>
             </div>
           </ng-container>
           <ng-container *ngIf="user.email_institution">
             <div class="break-words">
-              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institutional Email</strong>
-              <p class="text-sm sm:text-base text-gray-900">{{ user.email_institution }}</p>
+              <strong
+                class="block text-base sm:text-lg font-semibold mb-2 text-gray-700"
+                >Institutional Email</strong
+              >
+              <p class="text-sm sm:text-base text-gray-900">
+                {{ user.email_institution }}
+              </p>
             </div>
           </ng-container>
         </div>
         <div *ngIf="shouldShowLoggedInMessage" class="text-justify mt-2">
           <p class="text-gray-600">
-            Welcome {{ user.first_name }}! It's great to see you here. By completing your profile, you can better
-            showcase your professional journey and achievements.
+            Welcome {{ user.first_name }}! It's great to see you here. By
+            completing your profile, you can better showcase your professional
+            journey and achievements.
           </p>
           <p class="text-gray-600 mt-2">
-            Adding details such as your institution, website, and research interests can help others in your field find
-            and connect with you more easily (click on "Edit Profile").
+            Adding details such as your institution, website, and research
+            interests can help others in your field find and connect with you
+            more easily (click on "Edit Profile").
           </p>
           <p class="text-gray-600 mt-2">
-            Remember, every bit of information you add makes your profile richer and more impactful. Take a few moments
-            to fill in these details and let your professional persona shine!
+            Remember, every bit of information you add makes your profile richer
+            and more impactful. Take a few moments to fill in these details and
+            let your professional persona shine!
           </p>
         </div>
         <div *ngIf="shouldShowLoggedOutMessage" class="text-justify mt-6">
           <p class="text-gray-600">
-            Welcome to {{ user.first_name }} {{ user.last_name }}'s profile! Currently, this profile doesn't have
-            detailed information filled out yet.
+            Welcome to {{ user.first_name }} {{ user.last_name }}'s profile!
+            Currently, this profile doesn't have detailed information filled out
+            yet.
           </p>
           <p class="text-gray-600 mt-2">
-            Encourage {{ user.first_name }} to complete their profile to better showcase their professional journey and
-            achievements.
+            Encourage {{ user.first_name }} to complete their profile to better
+            showcase their professional journey and achievements.
           </p>
           <p class="text-gray-600 mt-2">
-            Detailed profiles help in making professional connections and collaborations more effective. If you know {{
-            user.first_name }}, feel free to suggest them to add more details here.
+            Detailed profiles help in making professional connections and
+            collaborations more effective. If you know {{ user.first_name }},
+            feel free to suggest them to add more details here.
           </p>
         </div>
       </div>
     </div>
-    <div *ngIf="user.scopus_id; else noScopusId"
-         class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1 mt-2">
+    <div
+      *ngIf="user.scopus_id; else noScopusId"
+      class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1 mt-2"
+    >
       <div class="w-full">
         <div>
-          <strong class="block text-md sm:text-lg font-bold mb-1">Citations</strong>
+          <strong class="block text-md sm:text-lg font-bold mb-1"
+            >Citations</strong
+          >
           <p>{{ scopusData.citations }}</p>
-          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1">SCOPUS ID</strong>
+          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1"
+            >SCOPUS ID</strong
+          >
           <p>{{ user.scopus_id }}</p>
-          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1">Documents</strong>
-          <p>{{ scopusData.documents }}</p>
+          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1"
+            >Articles</strong
+          >
+          <p>{{ scopusData.articles }}</p>
         </div>
       </div>
     </div>
     <ng-template #noScopusId>
-      <div *ngIf="isOwnProfile" class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1">
+      <div
+        *ngIf="isOwnProfile"
+        class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1"
+      >
         <div class="w-full px-3 text-center">
-          <strong class="block text-sm font-bold mb-1 text-green-500">Keep Going!</strong>
+          <strong class="block text-sm font-bold mb-1 text-green-500"
+            >Keep Going!</strong
+          >
           <p class="text-xs text-gray-500 text-justify">
-            You don't have a Scopus ID listed yet, but every step you take in your research brings you closer to
-            achieving it.
-            If you have a Scopus ID, please update your profile and add it to enhance your academic visibility.
-            Keep up the great work!
+            You don't have a Scopus ID listed yet, but every step you take in
+            your research brings you closer to achieving it. If you have a
+            Scopus ID, please update your profile and add it to enhance your
+            academic visibility. Keep up the great work!
           </p>
         </div>
       </div>
-      <div *ngIf="!isOwnProfile" class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1">
+      <div
+        *ngIf="!isOwnProfile"
+        class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1"
+      >
         <div class="w-full px-3 text-center">
-          <strong class="block text-sm font-bold mb-1 text-green-500">Encourage Profile Completion</strong>
+          <strong class="block text-sm font-bold mb-1 text-green-500"
+            >Encourage Profile Completion</strong
+          >
           <p class="text-xs text-gray-500 text-justify">
-            {{ user.first_name }} {{ user.last_name }} does not have a Scopus ID listed yet. Having a Scopus ID can
-            significantly increase academic visibility and make it easier for others to find and cite their work. If you
-            know {{ user.first_name }}, please encourage them to add their Scopus ID to their profile to enhance their
-            academic presence.
+            {{ user.first_name }} {{ user.last_name }} does not have a Scopus ID
+            listed yet. Having a Scopus ID can significantly increase academic
+            visibility and make it easier for others to find and cite their
+            work. If you know {{ user.first_name }}, please encourage them to
+            add their Scopus ID to their profile to enhance their academic
+            presence.
           </p>
         </div>
       </div>
     </ng-template>
   </div>
-  <button *ngIf="isOwnProfile"
-          class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
-          (click)="toggleForm()">
-    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2">
+  <button
+    *ngIf="isOwnProfile"
+    class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
+    (click)="toggleForm()"
+  >
+    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2" />
     <span class="hidden md:inline">Edit Profile</span>
   </button>
-  <div *ngIf="showForm" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
-    <app-data-form [user]="user" (formSubmitted)="toggleForm()" (formClosed)="toggleForm()"></app-data-form>
+  <div
+    *ngIf="showForm"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75"
+  >
+    <app-data-form
+      [user]="user"
+      (formSubmitted)="toggleForm()"
+      (formClosed)="toggleForm()"
+    ></app-data-form>
   </div>
 </div>
-<div *ngIf="authorCentinela"
+
+<div *ngIf="authorCentinela && isAuthor"
      class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
   <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
+    <!-- Profile Picture -->
     <div class="flex justify-center md:justify-start w-full md:w-1/4">
-      <div class="relative w-32 h-40 sm:w-40 sm:h-48 overflow-hidden rounded border-4 border-gray-200 shadow-xl">
-        <img class="object-cover w-full h-full" [src]="'./assets/profile.png'"
-             alt="Profile Picture">
+      <div
+        class="relative w-32 h-40 sm:w-40 sm:h-48 overflow-hidden rounded border-4 border-gray-200 shadow-xl"
+      >
+        <img
+          class="object-cover w-full h-full"
+          [src]="'./assets/profile.png'"
+          alt="Profile Picture"
+        />
       </div>
     </div>
     <div
@@ -136,72 +202,96 @@
           <strong
             class="block text-xl sm:text-2xl font-bold mb-2">{{ authorCentinela.first_name }} {{ authorCentinela.last_name }}</strong>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-          <ng-container *ngIf="authorCentinela.current_affiliation">
-            <div class="break-words">
-              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institution</strong>
-              <p class="text-sm sm:text-base text-gray-900">{{ authorCentinela.current_affiliation}}</p>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="authorCentinela.topics">
-            <div class="break-words">
-              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Investigation Field</strong>
-              <p class="text-sm sm:text-base text-gray-900">{{ authorCentinela.topics[0] }}</p>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="authorCentinela.email">
-            <div class="break-words">
-              <strong class="block text-base sm:text-lg font-semibold mb-2 text-gray-700">Institutional Email</strong>
-              <p class="text-sm sm:text-base text-gray-900">{{authorCentinela.email }}</p>
-            </div>
-          </ng-container>
-        </div>
 
-        <ng-container *ngIf="years">
-          <div *ngIf="charged" class=" justify-center items-center ">
-            <div class="max-h-fit" *ngIf="years[0].series.length>1">
-              <app-evolution-line-chart  [multi]="years" [width]="300" [height]="300" [boolean]="true"></app-evolution-line-chart>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+          <!-- Información de la Institución y Email -->
+          <div class="space-y-6">
+            <ng-container *ngIf="authorCentinela.current_affiliation">
+              <div class="break-words">
+                <strong class="block text-lg font-semibold text-gray-700">Affiliation</strong>
+                <p class="text-base text-gray-900">{{ authorCentinela.current_affiliation }}</p>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="authorCentinela.email">
+              <div class="break-words">
+                <strong class="block text-lg font-semibold text-gray-700">Institutional Email</strong>
+                <p class="text-base text-gray-900">{{ authorCentinela.email }}</p>
+              </div>
+            </ng-container>
+
+          </div>
+
+          <!-- Información de Scopus y Botón -->
+          <div class="space-y-6">
+            <!-- Información de Scopus -->
+            <div>
+              <div class="space-y-4">
+                <div>
+                  <strong class="block text-lg font-bold text-gray-800">Citations</strong>
+                  <p class="text-base  text-gray-900">{{ authorCentinela.citation_count }}</p>
+                </div>
+
+                <div>
+                  <strong class="block text-lg font-bold text-gray-800">Scopus</strong>
+                  <p class="text-base  text-gray-900">{{ authorCentinela.scopus_id }}</p>
+                </div>
+
+                <div>
+                  <strong class="block text-lg font-bold text-gray-800">Articles</strong>
+                  <p class="text-base text-gray-900">{{ authorCentinela.articles }}</p>
+                </div>
+              </div>
+            </div>
+            <!-- Botón -->
+            <div class="flex justify-end">
+              <a
+                (click)="goToScopus(authorCentinela.scopus_id)"
+                class="flex justify-center items-center  h-10 w-40  rounded-md color-text transition duration-300 text-center"
+              >
+                VIEW IN SCOPUS
+              </a>
             </div>
           </div>
-        </ng-container>
-
-      </div>
-    </div>
-    <div *ngIf="authorCentinela.scopus_id; else noScopusId"
-         class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1 mt-2">
-      <div class="w-full">
-        <div>
-          <strong class="block text-md sm:text-lg font-bold mb-1">Citations</strong>
-          <p>{{ authorCentinela.citation_count}}</p>
-          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1">SCOPUS ID</strong>
-          <p>{{ authorCentinela.scopus_id }}</p>
-          <strong class="block text-md sm:text-lg font-bold mt-4 mb-1">Documents</strong>
-          <p>{{ authorCentinela.articles}}</p>
         </div>
       </div>
-    </div>
-    <ng-template #noScopusId>
-      <div *ngIf="isOwnProfile" class="w-full md:w-2/5 flex flex-col justify-center items-center gap-x-4 gap-y-1">
-        <div class="w-full px-3 text-center">
-          <strong class="block text-sm font-bold mb-1 text-green-500">Keep Going!</strong>
-          <p class="text-xs text-gray-500 text-justify">
-            You don't have a Scopus ID listed yet, but every step you take in your research brings you closer to
-            achieving it.
-            If you have a Scopus ID, please update your profile and add it to enhance your academic visibility.
-            Keep up the great work!
-          </p>
+      <!-- Scopus Information and Line Chart -->
+        <div class="w-full md:w-3/5 flex flex-col gap-6 md:pl-4 mt-6 md:mt-0">
+          <!-- Line Chart -->
+          <ng-container *ngIf="years && charged">
+            <div class="flex justify-center items-center">
+              <div class="max-h-fit" *ngIf="years[0].series.length > 1">
+                <app-evolution-line-chart
+                  [multi]="years"
+                  [width]="600"
+                  [height]="300"
+                  [boolean]="true"
+                ></app-evolution-line-chart>
+              </div>
+            </div>
+          </ng-container>
         </div>
-      </div>
 
-    </ng-template>
+    </div>
+
   </div>
-  <button *ngIf="isOwnProfile"
-          class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
-          (click)="toggleForm()">
-    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2">
+
+  <button
+    *ngIf="isOwnProfile"
+    class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
+    (click)="toggleForm()"
+  >
+    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2" />
     <span class="hidden md:inline">Edit Profile</span>
   </button>
-  <div *ngIf="showForm" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
-    <app-data-form [user]="user" (formSubmitted)="toggleForm()" (formClosed)="toggleForm()"></app-data-form>
+  <div
+    *ngIf="showForm"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75"
+  >
+    <app-data-form
+      [user]="user"
+      (formSubmitted)="toggleForm()"
+      (formClosed)="toggleForm()"
+    ></app-data-form>
   </div>
 </div>

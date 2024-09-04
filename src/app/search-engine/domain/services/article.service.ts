@@ -31,7 +31,6 @@ export class ArticleService {
       bodyParams['type'] = typeFilter
       bodyParams['years'] = years
     }
-    console.log(bodyParams)
 
     return this.http.post<PaginationArticleResult>(`${this.rootURL}api/v1/articles/most-relevant-articles-by-topic/`, bodyParams)
   }

@@ -5,6 +5,7 @@ import {Title} from '@angular/platform-browser';
 import {VisualsService} from "../../../../../shared/domain/services/visuals.service";
 import {DashboardCounts, Word} from "../../../../../shared/interfaces/dashboard.interface";
 import {query} from "@angular/animations";
+import {environment} from "../../../../../../environments/environment";
 
 @Component({
   selector: 'app-search-result',
@@ -21,7 +22,7 @@ export class SearchResultComponent implements OnInit {
 
   counts!: DashboardCounts
   words!: Word[]
-  provinces: string = 'http://localhost:8000/api/v1/dashboard/province/get_provinces/'
+  provinces: string = environment.apiCentinela + 'api/v1/dashboard/province/get_provinces/'
 
 
   constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title: Title, private visualsService: VisualsService) {
@@ -40,7 +41,6 @@ export class SearchResultComponent implements OnInit {
   }
 
   yearSelected(years: number[]) {
-    console.log(years)
   }
 
   ngAfterContentChecked(): void {
@@ -56,7 +56,6 @@ export class SearchResultComponent implements OnInit {
     this.visualsService.getTopics(100).subscribe(data => {
       this.words = data;
       this.topicsLoaded = true;
-      console.log(this.words);
     });
   }
 

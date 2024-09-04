@@ -3,7 +3,7 @@
 <div class="w-full h-full flex justify-center items-center" *ngIf="!isCharged()">
   <mat-spinner></mat-spinner>
 </div>
-<div class="flex flex-col justify-center items-center p-3" *ngIf="isCharged()">
+<div class="flex flex-col justify-center items-center p-3" *ngIf="tops">
   <div class="flex flex-col rounded-md border-2 border-blue-900 mb-3">
     <h2 class="bg-blue-900 text-white flex justify-center items-center">Most investigated topics in Ecuador</h2>
     <app-tree-map-chart [single]="tops" [width]="1400" [height]="500" (selectedTopic)="onSearchEntity($event)"> </app-tree-map-chart>

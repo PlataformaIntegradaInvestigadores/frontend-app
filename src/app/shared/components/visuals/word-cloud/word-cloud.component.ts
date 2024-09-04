@@ -43,27 +43,39 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    console.log(this.min)
-    console.log(this.size)
+    // console.log(this.min)
+    // console.log(this.size)
   }
 
   ngAfterViewInit(): void {
     this.generateWordCloud();// Asegúrate de llamarlo aquí, después de que el SVG esté disponible
   }
-
   private generateWordCloud(): void {
     const layout = cloud()
-      .size([this.width - 50, this.height -60])
-      .words(this.words.map(d => ({text: d.text, size:Math.max(d.size,100)||Math.min(d.size,200)})))
+      .size([this.width - 50, this.height - 60])
+      .words(this.words.map(d => ({ text: d.text, size: Math.max(d.size, 100) })))
       .padding(this.padding)
       .rotate(0)
       .fontSize(d =>
-        (d.size || 400) / this.size
+        Math.max(100/this.size, Math.min((d.size || 300) / this.size, 300/this.size))
       )
       .on('end', words => this.draw(words));
 
     layout.start();
   }
+  // private generateWordCloud(): void {
+  //   const layout = cloud()
+  //     .size([this.width - 50, this.height -60])
+  //     .words(this.words.map(d => ({text: d.text, size:Math.max(d.size,100)||Math.min(d.size,200)})))
+  //     .padding(this.padding)
+  //     .rotate(0)
+  //     .fontSize(d =>
+  //       (d.size || 400) / this.size
+  //     )
+  //     .on('end', words => this.draw(words));
+  //
+  //   layout.start();
+  // }
 
   private draw(words: any[]): void {
     const svg = d3.select(this.svgElement.nativeElement)

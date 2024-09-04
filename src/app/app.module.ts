@@ -18,7 +18,8 @@ import {  HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import { NgxPaginationModule } from 'ngx-pagination';
-
+import { AboutUsModule } from './search-engine/presentation/about-us/about-us.module';
+import { AboutUsRoutingModule } from './search-engine/presentation/about-us/about-us.routing.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ContactComponent,
     ArticleComponent,
     FingerprintComponent,
-
   ],
   imports: [
     AppRoutingModule,
@@ -42,7 +42,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     BrowserModule,
     NoopAnimationsModule,
     NgxPaginationModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    AboutUsModule,
+    AboutUsRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

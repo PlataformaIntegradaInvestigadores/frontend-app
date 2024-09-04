@@ -3,9 +3,9 @@ import { RouterModule, Routes } from "@angular/router";
 import { AdminComponent } from "./pages/login/admin.component";
 import { AdminDashboardComponent } from "./pages/admin-dashboard/admin-dashboard.component";
 import {  UpdateCentinelaComponent } from "./components/update-centinela/update-centinela.component";
-import { ModelsComponent } from "./components/models/models.component";
 import { MainContentComponent } from "./components/main-content/main-content.component";
 import { loginGuard } from "src/guards/login.guard";
+import { LoggerComponent } from "./components/logger/logger.component";
 
 const routes: Routes = [
   {
@@ -15,7 +15,7 @@ const routes: Routes = [
   {
     path:'dashboard',
     component:AdminDashboardComponent,
-    // canActivate: [loginGuard],
+    canActivate: [loginGuard],
     children:[
       {
        path:'main-content',
@@ -26,8 +26,8 @@ const routes: Routes = [
         component:UpdateCentinelaComponent
       },
       {
-        path:'generate-model',
-        component:ModelsComponent
+        path:'logger',
+        component:LoggerComponent
       },
       {
         path:'',

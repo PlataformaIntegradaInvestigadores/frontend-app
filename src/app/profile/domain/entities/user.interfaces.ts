@@ -32,5 +32,5 @@ export interface ContactInfo {
 // Interfaz para los datos de Scopus
 export interface ScopusData {
   citations: number;
-  documents: number;
+  articles: number;
 }
