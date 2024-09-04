@@ -28,9 +28,12 @@ import {VisualsService} from "../../../shared/domain/services/visuals.service";
 import {SummaryComponent} from "./components/summary/summary.component";
 import {SuggestionService} from "../../../dashboard/domain/services/suggestion.service";
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
     imports: [
@@ -52,7 +55,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         DashboardModule,
         MatTableModule,
         MatProgressSpinnerModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatListModule
 
     ],
     exports: [
@@ -72,7 +78,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CoauthorsGraphComponent,
     MostRelevantAuthorsGraphComponent,
     EcuadorContributionComponent,
-    SummaryComponent
+    SummaryComponent,
   ],
   providers: [VisualsService,HttpClientModule, SuggestionService],
 })

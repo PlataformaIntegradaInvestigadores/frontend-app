@@ -26,6 +26,8 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@ng-bootstrap/ng-bootstrap": "^15.1.2",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "@popperjs/core": "^2.11.6",
     "@swimlane/ngx-charts": "^20.5.0",
     "@types/angular": "^1.8.9",

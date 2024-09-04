@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
   selector: 'app-article-information',
   templateUrl: './article-information.component.html',
   styleUrls: ['./article-information.component.css']
-})
+} )
 export class ArticleInformationComponent {
   displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date'];
 
