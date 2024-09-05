@@ -1,15 +1,6 @@
-services:  
+services:
   angular-app:
-    build: .    
-    container_name: angular-app    
-    expose:      
-      - "80"  
-  nginx:    
-    image: nginx:alpine    
-    container_name: angular-nginx    
-    ports:      
-      - "4200:80"    
-    volumes:      
-      - ./nginx.conf:/etc/nginx/nginx.conf    
-    depends_on:      
-      - angular-app
+    build: .
+    container_name: angular-app
+    ports:
+      - "4200:80"
