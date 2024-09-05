@@ -28,7 +28,7 @@ FROM nginx:alpine
 
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=build /app/dist/[nombre-app-angular] /usr/share/nginx/html
+COPY --from=build /app/dist/centinela-application-frontend /usr/share/nginx/html
 
 EXPOSE 80
 
