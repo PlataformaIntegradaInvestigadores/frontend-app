@@ -1,9 +1,14 @@
-version: '3.8'
-
-services:
+services:  
   angular-app:
-    build: .
-    ports:
-      - "4200:4200"
-  # environments:
-  #   - BASE_URL = BASE_URL
+    build: .    
+    container_name: angular-app    
+    expose:      
+      - "80"  
+  nginx:    
+    image: nginx:alpine    
+    container_name: angular-nginx    
+    ports:      
+      - "80:80"    
+    volumes:      
+      - ./nginx.conf:/etc/nginx/nginx.conf    
+    depends_on:      - angular-app
