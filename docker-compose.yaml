@@ -5,5 +5,5 @@ services:
     build: .
     ports:
       - "4200:4200"
-  environments:
-    - BASE_URL = BASE_URL
+  # environments:
+  #   - BASE_URL = BASE_URL
