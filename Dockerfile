@@ -22,7 +22,7 @@ COPY . .
 
 RUN npm install
 
-RUN ng build --configuration production
+RUN ng build --configuration development
 
 FROM nginx:alpine
 
