@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {Search} from "../../../../../shared/interfaces/search-type.interface";
 import {VisualsService} from "../../../../../shared/domain/services/visuals.service";
 import {Word} from "../../../../../shared/interfaces/dashboard.interface";
@@ -25,8 +25,11 @@ export class EcuadorContributionComponent {
     this.t.emit(search)
   }
 
-  constructor(private dashboardService: VisualsService) { }
+  constructor(private dashboardService: VisualsService) {
+  }
 
   ngOnInit() {
   }
+
+  protected readonly window = window;
 }
