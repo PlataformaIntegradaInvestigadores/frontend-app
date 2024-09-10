@@ -5,8 +5,9 @@
 </div>
 <div class="flex flex-col justify-center items-center p-3" *ngIf="affiliations.length>0">
   <div class="flex flex-col rounded-md border-2 mb-3 border-blue-900">
-    <h2 class="bg-blue-900 text-white flex justify-center items-center">Affiliations with most articles in Ecuador {{affiliations.length}}</h2>
-    <app-bar-chart [single]="affiliations" [width]="1400" [height]="500"
+    <h2 class="bg-blue-900 text-white flex justify-center items-center">Affiliations with most articles in
+      Ecuador</h2>
+    <app-bar-chart [single]="affiliations" [width]="1400" [height]="500" [affiliation]="true"
                    (selectedAffiliation)="getId($event)"></app-bar-chart>
   </div>
   <div class="flex justify-center items-center">
@@ -32,3 +33,4 @@
     </div>
   </div>
 </div>
+

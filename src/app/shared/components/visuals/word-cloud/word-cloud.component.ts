@@ -13,7 +13,7 @@ import {interpolateViridis, scaleSequential} from "d3";
 export class WordCloudComponent implements OnInit, AfterViewInit {
   @ViewChild('svg') svgElement!: ElementRef<SVGElement>;
   @Input()
-  width = 350; // Asumiendo un ancho fijo para el SVG
+  width = 380; // Asumiendo un ancho fijo para el SVG
   @Input()
   height = 420; // Asumiendo una altura fija para el SVG
 
@@ -27,7 +27,7 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
   size = 7
 
   @Input()
-  x = 150
+  x = 190
 
   @Input()
   y = 230
@@ -47,12 +47,16 @@ export class WordCloudComponent implements OnInit, AfterViewInit {
     // console.log(this.size)
   }
 
+  @Input()
+  marginX = 40
+  @Input()
+  marginY = 30
   ngAfterViewInit(): void {
     this.generateWordCloud();// Asegúrate de llamarlo aquí, después de que el SVG esté disponible
   }
   private generateWordCloud(): void {
     const layout = cloud()
-      .size([this.width - 50, this.height - 60])
+      .size([this.width - this.marginX, this.height-this.marginY])
       .words(this.words.map(d => ({ text: d.text, size: Math.max(d.size, 100) })))
       .padding(this.padding)
       .rotate(0)
