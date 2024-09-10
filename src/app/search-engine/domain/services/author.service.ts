@@ -36,7 +36,7 @@ export class AuthorService {
   ): Observable<PaginationAuthorResult> {
     return this.http
       .get<PaginationAuthorResult>(
-        `${this.rootURL}api/v1/authors/authors/find_by_query/?query=${query}&page=${page}&page_size=${size}`
+        `${this.rootURL}/v1/authors/authors/find_by_query/?query=${query}&page=${page}&page_size=${size}`
       )
       .pipe(
         map((response) => {
@@ -49,11 +49,11 @@ export class AuthorService {
   }
 
   getAuthorById(id: string): Observable<Author> {
-    return this.http.get<Author>(`${this.rootURL}api/v1/authors/authors/${id}`);
+    return this.http.get<Author>(`${this.rootURL}/v1/authors/authors/${id}`);
   }
 
   getCoauthorsById(id: number): Observable<CoauthorInfo> {
-    return this.http.get<CoauthorInfo>(`${this.rootURL}api/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
+    return this.http.get<CoauthorInfo>(`${this.rootURL}/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
   }
 
   getMostRelevantAuthors(
@@ -72,7 +72,7 @@ export class AuthorService {
       bodyParams['affiliations'] = affiliations;
     }
     let data = this.http.post<Coauthors>(
-      `${this.rootURL}api/v1/authors/authors/most_relevant_authors/`,
+      `${this.rootURL}/v1/authors/authors/most_relevant_authors/`,
       bodyParams
     );
     return data;
@@ -95,7 +95,7 @@ export class AuthorService {
   }
   getTopicsById(scopus_id:number): Observable<NameValue[]> {
     let params = new HttpParams().set('scopus_id', scopus_id.toString());
-    return this.http.get<Word[]>(`${this.rootURL}api/v1/dashboard/author/get_topics/`, {params}).pipe(
+    return this.http.get<Word[]>(`${this.rootURL}/v1/dashboard/author/get_topics/`, {params}).pipe(
       map(response => {
         const series: NameValue[] = response.map(t => ({
           name: t.text.toString(),
@@ -107,7 +107,7 @@ export class AuthorService {
 
   getYears(scopus_id: string): Observable<AuthorYears[]> {
     let params = new HttpParams().set('scopus_id', scopus_id.toString())
-    return this.http.get<AuthorYears[]>(`${this.rootURL}api/v1/dashboard/author/get_author_years/`, {params});
+    return this.http.get<AuthorYears[]>(`${this.rootURL}/v1/dashboard/author/get_author_years/`, {params});
   }
 
   getLineChartInfo(scopus_id:string, name: string): Observable<LineChartInfo[]> {
@@ -129,7 +129,7 @@ export class AuthorService {
 
   getArticles(scopus_id:string):Observable<ArticlesResponse[]>{
     let params = new HttpParams().set('author_id', scopus_id.toString())
-    return this.http.get<ArticlesResponse[]>(`${this.rootURL}api/v1/articles/find-articles-by-author-id/`, {params});
+    return this.http.get<ArticlesResponse[]>(`${this.rootURL}/v1/articles/find-articles-by-author-id/`, {params});
   }
 
 }

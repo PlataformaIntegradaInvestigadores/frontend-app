@@ -4,7 +4,7 @@ import { AuthService } from '../../domain/services/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
 import { Router } from "@angular/router";
 import { User } from '../../domain/entities/interfaces';
-// import * as CryptoJS from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-register',
@@ -45,14 +45,14 @@ export class RegisterComponent implements OnInit {
     const formValues = { ...this.registerForm.value };
 
     //encriptar la contraseña
-    // const encryptedPassword = CryptoJS.SHA256(formValues.password).toString();
+    const encryptedPassword = CryptoJS.SHA256(formValues.password).toString();
     delete formValues.confirm_password;
     delete formValues.agree_terms;
 
     const user: User = {
       ...formValues,
-      // password: encryptedPassword,
-      password: formValues.password,
+      password: encryptedPassword,
+      // password: formValues.password,
       scopus_id: formValues.scopus_id ? formValues.scopus_id : null,
       id: null
     };

@@ -5,7 +5,7 @@ import { AuthService } from '../../domain/services/auth.service';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../domain/services/error.service';
 import { LoginCredentials } from '../../domain/entities/interfaces';
-// import * as CryptoJS from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-login',
@@ -40,11 +40,11 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       const formData = this.loginForm.value;
       // Encriptar la contraseña
-      // const encryptedPassword = CryptoJS.SHA256(formData.password).toString();
+      const encryptedPassword = CryptoJS.SHA256(formData.password).toString();
       const loginData: LoginCredentials = {
         username: formData.username,
-        // password: encryptedPassword
-        password: formData.password
+        password: encryptedPassword
+        // password: formData.password
       };
 
       this.authService.login(loginData).subscribe(

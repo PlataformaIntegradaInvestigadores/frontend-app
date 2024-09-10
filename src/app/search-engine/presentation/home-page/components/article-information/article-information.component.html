@@ -85,5 +85,13 @@
       *ngIf="!isLoadingResults"
     >
     </mat-paginator>
+    <ng-container *ngIf="!isLoadingResults && total === 0">
+      <div class="flex justify-center text-center">
+        <mat-icon >sentiment_very_dissatisfied</mat-icon>
+        <p class="text-2xl">No results found</p>
+      </div>
+
+    </ng-container>
+
   </div>
 </div>

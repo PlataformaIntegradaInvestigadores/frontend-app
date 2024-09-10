@@ -10,7 +10,7 @@ export class AuthenticationService {
    }
 
   login(username: string, password: string) :Observable<any> {
-    return this.httpClient.post(`${this.rootURL}api/v1/auth/login/`, { username, password })
+    return this.httpClient.post(`${this.rootURL}/v1/auth/login/`, { username, password })
     .pipe(
       map((response) => {
         return response

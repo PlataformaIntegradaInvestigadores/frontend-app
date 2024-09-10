@@ -35,7 +35,6 @@ export class ConsensusPageComponent implements OnInit {
     
     if (this.groupId) {
       this.loadGroup(this.groupId);
-      this.redirectUserToCurrentPhase(this.groupId);
     }
 
     this.router.events.subscribe((event) => {
@@ -58,26 +57,6 @@ export class ConsensusPageComponent implements OnInit {
     });
   }
   
-  redirectUserToCurrentPhase(groupId: string) {
-    const phaseKey = `phase_${groupId}`;
-    const savedPhase = localStorage.getItem(phaseKey);
-
-    if (savedPhase !== null) {
-      this.navigateToPhase(groupId, parseInt(savedPhase, 10));
-    } else {
-      this.topicService.getUserCurrentPhase(groupId).subscribe({
-        next: (response) => {
-          const userPhase = response.phase;
-          localStorage.setItem(phaseKey, userPhase.toString());
-          this.navigateToPhase(groupId, userPhase);
-        },
-        error: (error) => {
-          console.error('Error fetching user phase:', error);
-          this.errorMessage = 'Unable to determine your current phase. Please try again later.';
-        }
-      });
-    }
-  }
 
   navigateToPhase(groupId: string, phase: number) {
     let redirectPhase: string;

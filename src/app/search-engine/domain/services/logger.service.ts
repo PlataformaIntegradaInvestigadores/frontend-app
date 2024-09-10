@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class LogService {
-  private apiUrl = environment.apiCentinela+'api/v1/admin/logs/';
+  private apiUrl = environment.apiCentinela+'/v1/admin/logs/';
 
   constructor(private http: HttpClient) { }
 

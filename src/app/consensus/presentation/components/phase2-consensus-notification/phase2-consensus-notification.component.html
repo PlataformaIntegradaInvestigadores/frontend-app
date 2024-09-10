@@ -16,9 +16,9 @@
   
       <ol *ngIf="unifiedNotifications.length > 0" class="relative border-s border-gray-200 dark:border-gray-700">
         <li *ngFor="let notification of unifiedNotifications" class="mb-4 ms-2">
-          <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-            <img class="mt-2 rounded-full shadow-lg bg-black" src="../../../../../assets/profile.png" alt="Participant image"/>
-          </span>
+          <div class=" absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-4 ring-white ">
+            <img class="object-fill w-7 h-7 rounded-full shadow-lg bg-black" [src]=" notification?.profile_picture_url || '../../../../../assets/profile.png'" alt="Participant image"/>
+          </div>
           <div class="flex flex-col items-start justify-between p-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 sm:flex-row sm:items-center">
             <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0 text-right">{{ formatDate(notification.date) }}</time>
             <div class="ml-1 text-sm text-gray-800 dark:text-gray-300" [innerHTML]="sanitizer.bypassSecurityTrustHtml(notification.message)"></div>
@@ -27,67 +27,3 @@
       </ol>
     </div>
   </div>
-
-<!-- <div class="w-full mb-4 rounded-xl border px-4 pt-3 pb-2 shadow-md bg-white">
-    <div class="mb-2 text-xl mb-3 mt-1 font-bold text-gray-800">Recent Activity</div>
-    
-    <div class="px-4 max-h-100 overflow-y-auto">
-        <ol class="relative border-s border-gray-200 dark:border-gray-700">
-            <li class="mb-4 ms-2">
-                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                    <img class="mt-2 rounded-full shadow-lg bg-black" src="../../../../../assets/profile.png" alt="User image"/>
-                </span>
-                <div class="flex flex-col items-start justify-between p-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 sm:flex-row sm:items-center">
-                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0 text-right">just now</time>
-                    <div class="ml-1 text-sm text-gray-800 dark:text-gray-300">
-                        Carlos Gómez 🚀 moved Topic 3 up
-                    </div>
-                </div>
-            </li>
-            <li class="mb-4 ms-2">
-                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                    <img class="mt-2 rounded-full shadow-lg bg-black" src="../../../../../assets/profile.png" alt="User image"/>
-                </span>
-                <div class="flex flex-col items-start justify-between p-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 sm:flex-row sm:items-center">
-                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0 text-right">2 min ago</time>
-                    <div class="ml-1 text-sm text-gray-800 dark:text-gray-300">
-                        José López 🌟 rated Topic 1 as: Novel
-                    </div>
-                </div>
-            </li>
-            <li class="mb-4 ms-2">
-                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                    <img class="mt-2 rounded-full shadow-lg bg-black" src="../../../../../assets/profile.png" alt="User image"/>
-                </span>
-                <div class="flex flex-col items-start justify-between p-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 sm:flex-row sm:items-center">
-                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0 text-right">3 min ago</time>
-                    <div class="ml-1 text-sm text-gray-800 dark:text-gray-300">
-                        María Rodríguez ⬇️ moved Topic 2 down
-                    </div>
-                </div>
-            </li>
-            <li class="mb-4 ms-2">
-                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                    <img class="mt-2 rounded-full shadow-lg bg-black" src="../../../../../assets/profile.png" alt="User image"/>
-                </span>
-                <div class="flex flex-col items-start justify-between p-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 sm:flex-row sm:items-center">
-                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0 text-right">4 min ago</time>
-                    <div class="ml-1 text-sm text-gray-800 dark:text-gray-300">
-                        Sofía Hernández 💖 rated Topic 4 as: Attractive
-                    </div>
-                </div>
-            </li>
-            <li class="mb-4 ms-2">
-                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                    <img class="mt-2 rounded-full shadow-lg bg-black" src="../../../../../assets/profile.png" alt="User image"/>
-                </span>
-                <div class="flex flex-col items-start justify-between p-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 sm:flex-row sm:items-center">
-                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0 text-right">5 min ago</time>
-                    <div class="ml-1 text-sm text-gray-800 dark:text-gray-300">
-                        Ricardo Díaz 🕰️ rated Topic 5 as: Obsolete
-                    </div>
-                </div>
-            </li>    
-         </ol>
-    </div>
-</div> -->

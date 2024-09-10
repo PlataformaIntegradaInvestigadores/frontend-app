@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { NotificationAdd, NotificationGeneral } from 'src/app/consensus/domain/entities/notificationAdd.interface';
 import { GetNotificationAddTopicService } from 'src/app/consensus/domain/services/GetNotificationAddTopicService.service';
 import { WebSocketPhase2Service } from 'src/app/consensus/domain/services/websocket-phase2.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'phase2-consensus-notification',
@@ -42,14 +43,25 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
         added_at: new Date(topic.added_at)
       };
       if (!this.notificationsWS.some(t => t.notification_message === notification.notification_message)) {
-        this.notificationsWS.unshift(notification);
+
+        const addTopicNotification: NotificationAdd = {
+          id: notification.id,
+          user_id: notification.user_id,
+          group_id: notification.group_id,
+          type: notification.type,
+          topic_name: notification.topic_name,
+          notification_message: notification.notification_message,
+          added_at: new Date(notification.added_at),
+          profile_picture_url: this.getProfilePictureUrl(notification.profile_picture_url)
+        };
+
+        this.notificationsWS.unshift(addTopicNotification);
         this.updateUnifiedNotifications();
         this.cdr.detectChanges();
       }
     });
 
     this.newNotificationSubscription = this.webSocketService.notificationReceived.subscribe((notification: any) => {
-
 
       if (  notification.type === 'topic_reorder') {
         
@@ -65,12 +77,12 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
           group_id: notification.group_id,
           notification_type: notification.type,
           message: notification.notification_message,
-          created_at: new Date(notification.added_at)
+          created_at: new Date(notification.added_at),
+          profile_picture_url: this.getProfilePictureUrl(notification.profile_picture_url)
         };
         this.notificationsLoaded.unshift(visitedNotification);
         this.updateUnifiedNotifications();
         this.cdr.detectChanges();
-
       }
 
     });
@@ -98,6 +110,7 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
         console.error('Error loading notifications:', error);
       }
     );
+
   }
 
   connectWebSocket(): void {
@@ -117,13 +130,15 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
           group_id: notification.group_id,
           notification_type: notification.type,
           message: notification.notification_message,
-          created_at: new Date(notification.added_at)
+          created_at: new Date(notification.added_at),
+          profile_picture_url: this.getProfilePictureUrl(notification.profile_picture_url)
         };
         this.notificationsLoaded.unshift(newNotification);
         this.updateUnifiedNotifications();
         this.cdr.detectChanges();
       });
     }
+
   }
 
   updateUnifiedNotifications(): void {
@@ -153,6 +168,11 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
     } else {
       return date.toLocaleDateString(); // MM/DD/YYYY format
     }
+  }
+
+  getProfilePictureUrl(url: string | undefined): string {
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    return url ? `${baseUrl}${url}` : '../../../../../assets/profile.png';
   }
 }
 

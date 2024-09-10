@@ -16,7 +16,7 @@ export class ArticleService {
   }
 
   getArticleById(id: string): Observable<Article> {
-    return this.http.get<Article>(`${this.rootURL}api/v1/articles/${id}/`)
+    return this.http.get<Article>(`${this.rootURL}/v1/articles/${id}/`)
   }
 
   getMostRelevantArticlesByQuery(query: string, page: number, size: number, typeFilter?: string, years?: number[]): Observable<PaginationArticleResult> {
@@ -32,6 +32,6 @@ export class ArticleService {
       bodyParams['years'] = years
     }
 
-    return this.http.post<PaginationArticleResult>(`${this.rootURL}api/v1/articles/most-relevant-articles-by-topic/`, bodyParams)
+    return this.http.post<PaginationArticleResult>(`${this.rootURL}/v1/articles/most-relevant-articles-by-topic/`, bodyParams)
   }
 }
