@@ -11,7 +11,7 @@ import * as d3 from 'd3';
 })
 export class VisualsService {
 
-  private apiUrl = environment.apiCentinela + 'api/v1/dashboard';
+  private apiUrl = environment.apiCentinela + '/v1/dashboard';
 
   constructor(private http: HttpClient) {
   }
