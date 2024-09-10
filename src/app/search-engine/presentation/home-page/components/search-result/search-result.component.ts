@@ -22,7 +22,7 @@ export class SearchResultComponent implements OnInit {
 
   counts!: DashboardCounts
   words!: Word[]
-  provinces: string = environment.apiCentinela + 'api/v1/dashboard/province/get_provinces/'
+  provinces: string = environment.apiCentinela + '/v1/dashboard/province/get_provinces/'
 
 
   constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title: Title, private visualsService: VisualsService) {
