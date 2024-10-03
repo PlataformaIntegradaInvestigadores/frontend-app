@@ -12,7 +12,7 @@ export class SummaryService {
   constructor(private http:HttpClient) { }
 
   getSummary() :Observable<Summary>{
-    return this.http.get<Summary>(`${this.rootURL}api/v1/summary/`).pipe(
+    return this.http.get<Summary>(`${this.rootURL}/v1/summary/`).pipe(
       map((response: Summary) => {
         return response;
       })
