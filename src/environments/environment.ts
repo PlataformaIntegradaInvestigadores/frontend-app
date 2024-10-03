@@ -1,10 +1,10 @@
 /* export const environment = {
   production: false,
-  apiUrl: 'http://172.28.36.130:8000/api',
-  wsUrl: 'ws://172.28.36.130:8000/ws',
-  apiCentinela: "http://172.28.36.130:8001/",
-}; */
-
+  apiUrl: 'https://centinela.epn.edu.ec/api',
+  wsUrl: 'wss://centinela.epn.edu.ec/ws',
+  apiCentinela: "https://centinela.epn.edu.ec/api-se",
+};
+ */
 export const environment = {
   production: false,
   apiCentinela: "http://localhost:8001/",
