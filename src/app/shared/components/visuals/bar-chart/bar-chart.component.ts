@@ -17,7 +17,7 @@ export class BarChartComponent implements OnInit, OnChanges {
   height!:number;
   @Output() selectedAffiliation = new EventEmitter<any>();
 
-
+  single1!: NameValue[]
   // options
   showXAxis = true;
   showYAxis = true;
@@ -30,11 +30,19 @@ export class BarChartComponent implements OnInit, OnChanges {
 
   colorScheme!: Color
 
+  colorScheme1!:Color
+  @Input()
+  general:Boolean = false
+  @Input()
+  affiliation:Boolean = false
+  @Input()
+  topic:Boolean = false
   colorsCharged: boolean = false
   ngOnInit() {
     if(this.single){
       // console.log('single' + this.single)
       this.colorScheme = this.visualsService.createColorScheme(this.single.length)
+      this.single1 = this.single.slice(0,20)
     }
   }
   ngOnChanges(changes: SimpleChanges) {
@@ -42,6 +50,8 @@ export class BarChartComponent implements OnInit, OnChanges {
       this.colorsCharged = false
       this.colorScheme = this.visualsService.createColorScheme(this.single.length);
       this.colorsCharged = true;
+      this.single1 = this.single.slice(0,20)
+      this.colorScheme1 = this.visualsService.createColorScheme(this.single1.length)
     }
   }
 
@@ -55,4 +65,7 @@ export class BarChartComponent implements OnInit, OnChanges {
     this.selectedAffiliation.emit(event.name);
 
   }
+
+  protected readonly window = window;
+
 }

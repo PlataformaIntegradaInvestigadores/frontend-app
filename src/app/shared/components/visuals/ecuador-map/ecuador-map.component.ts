@@ -13,11 +13,11 @@ export class EcuadorMapComponent implements OnInit, OnChanges {
   private g: any;
   margin = 25;
   @Input()
-  width = 490;
+  width!:number;
   @Input()
   height = 380;
   @Input()
-  scale = 3250
+  scale = 3000
   @Input()
   x = -75.8
   @Input()
@@ -82,7 +82,7 @@ export class EcuadorMapComponent implements OnInit, OnChanges {
       });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['response'] && !changes['response'].isFirstChange()) {
+    if (changes['response'] && !changes['response'].isFirstChange() || changes['width']) {
       this.updateMap();
     }
   }
@@ -91,4 +91,6 @@ export class EcuadorMapComponent implements OnInit, OnChanges {
       this.drawMap(this.geoJson, articlesData);
     });
   }
+
+  protected readonly window = window;
 }

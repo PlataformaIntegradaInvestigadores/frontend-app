@@ -1,21 +1,19 @@
 <section>
-  <div class=" px-4 py-3 mx-auto text-center lg:px-6">
-    <dl class="grid gap-8 mx-auto sm:grid-cols-4 dark:text-white">
-      <div class="flex justify-center">
-        <div class="flex flex-col items-center justify-center">
-          <div class="flex justify-center">
-            <mat-icon style="font-size: 40px; width: 50px; height: 50px;">person</mat-icon>
-            <dt class="mb-2 text-3xl md:text-4xl pr-5">
-              <span [countUp]="counts.author"></span>
-            </dt>
-          </div>
-          <dd class="font-light ">Authors</dd>
+  <div class="text-[15px] px-2 py-2 mx-auto text-center lg:px-6">
+    <dl class="flex flex-wrap flex-grow gap-8 justify-center dark:text-white">
+      <div class="flex flex-col items-center justify-center">
+        <div class="flex justify-center">
+          <mat-icon class="text-[30px] lg:text-[40px]" style="width: 40px; height: 40px;">person</mat-icon>
+          <dt class="mb-2 text-2xl md:text-3xl pr-5">
+            <span [countUp]="counts.author"></span>
+          </dt>
         </div>
+        <dd class="font-light">Authors</dd>
       </div>
       <div class="flex flex-col items-center justify-center">
         <div class="flex justify-center">
-          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">article</mat-icon>
-          <dt class="mb-2 text-3xl md:text-4xl  pr-5">
+          <mat-icon class="text-[30px] lg:text-[40px]" style="width: 40px; height: 40px;">article</mat-icon>
+          <dt class="mb-2 text-2xl md:text-3xl pr-5">
             <span [countUp]="counts.article"></span>
           </dt>
         </div>
@@ -23,8 +21,8 @@
       </div>
       <div class="flex flex-col items-center justify-center">
         <div class="flex justify-center">
-          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">apartment</mat-icon>
-          <dt class="mb-2 text-3xl md:text-4xl pr-5">
+          <mat-icon class="text-[30px] lg:text-[40px]" style="width: 40px; height: 40px;">apartment</mat-icon>
+          <dt class="mb-2 text-2xl md:text-3xl pr-5">
             <span [countUp]="counts.affiliation"></span>
           </dt>
         </div>
@@ -32,8 +30,8 @@
       </div>
       <div class="flex flex-col items-center justify-center">
         <div class="flex justify-center">
-          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">school</mat-icon>
-          <dt class="mb-2 text-3xl md:text-4xl pr-5">
+          <mat-icon class="text-[30px] lg:text-[40px]" style="width: 40px; height: 40px;">school</mat-icon>
+          <dt class="mb-2 text-2xl md:text-3xl pr-5">
             <span [countUp]="counts.topic"></span>
           </dt>
         </div>
@@ -42,6 +40,48 @@
     </dl>
   </div>
 </section>
+<!--<section>-->
+<!--  <div class="text-[5px] xl:text-[15px] px-4 py-3 mx-auto text-center lg:px-6">-->
+<!--    <dl class="flex flex-wrap gap-x-2 xl:gap-8 justify-center dark:text-white">-->
+<!--      <div class="flex flex-col items-center justify-center">-->
+<!--        <div class="flex justify-center">-->
+<!--          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">person</mat-icon>-->
+<!--          <dt class="mb-2 text-3xl md:text-4xl pr-5">-->
+<!--            <span [countUp]="counts.author"></span>-->
+<!--          </dt>-->
+<!--        </div>-->
+<!--        <dd class="font-light">Authors</dd>-->
+<!--      </div>-->
+<!--      <div class="flex flex-col items-center justify-center">-->
+<!--        <div class="flex justify-center">-->
+<!--          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">article</mat-icon>-->
+<!--          <dt class="mb-2 text-3xl md:text-4xl pr-5">-->
+<!--            <span [countUp]="counts.article"></span>-->
+<!--          </dt>-->
+<!--        </div>-->
+<!--        <dd class="font-light">Articles</dd>-->
+<!--      </div>-->
+<!--      <div class="flex flex-col items-center justify-center">-->
+<!--        <div class="flex justify-center">-->
+<!--          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">apartment</mat-icon>-->
+<!--          <dt class="mb-2 text-3xl md:text-4xl pr-5">-->
+<!--            <span [countUp]="counts.affiliation"></span>-->
+<!--          </dt>-->
+<!--        </div>-->
+<!--        <dd class="font-light">Affiliations</dd>-->
+<!--      </div>-->
+<!--      <div class="flex flex-col items-center justify-center">-->
+<!--        <div class="flex justify-center">-->
+<!--          <mat-icon style="font-size: 40px; width: 50px; height: 50px;">school</mat-icon>-->
+<!--          <dt class="mb-2 text-3xl md:text-4xl pr-5">-->
+<!--            <span [countUp]="counts.topic"></span>-->
+<!--          </dt>-->
+<!--        </div>-->
+<!--        <dd class="font-light">Knowledge Areas</dd>-->
+<!--      </div>-->
+<!--    </dl>-->
+<!--  </div>-->
+<!--</section>-->
 
 
 <!--<section class="bg-primary_tailwind w-full bg-opacity-55">-->
