@@ -1,9 +1,6 @@
-version: '3.8'
-
 services:
   angular-app:
     build: .
+    container_name: angular-app
     ports:
-      - "4200:4200"
-  environments:
-    - BASE_URL = BASE_URL
+      - "80:80"

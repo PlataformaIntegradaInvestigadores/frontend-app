@@ -1,13 +1,17 @@
-FROM node:18-alpine3.18
 
-RUN npm install -g @angular/cli
+FROM node:18.18-alpine3.18 as build
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm install
+RUN npm ci
 
-EXPOSE 4200
+RUN npm run build
 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--disable-host-check"]
+
+FROM nginx:latest
+
+COPY nginx.conf /etc/nginx/nginx.conf
+
+COPY --from=build /app/dist/centinela-application-frontend /usr/share/nginx/html
