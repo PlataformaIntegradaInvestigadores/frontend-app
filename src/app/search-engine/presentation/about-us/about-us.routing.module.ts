@@ -5,6 +5,7 @@ import { AuthorSearchComponent } from './components/author-search/author-search.
 import { AboutComponent } from './components/about/about.component';
 import { RelevantArticlesComponent } from './components/relevant-articles/relevant-articles.component';
 import { RelevantAuthorsComponent } from './components/relevant-authors/relevant-authors.component';
+import { ConsensusWorkshopComponent } from './components/consensus-workshop/consensus-workshop.component';
 
 
 
@@ -28,6 +29,14 @@ const routes: Routes = [
       {
         path: 'relevant-authors',
         component: RelevantAuthorsComponent
+      },
+      {
+        path: 'consensus-workshop',
+        component: ConsensusWorkshopComponent
+      },
+      {
+        path: 'collaborators',
+        component: GettingStartedComponent
       }
     ]
   },
