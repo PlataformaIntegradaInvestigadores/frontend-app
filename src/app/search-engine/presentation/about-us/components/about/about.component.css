@@ -1,0 +1,42 @@
+/* progresbar */
+
+@keyframes scaleProgress {
+  from {
+    transform: scalex(0);
+  }
+  to {
+    transform: scalex(100%);
+  }
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1rem;
+  z-index: 1;
+
+  /* Degradado que cambia entre blanco, gris y azul */
+  background: linear-gradient(to right, rgb(229 231 235), rgb(107 114 128), #1E3C8B);
+  
+  /* Para compatibilidad con navegadores antiguos */
+  background: -webkit-linear-gradient(to right, rgb(229 231 235), rgb(107 114 128), #1E3C8B);
+
+  transform-origin: 0 50%;
+
+  /* Animación de escala para el progreso */
+  animation: scaleProgress auto linear;
+  animation-timeline: scroll(root);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
