@@ -9,7 +9,6 @@ import { Group } from 'src/app/group/domain/entities/group.interface';
 })
 
 export class MembersConsensusComponent implements OnInit {
-  
   @Input() group: Group | null = null;
   idOwnerGroup: string | null = null;
   selectedUser: any = null; // Para almacenar el usuario seleccionado

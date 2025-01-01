@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'msg-onboarding',
   templateUrl: './msg-onboarding.component.html',
   styleUrls: ['./msg-onboarding.component.css']
 })
-export class MsgOnboardingComponent {
+export class MsgOnboardingComponent implements OnInit {
   showModalOnboarding = true;
   currentIndexToModalOfOnboarding = 0;
+
+  ngOnInit() {
+    if (localStorage.getItem('dontShowOnboarding') === 'false') {
+      this.showModalOnboarding = false;
+    }
+  }
 
   messages = [
     "In this initial phase, please explore the assigned research topics and share your expertise. Additionally, if you have a specific interest, feel free to propose a new research topic.",
@@ -51,5 +57,10 @@ export class MsgOnboardingComponent {
     } else {
       this.closeModalOnboarding();
     }
+  }
+
+  dontShowAgain() {
+    localStorage.setItem('dontShowOnboarding', 'false');
+    this.closeModalOnboarding();
   }
 }

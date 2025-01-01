@@ -40,7 +40,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   notifications: any[] = [];
 
-  userPhase: number = 0; 
+  userPhase: number = 0;
 
 
   constructor(
@@ -67,7 +67,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     );
 
     this.newTopicSubscription = this.webSocketService.newTopicReceived.subscribe(topic => {
-  
+
       if (!this.recommendedTopics.some(t => t.topic_name === topic.topic_name)) {
         this.recommendedTopics.push(topic);
         this.rangeValues = [...this.rangeValues, 0]; // Fix: Assign the value directly to the array
@@ -147,7 +147,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.topicService.getRandomRecommendedTopics(this.groupId).subscribe(
       response => {
         this.recommendedTopics = response;
-  
+
         this.initializeProperties();
       },
       error => {
@@ -231,7 +231,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
             }, 8000);
           }, 0);
         }
-        
+
       );
       console.log('Fin ADD tOPIC');
     }

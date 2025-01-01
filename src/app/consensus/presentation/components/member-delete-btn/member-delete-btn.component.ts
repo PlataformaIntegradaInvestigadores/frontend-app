@@ -11,33 +11,36 @@ import { UserG } from 'src/app/group/domain/entities/user.interface';
   styleUrls: ['./member-delete-btn.component.css']
 })
 export class MemberDeleteBtnComponent implements OnInit{
-  
+
   @Input() member: UserG | null = null;
   groupId: string | null = null;
   @Output() memberDeleted = new EventEmitter<string>(); // Emitir el ID del miembro eliminado
+  showModal: boolean = false;
 
   constructor(
     private consensusService: ConsensusService,
     private activatedRoute: ActivatedRoute,
   ) {}
-  
+
   ngOnInit(): void {
     initFlowbite();
     this.groupId = this.activatedRoute.snapshot.paramMap.get('groupId');
   }
 
   openModal(): void {
-    const modal = document.getElementById(`deleteModal-${this.member?.id}`);
-    if (modal) {
-      modal.classList.remove('hidden');
-    }
+    // const modal = document.getElementById(`deleteModal-${this.member?.id}`);
+    // if (modal) {
+    //   modal.classList.remove('hidden');
+    // }
+    this.showModal = true;
   }
 
   closeModal(): void {
-    const modal = document.getElementById(`deleteModal-${this.member?.id}`);
-    if (modal) {
-      modal.classList.add('hidden');
-    }
+    // const modal = document.getElementById(`deleteModal-${this.member?.id}`);
+    // if (modal) {
+    //   modal.classList.add('hidden');
+    // }
+    this.showModal = false;
   }
 
   deleteMember(): void {

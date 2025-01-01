@@ -14,8 +14,8 @@ export class TopicService {
   private apiUrl = `${environment.apiUrl}/v1/groups/`;
   private topicsSubject = new BehaviorSubject<TopicAddedUser[]>([]);
   topics$ = this.topicsSubject.asObservable();
-  
-  constructor(private http: HttpClient, private authService: AuthService) { 
+
+  constructor(private http: HttpClient, private authService: AuthService) {
   }
 
   getRandomRecommendedTopics(groupId: string): Observable<RecommendedTopic[]> {
@@ -33,6 +33,16 @@ export class TopicService {
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
     return this.http.get<RecommendedTopic[]>(`${this.apiUrl}${groupId}/recommended-topics/`, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /* Para obtener los tópicos ya votados */
+  getFinalsTopicsByGroup(groupId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    return this.http.get(`${this.apiUrl}${groupId}/finals-topics/`, {headers}).pipe(
       catchError(this.handleError)
     );
   }
@@ -85,7 +95,7 @@ export class TopicService {
     );
   }
 
-  
+
 
   updateTopics(newTopic: TopicAddedUser): void {
     const currentTopics = this.topicsSubject.getValue();
@@ -200,7 +210,7 @@ export class TopicService {
   getConsensusResults(groupId: string): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-  
+
     });
     return this.http.get(`${this.apiUrl}${groupId}/execute_consensus_calculations/`, { headers });
   }
@@ -232,6 +242,14 @@ export class TopicService {
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
     return this.http.get(`${this.apiUrl}${groupId}/current-phase/`, { headers });
+  }
+
+  changeUserPhase(groupId: string, newPhase: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    const body = { phase: newPhase };
+    return this.http.post(`${this.apiUrl}${groupId}/update-phase/`, body, { headers });
   }
 
 

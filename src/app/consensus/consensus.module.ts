@@ -21,6 +21,7 @@ import { ProfilePageModule } from "../profile/profile-page.module";
 import { Phase2ConsensusNotificationComponent } from './presentation/components/phase2-consensus-notification/phase2-consensus-notification.component';
 import { Phase3ConsensusNotificationComponent } from './presentation/components/phase3-consensus-notification/phase3-consensus-notification.component';
 import { MsgOnboardingComponent } from './presentation/components/msg-onboarding/msg-onboarding.component';
+import { AdminOptionsComponent } from './presentation/components/admin-options/admin-options.component';
 
 
 @NgModule({
@@ -40,9 +41,9 @@ import { MsgOnboardingComponent } from './presentation/components/msg-onboarding
     SatisfactionLevelComponent,
     Phase2ConsensusNotificationComponent,
     Phase3ConsensusNotificationComponent,
-    MsgOnboardingComponent
+    MsgOnboardingComponent,
   ],
-  imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule],
+  imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule, AdminOptionsComponent],
   exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -2,9 +2,9 @@
   <div class="bg-white rounded-lg shadow-lg w-2/5 dark:bg-gray-800">
     <div class="relative">
       <img [src]="currentImage" class="rounded-t-lg w-full" alt="Current Image">
-      <button 
-        id="btn-close-onboarding" 
-        (click)="closeModalOnboarding()" 
+      <button
+        id="btn-close-onboarding"
+        (click)="closeModalOnboarding()"
         class="absolute top-2 right-2 rounded-full p-1.5">
         <svg fill="#000000" width="20px" height="20px" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
           <path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"/>
@@ -16,12 +16,15 @@
       <div class="flex justify-between items-center space-x-4">
         <button (click)="previousMessage()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">Previous</button>
         <span class="text-gray-700 dark:text-gray-300">{{ currentIndexToModalOfOnboarding + 1 }} of {{ messages.length }}</span>
-        <button 
-          (click)="nextOrClose()" 
+        <button
+          (click)="nextOrClose()"
           class="px-4 py-2 bg-primary_tailwind text-white rounded hover:bg-primary_tailwind-dark">
           {{ currentIndexToModalOfOnboarding === messages.length - 1 ? 'Ready' : 'Next' }}
         </button>
       </div>
+    </div>
+    <div class="flex items-center justify-center my-2">
+      <p (click)="dontShowAgain()" class="text-primary_tailwind hover:underline cursor-pointer">Don't show again</p>
     </div>
   </div>
 </div>

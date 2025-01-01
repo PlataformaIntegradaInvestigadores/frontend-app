@@ -12,6 +12,8 @@ export class WebSocketPhase3Service {
   private groupSockets: { [key: string]: WebSocketSubject<any> } = {};
   public notificationReceived: Subject<ConsensusResult> = new Subject<ConsensusResult>();
   public userSatisfactionReceived: Subject<any> = new Subject<any>();
+  public phaseUpdateReceived: Subject<any> = new Subject<any>();
+  public userRemoveReceived: Subject<any> = new Subject<any>();
 
   connect(groupId: string): WebSocketSubject<any> {
     if (!this.groupSockets[groupId] || this.groupSockets[groupId].closed) {
@@ -35,6 +37,12 @@ export class WebSocketPhase3Service {
           break;
         case 'user_satisfaction':
           this.userSatisfactionReceived.next(message.message);
+          break;
+        case 'phase_update':
+          this.phaseUpdateReceived.next(message.message);
+          break;
+        case 'remove_member':
+          this.userRemoveReceived.next(message.message);
           break;
         default:
           console.warn('Unknown message type:', type);
