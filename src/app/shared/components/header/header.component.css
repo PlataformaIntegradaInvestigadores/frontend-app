@@ -13,7 +13,7 @@
   border-bottom-color: theme('colors.primary_tailwind');
   border-bottom-style: solid;
 
-  svg {
+  :is(svg) {
       fill: theme('colors.primary_tailwind');
   }
 }
