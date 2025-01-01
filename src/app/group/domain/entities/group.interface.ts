@@ -8,5 +8,6 @@ export interface Group {
     phase?: string; // Este campo también puede ser opcional y quemado
     admin_id: string;
     users: UserG[];
+    voting_type: string;
   }
-  
+

@@ -49,9 +49,21 @@
           </div>
         </div>
       </div>
+      <!-- Select for algorithms -->
+      <div class="mb-4">
+        <label for="algorithm" class="block text-sm font-medium text-gray-700">Select Algorithm</label>
+        <select id="algorithm" formControlName="algorithm" class="mt-1 p-2 w-full border border-gray-300 rounded-md text-sm">
+          <option value="" disabled selected>Options</option>
+          <option value="Positional Voting">Positional Voting</option>
+          <option value="Non-Positional Voting">Non-Positional Voting (Schulze Method)</option>
+        </select>
+        <div *ngIf="getControl('algorithm')?.invalid && getControl('algorithm')?.touched" class="text-red-600 mt-1">
+          You must select an algorithm.
+        </div>
+      </div>
       <div class="flex justify-end">
         <button type="button" (click)="closeModal()"
-          class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-md cursor-pointer">Cancel</button>
+          class="mr-2 px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer hover:bg-red-800">Cancel</button>
         <button type="submit" class="px-4 py-2 text-white rounded-md"
           [ngClass]="{'bg-gray-400 cursor-not-allowed': groupForm.invalid || selectedUsers.length === 0, 'bg-primary_tailwind cursor-pointer hover:bg-red-500': !(groupForm.invalid || selectedUsers.length === 0)}"
           [disabled]="groupForm.invalid || selectedUsers.length === 0">Create Group</button>
