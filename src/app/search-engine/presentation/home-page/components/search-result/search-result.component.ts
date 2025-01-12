@@ -49,7 +49,7 @@ export class SearchResultComponent implements OnInit {
 
   ngOnInit(): void {
     this.title.setTitle("Welcome")
-    this.visualsService.getCounts(2023).subscribe(data => {
+    this.visualsService.getCounts().subscribe(data => {
       this.counts = data;
       this.countsLoaded = true;
     });

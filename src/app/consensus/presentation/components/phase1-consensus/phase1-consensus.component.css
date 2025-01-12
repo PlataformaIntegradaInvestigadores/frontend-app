@@ -37,7 +37,7 @@ input[type="range"]::-ms-thumb {
 }
 
 /* Estilos para los botones */
-#btn-combined-search, #btn-expertice, #btn-add-topic, #btn-next {
+#btn-combined-search, #btn-expertice, #btn-add-topic, #btn-next, #btn-add-debate, #btn-join-debate {
     border: solid #1E3C8B 1px !important;
 }
 

@@ -51,6 +51,20 @@ export class WebSocketService {
               case 'consensus_completed':
                 this.notificationsReceived.next(msg.message);
                 break;
+              
+              case 'debate_created':
+                this.notificationsReceived.next(msg.message);
+                break;
+              case 'debate_closed':
+                this.notificationsReceived.next(msg.message);
+                break;
+              case 'posture_created':
+                  this.notificationsReceived.next(msg.message);
+                break;
+              case 'posture_updated':
+                  this.notificationsReceived.next(msg.message);
+                break;
+
 
               default:
                 console.warn('Tipo de mensaje desconocido:', type);
