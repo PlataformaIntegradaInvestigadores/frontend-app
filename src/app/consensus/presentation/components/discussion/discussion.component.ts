@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DebateChatService } from 'src/app/consensus/domain/services/debate-chat.service';
 import { ReactionService } from 'src/app/consensus/domain/services/reaction.service';
@@ -31,7 +32,8 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private chatService: DebateChatService, 
     private reactionService: ReactionService,
-    private userPostureService: UserPostureService
+    private userPostureService: UserPostureService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -54,20 +56,6 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  // private initializeChat(): void {
-  //   if (!this.debateIdInput || !this.groupIdInput) {
-  //     return;
-  //   }
-  //   this.chatService.connect(this.groupIdInput, this.debateIdInput.toString());
-  //   this.subscription = this.chatService.getMessages().subscribe((message) => {
-  //     this.assignColorToUser(message.user); // Asignar un color único al usuario
-  //     this.messages.push({
-  //       ...message,
-  //       timestamp: new Date(), // Puedes actualizar según el backend
-  //     });
-  //   });
-  // }
-
   private initializeChat(): void {
     try {
       this.chatService.connect(this.groupIdInput, this.debateIdInput.toString());
@@ -86,9 +74,6 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
   
-  
-
-
 
   private initializeCurrentUser(): void {
     const token = localStorage.getItem('accessToken');
@@ -112,18 +97,6 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
       },
     });
   }
-
-  // private loadMessageHistory(): void {
-  //   this.chatService.getMessageHistory(this.debateIdInput).subscribe({
-  //     next: (messages) => {
-  //       this.messages = messages.map((message) => ({
-  //         ...message,
-  //         replies: message.replies || [] // Inicializa los hilos
-  //       }));
-  //     },
-  //     error: (err) => console.error('Error al cargar los mensajes:', err),
-  //   });
-  // }
 
   private loadMessageHistory(): void {
     if (!this.debateIdInput) {
@@ -162,6 +135,16 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
       this.currentParentId = null; // Reinicia el ID del mensaje padre
     }
   }
+
+  private detectLinks(message: string): string {
+    const urlRegex = /((https?:\/\/|www\.)[^\s]+)/g;
+    return message.replace(urlRegex, (url) => {
+      const href = url.startsWith('http') ? url : `http://${url}`;
+      return `<a href="${href}" target="_blank" class="text-blue-500 underline">${url}</a>`;
+    });
+  }
+  
+  
 
   getParentMessageText(): string {
     if (this.currentParentId) {
@@ -225,5 +208,10 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
    */
   getUserColor(username: string): string {
     return this.userColors[username] || '#000000'; // Negro por defecto si no hay color asignado
+  }
+
+  formatMessage(message: string): SafeHtml {
+    const formattedMessage = this.detectLinks(message);
+    return this.sanitizer.bypassSecurityTrustHtml(formattedMessage);
   }
 }

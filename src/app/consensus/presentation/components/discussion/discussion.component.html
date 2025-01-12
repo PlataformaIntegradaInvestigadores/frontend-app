@@ -11,37 +11,37 @@
     </div>
 
     <!-- Indicador de Respuesta Activa -->
-    <div *ngIf="currentParentId" class="p-2 bg-gray-200 rounded-lg mb-2">
+    <div *ngIf="currentParentId" class="p-2 bg-gray-200 rounded-lg mb-2 response-active">
       <span class="text-gray-700 text-sm">Respondiendo a:</span>
       <span class="font-semibold text-gray-800 text-sm">{{ getParentMessageText() }}</span>
       <button class="text-red-500 text-sm ml-2" (click)="currentParentId = null">Cancelar</button>
     </div>
 
+
     <!-- Lista de Mensajes -->
     <div class="flex-1 bg-gray-50 p-4 overflow-y-auto space-y-4">
       <div *ngFor="let message of messages" class="flex flex-col space-y-2">
         <!-- Mensaje Principal -->
-        <div
-          class="flex items-start"
-          [ngClass]="{
+        <div class="flex items-start" [ngClass]="{
             'justify-end': message.user === currentUser,
             'justify-start': message.user !== currentUser
-          }"
-        >
-          <div
-            class="relative max-w-[75%] px-4 py-2 rounded-lg shadow"
-            [ngClass]="{
+          }">
+          <div class="relative max-w-[75%] px-4 py-2 rounded-lg shadow" [ngClass]="{
               'bg-green-500 text-white': message.user === currentUser,
               'bg-gray-200 text-black': message.user !== currentUser
-            }"
-          >
+            }">
+            <!-- Nombre del Usuario -->
             <p class="text-xs font-semibold mb-1" [style.color]="getUserColor(message.user)">
               {{ message.user }}
             </p>
-            <p class="text-sm">{{ message.text }}</p>
+            <!-- Mensaje Principal -->
+            <p class="text-sm word-wrap" [innerHTML]="formatMessage(message.text)"></p>
+
+            <!-- Hora -->
             <span class="absolute bottom-1 right-2 text-xs text-gray-400">
               {{ message.timestamp | date: 'shortTime' }}
             </span>
+            <!-- Botón Responder -->
             <button class="text-blue-500 text-xs mt-1" (click)="replyToMessage(message.id)">Responder</button>
           </div>
         </div>
@@ -49,10 +49,13 @@
         <!-- Respuestas -->
         <div *ngFor="let reply of message.replies" class="ml-4 border-l-2 pl-4">
           <div class="relative max-w-[70%] px-4 py-2 rounded-lg shadow bg-gray-100">
+            <!-- Nombre del Usuario -->
             <p class="text-xs font-semibold mb-1" [style.color]="getUserColor(reply?.user)">
               {{ reply?.user || 'Usuario desconocido' }}
             </p>
-            <p class="text-sm">{{ reply?.text || 'Mensaje no disponible' }}</p>
+            <!-- Mensaje -->
+            <p class="text-sm" [innerHTML]="formatMessage(reply?.text)"></p>
+            <!-- Hora -->
             <span class="absolute bottom-1 right-2 text-xs text-gray-400">
               {{ reply?.timestamp | date: 'shortTime' }}
             </span>
@@ -63,13 +66,10 @@
 
     <!-- Input -->
     <div class="mt-4 flex items-center">
-      <input
-        type="text"
-        [(ngModel)]="newMessage"
-        placeholder="Escribe un mensaje..."
-        class="flex-1 border rounded-md px-4 py-2 focus:ring focus:ring-green-300"
-      />
-      <button class="ml-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" (click)="sendMessage()">Enviar</button>
+      <input type="text" [(ngModel)]="newMessage" placeholder="Escribe un mensaje..."
+        class="flex-1 border rounded-md px-4 py-2 focus:ring focus:ring-green-300" />
+      <button class="ml-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        (click)="sendMessage()">Enviar</button>
     </div>
   </div>
 </div>
