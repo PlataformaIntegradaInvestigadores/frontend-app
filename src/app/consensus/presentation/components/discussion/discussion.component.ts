@@ -10,31 +10,22 @@ import { UserPostureService } from 'src/app/consensus/domain/services/user-postu
   styleUrls: ['./discussion.component.css']
 })
 export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
-  // @Input() isModalOpen: boolean = false;
-  // debateId!: number;
-  // groupId!: string;
-  // @Output() closeModalEvent = new EventEmitter<void>();
 
   @Input() isModalOpen: boolean = false;
   @Input() debateIdInput!: number;
   @Input() groupIdInput!: string;
   @Output() closeChat = new EventEmitter<void>();
 
-  // @Input() set debateIdInput(value: number) {
-  //   this.debateId = value;
-  // }
-
-  // @Input() set groupIdInput(value: string) {
-  //   this.groupId = value;
-  // }
 
   debateIdString!: string;
   messages: any[] = [];
   newMessage = '';
   userPosture!: string;
-  private subscription!: Subscription;
   currentUser: string = '';
   userColors: { [key: string]: string } = {}; // Mapa de colores para cada usuario
+  currentParentId: number | null = null; // ID del mensaje principal al que se responde
+
+  private subscription!: Subscription;
 
 
   constructor(
@@ -48,6 +39,7 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
       this.initializeCurrentUser(); // Inicializa el usuario actual
       this.initializeChat();
       this.fetchUserPosture();
+      this.loadMessageHistory()
     } else {
       console.error('debateId no está definido en ngOnInit');
     }
@@ -58,34 +50,45 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
       console.log('Nuevo debateId recibido:', changes['debateId'].currentValue);
       this.initializeChat();
       this.fetchUserPosture();
+      this.loadMessageHistory();
     }
   }
 
   // private initializeChat(): void {
   //   if (!this.debateIdInput || !this.groupIdInput) {
-  //     console.error('No se puede inicializar el chat sin debateId o groupId');
   //     return;
   //   }
-  //   this.debateIdString = this.debateIdInput.toString();
-  //   this.chatService.connect(this.groupIdInput, this.debateIdString);
+  //   this.chatService.connect(this.groupIdInput, this.debateIdInput.toString());
   //   this.subscription = this.chatService.getMessages().subscribe((message) => {
-  //     this.messages.push(message);
+  //     this.assignColorToUser(message.user); // Asignar un color único al usuario
+  //     this.messages.push({
+  //       ...message,
+  //       timestamp: new Date(), // Puedes actualizar según el backend
+  //     });
   //   });
   // }
 
   private initializeChat(): void {
-    if (!this.debateIdInput || !this.groupIdInput) {
-      return;
-    }
-    this.chatService.connect(this.groupIdInput, this.debateIdInput.toString());
-    this.subscription = this.chatService.getMessages().subscribe((message) => {
-      this.assignColorToUser(message.user); // Asignar un color único al usuario
-      this.messages.push({
-        ...message,
-        timestamp: new Date(), // Puedes actualizar según el backend
+    try {
+      this.chatService.connect(this.groupIdInput, this.debateIdInput.toString());
+      this.subscription = this.chatService.getMessages().subscribe((message) => {
+        if (message.parent) {
+          const parentMessage = this.messages.find((msg) => msg.id === message.parent);
+          if (parentMessage) {
+            parentMessage.replies.push(message);
+          }
+        } else {
+          this.messages.push(message);
+        }
       });
-    });
+    } catch (error) {
+      console.error('Error al inicializar el chat:', error);
+    }
   }
+  
+  
+
+
 
   private initializeCurrentUser(): void {
     const token = localStorage.getItem('accessToken');
@@ -110,11 +113,67 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  // private loadMessageHistory(): void {
+  //   this.chatService.getMessageHistory(this.debateIdInput).subscribe({
+  //     next: (messages) => {
+  //       this.messages = messages.map((message) => ({
+  //         ...message,
+  //         replies: message.replies || [] // Inicializa los hilos
+  //       }));
+  //     },
+  //     error: (err) => console.error('Error al cargar los mensajes:', err),
+  //   });
+  // }
+
+  private loadMessageHistory(): void {
+    if (!this.debateIdInput) {
+      console.error('El debateId no está definido.');
+      return;
+    }
+  
+    this.chatService.getMessageHistory(this.debateIdInput).subscribe({
+      next: (messages) => {
+        this.messages = messages.map((message) => {
+          this.assignColorToUser(message.user); // Asigna un color al usuario
+          return {
+            ...message,
+            replies: message.replies || [],
+            timestamp: new Date(message.created_at),
+          };
+        });
+      },
+      error: (err) => {
+        console.error('Error al cargar los mensajes históricos:', err);
+        this.messages = [];
+      },
+    });
+  }
+  
+
+
   sendMessage(): void {
     if (this.newMessage.trim()) {
-      this.chatService.sendMessage(this.newMessage, this.userPosture); // Envía el mensaje con la postura
+      this.chatService.sendMessage({
+        text: this.newMessage,
+        posture: this.userPosture,
+        parent: this.currentParentId ?? undefined,
+      });
       this.newMessage = '';
+      this.currentParentId = null; // Reinicia el ID del mensaje padre
     }
+  }
+
+  getParentMessageText(): string {
+    if (this.currentParentId) {
+      const parentMessage = this.messages.find((msg) => msg.id === this.currentParentId);
+      return parentMessage ? parentMessage.text : 'Mensaje';
+    }
+    return '';
+  }
+  
+
+  replyToMessage(parentId: number): void {
+    this.currentParentId = parentId; // Asigna el mensaje padre
   }
 
   addReaction(messageId: number): void {
