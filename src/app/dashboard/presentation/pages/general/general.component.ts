@@ -116,6 +116,7 @@ export class GeneralComponent implements OnInit {
     }
 
     updateData(year: number) {
+        console.log(year)
         this.year = year
         if (this.selectedOption === 'Until') {
             if (this.year.toString() === this.yearOptions[this.yearOptions.length - 1].toString()) {

@@ -22,6 +22,12 @@ import { Phase2ConsensusNotificationComponent } from './presentation/components/
 import { Phase3ConsensusNotificationComponent } from './presentation/components/phase3-consensus-notification/phase3-consensus-notification.component';
 import { MsgOnboardingComponent } from './presentation/components/msg-onboarding/msg-onboarding.component';
 import { AdminOptionsComponent } from './presentation/components/admin-options/admin-options.component';
+import { SwapButtonDirective } from './presentation/components/directives/swap-button.directive';
+// import { DebateChatComponent } from './presentation/components/debate-chat/debate-chat.component';
+import { SelectPostureComponent } from './presentation/components/select-posture/select-posture.component';
+import { DiscussionComponent } from './presentation/components/discussion/discussion.component';
+import { CreateDebateComponent } from './presentation/components/create-debate/create-debate.component';
+import { PostureDashboardComponent } from './presentation/components/posture-dashboard/posture-dashboard.component';
 
 
 @NgModule({
@@ -42,6 +48,12 @@ import { AdminOptionsComponent } from './presentation/components/admin-options/a
     Phase2ConsensusNotificationComponent,
     Phase3ConsensusNotificationComponent,
     MsgOnboardingComponent,
+    SwapButtonDirective,
+    SelectPostureComponent,
+    DiscussionComponent,
+    CreateDebateComponent,
+    PostureDashboardComponent,
+    // DebateChatComponent
   ],
   imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule, AdminOptionsComponent],
   exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],

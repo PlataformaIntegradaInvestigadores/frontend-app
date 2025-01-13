@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ConsensusResult } from 'src/app/consensus/domain/entities/consensus-result.interface';
+import { DebateStatisticsService } from 'src/app/consensus/domain/services/debate-statistics.service';
 import { TopicService } from 'src/app/consensus/domain/services/TopicDataService.service';
 import { WebSocketPhase3Service } from 'src/app/consensus/domain/services/websocket-phase3.service';
 
@@ -20,11 +21,18 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
   isDraw: boolean = false;
   userId: string = "";
 
+  totalAgree: number = 0;
+  totalDisagree: number = 0;
+  totalNeutral: number = 0;
+  @Input() debateId!: number;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private topicDataService: TopicService,
     private route: ActivatedRoute,
     private webSocketService: WebSocketPhase3Service,
     private router: Router,
+    private dashboardService: DebateStatisticsService,
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +41,7 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
       this.userId = params.get('id') || '';
       this.loadConsensusResults();
       this.connectWebSocket();
+      this.loadPostureStatistics();
     });
   }
 
@@ -107,7 +116,6 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
-
   private checkForTie(): void {
     const valueCounts = new Map<number, number>();
 
@@ -117,5 +125,19 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
     });
 
     this.isDraw = Array.from(valueCounts.values()).some(count => count > 1);
+  }
+
+  loadPostureStatistics(): void {
+    const postureSub = this.dashboardService.getStatistics(this.debateId).subscribe(
+      (statistics) => {
+        this.totalAgree = statistics.total_agree;
+        this.totalDisagree = statistics.total_disagree;
+        this.totalNeutral = statistics.total_neutral;
+      },
+      (error) => {
+        console.error('Error loading posture statistics:', error);
+      }
+    );
+    this.subscriptions.add(postureSub);
   }
 }

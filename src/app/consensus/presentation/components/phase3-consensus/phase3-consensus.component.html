@@ -147,4 +147,23 @@
       </div>
     </div>
   </div>
+
+  <!-- Estadísticas de Posturas -->
+  <div class="my-6">
+    <div class="font-bold text-lg my-3">Posture Statistics</div>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="text-center bg-green-100 p-4 rounded shadow">
+        <p class="text-lg font-bold text-green-700">Agree</p>
+        <p class="text-2xl font-bold">{{ totalAgree }}</p>
+      </div>
+      <div class="text-center bg-red-100 p-4 rounded shadow">
+        <p class="text-lg font-bold text-red-700">Disagree</p>
+        <p class="text-2xl font-bold">{{ totalDisagree }}</p>
+      </div>
+      <div class="text-center bg-gray-100 p-4 rounded shadow">
+        <p class="text-lg font-bold text-gray-700">Neutral</p>
+        <p class="text-2xl font-bold">{{ totalNeutral }}</p>
+      </div>
+    </div>
+  </div>
 </div>

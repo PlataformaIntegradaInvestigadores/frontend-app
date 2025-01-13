@@ -1,0 +1,45 @@
+<div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-4 py-2 border-b border-gray-200">
+      <h5 class="text-lg font-semibold text-gray-700">Chat en tiempo real</h5>
+      <button
+        type="button"
+        class="text-gray-500 hover:text-gray-700 focus:outline-none"
+        (click)="closeModal()">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="px-4 py-2">
+      <ul class="space-y-3 max-h-96 overflow-y-auto">
+        <li
+          *ngFor="let message of messages"
+          class="flex items-start space-x-3"
+        >
+          <span class="font-bold text-gray-700">{{ message.user }}</span>
+          <p class="text-sm text-gray-600">{{ message.message }}</p>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex items-center px-4 py-2 border-t border-gray-200">
+      <input
+        type="text"
+        #messageInput
+        placeholder="Escribe un mensaje..."
+        class="flex-grow border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-blue-300"
+        (keydown.enter)="sendMessage(messageInput)"
+      />
+      <button
+        type="button"
+        class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+        (click)="sendMessage(messageInput)"
+      >
+        Enviar
+      </button>
+    </div>
+  </div>
+</div>

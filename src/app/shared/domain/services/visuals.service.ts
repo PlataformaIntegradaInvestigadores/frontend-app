@@ -16,9 +16,13 @@ export class VisualsService {
   constructor(private http: HttpClient) {
   }
 
-  getCounts(year: number): Observable<DashboardCounts> {
-    let params = new HttpParams().set('year', year.toString());
-    return this.http.get<DashboardCounts>(`${this.apiUrl}/country/get_acumulated/`, {params});
+  getCounts(year?: number): Observable<DashboardCounts> {
+    if(year){
+      let params = new HttpParams().set('year', year.toString());
+      return this.http.get<DashboardCounts>(`${this.apiUrl}/country/get_acumulated/`, {params});
+    }else{
+      return this.http.get<DashboardCounts>(`${this.apiUrl}/country/get_acumulated/`);
+    }
   }
 
   getTopics(number_top: number): Observable<Word[]> {

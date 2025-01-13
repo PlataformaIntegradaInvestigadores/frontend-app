@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
@@ -7,6 +7,12 @@ import { TopicService } from 'src/app/consensus/domain/services/TopicDataService
 import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketService.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { initFlowbite } from 'flowbite';
+import { DebateService } from "../../../domain/services/debate.service";
+import { Debate } from "../../../domain/entities/debate.interface";
+import { UserPostureService } from 'src/app/consensus/domain/services/user-posture.service';
+import { UserPosture } from 'src/app/consensus/domain/entities/user-posture.interface';
+import { SelectPostureComponent } from '../select-posture/select-posture.component';
+
 
 @Component({
   selector: 'phase1-consensus',
@@ -40,8 +46,32 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
 
   notifications: any[] = [];
 
+
   userPhase: number = 0;
 
+  // Estados de los modales
+  isModalOpenDebate: boolean = false;
+  isModalOpenPosture: boolean = false;
+
+
+  // Variables para el debate
+  debateTitle: string = '';
+  debateDescription: string = '';
+  durationHours: number = 0;
+  durationMinutes: number = 0;
+
+  // Debate activo y grupo
+  activeDebateId: number  = 0;
+  isDebateActive: boolean = false;
+
+
+  // Subscripciones
+  private subscriptions: Subscription[] = [];
+  debates: Debate[] = [];
+
+  // Variables para la postura del usuario
+  @ViewChild(SelectPostureComponent) selectedPostureComponent!: SelectPostureComponent;
+  isModalOpenChat: boolean = false;
 
   constructor(
     private topicService: TopicService,
@@ -49,15 +79,64 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private debateService: DebateService,
+    private postureService: UserPostureService,
   ) { }
 
   ngOnInit(): void {
+
+
     initFlowbite();
     this.route.parent?.paramMap.subscribe(params => {
       this.groupId = params.get('groupId') || '';
       this.checkUserPhase(); // Llama a esta función para verificar la fase del usuario
+      this.validateDebateStatus(); // Llama a esta función para verificar el estado del debate
+
     });
+
+    // Suscribirse a las notificaciones de la creacion de debates
+
+    this.webSocketService.notificationsReceived.subscribe(message => {
+      if (message.type === 'debate_created') {
+        console.log('Debate creado:', message);
+        this.isDebateActive = true; // Actualiza el estado
+        this.cdr.detectChanges(); // Actualiza la vista
+        this.loadDebates(this.groupId);
+      }
+    });
+
+    // Suscribirse a las notificaciones del cierre de debates
+
+    this.webSocketService.notificationsReceived.subscribe(message => {
+      if (message.type === 'debate_closed') {
+        console.log('Debate cerrado:', message);
+        this.isDebateActive = true; // Actualiza el estado
+        this.cdr.detectChanges(); // Actualiza la vista
+      }
+    });
+
+    // Suscribirse a las notificaciones de la postura del usuario
+
+    this.webSocketService.notificationsReceived.subscribe(message => {
+      if (message.type === 'posture_created') {
+        console.log('Postura registrada:', message);
+        this.isDebateActive = true; // Actualiza el estado
+        this.cdr.detectChanges(); // Actualiza la vista
+      }
+    });
+
+    // Suscribirse a las notificaciones de la postura del usuario
+
+    this.webSocketService.notificationsReceived.subscribe(message => {
+      if (message.type === 'posture_updated') {
+        console.log('Postura Actualizada:', message);
+        this.isDebateActive = true; // Actualiza el estado
+        this.cdr.detectChanges(); // Actualiza la vista
+      }
+    });
+
+
 
     this.topicsSubscription = this.topicService.topics$.subscribe(
       topics => {
@@ -86,9 +165,184 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       this.notifications.push(notification);
       this.cdr.detectChanges();
     });
-
-
   }
+
+
+
+  loadDebates(groupId: string): void {
+    if (!groupId || groupId.trim() === '') {
+      console.error('El groupId es inválido o está vacío. No se pueden cargar los debates.');
+      return;
+    }
+
+    this.debateService.getDebates(groupId).subscribe({
+      next: (debates: Debate[]) => {
+        this.debates = debates; // Actualiza la propiedad debates
+        console.log('Debates cargados correctamente:', debates);
+      },
+      error: (err) => {
+        console.error('Error al cargar los debates:', err);
+      }
+    });
+  }
+
+
+  /**
+   * Enviar solicitud para crear un debate
+   */
+  onSubmitDebate(): void {
+    const end_time = this.calculateInterval(this.durationHours, this.durationMinutes);
+    const newDebate: Debate = {
+      group: this.groupId,
+      title: this.debateTitle,
+      description: this.debateDescription,
+      end_time: end_time,
+
+
+    };
+
+    this.debateService.createDebate(this.groupId, newDebate).subscribe({
+      next: (response: { id?: number }) => {
+        console.log('Debate creado exitosamente:', response);
+
+        if (response.id !== undefined) {
+          this.openSelectPostureModal(Number(response.id), {} as UserPosture, Number(response.id), this.debateTitle, this.groupId); // Abre el modal de postura
+        } else {
+          console.error('El ID del debate no está definido en la respuesta.');
+        }
+
+        this.resetForm(); // Limpia el formulario
+      },
+      error: (error) => {
+        console.error('Error creando el debate:', error);
+      },
+    });
+  }
+
+  onPostureSaved(args: UserPosture){
+    console.log('Postura guardada:', args);
+    this.activeDebateId = args.debate;
+    this.openSelectPostureModal(args.debate, args, args.debate, this.debateTitle, this.groupId);
+  }
+
+  toggleDebate() {
+    this.isModalOpenDebate = !this.isModalOpenDebate;
+  }
+
+  /**
+   * Unirse al debate y flujo según postura del usuario
+   */
+  joinDebate(): void {
+    const activeDebate = this.debates.find((debate) => !debate.is_closed);
+
+    if (activeDebate && activeDebate.id !== undefined) {
+      this.activeDebateId = activeDebate.id;
+
+      this.postureService.getUserPosture(activeDebate.id).subscribe({
+        next: (response) => {
+          console.log('Verificación de postura del usuario:', response);
+
+          this.openSelectPostureModal(activeDebate.id!, response, activeDebate.id!, activeDebate.title, this.groupId);
+        },
+        error: (err) => {
+          if (err.status === 404) {
+            console.log('No se encontró postura existente, abriendo modal de selección...');
+            this.openSelectPostureModal(activeDebate.id, null, activeDebate.id!, activeDebate.title, this.groupId);
+          } else {
+            console.error('Error inesperado al verificar la postura del usuario:', err);
+          }
+        },
+      });
+    } else {
+      console.warn('No se pudo encontrar un debate activo para unirse.');
+    }
+  }
+
+
+  openSelectPostureModal(id: number | undefined, response: UserPosture | null, debateId: number, debateTitle: string, groupId: string ): void {
+    this.isModalOpenPosture = true; // Muestra el modal
+    this.activeDebateId = debateId; // Guarda el ID del debate activo
+    this.debateTitle = debateTitle; // Asigna el título del debate
+    groupId = this.groupId; // Asigna el ID del grupo
+
+    if (response) {
+      // Caso: El usuario ya tiene una postura
+      this.selectedPostureComponent.isModalOpenPostureSelection = false;
+      this.selectedPostureComponent.isModalOpenExistingPosture = true;
+      this.selectedPostureComponent.existingPosture = response;
+      this.selectedPostureComponent.existingPostureId = response.id ?? null; // Asigna el ID de la postura
+      this.selectedPostureComponent.selectedPosture = response.posture; // Preselecciona la postura
+      this.selectedPostureComponent.debateId = debateId; // Asigna el ID del debate
+
+      console.log('Modal de postura existente abierto para el debate:', debateId);
+    } else {
+      // Caso: El usuario no tiene una postura
+      this.selectedPostureComponent.isModalOpenPostureSelection = true;
+      this.selectedPostureComponent.isModalOpenExistingPosture = false;
+      this.selectedPostureComponent.existingPosture = null;
+      this.selectedPostureComponent.existingPostureId = null; // Asegúrate de resetear el ID
+      console.log('Modal de selección de postura abierto para el debate:', debateId);
+    }
+  }
+
+
+
+  closePostureModal(args: any): void {
+    console.log('Cerrando modal de postura con argumentos:', args),
+    this.isModalOpenPosture = false; // Oculta el modal
+  }
+
+
+  private calculateInterval(hours: number, minutes: number): string {
+    const totalMinutes = (hours * 60) + minutes;
+    const days = Math.floor(totalMinutes / 1440);
+    const remainingMinutes = totalMinutes % 1440;
+    const formattedHours = Math.floor(remainingMinutes / 60).toString().padStart(2, '0');
+    const formattedMinutes = (remainingMinutes % 60).toString().padStart(2, '0');
+
+    return days > 0
+      ? `${days} ${formattedHours}:${formattedMinutes}:00`
+      : `${formattedHours}:${formattedMinutes}:00`; // Formato [DD] [HH:[MM:]]ss
+  }
+
+  validateDebateStatus(): void {
+    this.debateService.getDebates(this.groupId).subscribe({
+      next: (debates: Debate[]) => {
+        this.debates = debates;
+        const activeDebate = debates.find((debate) => !debate.is_closed);
+        this.isDebateActive = !!activeDebate;
+        if (activeDebate) {
+          this.activeDebateId = activeDebate.id ?? 0;
+        }
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error validando el estado del debate:', error);
+      },
+    });
+  }
+
+  /**
+   * Reiniciar formulario de creación de debate
+   */
+  resetForm(): void {
+    this.debateTitle = '';
+    this.debateDescription = '';
+    this.durationHours = 0;
+    this.durationMinutes = 0;
+  }
+
+  handleOpenChat(): void {
+    console.log('Evento openChat recibido en el padre.');
+    this.isModalOpenChat = true; // Cambiamos el estado del modal del chat a "abierto"
+  }
+
+  handleCloseChat(): void {
+    console.log('Modal del chat cerrado.');
+    this.isModalOpenChat = false; // Cambiamos el estado del modal del chat a "cerrado"
+  }
+
+
 
   checkUserPhase(): void {
     this.topicService.getUserCurrentPhase(this.groupId).subscribe(
@@ -323,6 +577,8 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       alert('Please select at least one topic for a combined search.');
     }
   }
+
+
 
   checkAndCombinedSearch(): void {
     if (this.enableCombinedSearch) {

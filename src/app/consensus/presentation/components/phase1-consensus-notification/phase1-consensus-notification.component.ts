@@ -67,7 +67,12 @@ export class Phase1ConsensusNotificationComponent implements OnInit{
         if (  notification.type === 'topic_visited' || 
               notification.type === 'combined_search' || 
               notification.type === 'user_expertise' || 
-              notification.type === 'consensus_completed') {
+              notification.type === 'consensus_completed' ||
+              notification.type === 'debate_created' ||
+              notification.type === 'debate_closed' ||
+              notification.type === 'posture_created' ||
+              notification.type === 'posture_updated' 
+            ) {
 
           const existingNotificationIndex = this.notificationsLoaded.findIndex(n => n.id === notification.id);
           if (existingNotificationIndex !== -1) {
