@@ -307,12 +307,9 @@
 </div>
 
 <div>
-  <app-discussion
-  *ngIf="isModalOpenChat" Solo muestra el modal si isModalOpenChat es true 
-  [isModalOpen]="isModalOpenChat"
-  [debateIdInput]="activeDebateId"
-  [groupIdInput]="groupId"
-  (closeChat)="handleCloseChat()"> Escuchamos el evento para cerrar el chat
-</app-discussion>
+  <app-discussion *ngIf="isModalOpenChat" Solo muestra el modal si isModalOpenChat es true
+    [isModalOpen]="isModalOpenChat" [debateIdInput]="activeDebateId" [groupIdInput]="groupId"
+    (closeChat)="handleCloseChat()"> Escuchamos el evento para cerrar el chat
+  </app-discussion>
 
 </div>

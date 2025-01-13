@@ -26,6 +26,7 @@ import { SwapButtonDirective } from './presentation/components/directives/swap-b
 import { SelectPostureComponent } from './presentation/components/select-posture/select-posture.component';
 import { DiscussionComponent } from './presentation/components/discussion/discussion.component';
 import { CreateDebateComponent } from './presentation/components/create-debate/create-debate.component';
+import { PostureDashboardComponent } from './presentation/components/posture-dashboard/posture-dashboard.component';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { CreateDebateComponent } from './presentation/components/create-debate/c
     SelectPostureComponent,
     DiscussionComponent,
     CreateDebateComponent,
+    PostureDashboardComponent,
     // DebateChatComponent
   ],
   imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule],

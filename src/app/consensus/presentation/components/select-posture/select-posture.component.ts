@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Numeric } from 'd3';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { UserPosture } from 'src/app/consensus/domain/entities/user-posture.interface';
+import { DebateStatisticsService } from 'src/app/consensus/domain/services/debate-statistics.service';
 import { UserPostureService } from 'src/app/consensus/domain/services/user-posture.service';
 
 
@@ -32,7 +33,7 @@ export class SelectPostureComponent implements OnInit {
     
   }
 
-  selectedPosture = 'agree'; // Postura predeterminada
+  selectedPosture: 'agree' | 'disagree' | 'neutral' = 'agree'; // Postura predeterminada
   existingPostureId: number | null = null; // ID de la postura existente
   existingPosture: UserPosture | null = null; // Postura existente
   isModalOpenPostureSelection: boolean | undefined;
@@ -146,6 +147,80 @@ export class SelectPostureComponent implements OnInit {
     this.openChat.emit(); // Emite el evento al padre
     console.log('Evento openChat emitido desde SelectPostureComponent.');
   }
+
+  // setPosture(posture: 'agree' | 'disagree'): void {
+  //   this.selectedPosture = posture;
   
+  //   const data: UserPosture = {
+  //     user: this.authService.getUserId() || '', // Obtén el ID del usuario autenticado
+  //     debate: this.debateId || 0, // ID del debate actual
+  //     posture: this.selectedPosture as 'agree' | 'disagree', // Asegúrate de que el valor sea del tipo correcto
+  //   };
+  
+  //   if (this.existingPostureId) {
+  //     // Si ya existe una postura, se actualiza
+  //     this.postureService.updateUserPosture(this.existingPostureId, { posture: this.selectedPosture as 'agree' | 'disagree' }).subscribe({
+  //       next: (response) => {
+  //         console.log('Postura actualizada:', response);
+  //         this.postureSelected.emit(response); // Notifica al componente padre
+  //       },
+  //       error: (error) => {
+  //         console.error('Error actualizando postura:', error);
+  //       },
+  //     });
+  //   } else {
+  //     // Si no existe una postura, se crea una nueva
+  //     this.postureService.createUserPosture(data).subscribe({
+  //       next: (response) => {
+  //         console.log('Postura registrada:', response);
+  //         this.postureSelected.emit(response); // Notifica al componente padre
+  //       },
+  //       error: (error) => {
+  //         console.error('Error registrando postura:', error);
+  //       },
+  //     });
+  //   }
+  // }
+
+  setPosture(posture: 'agree' | 'disagree' | 'neutral'): void {
+    this.selectedPosture = posture;
+  
+    const data: UserPosture = {
+      user: this.authService.getUserId() || '', // Asegura que siempre haya un valor
+      debate: this.debateId || 0,
+      posture: this.selectedPosture,
+    };
+  
+    if (this.existingPostureId) {
+      // Actualizar postura existente
+      this.postureService.updateUserPosture(this.existingPostureId, { posture: this.selectedPosture }).subscribe({
+        next: (response) => {
+          console.log('Postura actualizada:', response);
+          this.existingPosture = { 
+            ...(this.existingPosture || {}), 
+            posture: this.selectedPosture, 
+            user: data.user, 
+            debate: data.debate,
+          }; // Actualiza la postura localmente
+          this.postureSelected.emit(response); // Notifica al componente padre
+        },
+        error: (error) => {
+          console.error('Error actualizando postura:', error);
+        },
+      });
+    } else {
+      // Crear nueva postura
+      this.postureService.createUserPosture(data).subscribe({
+        next: (response) => {
+          console.log('Postura registrada:', response);
+          this.existingPosture = response; // Actualiza la postura localmente
+          this.postureSelected.emit(response); // Notifica al componente padre
+        },
+        error: (error) => {
+          console.error('Error registrando postura:', error);
+        },
+      });
+    }
+  }
   
 }

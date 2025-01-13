@@ -1,0 +1,45 @@
+<div *ngIf="isLoading" class="text-center text-gray-500">Cargando estadísticas...</div>
+
+<div *ngIf="!isLoading" class="space-y-6">
+  <h2 class="text-lg font-semibold">Debate Statistics</h2>
+  <div class="space-y-4">
+    <!-- Barras de "De acuerdo" -->
+    <div class="flex items-center">
+      <span class="w-1/4 font-semibold">Agree</span>
+      <div class="flex-1 bg-green-100 h-6">
+        <div
+          class="bg-green-500 text-white h-full flex items-center justify-center text-sm"
+          [style.width.%]="(postureCounts.total_agree / getTotalPostures()) * 100"
+        >
+          {{ postureCounts.total_agree }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Barras de "No de acuerdo" -->
+    <div class="flex items-center">
+      <span class="w-1/4 font-semibold">Disagree</span>
+      <div class="flex-1 bg-red-100 h-6">
+        <div
+          class="bg-red-500 text-white h-full flex items-center justify-center text-sm"
+          [style.width.%]="(postureCounts.total_disagree / getTotalPostures()) * 100"
+        >
+          {{ postureCounts.total_disagree }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Barras de "Neutral" -->
+    <div class="flex items-center">
+      <span class="w-1/4 font-semibold">Neutral</span>
+      <div class="flex-1 bg-gray-100 h-6">
+        <div
+          class="bg-gray-500 text-white h-full flex items-center justify-center text-sm"
+          [style.width.%]="(postureCounts.total_neutral / getTotalPostures()) * 100"
+        >
+          {{ postureCounts.total_neutral }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { DebateChatService } from 'src/app/consensus/domain/services/debate-chat.service';
 import { ReactionService } from 'src/app/consensus/domain/services/reaction.service';
 import { UserPostureService } from 'src/app/consensus/domain/services/user-posture.service';
+import { Filter as BadWordsFilter } from 'bad-words';
 
 @Component({
   selector: 'app-discussion',
@@ -25,6 +26,8 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
   currentUser: string = '';
   userColors: { [key: string]: string } = {}; // Mapa de colores para cada usuario
   currentParentId: number | null = null; // ID del mensaje principal al que se responde
+  private filter = new BadWordsFilter(); // Instancia de bad-words
+  containsBadWords: boolean = false; // Nueva propiedad para controlar el estado del botón
 
   private subscription!: Subscription;
 
@@ -61,18 +64,27 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
       this.chatService.connect(this.groupIdInput, this.debateIdInput.toString());
       this.subscription = this.chatService.getMessages().subscribe((message) => {
         if (message.parent) {
-          const parentMessage = this.messages.find((msg) => msg.id === message.parent);
-          if (parentMessage) {
-            parentMessage.replies.push(message);
-          }
+          this.addReplyToThread(message);
         } else {
-          this.messages.push(message);
+          this.messages.push({
+            ...message,
+            replies: [],
+          });
         }
       });
     } catch (error) {
       console.error('Error al inicializar el chat:', error);
     }
   }
+
+  private addReplyToThread(reply: any): void {
+    const parentMessage = this.messages.find((msg) => msg.id === reply.parent);
+    if (parentMessage) {
+      parentMessage.replies.push(reply);
+    }
+  }
+
+  
   
 
   private initializeCurrentUser(): void {
@@ -124,17 +136,48 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
   
 
 
+  // sendMessage(): void {
+  //   if (this.newMessage.trim()) {
+  //     this.chatService.sendMessage({
+  //       text: this.newMessage,
+  //       posture: this.userPosture,
+  //       parent: this.currentParentId ?? undefined,
+  //     });
+  //     this.newMessage = '';
+  //     this.currentParentId = null; // Reinicia el ID del mensaje padre
+  //   }
+  // }
+
   sendMessage(): void {
-    if (this.newMessage.trim()) {
-      this.chatService.sendMessage({
-        text: this.newMessage,
-        posture: this.userPosture,
-        parent: this.currentParentId ?? undefined,
-      });
-      this.newMessage = '';
-      this.currentParentId = null; // Reinicia el ID del mensaje padre
+    const sanitizedMessage = this.filter.clean(this.newMessage); // Limpia el mensaje usando bad-words
+
+    if (this.containsBadWords) {
+      alert('El mensaje contiene lenguaje inapropiado.');
+      return;
+    }
+
+    this.chatService.sendMessage({
+      text: sanitizedMessage,
+      posture: this.userPosture,
+      parent: this.currentParentId ?? undefined, // Mensaje padre si existe
+    });
+
+    this.newMessage = '';
+    this.currentParentId = null;
+    this.containsBadWords = false; // Reinicia el estado del control de malas palabras
+  }
+
+  onMessageChange(): void {
+    // Verifica si el mensaje contiene lenguaje ofensivo
+    this.containsBadWords = this.filter.isProfane(this.newMessage);
+  
+    // Si el mensaje está vacío, también considera deshabilitar el botón
+    if (!this.newMessage.trim()) {
+      this.containsBadWords = false; // El botón se habilita si no hay palabras ofensivas
     }
   }
+  
+  
 
   private detectLinks(message: string): string {
     const urlRegex = /((https?:\/\/|www\.)[^\s]+)/g;
@@ -214,4 +257,5 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
     const formattedMessage = this.detectLinks(message);
     return this.sanitizer.bypassSecurityTrustHtml(formattedMessage);
   }
+
 }

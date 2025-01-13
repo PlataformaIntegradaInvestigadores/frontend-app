@@ -1,17 +1,25 @@
 /* Evita que los textos largos se salgan del contenedor */
 .word-wrap {
-    word-wrap: break-word; /* Soporte para navegadores antiguos */
-    overflow-wrap: break-word; /* Para navegadores modernos */
-    word-break: break-word; /* Asegura que palabras largas también se rompan */
-    hyphens: auto; /* Opcional: Divide palabras largas con guiones si es posible */
-  }
+  word-wrap: break-word;
+  /* Soporte para navegadores antiguos */
+  overflow-wrap: break-word;
+  /* Para navegadores modernos */
+  word-break: break-word;
+  /* Asegura que palabras largas también se rompan */
+  hyphens: auto;
+  /* Opcional: Divide palabras largas con guiones si es posible */
+}
 
 /* Manejo del desbordamiento en el contenedor de respuesta activa */
 .response-active {
-    word-wrap: break-word; /* Permite que las palabras largas se ajusten */
-    overflow-wrap: break-word; /* Ajusta palabras largas */
-    word-break: break-word; /* Rompe palabras largas si es necesario */
-    hyphens: auto; /* Divide palabras con guiones automáticos */
-    max-width: 100%; /* Asegura que el texto no exceda el ancho del contenedor */
-  }
-  
+  word-wrap: break-word;
+  /* Permite que las palabras largas se ajusten */
+  overflow-wrap: break-word;
+  /* Ajusta palabras largas */
+  word-break: break-word;
+  /* Rompe palabras largas si es necesario */
+  hyphens: auto;
+  /* Divide palabras con guiones automáticos */
+  max-width: 100%;
+  /* Asegura que el texto no exceda el ancho del contenedor */
+}
