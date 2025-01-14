@@ -12,6 +12,7 @@ import { Debate } from "../../../domain/entities/debate.interface";
 import { UserPostureService } from 'src/app/consensus/domain/services/user-posture.service';
 import { UserPosture } from 'src/app/consensus/domain/entities/user-posture.interface';
 import { SelectPostureComponent } from '../select-posture/select-posture.component';
+import { DebateStatisticsService } from 'src/app/consensus/domain/services/debate-statistics.service';
 
 
 @Component({
@@ -86,6 +87,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private debateService: DebateService,
     private postureService: UserPostureService,
+    private debateStatisticsService: DebateStatisticsService
   ) { }
 
   ngOnInit(): void {
@@ -138,6 +140,10 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         this.isDebateActive = true; // Actualiza el estado
         this.cdr.detectChanges(); // Actualiza la vista
       }
+    });
+
+    this.debateService.validateDebateStatus$.subscribe(() => {
+      this.validateDebateStatus();
     });
 
 
@@ -216,6 +222,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         }
 
         this.resetForm(); // Limpia el formulario
+        this.toggleDebate(); // Cierra el modal
       },
       error: (error) => {
         console.error('Error creando el debate:', error);
@@ -345,8 +352,6 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     console.log('Modal del chat cerrado.');
     this.isModalOpenChat = false; // Cambiamos el estado del modal del chat a "cerrado"
   }
-  
-  
 
   checkUserPhase(): void {
     this.topicService.getUserCurrentPhase(this.groupId).subscribe(

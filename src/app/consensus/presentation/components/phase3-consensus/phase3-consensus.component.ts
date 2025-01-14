@@ -18,10 +18,10 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
   private wsSubscription: Subscription | undefined;
   activeConnections: number = 0;
 
+  debateId: number = 0;
   totalAgree: number = 0;
   totalDisagree: number = 0;
   totalNeutral: number = 0;
-  @Input() debateId!: number;
   private subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -29,15 +29,27 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private webSocketService: WebSocketPhase3Service,
     private dashboardService: DebateStatisticsService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.parent?.paramMap.subscribe(params => {
       this.groupId = params.get('groupId') || '';
       this.loadConsensusResults();
       this.connectWebSocket();
-      this.loadPostureStatistics();
     });
+
+    // Suscribirse al servicio para recibir el debateId
+    this.dashboardService.debateId$.subscribe((debateId: number) => {
+      console.log('Debate ID recibido:', debateId);
+      this.debateId = debateId; // Almacenar el debateId
+      this.loadPostureStatistics(); // Cargar estadísticas basadas en el debateId actualizado
+    });
+  }
+
+  validateDebateStatus(debateId: number): void {
+    // Implementa la lógica con el debateId
+    console.log('Validando el debate con ID:', debateId);
+    // Llama a tus servicios o ajusta la lógica según sea necesario
   }
 
   ngOnDestroy(): void {
@@ -59,22 +71,22 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
   }
 
   connectWebSocket(): void {
-    if(this.groupId){
+    if (this.groupId) {
 
 
       const socket = this.webSocketService.connect(this.groupId);
       this.wsSubscription = socket.subscribe(
         message => {
-       
+
 
           if (message.message.type === 'connection_count') {
             this.activeConnections = message.message.active_connections;
-         
+
           }
 
           if (message.message.type === 'consensus_calculation_completed') {
             this.consensusResults = message.message.results;
-   }
+          }
         },
         (error) => {
           console.error('Error receiving consensus results via WebSocket:', error);
@@ -84,16 +96,32 @@ export class Phase3ConsensusComponent implements OnInit, OnDestroy {
   }
 
   loadPostureStatistics(): void {
+    console.log('Cargando estadísticas para debate ID:', this.debateId);
+  
+    // Llamada al servicio para obtener las estadísticas
     const postureSub = this.dashboardService.getStatistics(this.debateId).subscribe(
       (statistics) => {
-        this.totalAgree = statistics.total_agree;
-        this.totalDisagree = statistics.total_disagree;
-        this.totalNeutral = statistics.total_neutral;
+        console.log('Estadísticas recibidas:', statistics);
+  
+        // Asignar valores recibidos a las variables locales
+        this.totalAgree = statistics.total_agree || 0; // Validación en caso de valores undefined
+        this.totalDisagree = statistics.total_disagree || 0;
+        this.totalNeutral = statistics.total_neutral || 0;
+  
+        // Confirmar los datos asignados
+        console.log('Datos asignados:', {
+          totalAgree: this.totalAgree,
+          totalDisagree: this.totalDisagree,
+          totalNeutral: this.totalNeutral,
+        });
       },
       (error) => {
         console.error('Error loading posture statistics:', error);
       }
     );
+  
+    // Añadir la suscripción a un grupo de suscripciones (para manejo centralizado)
     this.subscriptions.add(postureSub);
   }
+  
 }
