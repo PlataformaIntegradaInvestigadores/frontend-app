@@ -3,6 +3,7 @@ import { Numeric } from 'd3';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { UserPosture } from 'src/app/consensus/domain/entities/user-posture.interface';
 import { DebateStatisticsService } from 'src/app/consensus/domain/services/debate-statistics.service';
+import { DebateService } from 'src/app/consensus/domain/services/debate.service';
 import { UserPostureService } from 'src/app/consensus/domain/services/user-posture.service';
 
 
@@ -42,7 +43,9 @@ export class SelectPostureComponent implements OnInit {
 
   constructor(
     private postureService: UserPostureService,
-    private authService: AuthService
+    private authService: AuthService,
+    private debateService: DebateService,
+    private debateStatisticsService: DebateStatisticsService,
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +63,28 @@ export class SelectPostureComponent implements OnInit {
       console.error('Faltan valores para debateId o groupId');
     }
 
+  }
+
+  onAction(): void {
+    this.debateService.triggerValidateDebateStatus();
+  }
+  
+  closeDebate(): void {
+    if (!this.debateId) {
+      console.error('El debateId no está definido.');
+      return;
+    }
+  
+    this.debateService.closeDebate(this.groupId, this.debateId).subscribe({
+      next: (debate) => {
+        console.log('Debate cerrado:', debate);
+        this.onAction(); // Dispara la acción
+        this.closeModal.emit(); // Cierra el modal
+      },
+      error: (err) => {
+        console.error('Error al cerrar el debate:', err);
+      },
+    });
   }
   
 
@@ -92,6 +117,8 @@ export class SelectPostureComponent implements OnInit {
         next: (response) => {
           console.log('Postura actualizada:', response);
           this.postureSelected.emit(response);
+          console.log('Postura actualizada:', response);
+          this.triggerSendDebateId();
         },
         error: (error) => console.error('Error actualizando postura:', error),
       });
@@ -122,6 +149,8 @@ export class SelectPostureComponent implements OnInit {
         console.log('Postura actualizada con éxito:', response);
         this.postureSelected.emit(response); // Notifica el cambio al componente padre
         this.closeModal.emit(); // Cierra el modal
+        console.log('Postura actualizada:', response);
+        this.triggerSendDebateId();
       },
       error: (error) => {
         console.error('Error al actualizar la postura:', error);
@@ -203,6 +232,8 @@ export class SelectPostureComponent implements OnInit {
             debate: data.debate,
           }; // Actualiza la postura localmente
           this.postureSelected.emit(response); // Notifica al componente padre
+          console.log('Postura actualizada:', response);
+          this.triggerSendDebateId();
         },
         error: (error) => {
           console.error('Error actualizando postura:', error);
@@ -222,5 +253,15 @@ export class SelectPostureComponent implements OnInit {
       });
     }
   }
+
+  triggerSendDebateId(): void {
+    if (this.debateId !== null) {
+      this.debateStatisticsService.sendDebateId(this.debateId); // Envía el debateId al servicio
+      console.log('Debate ID enviado:', this.debateId);
+    } else {
+      console.error('Debate ID is null and cannot be sent.');
+    }
+  }
+  
   
 }

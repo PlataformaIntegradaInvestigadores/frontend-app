@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,6 +9,8 @@ import { environment } from 'src/environments/environment';
 export class DebateStatisticsService {
 
   private apiUrl = `${environment.apiUrl}/v1/debates`;
+  private debateIdSubject = new Subject<number>(); // Emitirá el debateId
+  debateId$ = this.debateIdSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -21,5 +23,9 @@ export class DebateStatisticsService {
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
     });
     return this.http.get(`${this.apiUrl}/${debateId}/statistics/`, { headers });
+  }
+
+  sendDebateId(debateId: number): void {
+    this.debateIdSubject.next(debateId); // Envía el debateId a los suscriptores
   }
 }

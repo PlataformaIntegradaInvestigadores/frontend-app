@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Debate} from "../entities/debate.interface";
-import {map, Observable, Observer} from "rxjs";
+import {map, Observable, Observer, Subject} from "rxjs";
 import {environment} from "../../../../environments/environment";
 
 @Injectable({
@@ -10,6 +10,8 @@ import {environment} from "../../../../environments/environment";
 export class DebateService {
 
   private apiUrl = `${environment.apiUrl}/v1/groups/`;
+  private validateDebateStatusSubject = new Subject<void>();
+  validateDebateStatus$ = this.validateDebateStatusSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -61,5 +63,18 @@ export class DebateService {
     return this.http.get<{ detail: string }>(url, { headers} ).pipe(
       map(response => ({ is_open: response.detail === 'El debate está abierto.' })) // Devuelve un objeto con is_open
     );
+  }
+
+  closeDebate(groupId: string, debateId: number): Observable<Debate> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    });
+    const url = `${this.apiUrl}${groupId}/debates/${debateId}/close/`;
+    return this.http.post<Debate>(url, {}, { headers });
+  }
+
+  triggerValidateDebateStatus() {
+    this.validateDebateStatusSubject.next();
   }
 }
