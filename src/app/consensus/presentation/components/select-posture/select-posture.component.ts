@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { UserPosture } from 'src/app/consensus/domain/entities/user-posture.interface';
 import { DebateStatisticsService } from 'src/app/consensus/domain/services/debate-statistics.service';
 import { DebateService } from 'src/app/consensus/domain/services/debate.service';
+import { ConsensusService } from 'src/app/consensus/domain/services/GetGroupDataService.service';
 import { UserPostureService } from 'src/app/consensus/domain/services/user-posture.service';
 
 
@@ -31,7 +32,9 @@ export class SelectPostureComponent implements OnInit {
   @Input() set groupIdInput(value: string | null) {
     this.groupId = value ?? '';
     this.checkDebateId();
-    
+    if (this.groupId) {
+      this.checkAdminStatus();
+    }
   }
 
   selectedPosture: 'agree' | 'disagree' | 'neutral' = 'agree'; // Postura predeterminada
@@ -41,11 +44,16 @@ export class SelectPostureComponent implements OnInit {
   isModalOpenExistingPosture: boolean | undefined;
   isModalOpenChat: boolean = false;
 
+  //Administrador
+
+  isAdmin: boolean = false;
+
   constructor(
     private postureService: UserPostureService,
     private authService: AuthService,
     private debateService: DebateService,
     private debateStatisticsService: DebateStatisticsService,
+    private consensusService: ConsensusService
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +72,30 @@ export class SelectPostureComponent implements OnInit {
     }
 
   }
+
+  checkAdminStatus(): void {
+    if (!this.groupId) {
+      console.error('Group ID no definido');
+      return;
+    }
+  
+    this.consensusService.getGroupById(this.groupId).subscribe({
+      next: (group) => {
+        const userId = this.authService.getUserId();
+        if (group.admin_id === userId) {
+          this.isAdmin = true;
+          console.log('El usuario es administrador del grupo.');
+        } else {
+          this.isAdmin = false;
+          console.log('El usuario NO es administrador del grupo.');
+        }
+      },
+      error: (err) => {
+        console.error('Error obteniendo datos del grupo:', err);
+      }
+    });
+  }
+  
 
   onAction(): void {
     this.debateService.triggerValidateDebateStatus();
