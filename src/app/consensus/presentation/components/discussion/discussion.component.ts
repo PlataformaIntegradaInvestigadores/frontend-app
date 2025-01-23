@@ -135,19 +135,6 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
   }
   
 
-
-  // sendMessage(): void {
-  //   if (this.newMessage.trim()) {
-  //     this.chatService.sendMessage({
-  //       text: this.newMessage,
-  //       posture: this.userPosture,
-  //       parent: this.currentParentId ?? undefined,
-  //     });
-  //     this.newMessage = '';
-  //     this.currentParentId = null; // Reinicia el ID del mensaje padre
-  //   }
-  // }
-
   sendMessage(): void {
     const sanitizedMessage = this.filter.clean(this.newMessage); // Limpia el mensaje usando bad-words
 

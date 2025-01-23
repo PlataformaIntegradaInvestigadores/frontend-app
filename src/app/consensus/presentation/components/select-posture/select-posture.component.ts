@@ -48,6 +48,9 @@ export class SelectPostureComponent implements OnInit {
 
   isAdmin: boolean = false;
 
+  // Incentivo de participacion
+  showDiscussionPrompt: boolean = false; // Estado para mostrar el modal de invitación
+
   constructor(
     private postureService: UserPostureService,
     private authService: AuthService,
@@ -137,32 +140,81 @@ export class SelectPostureComponent implements OnInit {
     }
   }
 
+  // submitPosture(): void {
+  //   const data: UserPosture = {
+  //     user: this.authService.getUserId() || '', // Obtén el ID del usuario autenticado
+  //     debate: this.debateId || 0, // ID del debate actual
+  //     posture: this.selectedPosture as 'agree' | 'disagree', // Asegúrate de que el valor sea 'agree' o 'disagree'
+  //   };
+
+  //   if (this.existingPostureId) {
+  //     this.postureService.updateUserPosture(this.existingPostureId, { posture: this.selectedPosture as 'agree' | 'disagree' }).subscribe({
+  //       next: (response) => {
+  //         console.log('Postura actualizada:', response);
+  //         this.postureSelected.emit(response);
+  //         console.log('Postura actualizada:', response);
+  //         this.triggerSendDebateId();
+  //       },
+  //       error: (error) => console.error('Error actualizando postura:', error),
+  //     });
+  //   } else {
+  //     this.postureService.createUserPosture(data).subscribe({
+  //       next: (response) => {
+  //         console.log('Postura registrada:', response);
+  //         this.postureSelected.emit(response);
+  //       },
+  //       error: (error) => console.error('Error registrando postura:', error),
+  //     });
+  //   }
+  // }
+
   submitPosture(): void {
     const data: UserPosture = {
-      user: this.authService.getUserId() || '', // Obtén el ID del usuario autenticado
-      debate: this.debateId || 0, // ID del debate actual
-      posture: this.selectedPosture as 'agree' | 'disagree', // Asegúrate de que el valor sea 'agree' o 'disagree'
+      user: this.authService.getUserId() || '',
+      debate: this.debateId || 0,
+      posture: this.selectedPosture,
     };
 
     if (this.existingPostureId) {
-      this.postureService.updateUserPosture(this.existingPostureId, { posture: this.selectedPosture as 'agree' | 'disagree' }).subscribe({
+      this.postureService.updateUserPosture(this.existingPostureId, { posture: this.selectedPosture }).subscribe({
         next: (response) => {
-          console.log('Postura actualizada:', response);
           this.postureSelected.emit(response);
-          console.log('Postura actualizada:', response);
-          this.triggerSendDebateId();
+          this.showDiscussionPrompt = true; // Mostrar modal después de registrar postura
         },
-        error: (error) => console.error('Error actualizando postura:', error),
+        error: (error) => console.error('Error updating posture:', error),
       });
     } else {
       this.postureService.createUserPosture(data).subscribe({
         next: (response) => {
-          console.log('Postura registrada:', response);
           this.postureSelected.emit(response);
+          this.showDiscussionPrompt = true; // Mostrar modal después de registrar postura
         },
-        error: (error) => console.error('Error registrando postura:', error),
+        error: (error) => console.error('Error registering posture:', error),
       });
     }
+  }
+
+  // Método para mostrar el modal después de registrar la postura
+  // submitPosture(): void {
+  //   const data: UserPosture = {
+  //     user: this.authService.getUserId() || '',
+  //     debate: this.debateId || 0,
+  //     posture: this.selectedPosture,
+  //   };
+
+  //   this.postureService.createUserPosture(data).subscribe({
+  //     next: (response) => {
+  //       this.postureSelected.emit(response);
+  //       this.showDiscussionPrompt = true; // Mostrar el modal después de registrar postura
+  //     },
+  //     error: (error) => console.error('Error registrando postura:', error),
+  //   });
+  // }
+
+
+
+  closeDiscussionPrompt(): void {
+    this.showDiscussionPrompt = false; // Cerrar modal sin unirse
   }
 
 
@@ -207,6 +259,7 @@ export class SelectPostureComponent implements OnInit {
   
     this.openChat.emit(); // Emite el evento al padre
     console.log('Evento openChat emitido desde SelectPostureComponent.');
+    this.showDiscussionPrompt = false; // Cierra el modal de invitación
   }
 
   // setPosture(posture: 'agree' | 'disagree'): void {
