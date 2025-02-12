@@ -63,6 +63,12 @@
             </td>
           </ng-container>
 
+          <!-- Add this after the publication_date column -->
+          <ng-container matColumnDef="relevance">
+            <th mat-header-cell *matHeaderCellDef>Relevance Score</th>
+            <td mat-cell *matCellDef="let row">{{ row.relevance?.toFixed(4) || 'N/A' }}</td>
+          </ng-container>
+
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr

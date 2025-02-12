@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./article-information.component.css']
 } )
 export class ArticleInformationComponent {
-  displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date'];
+  displayedColumns: string[] = ['title', 'author_count', 'affiliation_count', 'publication_date', 'relevance'];
 
   @Input() query!: string
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>()
@@ -40,7 +40,8 @@ export class ArticleInformationComponent {
   selectedType!: string
 
   constructor(private articleService: ArticleService,
-              private modalService: NgbModal, @Inject(Router) private router: Router) {
+              private modalService: NgbModal,
+              @Inject(Router) private router: Router) {
   }
 
   ngOnInit() {
@@ -58,16 +59,17 @@ export class ArticleInformationComponent {
             }
           }
         ),
-        tap((articles) => {
-          this.loading.emit(false)
-          this.isLoadingResults = false
-          this.total = articles.total
-          if (this.setYears) {
-            this.years = []
-            this.selectedYears = []
-            this.selectedType = ''
-            this.years = articles.years.sort((a, b) => b - a)
-            this.isLoadingResults = false
+        tap((response) => {
+          this.loading.emit(false);
+          this.isLoadingResults = false;
+          this.total = response.total;
+          
+          if (this.setYears && response.years) {
+            this.years = [];
+            this.selectedYears = [];
+            this.selectedType = '';
+            this.years = response.years.sort((a, b) => b - a);
+            this.isLoadingResults = false;
           }
         }),
         catchError((error) => {
@@ -86,7 +88,8 @@ export class ArticleInformationComponent {
     }
   }
 
-
+/*
+asi es como esta haciendo la paginacion 
   onChangePagination(event: PageEvent) {
     this.setYears = false
     this.page = event.pageIndex + 1
@@ -95,6 +98,23 @@ export class ArticleInformationComponent {
       this.refreshTable$.next({page: this.page, size: this.size, type: this.selectedType, years: this.selectedYears})
     else
       this.refreshTable$.next({page: this.page, size: this.size})
+  }
+*/
+  onChangePagination(event: PageEvent) {
+    this.setYears = false;
+    this.page = event.pageIndex + 1; // Ya se está haciendo bien
+    this.size = event.pageSize;
+    const payload: { page: number; size: number; type?: string; years?: number[] } = {
+      page: this.page,
+      size: this.size
+    };
+
+    if (this.selectedType) {
+      payload.type = this.selectedType;
+      payload.years = this.selectedYears;
+    }
+
+    this.refreshTable$.next(payload);
   }
 
   onClickCheckbox(event: any) {
