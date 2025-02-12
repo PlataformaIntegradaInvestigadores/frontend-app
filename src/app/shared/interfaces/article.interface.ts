@@ -1,30 +1,43 @@
 export interface Article {
-  scopus_id: string
-  title: string
-  abstract: string
-  publication_date: Date
-  authors: { scopusId: string, name: string }[]
-  affiliations: string[]
-  topics: string[]
-  doi: string
-  author_count: number
-  affiliation_count: number
+  scopus_id: string;
+  title: string;
+  abstract: string;
+  publication_date?: string;
+  author_count?: number;
+  affiliation_count?: number;
+  authors?: any[];
+  affiliations?: any[];
+  topics?: string[];
+  relevance?: number;  // Added for LLM search
   citations: number
 }
 
 export interface ArticleResult {
-  scopus_id:string
-  title: string
-  authors: string[]
-  publication_date: Date
-  author_count: number
-  affiliation_count: number
+  title: string;
+  abstract: string;
+  scopus_id: string;
+  author_count?: number;
+  affiliation_count?: number;
+  publication_date?: string;
+  relevance?: number;  // Added for LLM search
 }
 
 export interface PaginationArticleResult {
-  data: ArticleResult[]
-  years: number[]
-  total: number
+  data: ArticleResult[];
+  total: number;
+  years?: number[];
+  timing?: {    // Added for LLM search timing info
+    translation_time?: number;
+    keybert_time?: number;
+    bm25_time?: number;
+    dense_time?: number;
+    total_time?: number;
+  };
+  query_info?: {  // Added for LLM search metadata
+    original_query?: string;
+    enhanced_query?: string;
+    extracted_keywords?: string[];
+  };
 }
 
 export interface ArticlesResponse {

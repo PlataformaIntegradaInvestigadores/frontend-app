@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import { map } from 'rxjs/operators';
 import {Article, PaginationArticleResult} from "../../../shared/interfaces/article.interface";
 import { environment } from 'src/environments/environment';
-
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class ArticleService {
     let bodyParams: any = {
       query,
       page,
-      size,
+      top_k:size,
     }
 
     if (typeFilter) {
@@ -32,6 +32,14 @@ export class ArticleService {
       bodyParams['years'] = years
     }
 
-    return this.http.post<PaginationArticleResult>(`${this.rootURL}/v1/articles/most-relevant-articles-by-topic/`, bodyParams)
+    //return this.http.post<PaginationArticleResult>(`${this.rootURL}/v1/articles/most-relevant-articles-by-topic/`, bodyParams)
+    return this.http.post<PaginationArticleResult>(
+      `${this.rootURL}/v1/llm-search/semantic-search/`, 
+      bodyParams
+    );
   }
 }
+
+
+
+
