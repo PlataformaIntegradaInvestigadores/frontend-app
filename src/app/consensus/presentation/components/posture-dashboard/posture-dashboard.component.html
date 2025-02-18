@@ -1,0 +1,53 @@
+<div *ngIf="isLoading" class="text-center text-gray-500 text-lg">Cargando estadísticas...</div>
+
+<div *ngIf="!isLoading" class="space-y-6 p-6 max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-white shadow-md rounded-lg">
+  <h2 class="text-lg font-semibold text-center mb-4">Debate Statistics</h2>
+  <div class="space-y-4">
+    <!-- Barras de "De acuerdo" -->
+    <div class="flex items-center gap-4">
+      <span class="w-1/4 font-semibold text-right pr-4">Agree</span>
+      <div class="flex-1 bg-green-100 h-6 rounded-md overflow-hidden">
+        <div
+          class="bg-green-500 text-white h-full flex items-center justify-center text-sm"
+          [style.width.%]="(postureCounts.total_agree / getTotalPostures()) * 100 || 0"
+        >
+          {{ postureCounts.total_agree }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Barras de "No de acuerdo" -->
+    <div class="flex items-center gap-4">
+      <span class="w-1/4 font-semibold text-right pr-4">Disagree</span>
+      <div class="flex-1 bg-red-100 h-6 rounded-md overflow-hidden">
+        <div
+          class="bg-red-500 text-white h-full flex items-center justify-center text-sm"
+          [style.width.%]="(postureCounts.total_disagree / getTotalPostures()) * 100 || 0"
+        >
+          {{ postureCounts.total_disagree }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Barras de "Neutral" -->
+    <div class="flex items-center gap-4">
+      <span class="w-1/4 font-semibold text-right pr-4">Neutral</span>
+      <div class="flex-1 bg-gray-100 h-6 rounded-md overflow-hidden">
+        <div
+          class="bg-gray-500 text-white h-full flex items-center justify-center text-sm"
+          [style.width.%]="(postureCounts.total_neutral / getTotalPostures()) * 100 || 0"
+        >
+          {{ postureCounts.total_neutral }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Usuarios Activos como número -->
+    <div class="flex items-center gap-4">
+      <span class="w-1/4 font-semibold text-right pr-4">Active Users</span>
+      <div class="flex-1 text-blue-600 text-sm font-bold">
+        {{ postureCounts.total_active_users }}
+      </div>
+    </div>
+  </div>
+</div>

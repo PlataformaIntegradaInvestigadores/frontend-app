@@ -176,9 +176,11 @@ export class AuthService {
    * Cierra la sesión del usuario eliminando los tokens del almacenamiento local.
    */
   logout(): void {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userId');
+    const dontShowOnboarding = localStorage.getItem('dontShowOnboarding');
+    localStorage.clear();
+    if (dontShowOnboarding) {
+      localStorage.setItem('dontShowOnboarding', dontShowOnboarding);
+    }
   }
 
   /**

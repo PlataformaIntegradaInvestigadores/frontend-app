@@ -1,14 +1,14 @@
 <app-header></app-header>
 <div class="bg-gray-100 pt-2">
     <div class="container mx-auto max-w-screen-xl px-3 mt-4">
-        
+
         <div *ngIf="errorMessage" class="alert alert-danger">
             {{ errorMessage }}
           </div>
         <div *ngIf="!errorMessage">
 
         <div class="block w-full rounded-lg bg-white text-center shadow-secondary-1 dark:bg-surface-dark dark:text-white mb-4">
-            <div class="p-3 border-gray-300 rounded-xl border shadow-md bg-white"> 
+            <div class="p-3 border-gray-300 rounded-xl border shadow-md bg-white">
                 <h1 class="leading-none tracking-tight mb-2 text-2xl font-semibold text-gray-800">{{ group?.title }}</h1>
                 <div class="mx-4 my-0" id="accordion-collapse">
                 <div class="p-2 border border-gray-200 rounded-md bg-gray-100">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-              
+
 
         <div class="grid md:grid-cols-3 grid-cols-1 gap-3">
             <div class="md:col-span-2 col-span-1 ">
@@ -26,9 +26,10 @@
                     class="editor flexi mx-auto flex flex-col text-gray-800 border-gray-300 mb-4 rounded-xl border p-4 shadow-md bg-white ">
                     <div class="text-center font-semibold text-xl text-gray-800 mb-4">
                         Consensus Workshop
+                        <p class="text-sm font-semibold text-gray-500">{{ group?.voting_type || 'Voting type' }}</p>
                     </div>
                     <!-- Las 3 Fases del consenso -->
-                    <navbar-consensus class="w-full mb-4"></navbar-consensus>
+                    <navbar-consensus *ngIf="group" [idOwnerGroup]="group.admin_id" [userId]="userId" [groupId]="groupId" [isPhaseTwo]="isPhaseTwo" [isDecisionPhase]="isDecisionPhase" class="w-full mb-4"></navbar-consensus>
                     <router-outlet></router-outlet>
                 </div>
             </div>
@@ -39,6 +40,7 @@
                     <phase2-consensus-notification class="w-full" *ngIf="isPhaseTwo"></phase2-consensus-notification>
                     <satisfaction-level class="w-full" *ngIf="isDecisionPhase"></satisfaction-level>
                     <phase3-consensus-notification class="w-full" *ngIf="isDecisionPhase" ></phase3-consensus-notification>
+                    <admin-options *ngIf="group && isDecisionPhase" [userId]="userId" [idOwnerGroup]="group.admin_id" [groupId]="group.id" class="w-full"></admin-options>
                 </div>
             </div>
         </div>

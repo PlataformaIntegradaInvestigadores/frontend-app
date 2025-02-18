@@ -20,6 +20,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-b
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AboutUsModule } from './search-engine/presentation/about-us/about-us.module';
 import { AboutUsRoutingModule } from './search-engine/presentation/about-us/about-us.routing.module';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,6 +46,7 @@ import { AboutUsRoutingModule } from './search-engine/presentation/about-us/abou
     BrowserAnimationsModule,
     AboutUsModule,
     AboutUsRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './auth/presentation/login/login.component';
 import { RegisterComponent } from './auth/presentation/register/register.component';
+// import { DebateChatComponent } from './consensus/presentation/components/debate-chat/debate-chat.component';
 
 const routerOptions:ExtraOptions = {
   anchorScrolling: 'enabled',
@@ -28,6 +29,9 @@ const routes: Routes = [
     path: 'profile/:id',
     loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
   },
+  // {
+  //   path:'debate-chat/:id', component: DebateChatComponent
+  // },
 
   /* Siempre al ultimo */
   {

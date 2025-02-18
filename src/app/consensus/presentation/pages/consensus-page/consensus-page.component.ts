@@ -32,7 +32,7 @@ export class ConsensusPageComponent implements OnInit {
     initFlowbite();
     this.groupId = this.activatedRoute.snapshot.paramMap.get('groupId'); // Obtén el ID del grupo desde la URL
     this.userId = this.activatedRoute.snapshot.paramMap.get('id');
-    
+
     if (this.groupId) {
       this.loadGroup(this.groupId);
     }
@@ -56,7 +56,7 @@ export class ConsensusPageComponent implements OnInit {
       }
     });
   }
-  
+
 
   navigateToPhase(groupId: string, phase: number) {
     let redirectPhase: string;

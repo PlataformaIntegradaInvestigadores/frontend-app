@@ -30,7 +30,8 @@ export class GroupCreateModalComponent {
     this.groupForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      userSearch: ['']
+      userSearch: [''],
+      algorithm: ['', Validators.required]
     });
   }
 
@@ -91,6 +92,7 @@ export class GroupCreateModalComponent {
       const groupData: any = {
         title: this.groupForm.get('title')?.value,
         description: this.groupForm.get('description')?.value,
+        voting_type: this.groupForm.get('algorithm')?.value,
       };
       if (this.selectedUsers.length > 0) {
         groupData.users = this.selectedUsers.map(user => user.id);

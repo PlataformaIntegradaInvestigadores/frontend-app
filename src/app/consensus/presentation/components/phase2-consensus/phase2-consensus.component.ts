@@ -18,7 +18,7 @@ import { WebSocketService } from 'src/app/consensus/domain/services/WebSocketSer
 })
 
 export class Phase2ConsensusComponent implements OnInit, OnDestroy {
-  
+
   recommendedTopics: RecommendedTopic[] = [];
   groupId: string = '';
   activeConnections: number = 0;
@@ -26,10 +26,11 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   private newTopicSubscription?: Subscription;
   private notificationsSubscription?: Subscription;
   finalOrderedTopics: { id: number, topic_name: string, tags: string[] }[] = [];
+  hasFinalOrderedTopics: boolean = false;
 
   showModalPhaseTwo: boolean = false;
 
-  userPhase: number = 1; 
+  userPhase: number = 1;
 
   constructor(
     private topicService: TopicService,
@@ -43,9 +44,12 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.parent?.paramMap.subscribe(params => {
       this.groupId = params.get('groupId') || '';
-      this.loadRecommendedTopics();
+      this.loadFinalOrderedTopics();
+      if (!this.hasFinalOrderedTopics) {
+        this.loadRecommendedTopics();
+      }
       this.connectWebSocket();
-      this.checkUserPhase(); 
+      this.checkUserPhase();
     });
   }
 
@@ -66,7 +70,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
 
   loadRecommendedTopics(): void {
     if (!this.groupId) return;
-  
+
     this.topicService.getRecommendedTopicsByGroup(this.groupId).subscribe(
       (topics) => {
         this.recommendedTopics = topics.map(topic => {
@@ -77,6 +81,23 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       },
       (error) => {
         console.error('Error loading recommended topics:', error);
+      }
+    );
+  }
+
+  loadFinalOrderedTopics(): void {
+    if (!this.groupId) return;
+
+    this.topicService.getFinalsTopicsByGroup(this.groupId).subscribe(
+      (response: any) => {
+        if (response.data.length !== 0) {
+          this.hasFinalOrderedTopics = true;
+          this.recommendedTopics = response.data;
+          this.updateFinalOrderedTopics();
+        }
+      },
+      (error) => {
+        console.error('Error loading final ordered topics:', error);
       }
     );
   }
@@ -97,36 +118,35 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
 
   updateFinalOrderedTopics(): void {
     this.finalOrderedTopics = this.recommendedTopics.map(topic => ({ id: topic.id, topic_name: topic.topic_name, tags: topic.tags ?? [] }));
-
   }
 
   toggleTag(topic: RecommendedTopic, tag: string): void {
     const userId = this.authService.getUserId();
     const positiveTags = ['Novel', 'Attractive', 'Trend'];
     const negativeTags = ['Obsolete', 'Unfamiliar'];
-  
+
     if (!topic.tags) {
       topic.tags = [];
     }
-  
+
     if (positiveTags.includes(tag)) {
       topic.tags = topic.tags.filter(t => !negativeTags.includes(t));
     } else if (negativeTags.includes(tag)) {
       topic.tags = topic.tags.filter(t => !positiveTags.includes(t));
     }
-  
+
     if (topic.tags.includes(tag)) {
       topic.tags = topic.tags.filter(t => t !== tag);
     } else {
       topic.tags.push(tag);
     }
-  
+
     if (tag === 'Novel' && topic.tags.includes('Obsolete')) {
       topic.tags = topic.tags.filter(t => t !== 'Obsolete');
     } else if (tag === 'Obsolete' && topic.tags.includes('Novel')) {
       topic.tags = topic.tags.filter(t => t !== 'Novel');
     }
-  
+
     // Guardar estado en localStorage
     localStorage.setItem(`topic_${topic.id}_tags`, JSON.stringify(topic.tags));
 
@@ -137,9 +157,9 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       this.recommendedTopics = this.recommendedTopics.filter(t => t.id !== topic.id);
       this.recommendedTopics.push(topic);
     }
-  
+
     this.updateFinalOrderedTopics();
-  
+
     if (this.groupId && userId) {
       this.topicService.notifyTopicTagChange(this.groupId, userId, topic.id, tag).subscribe(  );
     }
@@ -169,15 +189,15 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
         posFinal: totalTopics - index,
         label: topic.tags.join(', ')
       }));
-  
+
       this.topicService.saveFinalTopicOrder(this.groupId, userId, finalTopicOrders).subscribe(
         response => {
           const phaseKey = `phase_${this.groupId}`;
           localStorage.setItem(phaseKey, '2');
-          
+
           // Limpiar el localStorage antes de la redirección
           this.clearLocalStorage();
-  
+
           const currentUrl = this.router.url;
           const newUrl = currentUrl.replace('valuation', 'decision');
           this.router.navigateByUrl(newUrl);
@@ -189,7 +209,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       );
     }
   }
-  
+
 
   clearLocalStorage(): void {
     for (let i = 0; i < localStorage.length; i++) {
@@ -199,7 +219,7 @@ export class Phase2ConsensusComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
+
 
   cancelPhaseTwoCompletion(): void {
     this.closeModalPhaseTwo();
