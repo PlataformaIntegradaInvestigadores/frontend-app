@@ -8,7 +8,7 @@ import { DebateStatisticsService } from 'src/app/consensus/domain/services/debat
 })
 export class PostureDashboardComponent implements OnInit {
   @Input() debateId!: number; // Recibe el ID del debate
-  postureCounts = { total_agree: 0, total_disagree: 0, total_neutral: 0 }; // Inicialización
+  postureCounts = { total_agree: 0, total_disagree: 0, total_neutral: 0, total_active_users: 0}; // Inicialización
   isLoading = true;
 
   constructor(private dashboardService: DebateStatisticsService) {}
@@ -31,7 +31,7 @@ export class PostureDashboardComponent implements OnInit {
   }
 
   getTotalPostures(): number {
-    return this.postureCounts.total_agree + this.postureCounts.total_disagree + this.postureCounts.total_neutral;
+    return this.postureCounts.total_agree + this.postureCounts.total_disagree + this.postureCounts.total_neutral + this.postureCounts.total_active_users;
   }
   
 

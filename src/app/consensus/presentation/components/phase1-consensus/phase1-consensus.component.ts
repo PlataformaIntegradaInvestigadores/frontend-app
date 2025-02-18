@@ -212,7 +212,8 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
         console.log('Debate creado exitosamente:', response);
 
         if (response.id !== undefined) {
-          this.openSelectPostureModal(Number(response.id), {} as UserPosture, Number(response.id), this.debateTitle, this.groupId); // Abre el modal de postura
+          // Abre el modal de postura
+          this.openSelectPostureModal(Number(response.id), {} as UserPosture, Number(response.id), this.debateTitle, this.groupId); 
         } else {
           console.error('El ID del debate no está definido en la respuesta.');
         }
