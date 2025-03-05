@@ -1,19 +1,96 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Debate} from "../entities/debate.interface";
-import {map, Observable, Observer, Subject} from "rxjs";
+import {BehaviorSubject, map, Observable, Observer, Subject} from "rxjs";
 import {environment} from "../../../../environments/environment";
+import { WebSocketSubject } from 'rxjs/webSocket';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DebateService {
 
+  //WebSocket
+  private socket$: WebSocketSubject<any> | null = null;
+  private countdownSubject = new BehaviorSubject<number | null>(null);
+  private debateClosedSubject = new BehaviorSubject<boolean>(false);
+  private baseUrl = `${environment.wsUrl}/debate`;
+
+
+
+  // URL de la API
+
   private apiUrl = `${environment.apiUrl}/v1/groups/`;
   private validateDebateStatusSubject = new Subject<void>();
   validateDebateStatus$ = this.validateDebateStatusSubject.asObservable();
+  
 
   constructor(private http: HttpClient) { }
+
+
+  private getAuthToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
+
+  connect(debateId: number): void {
+    const token = this.getAuthToken();
+    if (!token) {
+      console.error('No access token found. WebSocket connection aborted.');
+      return;
+    }
+  
+    const url = `${this.baseUrl}/${debateId}/?token=${token}`;
+  
+    if (!this.socket$) {
+      this.socket$ = new WebSocketSubject(url);
+  
+      this.socket$.subscribe(
+        (msg) => {
+          if (msg.type === 'countdown') {
+            this.countdownSubject.next(msg.time_left);
+          } else if (msg.type === 'debate_closed') {
+            this.debateClosedSubject.next(true);
+            alert(msg.message);
+          }
+        },
+        (err) => console.error('WebSocket error:', err),
+        () => console.log('WebSocket connection closed')
+      );
+    }
+  }
+
+  startCountdown(duration: number = 60): void {
+    if (this.socket$) {
+      this.socket$.next({ action: 'start_countdown', duration });
+    }
+  }
+
+  closeDebateManually(): void {
+    if (this.socket$) {
+      this.socket$.next({ action: 'close_debate' });
+    }
+  }
+
+  getCountdown(): Observable<number | null> {
+    return this.countdownSubject.asObservable();
+  }
+
+  getDebateClosedStatus(): Observable<boolean> {
+    return this.debateClosedSubject.asObservable();
+  }
+
+  disconnect(): void {
+    if (this.socket$) {
+      this.socket$.complete();
+      this.socket$ = null;
+    }
+  }
+  
+
+
+  
+
 
   // Obtiene los datos del debate
   getDebates(groupId: string): Observable<Debate[]> {
