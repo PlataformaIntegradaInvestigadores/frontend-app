@@ -41,8 +41,8 @@
           </div>
         </div>
       </div>
-       
-    
+
+
       <div class="relative w-full  bg-white shadow-sm border-2 border-gray-300 rounded-lg">
         <div class="p-3 pb-0">
           <h2 class="text-xl text-center font-semibold text-gray-800 mb-0">CENTINELA as an Analytic Tool</h2>
@@ -63,9 +63,9 @@
         </div>
       </div>
 
-      
+
       <div class="relative w-full  shadow-sm border-2 border-gray-300 rounded-lg">
-    
+
         <div class="p-3 pb-0">
           <h2 class="text-xl font-semibold text-center text-gray-800 mb-0">CENTINELA as an Academic Interaction Space</h2>
         </div>
@@ -84,8 +84,8 @@
           </div>
         </div>
       </div>
-      
-    
+
+
 
 
       <div class="relative w-full bg-gray-200  shadow-sm border-2 border-gray-300 rounded-lg">
@@ -109,7 +109,7 @@
       </div>
 
     </div>
-    
+
     <!-- Sección de Colaboradores -->
     <h2 id="collaborators" class="font-medium text-gray-800 text-center mb-0">Collaborators</h2>
     <div class="my-10 bg-gray-200 p-6">
@@ -117,28 +117,13 @@
           <p class="my-3 text-base font-semibold text-gray-800">PhD. Lorena Katherine Recalde Cerda</p>
           <p class="text-gray-600">Product Owner</p>
         </div>
-    
+
         <!-- Cuadrícula de Colaboradores -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-4">
 
-          <div class="flex flex-col items-center">
-            <p class="my-3 text-base font-semibold text-gray-800">Ing. Fernando Sangopanta</p>
-            <p class="text-gray-600 text-center">Contributed with the information retrieval system </p>
-          </div>
-
-          <div class="flex flex-col items-center">
-              <p class="my-3 text-base font-semibold text-gray-800">Ing. Joffre Condor</p>
-              <p class="text-gray-600 text-center">Contributed with the analytic tool</p>
-          </div>
-
-          <div class="flex flex-col items-center">
-              <p class="my-3 text-base font-semibold text-gray-800">Ing. Danny Cabrera</p>
-              <p class="text-gray-600 text-center">Contributed with  the academic interation space</p>
-          </div>
-
-          <div class="flex flex-col items-center">
-              <p class="my-3 text-base font-semibold text-gray-800">Ing. Rommel Masabanda</p>
-              <p class="text-gray-600 text-center">Contributed with the decision support (consensus workshop)</p>
+          <div class="flex flex-col items-center" *ngFor="let person of collaborators">
+            <p class="my-3 text-base font-semibold text-gray-800">{{ person.name }}</p>
+            <p class="text-gray-600 text-center">{{ person.role }}</p>
           </div>
 
         </div>

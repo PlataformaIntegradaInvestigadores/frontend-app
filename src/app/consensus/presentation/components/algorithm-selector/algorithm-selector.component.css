@@ -1,0 +1,41 @@
+/* Estilos básicos */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px;
+  background-color: #f0f0f0;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.card-description {
+  font-size: 0.875rem;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+}
+
+.table th, .table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.text-center {
+  text-align: center;
+}

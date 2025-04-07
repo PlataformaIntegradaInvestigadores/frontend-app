@@ -8,7 +8,7 @@ import { Phase1ConsensusNotificationComponent } from './presentation/components/
 import { MembersConsensusComponent } from './presentation/components/members-consensus-card-list/members-consensus.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ConsensusPageComponent } from './presentation/pages/consensus-page/consensus-page.component';
-import { CommonModule } from "@angular/common";
+import { CommonModule, DecimalPipe } from "@angular/common";
 import { ViewAllMembersComponent } from "./presentation/components/view-all-members/view-all-members.component";
 import { MemberItemComponent } from './presentation/components/member-item/member-item.component';
 import { MemberDeleteBtnComponent } from './presentation/components/member-delete-btn/member-delete-btn.component';
@@ -28,6 +28,7 @@ import { SelectPostureComponent } from './presentation/components/select-posture
 import { DiscussionComponent } from './presentation/components/discussion/discussion.component';
 import { CreateDebateComponent } from './presentation/components/create-debate/create-debate.component';
 import { PostureDashboardComponent } from './presentation/components/posture-dashboard/posture-dashboard.component';
+import { AlgorithmSelectorComponent } from "./presentation/components/algorithm-selector/algorithm-selector.component";
 
 
 @NgModule({
@@ -53,9 +54,10 @@ import { PostureDashboardComponent } from './presentation/components/posture-das
     DiscussionComponent,
     CreateDebateComponent,
     PostureDashboardComponent,
+    AlgorithmSelectorComponent,
     // DebateChatComponent
   ],
-  imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule, AdminOptionsComponent],
+  imports: [ConsensusRoutingModule, CommonModule, SharedModule, FormsModule, AdminOptionsComponent, DecimalPipe],
   exports: [MemberDeleteBtnComponent, UniqueIDDirective, Phase1ConsensusComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

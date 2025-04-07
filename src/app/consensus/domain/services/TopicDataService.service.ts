@@ -1,11 +1,12 @@
 // src/app/services/topic.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, map } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { RecommendedTopic, TopicAddedUser } from '../entities/topic.interface';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { RESTConsensusResult, Result } from '../repositories/rest-consensus-results.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -207,12 +208,29 @@ export class TopicService {
   }
 
 
-  getConsensusResults(groupId: string): Observable<any> {
+  getConsensusResults(groupId: string): Observable<RESTConsensusResult> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
 
     });
-    return this.http.get(`${this.apiUrl}${groupId}/execute_consensus_calculations/`, { headers });
+    return this.http.get<RESTConsensusResult>(`${this.apiUrl}${groupId}/execute_consensus_calculations/`, { headers });
+  }
+
+  getConsensusResultsByVotingType(groupId: string, votingType: string): Observable<Result[]> {
+
+    if (groupId === '') return throwError(() => new Error('Group ID is empty'));
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+
+    return this.http.get<RESTConsensusResult>(`${this.apiUrl}${groupId}/execute_consensus_calculations/${votingType}/`, {headers}).pipe(
+      map((restConsensusResult) => restConsensusResult.results),
+      catchError((error) => {
+        console.error('Error fetching consensus results:', error);
+        return throwError(() => new Error('Error fetching consensus results'));
+      })
+    );
   }
 
   saveUserSatisfaction(groupId: string, userId: string, satisfactionLevel: string): Observable<any> {
