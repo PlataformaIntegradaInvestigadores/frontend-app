@@ -10,32 +10,54 @@ import { UserType } from '../../domain/entities/interfaces';
 })
 export class AuthModalComponent implements OnInit, OnDestroy {
   modalState: AuthModalState = { isOpen: false, type: null, userType: 'user' };
+  isLoading = false;
   private destroy$ = new Subject<void>();
 
-  constructor(private authModalService: AuthModalService) {}
-  ngOnInit(): void {
+  constructor(private authModalService: AuthModalService) {}  ngOnInit(): void {
     this.authModalService.modalState$
       .pipe(takeUntil(this.destroy$))
       .subscribe(state => {
         this.modalState = state;
         
-        // Prevenir scroll del body cuando el modal está abierto
+        // Prevent body scroll when modal is open
         if (state.isOpen) {
           document.body.classList.add('modal-open');
           document.body.style.overflow = 'hidden';
+          // Reset loading state when modal opens
+          this.isLoading = false;
         } else {
           document.body.classList.remove('modal-open');
           document.body.style.overflow = '';
         }
       });
+    
+    // Listen for escape key
+    document.addEventListener('keydown', this.handleEscapeKey);
   }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    // Restaurar scroll del body
+    // Restore body scroll
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
+    // Remove escape key listener
+    document.removeEventListener('keydown', this.handleEscapeKey);
+  }
+
+  /**
+   * Handle escape key press to close modal
+   */
+  private handleEscapeKey = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape' && this.modalState.isOpen) {
+      this.closeModal();
+    }
+  }
+
+  /**
+   * Set loading state
+   */
+  setLoading(loading: boolean): void {
+    this.isLoading = loading;
   }
 
   /**

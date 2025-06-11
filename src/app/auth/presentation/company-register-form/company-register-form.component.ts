@@ -18,6 +18,17 @@ export class CompanyRegisterFormComponent implements OnInit {
     isLoading: boolean = false;
     industryOptions = INDUSTRY_OPTIONS;
     employeeCountOptions = EMPLOYEE_COUNT_OPTIONS;
+    
+    // Step wizard properties
+    currentStep: number = 1;
+    totalSteps: number = 4;
+    
+    steps = [
+        { id: 1, title: 'Company Info', description: 'Basic company information' },
+        { id: 2, title: 'Contact Details', description: 'Contact information' },
+        { id: 3, title: 'Account Security', description: 'Password and security' },
+        { id: 4, title: 'Terms & Finish', description: 'Review and complete' }
+    ];
 
     constructor(
         private fb: FormBuilder,
@@ -73,6 +84,90 @@ export class CompanyRegisterFormComponent implements OnInit {
                 this.errorMessages = error.message.split('\n');
             }
         });
+    }    /**
+     * Navigate to the next step
+     */
+    nextStep(): void {
+        if (this.isCurrentStepValid() && this.currentStep < this.totalSteps) {
+            this.currentStep++;
+            this.errorMessages = [];
+        }
+    }
+
+    /**
+     * Navigate to the previous step
+     */
+    previousStep(): void {
+        if (this.currentStep > 1) {
+            this.currentStep--;
+            this.errorMessages = [];
+        }
+    }
+
+    /**
+     * Go to a specific step
+     */
+    goToStep(step: number): void {
+        if (step >= 1 && step <= this.totalSteps) {
+            // Only allow going back or to completed steps
+            if (step <= this.currentStep || this.isStepCompleted(step - 1)) {
+                this.currentStep = step;
+                this.errorMessages = [];
+            }
+        }
+    }
+
+    /**
+     * Check if current step is valid
+     */
+    isCurrentStepValid(): boolean {
+        const step1Fields = ['company_name'];
+        const step2Fields = ['username'];
+        const step3Fields = ['password', 'confirm_password'];
+        const step4Fields = ['agree_terms'];
+
+        switch (this.currentStep) {
+            case 1:
+                return step1Fields.every(field => {
+                    const control = this.registerForm.get(field);
+                    return control?.valid || false;
+                });
+            case 2:
+                return step2Fields.every(field => {
+                    const control = this.registerForm.get(field);
+                    return control?.valid || false;
+                });
+            case 3:
+                return step3Fields.every(field => {
+                    const control = this.registerForm.get(field);
+                    return control?.valid || false;
+                }) && !this.registerForm.errors?.['passwordMismatch'];
+            case 4:
+                return step4Fields.every(field => {
+                    const control = this.registerForm.get(field);
+                    return control?.valid || false;
+                });
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Check if a step is completed
+     */
+    isStepCompleted(step: number): boolean {
+        const tempCurrentStep = this.currentStep;
+        this.currentStep = step;
+        const isValid = this.isCurrentStepValid();
+        this.currentStep = tempCurrentStep;
+        return isValid;
+    }
+
+    /**
+     * Get progress percentage
+     */
+    getProgress(): number {
+        return (this.currentStep / this.totalSteps) * 100;
     }
 
     /**
