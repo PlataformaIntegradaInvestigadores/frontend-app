@@ -21,6 +21,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AboutUsModule } from './search-engine/presentation/about-us/about-us.module';
 import { AboutUsRoutingModule } from './search-engine/presentation/about-us/about-us.routing.module';
 import { FormsModule } from '@angular/forms';
+import { AuthModalComponent } from './auth/presentation/auth-modal/auth-modal.component';
+import { LoginFormComponent } from './auth/presentation/login-form/login-form.component';
+import { RegisterFormComponent } from './auth/presentation/register-form/register-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +33,9 @@ import { FormsModule } from '@angular/forms';
     ContactComponent,
     ArticleComponent,
     FingerprintComponent,
+    AuthModalComponent,
+    LoginFormComponent,
+    RegisterFormComponent,
   ],
   imports: [
     AppRoutingModule,

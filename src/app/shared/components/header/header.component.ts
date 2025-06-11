@@ -2,6 +2,7 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { AuthModalService } from 'src/app/auth/domain/services/auth-modal.service';
 import { User } from 'src/app/group/presentation/user.interface';
 
 @Component({
@@ -21,7 +22,11 @@ export class HeaderComponent {
   searchQuery: string = '';
   searchOpen: boolean = false;  // Variable para controlar la apertura del buscador
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private authModalService: AuthModalService
+  ) { }
 
   toggleNav() {
     this.navOpen = !this.navOpen;
@@ -52,12 +57,25 @@ export class HeaderComponent {
     this.showLogin = !this.authService.isLoggedIn();
     this.loadUsers();
   }
-
   logout() {
     this.authService.logout();
     this.router.navigate(['/home']).then(() => {
       window.location.reload();
     });
+  }
+
+  /**
+   * Abre el modal de login
+   */
+  openLogin(): void {
+    this.authModalService.openLogin();
+  }
+
+  /**
+   * Abre el modal de registro
+   */
+  openRegister(): void {
+    this.authModalService.openRegister();
   }
 
   profile() {

@@ -1,0 +1,80 @@
+<!-- Modal backdrop -->
+<div 
+  *ngIf="modalState.isOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
+  (click)="onBackdropClick($event)">
+  
+  <!-- Modal content -->
+  <div class="relative w-full max-w-4xl max-h-[90vh] overflow-auto bg-white rounded-lg shadow-xl">
+    
+    <!-- Close button -->
+    <button 
+      type="button"
+      class="absolute top-4 right-4 z-10 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+      (click)="closeModal()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Modal body -->
+    <div class="flex flex-col md:flex-row min-h-[500px]">
+      
+      <!-- Left side - Branding -->
+      <div class="p-6 py-8 text-white bg-primary_tailwind bg-opacity-85 md:w-80 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
+        <div class="my-3 text-3xl md:text-4xl font-bold tracking-wider text-center">
+          CENTINELA
+        </div>
+        <p class="mt-4 md:mt-6 font-normal text-center text-gray-300 text-sm md:text-base">
+          Join CENTINELA, the academic social network where you can connect, collaborate, and share knowledge with
+          other students and professionals.
+        </p>
+        
+        <!-- Switch between login and register -->
+        <div class="flex flex-col items-center justify-center mt-6 md:mt-10 text-center">
+          <ng-container *ngIf="modalState.type === 'login'">
+            <span class="text-gray-300">Don't have an account?</span>
+            <button 
+              type="button"
+              class="underline text-white hover:text-gray-200 transition-colors"
+              (click)="switchToRegister()">
+              Get Started!
+            </button>
+          </ng-container>
+          
+          <ng-container *ngIf="modalState.type === 'register'">
+            <span class="text-gray-300">Already have an account?</span>
+            <button 
+              type="button"
+              class="underline text-white hover:text-gray-200 transition-colors"
+              (click)="switchToLogin()">
+              Log in
+            </button>
+          </ng-container>
+        </div>
+        
+        <p class="mt-4 md:mt-6 text-xs md:text-sm text-center text-gray-300">
+          Read our <a href="#" class="underline hover:text-white transition-colors">terms</a> and 
+          <a href="#" class="underline hover:text-white transition-colors">conditions</a>
+        </p>
+      </div>
+
+      <!-- Right side - Form content -->
+      <div class="flex-1 p-6 bg-white">
+        
+        <!-- Login Form -->
+        <div *ngIf="modalState.type === 'login'" class="h-full">
+          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Account Login</h3>
+          <app-login-form (loginSuccess)="closeModal()"></app-login-form>
+        </div>
+
+        <!-- Register Form -->
+        <div *ngIf="modalState.type === 'register'" class="h-full">
+          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Create Account</h3>
+          <app-register-form (registerSuccess)="switchToLogin()"></app-register-form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

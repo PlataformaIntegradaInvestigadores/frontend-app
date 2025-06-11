@@ -2,29 +2,22 @@
   <div class="container mx-auto max-w-screen-xl">
     <div class="flex items-center justify-between p-2">
       <a href="/home" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="/assets/logo.svg"
-          class="h-12 md:h-16 bg-slate-100 rounded-full" alt="Flowbite Logo" />
-        <span
-          class="text-2xl md:text-5xl font-light text-white">Centinela</span>
+        <img src="/assets/logo.svg" class="h-12 md:h-16 bg-slate-100 rounded-full" alt="Flowbite Logo" />
+        <span class="text-2xl md:text-5xl font-light text-white">Centinela</span>
       </a>
       <button (click)="toggleNav()" class="md:hidden text-white">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor"
-          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 6h16M4 12h16m-7 6h7"></path>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
         </svg>
       </button>
     </div>
   </div>
 </nav>
-<nav [ngClass]="{'hidden': !navOpen, 'block': navOpen, 'md:flex': true}"
-  class="py-2">
+<nav [ngClass]="{'hidden': !navOpen, 'block': navOpen, 'md:flex': true}" class="py-2">
   <div class=" container mx-auto max-w-screen-xl px-3">
-    <ul
-      class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0 rtl:space-x-reverse">
+    <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0 rtl:space-x-reverse">
       <li class="mb-2 md:mb-0 md:mr-2">
-        <a routerLink="/home" routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
           class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base">
           <div class="w-4 h-4 mr-2">
             <img src="assets/svg-header/home.svg" alt="Home icon"
@@ -47,28 +40,22 @@
       <li class="mb-2 md:mb-0 md:mr-2" *ngIf="showInformation">
         <a routerLink="./about-us/getting-started" routerLinkActive="active"
           class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base">
-          <mat-icon class="w-4 h-4 mr-2 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300">info</mat-icon>
+          <mat-icon
+            class="w-4 h-4 mr-2 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300">info</mat-icon>
           About
         </a>
       </li>
-      <li class="mb-2 md:mb-0 md:mr-2 relative m-auto"
-        (clickOutside)="closeSearch()" *ngIf="!showInformation">
+      <li class="mb-2 md:mb-0 md:mr-2 relative m-auto" (clickOutside)="closeSearch()" *ngIf="!showInformation">
         <div class="relative">
-          <input type="text" [(ngModel)]="searchQuery" (focus)="openSearch()"
-            (input)="filterUsers()"
-            placeholder="    Search Centinela user..."
-            class="p-2 min-w-full border border-gray-300 rounded-md px-10">
-          <i *ngIf="!searchQuery"
-            class="fa fa-search absolute left-3 top-3 text-gray-500"></i>
+          <input type="text" [(ngModel)]="searchQuery" (focus)="openSearch()" (input)="filterUsers()"
+            placeholder="    Search Centinela user..." class="p-2 min-w-full border border-gray-300 rounded-md px-10">
+          <i *ngIf="!searchQuery" class="fa fa-search absolute left-3 top-3 text-gray-500"></i>
           <div *ngIf="searchOpen && searchQuery && filteredUsers.length > 0"
             class="absolute left-0 right-0 z-10 bg-white border border-gray-300 rounded-md mt-2 max-h-60 overflow-auto min-w-fit">
-            <div *ngFor="let user of filteredUsers"
-              class="p-2 hover:bg-gray-200 cursor-pointer">
-              <a [href]="generateUserGroupUrl(user.id)" target="_blank"
-                class="flex items-center"
+            <div *ngFor="let user of filteredUsers" class="p-2 hover:bg-gray-200 cursor-pointer">
+              <a [href]="generateUserGroupUrl(user.id)" target="_blank" class="flex items-center"
                 (click)="closeSearch()">
-                <div
-                  class="flex-shrink-0 h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+                <div class="flex-shrink-0 h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">
                   {{ user.first_name.charAt(0) }}{{ user.last_name.charAt(0) }}
                 </div>
                 <div>
@@ -82,13 +69,10 @@
         </div>
       </li>
 
-      <div class="flex flex-col md:flex-row"
-        [ngClass]="{'md:ml-auto': showInformation}">
-        <li
-          class="mb-2 md:mb-0 flex justify-start md:justify-center items-center md:mr-2 cursor-pointer"
+      <div class="flex flex-col md:flex-row" [ngClass]="{'md:ml-auto': showInformation}">
+        <li class="mb-2 md:mb-0 flex justify-start md:justify-center items-center md:mr-2 cursor-pointer"
           *ngIf="!showLogin">
-          <a
-            class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base"
+          <a class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-base"
             (click)="profile()">
             <div class="w-4 h-4 mr-2">
               <img src="assets/svg-header/user.svg" alt="User icon"
@@ -97,26 +81,22 @@
             Profile
           </a>
         </li>
-        <li
-          class="mb-2 md:mb-0 flex justify-start items-start md:items-center md:mr-2"
-          *ngIf="!showLogin">
+        <li class="mb-2 md:mb-0 flex justify-start items-start md:items-center md:mr-2" *ngIf="!showLogin">
           <button
             class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-lg text-base transition-colors duration-200 ease-in-out bg-primary_tailwind text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             (click)="logout()">
             Logout
           </button>
         </li>
-        <li
-          class="mb-2 md:mb-0 flex justify-start items-start md:items-center md:mr-2"
-          *ngIf="showLogin">
+        <li class="mb-2 md:mb-0 flex justify-start items-start md:items-center md:mr-2" *ngIf="showLogin">
           <button
             class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-lg text-base transition-colors duration-200 ease-in-out text-black focus:outline-none focus:ring-2 focus:ring-offset-2 mr-4"
-            routerLink="/register">
+            (click)="openRegister()">
             Sign Up
           </button>
           <button
             class="inline-flex items-center justify-center p-2 border-b-2 border-transparent rounded-lg text-base transition-colors duration-200 ease-in-out bg-primary_tailwind text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            routerLink="/login">
+            (click)="openLogin()">
             Log In
           </button>
         </li>
