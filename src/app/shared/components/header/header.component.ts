@@ -101,4 +101,18 @@ export class HeaderComponent {
   generateUserGroupUrl(userId: string): string {
     return `/profile/${userId}/about-me`;
   }
+
+  /**
+   * Navigate to feeds page
+   */
+  navigateToFeeds(): void {
+    this.router.navigate(['/feeds']);
+  }
+
+  /**
+   * Navigate to jobs page
+   */
+  navigateToJobs(): void {
+    this.router.navigate(['/jobs']);
+  }
 }
