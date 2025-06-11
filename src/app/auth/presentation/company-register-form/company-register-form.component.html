@@ -1,0 +1,181 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+    <!-- Error Messages -->
+    <div *ngIf="errorMessages.length > 0" class="error-container">
+        <div class="error-message" *ngFor="let error of errorMessages">
+            {{ error }}
+        </div>
+    </div>
+
+    <!-- Company Name -->
+    <div class="form-group">
+        <label for="company_name">Company Name</label>
+        <input
+            type="text"
+            id="company_name"
+            formControlName="company_name"
+            class="form-control"
+            placeholder="Enter your company name"
+            required
+            [class.error-input]="registerForm.get('company_name')?.invalid && registerForm.get('company_name')?.touched"
+        />
+        <div class="error-message" *ngIf="registerForm.get('company_name')?.invalid && registerForm.get('company_name')?.touched">
+            Company name is required.
+        </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+        <label for="username">Email</label>
+        <input
+            type="email"
+            id="username"
+            formControlName="username"
+            class="form-control"
+            placeholder="Enter your company email"
+            required
+            [class.error-input]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        />
+        <div class="error-message" *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+            <span *ngIf="registerForm.get('username')?.errors?.['required']">Email is required.</span>
+            <span *ngIf="registerForm.get('username')?.errors?.['email']">Please enter a valid email address.</span>
+        </div>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            placeholder="Enter your password"
+            required
+            [class.error-input]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+        />
+        <div class="error-message" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</span>
+            <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters long.</span>
+        </div>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="form-group">
+        <label for="confirm_password">Confirm Password</label>
+        <input
+            type="password"
+            id="confirm_password"
+            formControlName="confirm_password"
+            class="form-control"
+            placeholder="Confirm your password"
+            required
+            [class.error-input]="registerForm.get('confirm_password')?.invalid && registerForm.get('confirm_password')?.touched"
+        />
+        <div class="error-message" *ngIf="registerForm.get('confirm_password')?.invalid && registerForm.get('confirm_password')?.touched">
+            Confirmation password is required.
+        </div>
+        <div class="error-message" *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirm_password')?.touched">
+            Passwords do not match.
+        </div>
+    </div>
+
+    <!-- Industry -->
+    <div class="form-group">
+        <label for="industry">Industry</label>
+        <select
+            id="industry"
+            formControlName="industry"
+            class="form-control select-field"
+        >
+            <option value="">Select an industry (optional)</option>
+            <option *ngFor="let industry of industryOptions" [value]="industry.value">
+                {{ industry.label }}
+            </option>
+        </select>
+    </div>
+
+    <!-- Employee Count -->
+    <div class="form-group">
+        <label for="employee_count">Company Size</label>
+        <select
+            id="employee_count"
+            formControlName="employee_count"
+            class="form-control select-field"
+        >
+            <option value="">Select company size (optional)</option>
+            <option *ngFor="let option of employeeCountOptions" [value]="option.value">
+                {{ option.label }}
+            </option>
+        </select>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+        <label for="description">Company Description</label>
+        <textarea
+            id="description"
+            formControlName="description"
+            class="form-control textarea-field"
+            placeholder="Brief description of your company (optional)"
+            rows="3"
+            maxlength="500"
+        ></textarea>
+    </div>
+
+    <!-- Website -->
+    <div class="form-group">
+        <label for="website">Website</label>
+        <input
+            type="url"
+            id="website"
+            formControlName="website"
+            class="form-control"
+            placeholder="https://yourcompany.com (optional)"
+        />
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input
+            type="tel"
+            id="phone"
+            formControlName="phone"
+            class="form-control"
+            placeholder="Your company phone number (optional)"
+        />
+    </div>
+
+    <!-- Terms and Conditions -->
+    <div class="form-group terms-group">
+        <label class="checkbox-container">
+            <input
+                type="checkbox"
+                formControlName="agree_terms"
+                required
+            />
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
+                I agree to the <a href="#" class="terms-link">Terms and Conditions</a> and 
+                <a href="#" class="terms-link">Privacy Policy</a>
+            </span>
+        </label>
+        <div class="error-message" *ngIf="registerForm.get('agree_terms')?.invalid && registerForm.get('agree_terms')?.touched">
+            You must agree to the terms and conditions.
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button 
+        type="submit" 
+        class="submit-btn"
+        [disabled]="registerForm.invalid || isLoading"
+        [class.loading]="isLoading"
+    >
+        <span *ngIf="!isLoading">Create Company Account</span>
+        <span *ngIf="isLoading" class="loading-text">
+            <span class="spinner"></span>
+            Creating Account...
+        </span>
+    </button>
+</form>

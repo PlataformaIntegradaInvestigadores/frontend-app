@@ -4,6 +4,11 @@
   z-index: 9999;
 }
 
+/* Prevenir scroll del body cuando el modal está abierto */
+:host-context(body.modal-open) {
+  overflow: hidden;
+}
+
 /* Animaciones para el modal */
 .fixed {
   animation: fadeIn 0.3s ease-out;

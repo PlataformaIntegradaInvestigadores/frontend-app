@@ -1,36 +1,39 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../domain/services/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
-import { User, UserType } from '../../domain/entities/interfaces';
+import { Company, INDUSTRY_OPTIONS, EMPLOYEE_COUNT_OPTIONS } from '../../domain/entities/interfaces';
 import * as CryptoJS from 'crypto-js';
 
 @Component({
-    selector: 'app-register-form',
-    templateUrl: './register-form.component.html',
-    styleUrls: ['./register-form.component.css']
+    selector: 'app-company-register-form',
+    templateUrl: './company-register-form.component.html',
+    styleUrls: ['./company-register-form.component.css']
 })
-export class RegisterFormComponent implements OnInit {
+export class CompanyRegisterFormComponent implements OnInit {
     @Output() registerSuccess = new EventEmitter<void>();
-    @Input() userType: UserType = 'user';
     
     registerForm: FormGroup = new FormGroup({});
     errorMessages: string[] = [];
     isLoading: boolean = false;
+    industryOptions = INDUSTRY_OPTIONS;
+    employeeCountOptions = EMPLOYEE_COUNT_OPTIONS;
 
     constructor(
         private fb: FormBuilder,
         private authService: AuthService
     ) { }
 
-    ngOnInit(): void {
-        this.registerForm = this.fb.group({
-            first_name: ['', Validators.required],
-            last_name: ['', Validators.required],
+    ngOnInit(): void {        this.registerForm = this.fb.group({
+            company_name: ['', Validators.required],
             username: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(8)]],
             confirm_password: ['', Validators.required],
-            scopus_id: ['', Validators.pattern(/^[0-9]*$/)],
+            industry: [''],
+            employee_count: [''],
+            description: [''],
+            website: [''],
+            phone: [''],
             agree_terms: [false, Validators.requiredTrue]
         }, { validators: passwordMatchValidator });
     }
@@ -48,20 +51,19 @@ export class RegisterFormComponent implements OnInit {
         this.errorMessages = [];
 
         const formValues = { ...this.registerForm.value };
-
         // Encriptar la contraseña
         const encryptedPassword = CryptoJS.SHA256(formValues.password).toString();
-        delete formValues.confirm_password;
+        
         delete formValues.agree_terms;
 
-        const user: User = {
+        const company: Company = {
             ...formValues,
             password: encryptedPassword,
-            scopus_id: formValues.scopus_id ? formValues.scopus_id : null,
+            confirm_password: encryptedPassword,
             id: null
         };
 
-        this.authService.register(user).subscribe({
+        this.authService.registerCompany(company).subscribe({
             next: response => {
                 this.isLoading = false;
                 this.registerSuccess.emit();
@@ -75,42 +77,29 @@ export class RegisterFormComponent implements OnInit {
 
     /**
      * Evita la entrada de caracteres no alfabéticos.
+     * @param event - El evento del teclado.
      */
     preventNonAlphabetic(event: KeyboardEvent): void {
-        const char = String.fromCharCode(event.which);
-        if (!/[a-zA-Z\s]/.test(char)) {
+        const regex = /^[a-zA-Z\s]*$/;
+        const inputChar = String.fromCharCode(event.charCode);
+        if (!regex.test(inputChar)) {
             event.preventDefault();
         }
     }
 
     /**
-     * Capitaliza la primera letra de cada palabra en la entrada del usuario.
+     * Capitaliza la primera letra de cada palabra en el input.
+     * @param event - El evento del input.
      */
     capitalizeInput(event: any): void {
-        const input = event.target as HTMLInputElement;
-        const words = input.value.split(' ');
-        const capitalizedWords = words.map((word: string) => {
-            if (word.length > 0) {
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            }
-            return word;
-        });
-        input.value = capitalizedWords.join(' ');
-
+        const value = event.target.value;
+        const capitalizedValue = value.replace(/\b\w/g, (l: string) => l.toUpperCase());
+        event.target.value = capitalizedValue;
+        
         // Actualizar el valor del formulario
-        const controlName = input.getAttribute('formControlName');
+        const controlName = event.target.getAttribute('formControlName');
         if (controlName) {
-            this.registerForm.get(controlName)?.setValue(input.value);
-        }
-    }
-
-    /**
-     * Evita la entrada de caracteres no numéricos.
-     */
-    preventNonNumeric(event: KeyboardEvent): void {
-        const char = String.fromCharCode(event.which);
-        if (!/[0-9]/.test(char)) {
-            event.preventDefault();
+            this.registerForm.get(controlName)?.setValue(capitalizedValue);
         }
     }
 }

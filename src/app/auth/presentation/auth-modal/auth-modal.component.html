@@ -3,9 +3,8 @@
   *ngIf="modalState.isOpen"
   class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
   (click)="onBackdropClick($event)">
-  
-  <!-- Modal content -->
-  <div class="relative w-full max-w-4xl max-h-[90vh] overflow-auto bg-white rounded-lg shadow-xl">
+    <!-- Modal content -->
+  <div class="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden">
     
     <!-- Close button -->
     <button 
@@ -15,12 +14,9 @@
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
-    </button>
-
-    <!-- Modal body -->
-    <div class="flex flex-col md:flex-row min-h-[500px]">
-      
-      <!-- Left side - Branding -->
+    </button>    <!-- Modal body -->
+    <div class="flex flex-col md:flex-row min-h-[500px] max-h-[90vh] overflow-auto">
+        <!-- Left side - Branding -->
       <div class="p-6 py-8 text-white bg-primary_tailwind bg-opacity-85 md:w-80 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
         <div class="my-3 text-3xl md:text-4xl font-bold tracking-wider text-center">
           CENTINELA
@@ -29,6 +25,27 @@
           Join CENTINELA, the academic social network where you can connect, collaborate, and share knowledge with
           other students and professionals.
         </p>
+        
+        <!-- User Type Selector -->
+        <div class="flex flex-col items-center justify-center mt-6 mb-4">
+          <span class="text-gray-300 text-sm mb-3">I am a:</span>
+          <div class="flex space-x-2">
+            <button 
+              type="button"
+              class="px-4 py-2 rounded-full text-sm transition-colors"
+              [class]="modalState.userType === 'user' ? 'bg-white text-primary_tailwind' : 'bg-transparent border border-white text-white hover:bg-white hover:text-primary_tailwind'"
+              (click)="switchUserType('user')">
+              Researcher
+            </button>
+            <button 
+              type="button"
+              class="px-4 py-2 rounded-full text-sm transition-colors"
+              [class]="modalState.userType === 'company' ? 'bg-white text-primary_tailwind' : 'bg-transparent border border-white text-white hover:bg-white hover:text-primary_tailwind'"
+              (click)="switchUserType('company')">
+              Company
+            </button>
+          </div>
+        </div>
         
         <!-- Switch between login and register -->
         <div class="flex flex-col items-center justify-center mt-6 md:mt-10 text-center">
@@ -57,21 +74,31 @@
           Read our <a href="#" class="underline hover:text-white transition-colors">terms</a> and 
           <a href="#" class="underline hover:text-white transition-colors">conditions</a>
         </p>
-      </div>
-
-      <!-- Right side - Form content -->
+      </div>      <!-- Right side - Form content -->
       <div class="flex-1 p-6 bg-white">
         
-        <!-- Login Form -->
-        <div *ngIf="modalState.type === 'login'" class="h-full">
-          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Account Login</h3>
-          <app-login-form (loginSuccess)="closeModal()"></app-login-form>
+        <!-- Login Form for Researchers -->
+        <div *ngIf="modalState.type === 'login' && modalState.userType === 'user'" class="h-full">
+          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Researcher Login</h3>
+          <app-login-form [userType]="'user'" (loginSuccess)="closeModal()"></app-login-form>
         </div>
 
-        <!-- Register Form -->
-        <div *ngIf="modalState.type === 'register'" class="h-full">
-          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Create Account</h3>
-          <app-register-form (registerSuccess)="switchToLogin()"></app-register-form>
+        <!-- Login Form for Companies -->
+        <div *ngIf="modalState.type === 'login' && modalState.userType === 'company'" class="h-full">
+          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Company Login</h3>
+          <app-login-form [userType]="'company'" (loginSuccess)="closeModal()"></app-login-form>
+        </div>
+
+        <!-- Register Form for Researchers -->
+        <div *ngIf="modalState.type === 'register' && modalState.userType === 'user'" class="h-full">
+          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Create Researcher Account</h3>
+          <app-register-form [userType]="'user'" (registerSuccess)="switchToLogin()"></app-register-form>
+        </div>
+
+        <!-- Register Form for Companies -->
+        <div *ngIf="modalState.type === 'register' && modalState.userType === 'company'" class="h-full">
+          <h3 class="mb-6 text-2xl font-semibold text-gray-700">Create Company Account</h3>
+          <app-company-register-form (registerSuccess)="switchToLogin()"></app-company-register-form>
         </div>
 
       </div>

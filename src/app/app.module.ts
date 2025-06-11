@@ -5,8 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { ProfilePageRoutingModule } from './profile/profile-page-routing.module';
-import { LoginComponent } from './auth/presentation/login/login.component';
-import { RegisterComponent } from './auth/presentation/register/register.component';
 import { NetworkComponent } from './profile/presentation/components/network/network.component';
 import { ContactComponent } from './profile/presentation/components/contact/contact.component';
 import { ArticleComponent } from './profile/presentation/components/article/article.component';
@@ -24,11 +22,10 @@ import { FormsModule } from '@angular/forms';
 import { AuthModalComponent } from './auth/presentation/auth-modal/auth-modal.component';
 import { LoginFormComponent } from './auth/presentation/login-form/login-form.component';
 import { RegisterFormComponent } from './auth/presentation/register-form/register-form.component';
-@NgModule({
-  declarations: [
+import { CompanyRegisterFormComponent } from './auth/presentation/company-register-form/company-register-form.component';
+import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
+@NgModule({  declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent,
     NetworkComponent,
     ContactComponent,
     ArticleComponent,
@@ -36,6 +33,8 @@ import { RegisterFormComponent } from './auth/presentation/register-form/registe
     AuthModalComponent,
     LoginFormComponent,
     RegisterFormComponent,
+    CompanyRegisterFormComponent,
+    RedirectComponent,
   ],
   imports: [
     AppRoutingModule,

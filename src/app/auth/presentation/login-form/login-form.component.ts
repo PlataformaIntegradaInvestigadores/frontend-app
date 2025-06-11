@@ -1,8 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../domain/services/auth.service';
 import { ErrorService } from '../../domain/services/error.service';
-import { LoginCredentials } from '../../domain/entities/interfaces';
+import { LoginCredentials, UserType } from '../../domain/entities/interfaces';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
 
@@ -13,6 +13,7 @@ import * as CryptoJS from 'crypto-js';
 })
 export class LoginFormComponent implements OnInit {
   @Output() loginSuccess = new EventEmitter<void>();
+  @Input() userType: UserType = 'user';
   
   loginForm: FormGroup;
   errorMessages: string[] = [];
@@ -51,17 +52,20 @@ export class LoginFormComponent implements OnInit {
       const loginData: LoginCredentials = {
         username: formData.username,
         password: encryptedPassword
-      };
-
-      this.authService.login(loginData).subscribe({
+      };      this.authService.login(loginData, this.userType).subscribe({
         next: (response) => {
           this.isLoading = false;
-          const userId = this.authService.getUserId();
+          const userId = this.userType === 'company' ? this.authService.getCompanyId() : this.authService.getUserId();
           if (userId) {
             this.loginSuccess.emit();
             // Pequeño delay para que el modal se cierre antes de navegar
             setTimeout(() => {
-              this.router.navigate([`/profile/${userId}/about-me`]);
+              if (this.userType === 'company') {
+                // Navegar a dashboard de empresa (por implementar)
+                this.router.navigate(['/company-dashboard']);
+              } else {
+                this.router.navigate([`/profile/${userId}/about-me`]);
+              }
             }, 100);
           }
         },

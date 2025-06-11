@@ -3,27 +3,35 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, tap, switchMap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { User, LoginCredentials, AuthResponse } from '../entities/interfaces';
+import { User, Company, LoginCredentials, AuthResponse, UserType } from '../entities/interfaces';
 import { User as Users } from 'src/app/group/presentation/user.interface';
 import { jwtDecode } from 'jwt-decode';
+import { CompanyAuthService } from './company-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = environment.apiUrl;
-
   private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+  private userTypeSubject: BehaviorSubject<UserType | null> = new BehaviorSubject<UserType | null>(null);
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private companyAuthService: CompanyAuthService
+  ) {
     const token = localStorage.getItem('accessToken');
+    const userType = localStorage.getItem('userType') as UserType;
     if (token) {
       this.tokenSubject.next(token);
+    }
+    if (userType) {
+      this.userTypeSubject.next(userType);
     }
   }
 
   /**
-   * Registra un nuevo usuario.
+   * Registra un nuevo usuario investigador.
    * @param user - Los datos del usuario a registrar.
    * @returns Un Observable que emite la respuesta del registro.
    */
@@ -34,15 +42,57 @@ export class AuthService {
   }
 
   /**
+   * Registra una nueva empresa.
+   * @param company - Los datos de la empresa a registrar.
+   * @returns Un Observable que emite la respuesta del registro.
+   */
+  registerCompany(company: Company): Observable<any> {
+    return this.companyAuthService.register(company);
+  }
+
+  /**
    * Inicia sesión con las credenciales proporcionadas.
-   * @param credentials - Las credenciales del usuario (nombre de usuario y contraseña).
+   * @param credentials - Las credenciales del usuario.
+   * @param userType - Tipo de usuario (investigador o empresa).
    * @returns Un Observable que emite la respuesta del inicio de sesión.
    */
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/token/`, credentials).pipe(
-      tap(response => this.setSession(response)),
+  login(credentials: LoginCredentials, userType: UserType = 'user'): Observable<AuthResponse> {
+    const endpoint = userType === 'company' ? '/companies/token/' : '/token/';
+    
+    return this.http.post<AuthResponse>(`${this.apiUrl}${endpoint}`, credentials).pipe(
+      tap(response => this.setSession(response, userType)),
       catchError(this.handleError)
     );
+  }
+  /**
+   * Obtiene el tipo de usuario actual.
+   * @returns El tipo de usuario o null.
+   */
+  getUserType(): UserType | null {
+    return this.userTypeSubject.value || localStorage.getItem('userType') as UserType;
+  }
+
+  /**
+   * Observable del tipo de usuario.
+   */
+  get userType$(): Observable<UserType | null> {
+    return this.userTypeSubject.asObservable();
+  }
+
+  /**
+   * Verifica si el usuario actual es una empresa.
+   * @returns True si es empresa, false si no.
+   */
+  isCompany(): boolean {
+    return this.getUserType() === 'company';
+  }
+
+  /**
+   * Verifica si el usuario actual es un investigador.
+   * @returns True si es investigador, false si no.
+   */
+  isUser(): boolean {
+    return this.getUserType() === 'user';
   }
 
 /* todo utilizar outhservice is loging acces*/
@@ -156,20 +206,30 @@ export class AuthService {
       } else {
         errorMessages = [`Server-side error: ${error.error.detail || error.message}`];
       }
-    }
-
-    return throwError(() => new Error(errorMessages.join('\n')));
+    }    return throwError(() => new Error(errorMessages.join('\n')));
   }
 
   /**
- * Establece la sesión del usuario almacenando los tokens en el almacenamiento local.
- * @param authResult - El resultado de la autenticación que contiene los tokens.
- */
-  private setSession(authResult: AuthResponse): void {
-    const decodedToken = jwtDecode(authResult.access) as any;
+   * Establece la sesión del usuario almacenando los tokens en el almacenamiento local.
+   * @param authResult - El resultado de la autenticación que contiene los tokens.
+   * @param userType - Tipo de usuario.
+   */
+  private setSession(authResult: AuthResponse, userType: UserType): void {
     localStorage.setItem('accessToken', authResult.access);
     localStorage.setItem('refreshToken', authResult.refresh);
-    localStorage.setItem('userId', decodedToken.user_id);
+    localStorage.setItem('userType', userType);
+    
+    // Decodificar token para obtener IDs
+    const decodedToken = jwtDecode(authResult.access) as any;
+    
+    if (userType === 'user') {
+      localStorage.setItem('userId', authResult.user_id || decodedToken.user_id);
+    } else if (userType === 'company') {
+      localStorage.setItem('companyId', authResult.company_id || decodedToken.company_id);
+    }
+    
+    this.tokenSubject.next(authResult.access);
+    this.userTypeSubject.next(userType);
   }
 
   /**
@@ -181,6 +241,8 @@ export class AuthService {
     if (dontShowOnboarding) {
       localStorage.setItem('dontShowOnboarding', dontShowOnboarding);
     }
+    this.tokenSubject.next(null);
+    this.userTypeSubject.next(null);
   }
 
   /**
@@ -197,5 +259,22 @@ export class AuthService {
    */
   getUserId(): string | null {
     return localStorage.getItem('userId');
+  }
+
+  /**
+   * Obtiene el ID de la empresa actualmente autenticada.
+   * @returns El ID de la empresa o null si no está autenticada.
+   */
+  getCompanyId(): string | null {
+    return localStorage.getItem('companyId');
+  }
+
+  /**
+   * Obtiene el ID del usuario o empresa según el tipo.
+   * @returns El ID correspondiente o null.
+   */
+  getCurrentUserId(): string | null {
+    const userType = this.getUserType();
+    return userType === 'company' ? this.getCompanyId() : this.getUserId();
   }
 }
