@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { AuthModalService } from 'src/app/auth/domain/services/auth-modal.service';
 import { User } from 'src/app/group/presentation/user.interface';
+import { faSearch, faHome, faBell, faUser, faRss, faBriefcase, faChevronDown, faCog, faSignOutAlt, faUsers, faBuilding, faBars, faTimes, faChartBar, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header',
@@ -16,11 +17,25 @@ export class HeaderComponent {
   showLogin: boolean = false;
   user: any;
   userId: any;
-
   users: User[] = [];
   filteredUsers: User[] = [];
   searchQuery: string = '';
-  searchOpen: boolean = false;  // Variable para controlar la apertura del buscador
+  searchOpen: boolean = false;  // Variable para controlar la apertura del buscador  // FontAwesome icons
+  faSearch = faSearch;
+  faHome = faHome;
+  faBell = faBell;
+  faUser = faUser;
+  faRss = faRss;
+  faBriefcase = faBriefcase;
+  faChevronDown = faChevronDown;
+  faCog = faCog;
+  faSignOutAlt = faSignOutAlt;
+  faUsers = faUsers;
+  faBuilding = faBuilding;
+  faBars = faBars;
+  faTimes = faTimes;
+  faChartBar = faChartBar;
+  faInfoCircle = faInfoCircle;
 
   constructor(
     private router: Router,
