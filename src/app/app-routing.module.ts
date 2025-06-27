@@ -31,6 +31,10 @@ const routes: Routes = [
     path: 'profile/:id',
     loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
   },
+  {
+    path: 'feeds',
+    loadChildren: () => import('src/app/feeds/feeds.module').then(m => m.FeedsModule)
+  },
   // {
   //   path:'debate-chat/:id', component: DebateChatComponent
   // },

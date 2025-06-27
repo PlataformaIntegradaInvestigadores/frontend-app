@@ -1,0 +1,29 @@
+/* Post Creator Component Styles */
+/* Solo estilos específicos que no se pueden hacer con Tailwind */
+
+/* Focus visible para accesibilidad */
+button:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Animación suave para el estado de carga */
+.fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Hover effect suave para opciones */
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+/* Transición suave para el textarea al hacer focus */
+textarea:focus {
+  transform: scale(1.002);
+}

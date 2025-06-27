@@ -1,0 +1,438 @@
+.post-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Post Header */
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 20px 0 20px;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1;
+  transition: opacity 0.3s ease;
+}
+
+.author-info:hover {
+  opacity: 0.8;
+}
+
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.author-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.author-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.author-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  line-height: 1.2;
+}
+
+.author-username {
+  font-size: 0.85rem;
+  color: #6c757d;
+  line-height: 1.2;
+}
+
+.post-date {
+  font-size: 0.8rem;
+  color: #adb5bd;
+  line-height: 1.2;
+}
+
+.post-menu {
+  position: relative;
+}
+
+.btn-menu {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-menu:hover {
+  background: #f8f9fa;
+  color: #495057;
+}
+
+.dropdown-menu {
+  min-width: 150px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: none;
+  border-radius: 8px;
+}
+
+.dropdown-item {
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item i {
+  margin-right: 8px;
+  width: 16px;
+}
+
+.edit-item:hover {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.delete-item:hover {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* Post Content */
+.post-content {
+  padding: 15px 20px;
+}
+
+.post-text {
+  margin-bottom: 15px;
+}
+
+.post-text p {
+  margin: 0;
+  line-height: 1.6;
+  color: #2c3e50;
+  font-size: 1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.btn-show-more {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 0;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.btn-show-more:hover {
+  color: #5a6fd8;
+  text-decoration: underline;
+}
+
+/* Post Tags */
+.post-tags {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Post Files */
+.post-files {
+  margin-bottom: 15px;
+}
+
+.files-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.files-grid.single-file {
+  grid-template-columns: 1fr;
+}
+
+.file-item {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+/* Image Files */
+.image-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.image-container:hover img {
+  transform: scale(1.02);
+}
+
+/* Video Files */
+.video-container video {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+}
+
+/* Other Files */
+.file-preview {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  gap: 12px;
+}
+
+.file-icon {
+  font-size: 2rem;
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+.file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.file-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.file-size {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.file-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-file-action {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.btn-file-action:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+/* Post Stats */
+.post-stats {
+  padding: 0 20px 10px 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stats-info {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-item {
+  font-size: 0.85rem;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stat-item i {
+  font-size: 0.8rem;
+}
+
+/* Post Actions */
+.post-actions {
+  display: flex;
+  padding: 15px 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.action-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #6c757d;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.action-btn:hover {
+  background: #f8f9fa;
+  color: #495057;
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.like-btn.liked {
+  color: #dc3545;
+}
+
+.like-btn.liked:hover {
+  background: #ffebee;
+}
+
+.comment-btn:hover {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.share-btn:hover {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.action-btn i {
+  font-size: 1.1rem;
+}
+
+/* Comments Section */
+.comments-section {
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .post-header {
+    padding: 15px 15px 0 15px;
+  }
+
+  .post-content {
+    padding: 15px;
+  }
+
+  .post-stats {
+    padding: 0 15px 10px 15px;
+  }
+
+  .post-actions {
+    padding: 15px;
+  }
+
+  .author-name {
+    font-size: 0.95rem;
+  }
+
+  .author-username {
+    font-size: 0.8rem;
+  }
+
+  .post-text p {
+    font-size: 0.95rem;
+  }
+
+  .action-btn {
+    font-size: 0.85rem;
+    padding: 10px 8px;
+  }
+
+  .action-btn span {
+    display: none;
+  }
+
+  .files-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .stats-info {
+    gap: 15px;
+  }
+
+  .file-preview {
+    padding: 12px;
+  }
+
+  .file-icon {
+    font-size: 1.5rem;
+  }
+}
+
+/* Animations */
+@keyframes likeAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.like-btn.liked i {
+  animation: likeAnimation 0.3s ease;
+}

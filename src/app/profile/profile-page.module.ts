@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ProfilePageRoutingModule } from './profile-page-routing.module';
 import { SharedModule } from '../shared/shared.module';
+import { FeedsModule } from '../feeds/feeds.module';
 
 import { D3Service } from '../shared/d3';
 
@@ -20,9 +21,6 @@ import { DataFormComponent } from './presentation/components/data-form/data-form
 import { ContactInfoComponent } from './presentation/components/aboutme/information/components/contact-info/contact-info.component';
 import { DisciplinesComponent } from './presentation/components/aboutme/information/components/disciplines/disciplines.component';
 import { AboutMeProfileComponent } from './presentation/components/aboutme/information/components/about-me-profile/about-me-profile.component';
-import { PostInputComponent } from './presentation/components/aboutme/post/components/post-input/post-input.component';
-import { PostListComponent } from './presentation/components/aboutme/post/components/post-list/post-list.component';
-import { PostItemComponent } from './presentation/components/aboutme/post/components/post-item/post-item.component';
 import { CardGroupComponent } from '../group/presentation/card-group/card-group.component';
 import { BtnCreateGroupComponent } from '../group/presentation/btn-create-group/btn-create-group.component';
 import { ListGroupComponent } from '../group/presentation/list-group/list-group.component';
@@ -35,6 +33,7 @@ import { ConfirmDeleteModalComponent } from '../group/presentation/confirm-delet
   imports: [
     ProfilePageRoutingModule,
     SharedModule,
+    FeedsModule,
     CommonModule,
     CdkMenuTrigger,
     CdkMenu,
@@ -58,9 +57,6 @@ import { ConfirmDeleteModalComponent } from '../group/presentation/confirm-delet
     ContactInfoComponent,
     DisciplinesComponent,
     AboutMeProfileComponent,
-    PostInputComponent,
-    PostListComponent,
-    PostItemComponent,
     BtnMenuGroupComponent,
     ConfirmLeaveModalComponent,
     ConfirmDeleteModalComponent,

@@ -1,0 +1,164 @@
+<div class="post-card">
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="author-info" (click)="navigateToProfile()">
+      <div class="author-avatar">
+        <img 
+          [src]="post.author.profile_picture || '/assets/profile.png'" 
+          [alt]="post.author.first_name + ' ' + post.author.last_name"
+          onerror="this.src='/assets/profile.png'">
+      </div>
+      <div class="author-details">
+        <h4 class="author-name">
+          {{ post.author.first_name }} {{ post.author.last_name }}
+        </h4>
+        <span class="author-username">@{{ post.author.username }}</span>
+        <span class="post-date">{{ formattedDate }}</span>
+      </div>
+    </div>
+
+    <!-- Post Actions Menu -->
+    <div class="post-menu" *ngIf="canEditPost">
+      <button class="btn-menu" type="button" data-bs-toggle="dropdown">
+        <i class="fas fa-ellipsis-h"></i>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <button class="dropdown-item edit-item" type="button">
+            <i class="fas fa-edit"></i>
+            Editar
+          </button>
+        </li>
+        <li>
+          <button class="dropdown-item delete-item" type="button" (click)="onDeleteClick()">
+            <i class="fas fa-trash"></i>
+            Eliminar
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Post Content -->
+  <div class="post-content">
+    <div class="post-text">
+      <p [innerHTML]="displayContent"></p>
+      
+      <!-- Show More/Less Button -->
+      <button 
+        *ngIf="shouldTruncateContent"
+        class="btn-show-more"
+        (click)="toggleFullContent()">
+        {{ showFullContent ? 'Ver menos' : 'Ver más' }}
+      </button>
+    </div>
+
+    <!-- Post Tags -->
+    <div class="post-tags" *ngIf="post.tags && post.tags.length > 0">
+      <span class="tag" *ngFor="let tag of post.tags">
+        #{{ tag }}
+      </span>
+    </div>
+
+    <!-- Post Files -->
+    <div class="post-files" *ngIf="post.files && post.files.length > 0">
+      <div class="files-grid" [class.single-file]="post.files.length === 1">
+        <div 
+          class="file-item" 
+          *ngFor="let file of post.files"
+          [class]="getFileType(file)">
+          
+          <!-- Image Files -->
+          <div *ngIf="getFileType(file) === 'image'" class="image-container">
+            <img 
+              [src]="file.file" 
+              [alt]="'Imagen del post'"
+              (click)="openFile(file)"
+              loading="lazy">
+          </div>
+
+          <!-- Video Files -->
+          <div *ngIf="getFileType(file) === 'video'" class="video-container">
+            <video 
+              [src]="file.file" 
+              controls 
+              preload="metadata">
+              Tu navegador no soporta videos.
+            </video>
+          </div>
+
+          <!-- Other Files -->
+          <div *ngIf="getFileType(file) !== 'image' && getFileType(file) !== 'video'" 
+               class="file-preview">
+            <div class="file-icon">
+              <i [class]="getFileIcon(getFileType(file))"></i>
+            </div>
+            <div class="file-info">
+              <span class="file-name">{{ file.file.split('/').pop() }}</span>
+              <span class="file-size">{{ formatFileSize(file.file_size) }}</span>
+            </div>
+            <div class="file-actions">
+              <button class="btn-file-action" (click)="openFile(file)" title="Ver">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-file-action" (click)="downloadFile(file)" title="Descargar">
+                <i class="fas fa-download"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Stats -->
+  <div class="post-stats">
+    <div class="stats-info">
+      <span class="stat-item" *ngIf="post.likes_count > 0">
+        <i class="fas fa-heart text-danger"></i>
+        {{ post.likes_count }} 
+        {{ post.likes_count === 1 ? 'like' : 'likes' }}
+      </span>
+      <span class="stat-item" *ngIf="post.comments_count > 0">
+        <i class="fas fa-comment text-primary"></i>
+        {{ post.comments_count }} 
+        {{ post.comments_count === 1 ? 'comentario' : 'comentarios' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Post Actions -->
+  <div class="post-actions">
+    <button 
+      class="action-btn like-btn"
+      [class.liked]="post.is_liked"
+      [disabled]="isLiking"
+      (click)="onLikeClick()">
+      <i class="fas fa-heart" *ngIf="post.is_liked"></i>
+      <i class="far fa-heart" *ngIf="!post.is_liked"></i>
+      <span>{{ post.is_liked ? 'Te gusta' : 'Me gusta' }}</span>
+    </button>
+
+    <button 
+      class="action-btn comment-btn"
+      (click)="toggleComments()">
+      <i class="far fa-comment"></i>
+      <span>Comentar</span>
+    </button>
+
+    <button 
+      class="action-btn share-btn"
+      (click)="onShareClick()">
+      <i class="fas fa-share"></i>
+      <span>Compartir</span>
+    </button>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="comments-section" *ngIf="showComments">
+    <app-post-comments 
+      [postId]="post.id"
+      [commentsCount]="post.comments_count">
+    </app-post-comments>
+  </div>
+</div>

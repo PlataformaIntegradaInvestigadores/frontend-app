@@ -34,17 +34,20 @@ export class ProfileDataComponent implements OnChanges, OnInit {
       this.checkLoginStatus();
     }
     this.isAuthor = this.isNumeric(this.idRoute);
-    this.authorService.getAuthorById(this.user?.scopus_id!).subscribe(data => {
-      this.scopusData.citations = data.citation_count;
-      this.scopusData.articles = data.articles;
-    })
-
+    
+    // Solo hacer la request si user y scopus_id existen
+    if (this.user?.scopus_id) {
+      this.authorService.getAuthorById(this.user.scopus_id).subscribe(data => {
+        this.scopusData.citations = data.citation_count;
+        this.scopusData.articles = data.articles;
+      });
+    }
   }
 
   ngOnInit() {
     this.route.parent?.paramMap.subscribe(params => {
       this.idRoute = params?.get('id')!;
-      if (this.isNumeric(this.idRoute)) {
+      if (this.idRoute && this.isNumeric(this.idRoute)) {
         this.authorService.getAuthorById(this.idRoute).subscribe(data => {
           this.name = data.auth_name
           this.authorService.getLineChartInfo(this.idRoute, this.name).subscribe(data => {

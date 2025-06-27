@@ -1,0 +1,84 @@
+<!-- Post Creator Component -->
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+  <div class="flex items-start gap-3">
+    <img [src]="userAvatar" [alt]="userName || 'Tu foto'" class="w-12 h-12 rounded-full object-cover">
+    
+    <div class="flex-1">
+      <textarea 
+        [(ngModel)]="newPostContent"
+        [placeholder]="placeholder"
+        class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+        rows="3"
+        (focus)="onPostInputFocus()"
+        (blur)="onPostInputBlur()"
+        [disabled]="isLoading">
+      </textarea>
+      
+      <!-- File upload hidden input -->
+      <input 
+        type="file" 
+        #fileInput
+        (change)="onFileSelected($event)"
+        multiple
+        accept="image/*,video/*"
+        class="hidden">
+      
+      <!-- Selected files preview -->
+      <div class="mt-3" *ngIf="selectedFiles.length > 0">
+        <div class="flex flex-wrap gap-2">
+          <div 
+            *ngFor="let file of selectedFiles; let i = index" 
+            class="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">
+            <i class="fas fa-file"></i>
+            <span>{{ file.name }}</span>
+            <button 
+              type="button"
+              (click)="removeFile(i)"
+              class="text-blue-500 hover:text-blue-700 ml-1">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex justify-between items-center mt-3">
+        <!-- Opciones adicionales -->
+        <div class="flex gap-2" *ngIf="showOptions">
+          <button 
+            class="flex items-center gap-1 px-3 py-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors text-sm disabled:opacity-50"
+            (click)="onOptionClick('photo')"
+            [disabled]="isLoading">
+            <i class="fas fa-image"></i>
+            <span>Foto</span>
+          </button>
+          <button 
+            class="flex items-center gap-1 px-3 py-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors text-sm disabled:opacity-50"
+            (click)="onOptionClick('link')"
+            [disabled]="isLoading">
+            <i class="fas fa-link"></i>
+            <span>Link</span>
+          </button>
+          <button 
+            class="flex items-center gap-1 px-3 py-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors text-sm disabled:opacity-50"
+            (click)="onOptionClick('poll')"
+            [disabled]="isLoading">
+            <i class="fas fa-poll"></i>
+            <span>Encuesta</span>
+          </button>
+        </div>
+        
+        <!-- Espacio vacío si no hay opciones -->
+        <div *ngIf="!showOptions"></div>
+        
+        <!-- Botón publicar -->
+        <button 
+          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
+          (click)="submitPost()"
+          [disabled]="!newPostContent?.trim() || isLoading">
+          <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+          <span>{{ isLoading ? 'Publicando...' : buttonText }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Post } from 'src/app/profile/domain/entities/post.interface';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
-import { PostService } from 'src/app/profile/domain/services/post.service';
+import { FeedService } from 'src/app/feeds/domain/services/feed.service';
 import { User } from 'src/app/profile/domain/entities/user.interfaces';
+import { PostCreatorData, FeedPost } from 'src/app/feeds/presentation/types/post.types';
+import { CreatePostData } from 'src/app/feeds/domain/entities/feed.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post',
@@ -11,18 +13,22 @@ import { User } from 'src/app/profile/domain/entities/user.interfaces';
 })
 export class PostComponent implements OnInit {
   @Input() user: User | null = null;
-  posts: Post[] = [];
+  posts: FeedPost[] = [];
   isLoggedIn: boolean = false;
   isLoading: boolean = false;
+  isSubmittingPost: boolean = false;
   error: string | null = null;
   success: string | null = null;
+  currentUserId: string | null = null;
 
   constructor(
-    private postService: PostService,
-    private authService: AuthService
+    private authService: AuthService,
+    private feedService: FeedService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.currentUserId = this.authService.getCurrentUserId();
     if (this.user && this.user.id) {
       this.loadPosts(this.user.id);
     }
@@ -35,81 +41,122 @@ export class PostComponent implements OnInit {
    */
   loadPosts(userId: string): void {
     this.isLoading = true;
+    this.error = null;
 
-    this.postService.getPosts(userId).subscribe(
-      posts => {
-        this.posts = posts;
+    // Verificar si es el usuario actual para usar el endpoint específico
+    const isCurrentUser = this.currentUserId === userId;
+    const postsObservable = isCurrentUser 
+      ? this.feedService.getCurrentUserPosts(20)
+      : this.feedService.getUserPosts(userId, 20);
+
+    postsObservable.subscribe({
+      next: (response) => {
+        this.posts = response.posts;
         this.isLoading = false;
       },
-      error => {
+      error: (error) => {
         console.error('Error loading posts:', error);
-        this.error = 'Failed to load posts';
+        this.error = 'No se pudieron cargar las publicaciones';
         this.isLoading = false;
       }
-    );
+    });
   }
 
   /**
-   * Crea una nueva publicación.
-   * @param newPost - Los datos de la nueva publicación.
+   * Maneja el envío de post desde el componente PostCreator
    */
-  createPost(newPost: { description: string, files: File[], created_at: string }): void {
-    this.isLoading = true;
+  onPostSubmitted(postData: PostCreatorData): void {
+    this.isSubmittingPost = true;
     this.error = null;
     this.success = null;
 
-    const formData = new FormData();
-    formData.append('description', newPost.description);
-    formData.append('created_at', newPost.created_at);
-    newPost.files.forEach((file: File) => {
-        formData.append('files', file, file.name);
-    });
+    const createPostData: CreatePostData = {
+      content: postData.content,
+      tags: postData.tags,
+      files: postData.files,
+      is_public: true // Los posts del perfil son públicos por defecto
+    };
 
-    // Log para verificar el contenido de formData
-    formData.forEach((value, key) => {
-        console.log(key + ': ', value);
-    });
+    this.feedService.createPost(createPostData).subscribe({
+      next: (newPost) => {
+        // Agregar el nuevo post al inicio de la lista
+        this.posts = [newPost, ...this.posts];
+        this.isSubmittingPost = false;
+        this.success = 'Post publicado exitosamente!';
 
-    this.postService.createPost(formData).subscribe(
-        response => {
-            console.log('Post created:', response);
-            this.posts.push(response);
-            this.isLoading = false;
-            this.success = 'Post created successfully!';
-            this.loadPosts(this.user!.id!);  // Recargar publicaciones
-            setTimeout(() => {
-                this.success = null;
-            }, 3000);
-        },
-        error => {
-            console.error('Error creating post:', error);
-            this.error = 'Failed to create post';
-            this.isLoading = false;
+        // Limpiar mensaje de éxito después de 3 segundos
+        setTimeout(() => {
+          this.success = null;
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('Error creando post:', error);
+        this.error = 'No se pudo crear el post. Intenta de nuevo.';
+        this.isSubmittingPost = false;
+      }
+    });
+  }
+
+  /**
+   * Maneja el toggle de like en un post
+   */
+  onToggleLike(post: FeedPost): void {
+    if (!this.isLoggedIn) return;
+
+    this.feedService.toggleLikePost(post.id).subscribe({
+      next: (response) => {
+        // Actualizar el post en la lista
+        const index = this.posts.findIndex(p => p.id === post.id);
+        if (index !== -1) {
+          this.posts[index] = {
+            ...this.posts[index],
+            is_liked: response.liked,
+            likes_count: response.likes_count
+          };
         }
-    );
-}
+      },
+      error: (error) => {
+        console.error('Error toggling like:', error);
+      }
+    });
+  }
 
+  /**
+   * Maneja compartir un post
+   */
+  onSharePost(post: FeedPost): void {
+    // TODO: Implementar funcionalidad de compartir
+    console.log('Compartir post:', post);
+  }
+
+  /**
+   * Maneja navegación al perfil
+   */
+  onViewProfile(userId: string): void {
+    this.router.navigate(['/profile', userId]);
+  }
 
   /**
    * Elimina una publicación específica.
    * @param postId - El ID de la publicación a eliminar.
    */
-  deletePost(postId: string): void {
-    this.isLoading = true;
-    this.postService.deletePost(postId).subscribe(
-      () => {
+  onDeletePost(postId: string): void {
+    if (!confirm('¿Estás seguro de que quieres eliminar este post?')) {
+      return;
+    }
+
+    this.feedService.deletePost(postId).subscribe({
+      next: () => {
         this.posts = this.posts.filter(post => post.id !== postId);
-        this.isLoading = false;
-        this.success = 'Post deleted successfully!';
+        this.success = 'Post eliminado exitosamente!';
         setTimeout(() => {
           this.success = null;
         }, 3000);
       },
-      error => {
+      error: (error) => {
         console.error('Error deleting post:', error);
-        this.error = 'Failed to delete post';
-        this.isLoading = false;
+        this.error = 'No se pudo eliminar el post';
       }
-    );
+    });
   }
 }
