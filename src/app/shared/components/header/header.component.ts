@@ -128,6 +128,8 @@ export class HeaderComponent {
    * Navigate to jobs page
    */
   navigateToJobs(): void {
-    this.router.navigate(['/jobs']);
+    this.authService.getUserId();
+    this.userId = this.authService.getUserId();
+    this.router.navigate([`/jobs/${this.userId}`]);
   }
 }
