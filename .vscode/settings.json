@@ -18,5 +18,14 @@
         "titleBar.inactiveBackground": "#3a4e7a99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#3a4e7a"
+    "peacock.color": "#3a4e7a",
+    "angular-schematics.schematicsDefaultOptions": {
+        "angular-component": {
+            "skipChangeDetectionOnPush": true
+        },
+        "angular-*": {
+            "externalTemplate": true,
+            "inlineStyle": true
+        }
+    }
 }

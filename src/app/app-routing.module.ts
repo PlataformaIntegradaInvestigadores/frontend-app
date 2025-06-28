@@ -35,9 +35,14 @@ const routes: Routes = [
     path: 'feeds',
     loadChildren: () => import('src/app/feeds/feeds.module').then(m => m.FeedsModule)
   },
-  // {
-  //   path:'debate-chat/:id', component: DebateChatComponent
-  // },
+  {
+    path: 'jobs/:id',
+    loadChildren: () => import('src/app/jobs/jobs-page.module').then(m => m.JobsPageModule)
+  },
+  {
+    path: 'company/:id',
+    loadChildren: () => import('src/app/profile-company/profile-company.module').then(m => m.ProfileCompanyPageModule)
+  },
 
   /* Siempre al ultimo */
   {
