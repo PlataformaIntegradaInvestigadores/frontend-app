@@ -3,176 +3,328 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="mb-6">
       <h1 class="text-3xl font-bold text-gray-900">Portal de Empleos</h1>
-      <p class="mt-2 text-gray-600">Encuentra tu próxima oportunidad laboral</p>
+      <p class="mt-2 text-gray-600">
+        <span *ngIf="isResearcher">Descubre oportunidades personalizadas para ti</span>
+        <span *ngIf="!isResearcher">Encuentra tu próxima oportunidad laboral</span>
+      </p>
+    </div>
+
+    <!-- Tabs para researchers -->
+    <div *ngIf="isResearcher" class="mb-6">
+      <div class="border-b border-gray-200">
+        <nav class="flex space-x-8">
+          <button 
+            (click)="setActiveTab('recommendations')"
+            [class.border-blue-500]="activeTab === 'recommendations'"
+            [class.text-blue-600]="activeTab === 'recommendations'"
+            [class.border-transparent]="activeTab !== 'recommendations'"
+            [class.text-gray-500]="activeTab !== 'recommendations'"
+            class="flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm hover:text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+            Recomendados para ti
+          </button>
+          <button 
+            (click)="setActiveTab('trending')"
+            [class.border-blue-500]="activeTab === 'trending'"
+            [class.text-blue-600]="activeTab === 'trending'"
+            [class.border-transparent]="activeTab !== 'trending'"
+            [class.text-gray-500]="activeTab !== 'trending'"
+            class="flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm hover:text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>
+            Trending
+          </button>
+          <button 
+            (click)="setActiveTab('my-applications')"
+            [class.border-blue-500]="activeTab === 'my-applications'"
+            [class.text-blue-600]="activeTab === 'my-applications'"
+            [class.border-transparent]="activeTab !== 'my-applications'"
+            [class.text-gray-500]="activeTab !== 'my-applications'"
+            class="flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm hover:text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Mis Postulaciones
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Tabs para empresas -->
+    <div *ngIf="isCompany" class="mb-6">
+      <div class="border-b border-gray-200">
+        <nav class="flex space-x-8">
+          <button 
+            (click)="setActiveTab('my-jobs')"
+            [class.border-blue-500]="activeTab === 'my-jobs'"
+            [class.text-blue-600]="activeTab === 'my-jobs'"
+            [class.border-transparent]="activeTab !== 'my-jobs'"
+            [class.text-gray-500]="activeTab !== 'my-jobs'"
+            class="flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm hover:text-gray-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 00-2 2H6a2 2 0 00-2-2V4m16 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2z"></path>
+            </svg>
+            Mis Trabajos Publicados
+          </button>
+        </nav>
+      </div>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-6">
-      <!-- Lista de trabajos - Columna izquierda -->
-      <div class="lg:w-1/3">
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="px-6 py-4 bg-gray-100 border-b">
-            <h2 class="text-lg font-semibold text-gray-900">
-              Trabajos Disponibles
-              <span class="ml-2 text-sm text-gray-600">({{ jobs.length }})</span>
-            </h2>
+      <!-- Vista de trabajos para researchers y empresas -->
+      <div *ngIf="activeTab !== 'my-applications'" class="flex flex-col lg:flex-row gap-6 w-full">
+        <!-- Lista de trabajos - Columna izquierda -->
+        <div class="lg:w-1/3">
+          <app-job-list 
+            [jobs]="jobs" 
+            [selectedJob]="selectedJob" 
+            [loading]="loading"
+            [title]="getListTitle()"
+            (jobSelected)="selectJob($event)">
+          </app-job-list>
+        </div>
+
+        <!-- Detalles del trabajo - Columna derecha -->
+        <div class="lg:w-2/3">
+          <!-- Vista estándar del trabajo para researchers -->
+          <div *ngIf="isResearcher">
+            <app-job-detail [job]="selectedJob" (applicationSubmitted)="onApplicationSubmitted()"></app-job-detail>
           </div>
-
-          <div *ngIf="loading" class="p-6">
-            <div class="flex items-center justify-center">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span class="ml-3 text-gray-600">Cargando trabajos...</span>
-            </div>
-          </div>
-
-          <div *ngIf="!loading && jobs.length === 0" class="p-6 text-center">
-            <p class="text-gray-500">No hay trabajos disponibles en este momento.</p>
-          </div>
-
-          <div *ngIf="!loading && jobs.length > 0" class="max-h-96 overflow-y-auto">
-            <div *ngFor="let job of jobs; trackBy: trackByJobId"
-              class="p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors duration-200"
-              [class.bg-blue-50]="isJobSelected(job)" [class.border-l-4]="isJobSelected(job)"
-              [class.border-l-blue-500]="isJobSelected(job)" (click)="selectJob(job)">
-
-              <div class="flex justify-between items-start">
-                <div class="flex-1">
-                  <h3 class="font-semibold text-gray-900 mb-1">{{ job.title }}</h3>
-                  <p class="text-sm text-gray-600 mb-1">{{ job.company }}</p>
-                  <p class="text-sm text-gray-500 mb-2">{{ job.location }}</p>
-
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
-                      [class.bg-green-100]="job.type === 'Full-time'" [class.text-green-800]="job.type === 'Full-time'"
-                      [class.bg-blue-100]="job.type === 'Part-time'" [class.text-blue-800]="job.type === 'Part-time'"
-                      [class.bg-purple-100]="job.type === 'Contract'" [class.text-purple-800]="job.type === 'Contract'">
-                      {{ job.type }}
-                    </span>
-                    <span *ngIf="job.remote"
-                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      Remoto
-                    </span>
+          
+          <!-- Vista extendida para empresas: trabajo + aplicaciones -->
+          <div *ngIf="isCompany" class="space-y-6">
+            <app-job-detail [job]="selectedJob"></app-job-detail>
+            
+            <!-- Aplicaciones para este trabajo -->
+            <div *ngIf="selectedJob" class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">
+                  Aplicaciones ({{ jobApplications.length }})
+                </h3>
+              </div>
+              
+              <div *ngIf="applicationsLoading" class="p-6">
+                <div class="flex items-center justify-center">
+                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <span class="ml-2 text-gray-600">Cargando aplicaciones...</span>
+                </div>
+              </div>
+              
+              <div *ngIf="!applicationsLoading && jobApplications.length === 0" class="p-6 text-center text-gray-500">
+                No hay aplicaciones para este trabajo aún.
+              </div>
+              
+              <div *ngIf="!applicationsLoading && jobApplications.length > 0" class="divide-y divide-gray-200">
+                <div *ngFor="let application of jobApplications" class="p-6">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-3 mb-2">
+                        <div class="flex-shrink-0">
+                          <img *ngIf="application.user_info?.profile_picture" 
+                               [src]="application.user_info?.profile_picture" 
+                               [alt]="application.user_info?.full_name || 'Usuario'"
+                               class="h-10 w-10 rounded-full object-cover">
+                          <div *ngIf="!application.user_info?.profile_picture" 
+                               class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                            <span class="text-sm font-medium text-gray-700">
+                              {{ application.user_info?.first_name?.charAt(0) }}{{ application.user_info?.last_name?.charAt(0) }}
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 class="text-sm font-medium text-gray-900">
+                            {{ application.user_info?.full_name }}
+                          </h4>
+                          <p class="text-sm text-gray-500">@{{ application.user_info?.username }}</p>
+                        </div>
+                      </div>
+                      
+                      <div *ngIf="application.cover_letter" class="mb-3">
+                        <h5 class="text-sm font-medium text-gray-700 mb-1">Carta de presentación:</h5>
+                        <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded">{{ application.cover_letter }}</p>
+                      </div>
+                      
+                      <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                        <span>Aplicó el {{ application.applied_at | date:'dd/MM/yyyy HH:mm' }}</span>
+                        <span *ngIf="application.resume_file">
+                          <a [href]="application.resume_file" target="_blank" 
+                             class="text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Ver CV
+                          </a>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div class="flex-shrink-0 ml-4">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                              [ngClass]="{
+                                'bg-yellow-100 text-yellow-800': application.status === 'pending',
+                                'bg-blue-100 text-blue-800': application.status === 'reviewing',
+                                'bg-purple-100 text-purple-800': application.status === 'interviewed',
+                                'bg-green-100 text-green-800': application.status === 'accepted',
+                                'bg-red-100 text-red-800': application.status === 'rejected',
+                                'bg-gray-100 text-gray-800': application.status === 'withdrawn'
+                              }">
+                          {{ application.status_display }}
+                        </span>
+                      </div>
+                      
+                      <div class="flex gap-1">
+                        <select (change)="onStatusChange($event, application.id)"
+                                [value]="application.status"
+                                class="text-xs border border-gray-300 rounded px-2 py-1">
+                          <option value="pending">Pendiente</option>
+                          <option value="reviewing">Revisando</option>
+                          <option value="interviewed">Entrevistado</option>
+                          <option value="accepted">Aceptado</option>
+                          <option value="rejected">Rechazado</option>
+                        </select>
+                        <button (click)="openNotesModal(application)"
+                                class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded">
+                          📝 Notas
+                        </button>
+                      </div>
+                    </div>
                   </div>
-
-                  <p class="text-sm font-semibold text-green-600">{{ job.salary }}</p>
+                  
+                  <div *ngIf="application.notes" class="mt-3 pt-3 border-t border-gray-100">
+                    <h5 class="text-sm font-medium text-gray-700 mb-1">Notas internas:</h5>
+                    <p class="text-sm text-gray-600">{{ application.notes }}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Detalles del trabajo - Columna derecha -->
-      <div class="lg:w-2/3">
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div *ngIf="!selectedJob && !loading" class="p-8 text-center">
-            <div class="text-gray-400 mb-4">
-              <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8">
-                </path>
-              </svg>
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">Selecciona un trabajo</h3>
-            <p class="text-gray-600">Haz clic en cualquier trabajo de la lista para ver los detalles completos.</p>
+      
+      <!-- Vista de aplicaciones del usuario (solo researchers) -->
+      <div *ngIf="activeTab === 'my-applications'" class="w-full">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Mis Postulaciones</h3>
           </div>
-
-          <div *ngIf="selectedJob" class="p-6">
-            <!-- Header del trabajo -->
-            <div class="border-b pb-6 mb-6">
-              <div class="flex justify-between items-start">
-                <div>
-                  <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ selectedJob?.title }}</h1>
-                  <p class="text-lg text-gray-700 mb-1">{{ selectedJob?.company }}</p>
-                  <p class="text-gray-600 mb-3">{{ selectedJob?.location }}</p>
-
-                  <div class="flex items-center gap-3 mb-4">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                      [class.bg-green-100]="selectedJob?.type === 'Full-time'"
-                      [class.text-green-800]="selectedJob?.type === 'Full-time'"
-                      [class.bg-blue-100]="selectedJob?.type === 'Part-time'"
-                      [class.text-blue-800]="selectedJob?.type === 'Part-time'"
-                      [class.bg-purple-100]="selectedJob?.type === 'Contract'"
-                      [class.text-purple-800]="selectedJob?.type === 'Contract'">
-                      {{ selectedJob?.type }}
-                    </span>
-                    <span *ngIf="selectedJob?.remote"
-                      class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                      🏠 Trabajo Remoto
-                    </span>
-                  </div>
-
-                  <p class="text-xl font-bold text-green-600">{{ selectedJob?.salary }}</p>
-                </div>
-
-                <button
-                  class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200">
-                  Aplicar Ahora
-                </button>
-              </div>
+          
+          <div *ngIf="applicationsLoading" class="p-6">
+            <div class="flex items-center justify-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span class="ml-2 text-gray-600">Cargando postulaciones...</span>
             </div>
-
-            <!-- Contenido del trabajo -->
-            <div class="space-y-6">
-              <!-- Descripción -->
-              <div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Descripción del Puesto</h3>
-                <p class="text-gray-700 leading-relaxed">{{ selectedJob?.description }}</p>
-              </div>
-
-              <!-- Requisitos -->
-              <div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Requisitos</h3>
-                <ul class="space-y-2">
-                  <li *ngFor="let requirement of selectedJob?.requirements" class="flex items-start">
-                    <span class="text-green-500 mr-2 mt-1">✓</span>
-                    <span class="text-gray-700">{{ requirement }}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Beneficios -->
-              <div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Beneficios</h3>
-                <ul class="space-y-2">
-                  <li *ngFor="let benefit of selectedJob?.benefits" class="flex items-start">
-                    <span class="text-blue-500 mr-2 mt-1">★</span>
-                    <span class="text-gray-700">{{ benefit }}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Información adicional -->
-              <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Información del Proceso</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span class="font-medium text-gray-700">Fecha de publicación:</span>
-                    <p class="text-gray-600">{{ selectedJob?.postedDate | date:'dd/MM/yyyy' }}</p>
+          </div>
+          
+          <div *ngIf="!applicationsLoading && applications.length === 0" class="p-6 text-center text-gray-500">
+            No has realizado ninguna postulación aún.
+          </div>
+          
+          <div *ngIf="!applicationsLoading && applications.length > 0" class="divide-y divide-gray-200">
+            <div *ngFor="let application of applications" class="p-6">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="text-lg font-medium text-gray-900 mb-1">
+                    {{ application.job_info?.title }}
+                  </h4>
+                  <p class="text-sm text-gray-600 mb-2">
+                    {{ application.job_info?.company_name }} • {{ application.job_info?.location }}
+                  </p>
+                  
+                  <div *ngIf="application.cover_letter" class="mb-3">
+                    <h5 class="text-sm font-medium text-gray-700 mb-1">Tu carta de presentación:</h5>
+                    <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded">{{ application.cover_letter }}</p>
                   </div>
-                  <div>
-                    <span class="font-medium text-gray-700">Fecha límite:</span>
-                    <p class="text-gray-600">{{ selectedJob?.applicationDeadline | date:'dd/MM/yyyy' }}</p>
-                  </div>
-                  <div class="md:col-span-2">
-                    <span class="font-medium text-gray-700">Contacto:</span>
-                    <p class="text-gray-600">{{ selectedJob?.contactEmail }}</p>
+                  
+                  <div class="flex items-center gap-4 text-sm text-gray-500">
+                    <span>Aplicaste el {{ application.applied_at | date:'dd/MM/yyyy HH:mm' }}</span>
+                    <span *ngIf="application.resume_file">
+                      <a [href]="application.resume_file" target="_blank" 
+                         class="text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Ver CV enviado
+                      </a>
+                    </span>
                   </div>
                 </div>
+                
+                <div class="flex-shrink-0 ml-4">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                        [ngClass]="{
+                          'bg-yellow-100 text-yellow-800': application.status === 'pending',
+                          'bg-blue-100 text-blue-800': application.status === 'reviewing',
+                          'bg-purple-100 text-purple-800': application.status === 'interviewed',
+                          'bg-green-100 text-green-800': application.status === 'accepted',
+                          'bg-red-100 text-red-800': application.status === 'rejected',
+                          'bg-gray-100 text-gray-800': application.status === 'withdrawn'
+                        }">
+                    {{ application.status_display }}
+                  </span>
+                </div>
               </div>
-
-              <!-- Botón de aplicación -->
-              <div class="pt-4 border-t">
-                <button
-                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200">
-                  Aplicar a este Trabajo
-                </button>
-                <p class="text-center text-sm text-gray-500 mt-2">
-                  Al hacer clic serás redirigido para completar tu aplicación
-                </p>
+              
+              <div *ngIf="application.notes" class="mt-3 pt-3 border-t border-gray-100">
+                <h5 class="text-sm font-medium text-gray-700 mb-1">Comentarios de la empresa:</h5>
+                <p class="text-sm text-gray-600">{{ application.notes }}</p>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de notas (para empresas) -->
+<div *ngIf="showNotesModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-medium text-gray-900">Editar Notas</h3>
+        <button (click)="closeNotesModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <div class="p-6">
+      <div class="mb-4">
+        <h4 class="font-medium text-gray-900">{{ selectedApplication?.user_info?.full_name }}</h4>
+        <p class="text-sm text-gray-600">{{ selectedApplication?.job_info?.title }}</p>
+      </div>
+      
+      <div class="mb-4">
+        <label for="notesText" class="block text-sm font-medium text-gray-700 mb-2">
+          Notas internas (solo visibles para tu empresa)
+        </label>
+        <textarea
+          id="notesText"
+          [(ngModel)]="notesText"
+          rows="4"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Añade notas sobre este candidato..."></textarea>
+      </div>
+      
+      <div class="flex gap-3">
+        <button
+          (click)="closeNotesModal()"
+          class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg">
+          Cancelar
+        </button>
+        <button
+          (click)="saveNotes()"
+          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
+          Guardar Notas
+        </button>
       </div>
     </div>
   </div>

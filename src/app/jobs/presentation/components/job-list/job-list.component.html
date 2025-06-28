@@ -1,0 +1,48 @@
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+  <div class="px-6 py-4 bg-gray-100 border-b">
+    <h2 class="text-lg font-semibold text-gray-900">
+      {{ title }}
+      <span class="ml-2 text-sm text-gray-600">({{ jobs.length }})</span>
+    </h2>
+  </div>
+
+  <div *ngIf="loading" class="p-6">
+    <div class="flex items-center justify-center">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <span class="ml-3 text-gray-600">Cargando trabajos...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && jobs.length === 0" class="p-6 text-center">
+    <p class="text-gray-500">No hay trabajos disponibles en este momento.</p>
+  </div>
+
+  <div *ngIf="!loading && jobs.length > 0" class="max-h-96 overflow-y-auto">
+    <div *ngFor="let job of jobs; trackBy: trackByJobId"
+      class="p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+      [class.bg-blue-50]="isJobSelected(job)" [class.border-l-4]="isJobSelected(job)"
+      [class.border-l-blue-500]="isJobSelected(job)" (click)="onJobSelect(job)">
+
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <h3 class="font-semibold text-gray-900 mb-1">{{ job.title }}</h3>
+          <p class="text-sm text-gray-600 mb-1">{{ job.company_info?.company_name || 'Empresa no disponible' }}</p>
+          <p class="text-sm text-gray-500 mb-2">{{ job.location }}</p>
+
+          <div class="flex items-center gap-2 mb-2">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+              [class]="getJobTypeClasses(job.job_type)">
+              {{ job.job_type_display }}
+            </span>
+            <span *ngIf="job.is_remote"
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              Remoto
+            </span>
+          </div>
+
+          <p class="text-sm font-semibold text-green-600">{{ getFormattedSalary(job) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

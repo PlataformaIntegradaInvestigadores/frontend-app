@@ -1,0 +1,178 @@
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+  <div *ngIf="!job" class="p-8 text-center">
+    <div class="text-gray-400 mb-4">
+      <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8">
+        </path>
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">Selecciona un trabajo</h3>
+    <p class="text-gray-600">Haz clic en cualquier trabajo de la lista para ver los detalles completos.</p>
+  </div>
+
+  <div *ngIf="job" class="p-6">
+    <!-- Header del trabajo -->
+    <div class="border-b pb-6 mb-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ job?.title }}</h1>
+          <p class="text-lg text-gray-700 mb-1">{{ job?.company_info?.company_name || 'Empresa no disponible' }}</p>
+          <p class="text-gray-600 mb-3">{{ job?.location }}</p>
+
+          <div class="flex items-center gap-3 mb-4">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+              [class]="job ? getJobTypeClasses(job.job_type) : ''">
+              {{ job?.job_type_display }}
+            </span>
+            <span *ngIf="job?.is_remote"
+              class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+              🏠 Trabajo Remoto
+            </span>
+          </div>
+
+          <p class="text-xl font-bold text-green-600">{{ job ? getFormattedSalary(job) : '' }}</p>
+        </div>
+
+        <button *ngIf="isResearcher"
+          (click)="openApplicationModal()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200">
+          Aplicar Ahora
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenido del trabajo -->
+    <div class="space-y-6">
+      <!-- Descripción -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Descripción del Puesto</h3>
+        <p class="text-gray-700 leading-relaxed">{{ job?.description }}</p>
+      </div>
+
+      <!-- Requisitos -->
+      <div *ngIf="getRequirementsArray(job?.requirements).length > 0">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Requisitos</h3>
+        <ul class="space-y-2">
+          <li *ngFor="let requirement of getRequirementsArray(job?.requirements)" class="flex items-start">
+            <span class="text-green-500 mr-2 mt-1">✓</span>
+            <span class="text-gray-700">{{ requirement }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Beneficios -->
+      <div *ngIf="getBenefitsArray(job?.benefits).length > 0">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Beneficios</h3>
+        <ul class="space-y-2">
+          <li *ngFor="let benefit of getBenefitsArray(job?.benefits)" class="flex items-start">
+            <span class="text-blue-500 mr-2 mt-1">★</span>
+            <span class="text-gray-700">{{ benefit }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Información adicional -->
+      <div class="bg-gray-50 rounded-lg p-4">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">Información del Proceso</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="font-medium text-gray-700">Fecha de publicación:</span>
+            <p class="text-gray-600">{{ job?.created_at | date:'dd/MM/yyyy' }}</p>
+          </div>
+          <div>
+            <span class="font-medium text-gray-700">Fecha límite:</span>
+            <p class="text-gray-600">{{ job?.application_deadline | date:'dd/MM/yyyy' }}</p>
+          </div>
+          <div class="md:col-span-2">
+            <span class="font-medium text-gray-700">Empresa:</span>
+            <p class="text-gray-600">{{ job?.company_info?.company_name || 'Empresa no disponible' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de aplicación -->
+      <div *ngIf="isResearcher" class="pt-4 border-t">
+        <button
+          (click)="openApplicationModal()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200">
+          Aplicar a este Trabajo
+        </button>
+        <p class="text-center text-sm text-gray-500 mt-2">
+          Completa tu postulación con carta de presentación y CV
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de aplicación -->
+<div *ngIf="showApplicationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-screen overflow-y-auto">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-medium text-gray-900">Postular al trabajo</h3>
+        <button (click)="closeApplicationModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <form (ngSubmit)="submitApplication()" class="p-6 space-y-4">
+      <div>
+        <h4 class="font-medium text-gray-900 mb-2">{{ job?.title }}</h4>
+        <p class="text-sm text-gray-600">{{ job?.company_info?.company_name }}</p>
+      </div>
+      
+      <div>
+        <label for="coverLetter" class="block text-sm font-medium text-gray-700 mb-2">
+          Carta de presentación
+        </label>
+        <textarea
+          id="coverLetter"
+          [(ngModel)]="applicationData.cover_letter"
+          name="coverLetter"
+          rows="4"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Explica por qué eres el candidato ideal para este puesto..."></textarea>
+      </div>
+      
+      <div>
+        <label for="resumeFile" class="block text-sm font-medium text-gray-700 mb-2">
+          CV (PDF, opcional)
+        </label>
+        <input
+          id="resumeFile"
+          type="file"
+          accept=".pdf"
+          (change)="onFileSelected($event)"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <p class="text-xs text-gray-500 mt-1">Solo archivos PDF. Máximo 5MB.</p>
+      </div>
+      
+      <div class="flex gap-3 pt-4">
+        <button
+          type="button"
+          (click)="closeApplicationModal()"
+          class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+          <span *ngIf="!isSubmitting">Enviar Postulación</span>
+          <span *ngIf="isSubmitting" class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Enviando...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

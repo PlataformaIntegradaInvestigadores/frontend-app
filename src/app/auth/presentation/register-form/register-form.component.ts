@@ -49,14 +49,13 @@ export class RegisterFormComponent implements OnInit {
 
         const formValues = { ...this.registerForm.value };
 
-        // Encriptar la contraseña
-        const encryptedPassword = CryptoJS.SHA256(formValues.password).toString();
+        // Eliminar campos que no se envían al backend
         delete formValues.confirm_password;
         delete formValues.agree_terms;
 
         const user: User = {
             ...formValues,
-            password: encryptedPassword,
+            password: CryptoJS.SHA256(formValues.password).toString(),  // Cifrar contraseña para researcher
             scopus_id: formValues.scopus_id ? formValues.scopus_id : null,
             id: null
         };

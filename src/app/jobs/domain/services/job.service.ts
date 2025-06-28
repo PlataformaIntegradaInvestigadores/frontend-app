@@ -1,153 +1,235 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Job } from '../entities/job.interface';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { Job, JobCreate, JobFilter } from '../entities/job.interface';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JobsService {
+  private apiUrl = environment.apiUrl;
 
-  private mockJobs: Job[] = [
-    {
-      id: 1,
-      title: 'Desarrollador Frontend Angular',
-      company: 'TechCorp Solutions',
-      location: 'Madrid, España',
-      type: 'Full-time',
-      salary: '€45,000 - €60,000',
-      description: 'Buscamos un desarrollador Frontend especializado en Angular para unirse a nuestro equipo de desarrollo. Trabajarás en proyectos innovadores utilizando las últimas tecnologías.',
-      requirements: [
-        'Experiencia mínima de 3 años con Angular',
-        'Conocimiento de TypeScript',
-        'Experiencia con HTML5, CSS3 y JavaScript',
-        'Conocimiento de Git',
-        'Experiencia con metodologías ágiles'
-      ],
-      benefits: [
-        'Seguro médico privado',
-        'Formación continua',
-        'Trabajo remoto híbrido',
-        'Bonus por objetivos'
-      ],
-      postedDate: new Date('2025-06-20'),
-      applicationDeadline: new Date('2025-07-20'),
-      contactEmail: 'hr@techcorp.com',
-      remote: true
-    },
-    {
-      id: 2,
-      title: 'Desarrollador Full Stack',
-      company: 'StartupHub',
-      location: 'Barcelona, España',
-      type: 'Full-time',
-      salary: '€50,000 - €70,000',
-      description: 'Únete a nuestra startup en crecimiento como desarrollador Full Stack. Trabajarás tanto en el frontend como en el backend de nuestras aplicaciones web.',
-      requirements: [
-        'Experiencia con Node.js y Express',
-        'Conocimiento de React o Angular',
-        'Experiencia con bases de datos SQL y NoSQL',
-        'Conocimiento de Docker',
-        'Experiencia con APIs RESTful'
-      ],
-      benefits: [
-        'Equity en la empresa',
-        'Horarios flexibles',
-        'Oficina moderna',
-        'Café y snacks gratis'
-      ],
-      postedDate: new Date('2025-06-18'),
-      applicationDeadline: new Date('2025-07-15'),
-      contactEmail: 'jobs@startuphub.com',
-      remote: false
-    },
-    {
-      id: 3,
-      title: 'Desarrollador Backend Python',
-      company: 'DataTech Industries',
-      location: 'Valencia, España',
-      type: 'Contract',
-      salary: '€400 - €500/día',
-      description: 'Proyecto de 6 meses para desarrollo de APIs y microservicios usando Python y Django. Excelente oportunidad para trabajar con big data.',
-      requirements: [
-        'Experiencia sólida con Python y Django',
-        'Conocimiento de PostgreSQL',
-        'Experiencia con Docker y Kubernetes',
-        'Conocimiento de AWS o Azure',
-        'Experiencia con APIs GraphQL'
-      ],
-      benefits: [
-        'Proyecto interesante',
-        'Posibilidad de extensión',
-        'Trabajo 100% remoto',
-        'Tarifa competitiva'
-      ],
-      postedDate: new Date('2025-06-15'),
-      applicationDeadline: new Date('2025-07-10'),
-      contactEmail: 'contracts@datatech.com',
-      remote: true
-    },
-    {
-      id: 4,
-      title: 'UI/UX Designer',
-      company: 'CreativeSpace',
-      location: 'Sevilla, España',
-      type: 'Part-time',
-      salary: '€25,000 - €35,000',
-      description: 'Buscamos un diseñador UI/UX creativo para trabajar en proyectos de diseño de interfaces y experiencias de usuario para aplicaciones web y móviles.',
-      requirements: [
-        'Portfolio sólido de diseño UI/UX',
-        'Experiencia con Figma y Adobe Creative Suite',
-        'Conocimiento de principios de diseño',
-        'Experiencia en prototipado',
-        'Conocimiento básico de HTML/CSS'
-      ],
-      benefits: [
-        'Horarios flexibles',
-        'Proyectos creativos',
-        'Equipo joven y dinámico',
-        'Formación en nuevas herramientas'
-      ],
-      postedDate: new Date('2025-06-22'),
-      applicationDeadline: new Date('2025-07-25'),
-      contactEmail: 'design@creativespace.com',
-      remote: true
-    },
-    {
-      id: 5,
-      title: 'DevOps Engineer',
-      company: 'CloudFirst Solutions',
-      location: 'Bilbao, España',
-      type: 'Full-time',
-      salary: '€55,000 - €75,000',
-      description: 'Únete a nuestro equipo de DevOps para implementar y mantener infraestructura cloud escalable. Trabajarás con las últimas tecnologías de containerización y orquestación.',
-      requirements: [
-        'Experiencia con AWS, Azure o GCP',
-        'Conocimiento de Docker y Kubernetes',
-        'Experiencia con Terraform o similar',
-        'Conocimiento de CI/CD pipelines',
-        'Experiencia con monitoreo y logging'
-      ],
-      benefits: [
-        'Certificaciones pagadas',
-        'Trabajo remoto',
-        'Tecnologías de vanguardia',
-        'Plan de carrera definido'
-      ],
-      postedDate: new Date('2025-06-19'),
-      applicationDeadline: new Date('2025-07-18'),
-      contactEmail: 'devops@cloudfirst.com',
-      remote: true
-    }
-  ];
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
-  constructor() { }
+  /**
+   * Obtiene la lista de trabajos con filtros opcionales
+   */
+  getJobs(filters?: JobFilter): Observable<Job[]> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
 
-  getAllJobs(): Observable<Job[]> {
-    return of(this.mockJobs);
+        let params = new HttpParams();
+        if (filters) {
+          if (filters.q) params = params.set('q', filters.q);
+          if (filters.location) params = params.set('location', filters.location);
+          if (filters.type) params = params.set('type', filters.type);
+          if (filters.experience) params = params.set('experience', filters.experience);
+          if (filters.remote !== undefined) params = params.set('remote', filters.remote.toString());
+        }
+
+        return this.http.get<Job[]>(`${this.apiUrl}/v1/jobs/`, { headers, params });
+      }),
+      catchError(this.handleError)
+    );
   }
 
-  getJobById(id: number): Observable<Job | undefined> {
-    const job = this.mockJobs.find(j => j.id === id);
-    return of(job);
+  /**
+   * Obtiene un trabajo específico por ID
+   */
+  getJob(jobId: number): Observable<Job> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+
+        return this.http.get<Job>(`${this.apiUrl}/v1/jobs/${jobId}/`, { headers });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Crea un nuevo trabajo (solo para empresas)
+   */
+  createJob(jobData: JobCreate): Observable<Job> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+
+        return this.http.post<Job>(`${this.apiUrl}/v1/jobs/`, jobData, { headers });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Actualiza un trabajo existente (solo para la empresa propietaria)
+   */
+  updateJob(jobId: number, jobData: Partial<JobCreate>): Observable<Job> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+
+        return this.http.put<Job>(`${this.apiUrl}/v1/jobs/${jobId}/`, jobData, { headers });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Elimina un trabajo (solo para la empresa propietaria)
+   */
+  deleteJob(jobId: number): Observable<void> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+
+        return this.http.delete<void>(`${this.apiUrl}/v1/jobs/${jobId}/`, { headers });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Obtiene trabajos recomendados para el usuario actual
+   */
+  getRecommendedJobs(limit: number = 10): Observable<{count: number, results: Job[]}> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+
+        const params = new HttpParams().set('limit', limit.toString());
+
+        return this.http.get<{count: number, results: Job[]}>(`${this.apiUrl}/v1/jobs/recommendations/`, { headers, params });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Obtiene trabajos trending
+   */
+  getTrendingJobs(limit: number = 10): Observable<{count: number, results: Job[]}> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+
+        const params = new HttpParams().set('limit', limit.toString());
+
+        return this.http.get<{count: number, results: Job[]}>(`${this.apiUrl}/v1/jobs/trending/`, { headers, params });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Realiza búsqueda semántica de trabajos
+   */
+  semanticSearch(query: string): Observable<Job[]> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+
+        return this.http.post<Job[]>(`${this.apiUrl}/v1/jobs/semantic-search/`, { query }, { headers });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Obtiene trabajos de una empresa específica
+   */
+  getJobsByCompany(companyId: string): Observable<Job[]> {
+    return this.authService.getToken().pipe(
+      switchMap(token => {
+        if (!token) {
+          return throwError(() => new Error('No authentication token found'));
+        }
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+
+        const params = new HttpParams().set('company', companyId);
+
+        return this.http.get<Job[]>(`${this.apiUrl}/v1/jobs/`, { headers, params });
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Maneja errores HTTP
+   */
+  private handleError(error: any): Observable<never> {
+    console.error('Jobs Service Error:', error);
+    let errorMessage = 'Ha ocurrido un error inesperado';
+    
+    if (error.error?.message) {
+      errorMessage = error.error.message;
+    } else if (error.error?.error) {
+      errorMessage = error.error.error;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return throwError(() => new Error(errorMessage));
   }
 }

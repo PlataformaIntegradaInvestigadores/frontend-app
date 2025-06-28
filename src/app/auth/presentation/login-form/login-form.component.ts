@@ -47,11 +47,14 @@ export class LoginFormComponent implements OnInit {
       
       const formData = this.loginForm.value;
       
-      // Encriptar la contraseña
-      const encryptedPassword = CryptoJS.SHA256(formData.password).toString();
+      // Para researcher, cifrar la contraseña. Para company, enviar en texto plano
+      const password = this.userType === 'user' 
+        ? CryptoJS.SHA256(formData.password).toString()
+        : formData.password;
+      
       const loginData: LoginCredentials = {
         username: formData.username,
-        password: encryptedPassword
+        password: password
       };      this.authService.login(loginData, this.userType).subscribe({
         next: (response) => {
           this.isLoading = false;
@@ -61,8 +64,8 @@ export class LoginFormComponent implements OnInit {
             // Pequeño delay para que el modal se cierre antes de navegar
             setTimeout(() => {
               if (this.userType === 'company') {
-                // Navegar a dashboard de empresa (por implementar)
-                this.router.navigate(['/company-dashboard']);
+                // Navegar al perfil de empresa
+                this.router.navigate([`/company/${userId}`]);
               } else {
                 this.router.navigate([`/profile/${userId}/about-me`]);
               }

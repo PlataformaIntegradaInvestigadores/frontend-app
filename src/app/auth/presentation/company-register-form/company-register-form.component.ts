@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../domain/services/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
 import { Company, INDUSTRY_OPTIONS, EMPLOYEE_COUNT_OPTIONS } from '../../domain/entities/interfaces';
-import * as CryptoJS from 'crypto-js';
 
 @Component({
     selector: 'app-company-register-form',
@@ -62,15 +61,13 @@ export class CompanyRegisterFormComponent implements OnInit {
         this.errorMessages = [];
 
         const formValues = { ...this.registerForm.value };
-        // Encriptar la contraseña
-        const encryptedPassword = CryptoJS.SHA256(formValues.password).toString();
         
         delete formValues.agree_terms;
 
         const company: Company = {
             ...formValues,
-            password: encryptedPassword,
-            confirm_password: encryptedPassword,
+            password: formValues.password,  // Enviar contraseña en texto plano
+            confirm_password: formValues.password,  // Confirmar contraseña igual
             id: null
         };
 

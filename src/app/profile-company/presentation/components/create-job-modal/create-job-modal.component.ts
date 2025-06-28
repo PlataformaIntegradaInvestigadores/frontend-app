@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Job } from 'src/app/jobs/domain/entities/job.interface';
+import { Job, JobCreate } from 'src/app/jobs/domain/entities/job.interface';
 
 @Component({
   selector: 'app-create-job-modal',
@@ -8,13 +8,13 @@ import { Job } from 'src/app/jobs/domain/entities/job.interface';
 })
 export class CreateJobModalComponent {
 
-  @Output() jobCreated = new EventEmitter<Job>();
+  @Output() jobCreated = new EventEmitter<JobCreate>();
   @Output() closeModal = new EventEmitter<void>();
 
   jobForm = {
     title: '',
     location: '',
-    type: 'Full-time',
+    type: 'full_time',
     salary: '',
     description: '',
     requirements: [''],
@@ -23,26 +23,24 @@ export class CreateJobModalComponent {
     applicationDeadline: ''
   };
 
-  jobTypes = ['Full-time', 'Part-time', 'Contract', 'Internship'];
+  jobTypes = ['full_time', 'part_time', 'contract', 'internship'];
 
   constructor() { }
 
   onSubmit(): void {
     if (this.isFormValid()) {
-      const newJob: Job = {
-        id: Date.now(), // En un caso real, esto vendría del backend
+      const newJob: JobCreate = {
         title: this.jobForm.title,
-        company: 'TechCorp Solutions', // En un caso real, esto vendría del contexto de la empresa
-        location: this.jobForm.location,
-        type: this.jobForm.type,
-        salary: this.jobForm.salary,
         description: this.jobForm.description,
-        requirements: this.jobForm.requirements.filter(req => req.trim() !== ''),
-        benefits: this.jobForm.benefits.filter(benefit => benefit.trim() !== ''),
-        postedDate: new Date(),
-        applicationDeadline: new Date(this.jobForm.applicationDeadline),
-        contactEmail: 'hr@techcorp-solutions.com',
-        remote: this.jobForm.remote
+        requirements: this.jobForm.requirements.filter(req => req.trim() !== '').join('\n'),
+        benefits: this.jobForm.benefits.filter(benefit => benefit.trim() !== '').join('\n'),
+        location: this.jobForm.location,
+        job_type: this.jobForm.type,
+        experience_level: 'junior', // Default value, could be added to form
+        is_remote: this.jobForm.remote,
+        application_deadline: this.jobForm.applicationDeadline,
+        salary_min: this.jobForm.salary ? parseInt(this.jobForm.salary.split('-')[0]) : undefined,
+        salary_max: this.jobForm.salary ? parseInt(this.jobForm.salary.split('-')[1] || this.jobForm.salary.split('-')[0]) : undefined,
       };
 
       this.jobCreated.emit(newJob);
@@ -95,7 +93,7 @@ export class CreateJobModalComponent {
     this.jobForm = {
       title: '',
       location: '',
-      type: 'Full-time',
+      type: 'full_time',
       salary: '',
       description: '',
       requirements: [''],

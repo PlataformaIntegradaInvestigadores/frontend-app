@@ -94,9 +94,18 @@ export class HeaderComponent {
   }
 
   profile() {
-    this.authService.getUserId();
-    this.userId = this.authService.getUserId();
-    this.router.navigate([`/profile/${this.userId}/about-me`]);
+    const userType = this.authService.getUserType();
+    if (userType === 'company') {
+      const companyId = this.authService.getCompanyId();
+      if (companyId) {
+        this.router.navigate([`/company/${companyId}`]);
+      }
+    } else {
+      const userId = this.authService.getUserId();
+      if (userId) {
+        this.router.navigate([`/profile/${userId}/about-me`]);
+      }
+    }
   }
 
   loadUsers(): void {
@@ -128,8 +137,31 @@ export class HeaderComponent {
    * Navigate to jobs page
    */
   navigateToJobs(): void {
-    this.authService.getUserId();
-    this.userId = this.authService.getUserId();
-    this.router.navigate([`/jobs/${this.userId}`]);
+    const currentUserId = this.authService.getCurrentUserId();
+    if (currentUserId) {
+      this.router.navigate([`/jobs/${currentUserId}`]);
+    }
+  }
+
+  /**
+   * Check if current user is a company
+   */
+  isCompany(): boolean {
+    return this.authService.isCompany();
+  }
+
+  /**
+   * Check if current user is a researcher
+   */
+  isUser(): boolean {
+    return this.authService.isUser();
+  }
+
+  /**
+   * Get current user type for display purposes
+   */
+  getUserType(): string {
+    const userType = this.authService.getUserType();
+    return userType === 'company' ? 'Company' : 'Researcher';
   }
 }
