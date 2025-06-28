@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { PostCreatorData } from '../../types/post.types';
 
 @Component({
@@ -7,32 +7,57 @@ import { PostCreatorData } from '../../types/post.types';
   styleUrls: ['./post-creator.component.css']
 })
 export class PostCreatorComponent {
-  @Input() placeholder: string = '¿Qué estás pensando? Comparte algo interesante...';
-  @Input() buttonText: string = 'Publicar';
+  @Input() placeholder: string = "What's on your mind?";
+  @Input() buttonText: string = 'Post';
   @Input() showOptions: boolean = true;
   @Input() userAvatar: string = '/assets/profile.png';
   @Input() userName: string = '';
   @Input() isLoading: boolean = false;
   
   @Output() postSubmitted = new EventEmitter<PostCreatorData>();
+  
+  @ViewChild('textArea') textArea!: ElementRef<HTMLTextAreaElement>;
 
   newPostContent = '';
-  isPostInputFocused = false;
   selectedFiles: File[] = [];
-  showFileInput = false;
 
   /**
-   * Maneja el focus del input de post
+   * Maneja el focus del textarea
    */
-  onPostInputFocus(): void {
-    this.isPostInputFocused = true;
+  onTextAreaFocus(): void {
+    // Opcional: lógica adicional cuando se enfoca el textarea
   }
 
   /**
-   * Maneja el blur del input de post
+   * Maneja el blur del textarea
+   */
+  onTextAreaBlur(): void {
+    // Opcional: lógica adicional cuando se desenfoca el textarea
+  }
+
+  /**
+   * Enfoca el input de post (método para compatibilidad)
+   */
+  onPostInputFocus(): void {
+    if (this.textArea) {
+      this.textArea.nativeElement.focus();
+    }
+  }
+
+  /**
+   * Enfoca el input de post (método para compatibilidad)
+   */
+  focusPostInput(): void {
+    if (this.textArea) {
+      this.textArea.nativeElement.focus();
+    }
+  }
+
+  /**
+   * Maneja el blur del input de post (método para compatibilidad)
    */
   onPostInputBlur(): void {
-    this.isPostInputFocused = false;
+    this.onTextAreaBlur();
   }
 
   /**
@@ -56,7 +81,6 @@ export class PostCreatorComponent {
   clearForm(): void {
     this.newPostContent = '';
     this.selectedFiles = [];
-    this.showFileInput = false;
   }
 
   /**
@@ -77,12 +101,11 @@ export class PostCreatorComponent {
   }
 
   /**
-   * Maneja opciones adicionales (foto, link, encuesta)
+   * Maneja opciones adicionales (photo, feeling, location)
    */
-  onOptionClick(option: 'photo' | 'link' | 'poll'): void {
+  onOptionClick(option: 'photo' | 'feeling' | 'location'): void {
     switch(option) {
       case 'photo':
-        this.showFileInput = true;
         // Trigger file input click
         setTimeout(() => {
           const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -91,13 +114,13 @@ export class PostCreatorComponent {
           }
         }, 100);
         break;
-      case 'link':
-        // TODO: Implementar funcionalidad de link
-        console.log('Link functionality not implemented yet');
+      case 'feeling':
+        // TODO: Implementar funcionalidad de sentimientos/actividades
+        console.log('Feeling/Activity functionality not implemented yet');
         break;
-      case 'poll':
-        // TODO: Implementar funcionalidad de encuesta
-        console.log('Poll functionality not implemented yet');
+      case 'location':
+        // TODO: Implementar funcionalidad de ubicación
+        console.log('Location functionality not implemented yet');
         break;
     }
   }

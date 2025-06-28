@@ -1,25 +1,75 @@
 <!-- Post Comments Component -->
-<div class="comments-container bg-white rounded-lg border border-gray-200 p-6">
-  <!-- Header de comentarios -->
-  <div class="flex items-center justify-between mb-4">
-    <h4 class="text-lg font-semibold text-gray-800">
-      Comentarios ({{ commentsCount }})
-    </h4>
-    <button class="text-sm text-blue-600 hover:text-blue-800 transition-colors">
-      <i class="fas fa-plus mr-1"></i>
-      Agregar comentario
-    </button>
-  </div>
-  
-  <!-- Estado temporal mientras se implementa -->
-  <div class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-      <i class="fas fa-comments text-2xl text-gray-400"></i>
+<div class="p-4">
+  <!-- Write a comment section -->
+  <div class="flex items-start space-x-3 mb-4">
+    <img 
+      src="/assets/profile.png" 
+      alt="Tu foto" 
+      class="w-8 h-8 rounded-full object-cover">
+    
+    <div class="flex-1">
+      <div class="relative">
+        <textarea
+          [(ngModel)]="newCommentContent"
+          placeholder="Write a comment..."
+          class="w-full p-3 pr-12 bg-gray-100 rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+          rows="1"
+          (keyup.enter)="onSubmitComment()"
+          [disabled]="isSubmittingComment">
+        </textarea>
+        
+        <button
+          (click)="onSubmitComment()"
+          [disabled]="!newCommentContent.trim() || isSubmittingComment"
+          class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed">
+          <i class="fas fa-paper-plane" *ngIf="!isSubmittingComment"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="isSubmittingComment"></i>
+        </button>
+      </div>
     </div>
-    <h3 class="text-base font-medium text-gray-600 mb-2">Comentarios en desarrollo</h3>
-    <p class="text-sm text-gray-500">
-      Esta funcionalidad se implementará próximamente para permitir 
-      conversaciones más ricas en las publicaciones.
-    </p>
+  </div>
+
+  <!-- Comments list -->
+  <div class="space-y-4" *ngIf="comments.length > 0">
+    <div 
+      *ngFor="let comment of comments" 
+      class="flex items-start space-x-3">
+      
+      <img 
+        [src]="comment.author.profile_picture || '/assets/profile.png'" 
+        [alt]="comment.author.first_name || 'Usuario'" 
+        class="w-8 h-8 rounded-full object-cover">
+      
+      <div class="flex-1">
+        <div class="bg-gray-100 rounded-2xl px-4 py-2">
+          <div class="font-semibold text-sm text-gray-900">
+            {{ comment.author.first_name }} {{ comment.author.last_name }}
+          </div>
+          <div class="text-sm text-gray-800">
+            {{ comment.content }}
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-4 mt-1 text-xs text-gray-500">
+          <button class="hover:text-blue-600 font-medium">
+            Like
+          </button>
+          <button class="hover:text-blue-600 font-medium">
+            Reply
+          </button>
+          <span>{{ getTimeAgo(comment.created_at) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="flex justify-center py-4" *ngIf="isLoadingComments">
+    <i class="fas fa-spinner fa-spin text-gray-400"></i>
+  </div>
+
+  <!-- Empty state -->
+  <div class="text-center py-6 text-gray-500 text-sm" *ngIf="!isLoadingComments && comments.length === 0">
+    Be the first to comment
   </div>
 </div>

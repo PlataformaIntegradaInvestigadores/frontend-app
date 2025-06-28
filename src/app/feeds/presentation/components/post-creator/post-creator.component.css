@@ -1,5 +1,15 @@
-/* Post Creator Component Styles */
-/* Solo estilos específicos que no se pueden hacer con Tailwind */
+/* Post Creator Component - Facebook-like design */
+
+/* Smooth transitions for expand/collapse */
+.expanding-textarea {
+  transition: all 0.3s ease;
+}
+
+/* Focus states for better UX */
+.focus-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
 
 /* Focus visible para accesibilidad */
 button:focus-visible,
@@ -18,12 +28,57 @@ textarea:focus-visible {
   100% { transform: rotate(360deg); }
 }
 
-/* Hover effect suave para opciones */
+/* Responsive design */
+@media (max-width: 640px) {
+  .hidden-on-mobile {
+    display: none;
+  }
+}
+
+/* Custom hover effects */
+.option-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect suave para botones */
 button:hover:not(:disabled) {
   transform: translateY(-1px);
+}
+
+/* File preview animations */
+.file-preview {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Transición suave para el textarea al hacer focus */
 textarea:focus {
   transform: scale(1.002);
+  transition: transform 0.2s ease;
+}
+
+/* Smooth placeholder button transition */
+.placeholder-button {
+  transition: all 0.2s ease;
+}
+
+.placeholder-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Enhanced focus states */
+.enhanced-focus:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
 }

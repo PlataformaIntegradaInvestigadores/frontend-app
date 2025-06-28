@@ -138,67 +138,43 @@
           </button>
         </div>
 
-        <!-- Posts feed -->
-        <div class="space-y-4" *ngIf="posts.length > 0">
-          <div *ngFor="let post of posts; trackBy: trackByPostId" class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-            <div class="flex items-start gap-3 mb-4">
-              <img [src]="post.author?.profile_picture || '/assets/profile.png'" 
-                   alt="Autor" class="w-12 h-12 rounded-full object-cover">
-              <div class="flex-1">
-                <h4 class="font-semibold text-gray-900">{{ post.author?.first_name }} {{ post.author?.last_name || 'Usuario' }}</h4>
-                <span class="text-sm text-gray-500">{{ post.created_at | date:'medium' }}</span>
-              </div>
-            </div>
-            
-            <div class="mb-4">
-              <p class="text-gray-800 leading-relaxed">{{ post.content }}</p>
-            </div>
-            
-            <div class="flex items-center gap-6 pt-3 border-t border-gray-100">
-              <button 
-                class="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors"
-                (click)="onToggleLike(post)">
-                <i [class]="post.is_liked ? 'fas fa-heart text-red-500' : 'far fa-heart'"></i>
-                <span class="text-sm">{{ post.likes_count || 0 }}</span>
-              </button>
-              
-              <button class="flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors">
-                <i class="far fa-comment"></i>
-                <span class="text-sm">{{ post.comments_count || 0 }}</span>
-              </button>
-              
-              <button class="flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors">
-                <i class="far fa-share"></i>
-                <span class="text-sm">Compartir</span>
-              </button>
-            </div>
-          </div>
+        <!-- Posts feed usando el componente modular -->
+        <app-post-list
+          [posts]="posts"
+          [isLoading]="isLoading"
+          [emptyMessage]="'No hay publicaciones disponibles'"
+          [showActions]="true"
+          [currentUserId]="currentUserId"
+          (toggleLike)="onToggleLike($event)"
+          (deletePost)="onDeletePost($event)"
+          (sharePost)="onSharePost($event)"
+          (viewProfile)="onViewProfile($event)">
+        </app-post-list>
 
-          <!-- Load more -->
-          <div class="text-center" *ngIf="hasMore">
-            <button 
-              class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              (click)="loadMorePosts()"
-              [disabled]="isLoadingMore">
-              <i class="fas fa-spinner fa-spin" *ngIf="isLoadingMore"></i>
-              <i class="fas fa-chevron-down" *ngIf="!isLoadingMore"></i>
-              <span>{{ isLoadingMore ? 'Cargando más posts...' : 'Ver más posts' }}</span>
-            </button>
-          </div>
+        <!-- Load more -->
+        <div class="text-center" *ngIf="hasMore">
+          <button 
+            class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            (click)="loadMorePosts()"
+            [disabled]="isLoadingMore">
+            <i class="fas fa-spinner fa-spin" *ngIf="isLoadingMore"></i>
+            <i class="fas fa-chevron-down" *ngIf="!isLoadingMore"></i>
+            <span>{{ isLoadingMore ? 'Cargando más posts...' : 'Ver más posts' }}</span>
+          </button>
+        </div>
 
-          <!-- End of feed -->
-          <div class="text-center py-8" *ngIf="!hasMore && posts.length > 5">
-            <div class="text-green-500 text-3xl mb-2">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <p class="text-gray-600 mb-4">¡Ya viste todos los posts!</p>
-            <button 
-              class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              (click)="refreshFeed()">
-              <i class="fas fa-sync-alt"></i> 
-              Actualizar feed
-            </button>
+        <!-- End of feed -->
+        <div class="text-center py-8" *ngIf="!hasMore && posts.length > 5">
+          <div class="text-green-500 text-3xl mb-2">
+            <i class="fas fa-check-circle"></i>
           </div>
+          <p class="text-gray-600 mb-4">¡Ya viste todos los posts!</p>
+          <button 
+            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            (click)="refreshFeed()">
+            <i class="fas fa-sync-alt"></i> 
+            Actualizar feed
+          </button>
         </div>
       </main>
 
@@ -225,9 +201,9 @@
           </h3>
           <div class="space-y-3">
             <div class="flex justify-between items-center py-2 hover:bg-gray-50 rounded-lg px-2 cursor-pointer transition-colors" 
-                 *ngFor="let topic of ['#TechNews', '#Angular', '#WebDev', '#AI', '#Innovation']; let i = index">
-              <span class="font-medium text-blue-600">{{ topic }}</span>
-              <span class="text-sm text-gray-500">{{ (Math.random() * 100 + 10) | number:'1.0-0' }}K posts</span>
+                 *ngFor="let topic of trendingTopics">
+              <span class="font-medium text-blue-600">{{ topic.name }}</span>
+              <span class="text-sm text-gray-500">{{ topic.posts }}K posts</span>
             </div>
           </div>
         </div>

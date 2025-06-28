@@ -22,4 +22,4 @@ export interface PostListConfig {
 }
 
 // Re-export desde domain para facilitar el uso
-export { FeedPost } from '../../domain/entities/feed.interface';
+export { FeedPost, Comment, CreateCommentData, CommentsResponse } from '../../domain/entities/feed.interface';

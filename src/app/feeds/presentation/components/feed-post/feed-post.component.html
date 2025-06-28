@@ -1,37 +1,38 @@
-<div class="post-card">
+<div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
   <!-- Post Header -->
-  <div class="post-header">
-    <div class="author-info" (click)="navigateToProfile()">
-      <div class="author-avatar">
-        <img 
-          [src]="post.author.profile_picture || '/assets/profile.png'" 
-          [alt]="post.author.first_name + ' ' + post.author.last_name"
-          onerror="this.src='/assets/profile.png'">
-      </div>
-      <div class="author-details">
-        <h4 class="author-name">
+  <div class="flex items-center p-4">
+    <div class="flex-shrink-0 cursor-pointer" (click)="navigateToProfile()">
+      <img 
+        [src]="post.author.profile_picture || '/assets/profile.png'" 
+        [alt]="post.author.first_name + ' ' + post.author.last_name"
+        class="w-10 h-10 rounded-full object-cover"
+        onerror="this.src='/assets/profile.png'">
+    </div>
+    
+    <div class="ml-3 flex-1 cursor-pointer" (click)="navigateToProfile()">
+      <div class="flex items-center">
+        <h3 class="text-sm font-semibold text-gray-900 hover:underline">
           {{ post.author.first_name }} {{ post.author.last_name }}
-        </h4>
-        <span class="author-username">@{{ post.author.username }}</span>
-        <span class="post-date">{{ formattedDate }}</span>
+        </h3>
       </div>
+      <p class="text-xs text-gray-500">{{ formattedDate }}</p>
     </div>
 
     <!-- Post Actions Menu -->
-    <div class="post-menu" *ngIf="canEditPost">
-      <button class="btn-menu" type="button" data-bs-toggle="dropdown">
+    <div class="relative" *ngIf="canEditPost">
+      <button class="p-2 text-gray-400 hover:text-gray-600 transition-colors" type="button" data-bs-toggle="dropdown">
         <i class="fas fa-ellipsis-h"></i>
       </button>
       <ul class="dropdown-menu">
         <li>
-          <button class="dropdown-item edit-item" type="button">
-            <i class="fas fa-edit"></i>
+          <button class="dropdown-item" type="button">
+            <i class="fas fa-edit mr-2"></i>
             Editar
           </button>
         </li>
         <li>
-          <button class="dropdown-item delete-item" type="button" (click)="onDeleteClick()">
-            <i class="fas fa-trash"></i>
+          <button class="dropdown-item" type="button" (click)="onDeleteClick()">
+            <i class="fas fa-trash mr-2"></i>
             Eliminar
           </button>
         </li>
@@ -40,48 +41,50 @@
   </div>
 
   <!-- Post Content -->
-  <div class="post-content">
-    <div class="post-text">
+  <div class="px-4 pb-3">
+    <div class="text-sm text-gray-800 leading-relaxed">
       <p [innerHTML]="displayContent"></p>
       
       <!-- Show More/Less Button -->
       <button 
         *ngIf="shouldTruncateContent"
-        class="btn-show-more"
+        class="text-blue-600 hover:text-blue-800 font-medium text-sm mt-2 transition-colors"
         (click)="toggleFullContent()">
         {{ showFullContent ? 'Ver menos' : 'Ver más' }}
       </button>
     </div>
 
     <!-- Post Tags -->
-    <div class="post-tags" *ngIf="post.tags && post.tags.length > 0">
-      <span class="tag" *ngFor="let tag of post.tags">
+    <div class="mt-3 flex flex-wrap gap-2" *ngIf="post.tags && post.tags.length > 0">
+      <span 
+        *ngFor="let tag of post.tags"
+        class="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-md font-medium">
         #{{ tag }}
       </span>
     </div>
 
     <!-- Post Files -->
-    <div class="post-files" *ngIf="post.files && post.files.length > 0">
-      <div class="files-grid" [class.single-file]="post.files.length === 1">
+    <div class="mt-3" *ngIf="post.files && post.files.length > 0">
+      <div class="grid gap-2" [class.grid-cols-1]="post.files.length === 1" [class.grid-cols-2]="post.files.length > 1">
         <div 
-          class="file-item" 
           *ngFor="let file of post.files"
-          [class]="getFileType(file)">
+          class="relative rounded-lg overflow-hidden border border-gray-200">
           
           <!-- Image Files -->
-          <div *ngIf="getFileType(file) === 'image'" class="image-container">
+          <div *ngIf="getFileType(file) === 'image'" class="cursor-pointer" (click)="openFile(file)">
             <img 
               [src]="file.file" 
               [alt]="'Imagen del post'"
-              (click)="openFile(file)"
+              class="w-full h-48 object-cover hover:opacity-95 transition-opacity"
               loading="lazy">
           </div>
 
           <!-- Video Files -->
-          <div *ngIf="getFileType(file) === 'video'" class="video-container">
+          <div *ngIf="getFileType(file) === 'video'">
             <video 
               [src]="file.file" 
               controls 
+              class="w-full h-48 object-cover"
               preload="metadata">
               Tu navegador no soporta videos.
             </video>
@@ -89,19 +92,25 @@
 
           <!-- Other Files -->
           <div *ngIf="getFileType(file) !== 'image' && getFileType(file) !== 'video'" 
-               class="file-preview">
-            <div class="file-icon">
-              <i [class]="getFileIcon(getFileType(file))"></i>
+               class="p-4 bg-gray-50 flex items-center justify-between">
+            <div class="flex items-center">
+              <i [class]="getFileIcon(getFileType(file))" class="text-2xl text-gray-500 mr-3"></i>
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ file.file.split('/').pop() }}</p>
+                <p class="text-xs text-gray-500">{{ formatFileSize(file.file_size) }}</p>
+              </div>
             </div>
-            <div class="file-info">
-              <span class="file-name">{{ file.file.split('/').pop() }}</span>
-              <span class="file-size">{{ formatFileSize(file.file_size) }}</span>
-            </div>
-            <div class="file-actions">
-              <button class="btn-file-action" (click)="openFile(file)" title="Ver">
+            <div class="flex gap-2">
+              <button 
+                class="p-2 text-gray-500 hover:text-blue-600 transition-colors" 
+                (click)="openFile(file)" 
+                title="Ver">
                 <i class="fas fa-eye"></i>
               </button>
-              <button class="btn-file-action" (click)="downloadFile(file)" title="Descargar">
+              <button 
+                class="p-2 text-gray-500 hover:text-green-600 transition-colors" 
+                (click)="downloadFile(file)" 
+                title="Descargar">
                 <i class="fas fa-download"></i>
               </button>
             </div>
@@ -111,51 +120,44 @@
     </div>
   </div>
 
-  <!-- Post Stats -->
-  <div class="post-stats">
-    <div class="stats-info">
-      <span class="stat-item" *ngIf="post.likes_count > 0">
-        <i class="fas fa-heart text-danger"></i>
-        {{ post.likes_count }} 
-        {{ post.likes_count === 1 ? 'like' : 'likes' }}
-      </span>
-      <span class="stat-item" *ngIf="post.comments_count > 0">
-        <i class="fas fa-comment text-primary"></i>
-        {{ post.comments_count }} 
-        {{ post.comments_count === 1 ? 'comentario' : 'comentarios' }}
-      </span>
+  <!-- Post Stats and Actions -->
+  <div class="border-t border-gray-100">
+    <!-- Stats -->
+    <div class="px-4 py-2" *ngIf="post.likes_count > 0 || post.comments_count > 0">
+      <div class="flex items-center text-xs text-gray-500 space-x-4">
+        <span *ngIf="post.likes_count > 0" class="flex items-center">
+          <i class="fas fa-heart text-red-500 mr-1"></i>
+          {{ post.likes_count }}
+        </span>
+        <span *ngIf="post.comments_count > 0" class="flex items-center">
+          {{ post.comments_count }} {{ post.comments_count === 1 ? 'comentario' : 'comentarios' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center border-t border-gray-100">
+      <button 
+        class="flex-1 flex items-center justify-center py-2 px-4 text-sm font-medium transition-colors hover:bg-gray-50"
+        [class.text-red-600]="post.is_liked"
+        [class.text-gray-700]="!post.is_liked"
+        [disabled]="isLiking"
+        (click)="onLikeClick()">
+        <i [class]="post.is_liked ? 'fas fa-heart' : 'far fa-heart'" class="mr-2"></i>
+        <span>{{ post.is_liked ? 'Te gusta' : 'Me gusta' }}</span>
+      </button>
+
+      <button 
+        class="flex-1 flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 border-l border-gray-100"
+        (click)="toggleComments()">
+        <i class="far fa-comment mr-2"></i>
+        <span>Comentar</span>
+      </button>
     </div>
   </div>
 
-  <!-- Post Actions -->
-  <div class="post-actions">
-    <button 
-      class="action-btn like-btn"
-      [class.liked]="post.is_liked"
-      [disabled]="isLiking"
-      (click)="onLikeClick()">
-      <i class="fas fa-heart" *ngIf="post.is_liked"></i>
-      <i class="far fa-heart" *ngIf="!post.is_liked"></i>
-      <span>{{ post.is_liked ? 'Te gusta' : 'Me gusta' }}</span>
-    </button>
-
-    <button 
-      class="action-btn comment-btn"
-      (click)="toggleComments()">
-      <i class="far fa-comment"></i>
-      <span>Comentar</span>
-    </button>
-
-    <button 
-      class="action-btn share-btn"
-      (click)="onShareClick()">
-      <i class="fas fa-share"></i>
-      <span>Compartir</span>
-    </button>
-  </div>
-
   <!-- Comments Section -->
-  <div class="comments-section" *ngIf="showComments">
+  <div class="border-t border-gray-100 bg-gray-50" *ngIf="showComments">
     <app-post-comments 
       [postId]="post.id"
       [commentsCount]="post.comments_count">

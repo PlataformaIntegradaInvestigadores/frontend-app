@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { FeedService } from '../../domain/services/feed.service';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { 
   FeedPost, 
   FeedResponse, 
@@ -34,14 +36,29 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   // UI State
   searchQuery = '';
   selectedTags: string[] = [];
+  currentUserId: string | null = null;
+
+  // Trending topics with static post counts
+  trendingTopics = [
+    { name: '#TechNews', posts: 45 },
+    { name: '#Angular', posts: 62 },
+    { name: '#WebDev', posts: 38 },
+    { name: '#AI', posts: 71 },
+    { name: '#Innovation', posts: 29 }
+  ];
 
   // Exponer Math para el template
   Math = Math;
 
-  constructor(private feedService: FeedService) { }
+  constructor(
+    private feedService: FeedService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     console.log('FeedPageComponent: Inicializando componente');
+    this.currentUserId = this.authService.getCurrentUserId();
     this.loadFeed();
     this.loadUserStats();
   }
@@ -310,5 +327,22 @@ export class FeedPageComponent implements OnInit, OnDestroy {
    */
   trackByPostId(index: number, post: FeedPost): string {
     return post.id;
+  }
+
+  /**
+   * Maneja compartir un post
+   */
+  onSharePost(post: FeedPost): void {
+    // TODO: Implementar funcionalidad de compartir
+    console.log('Compartir post:', post);
+    // Aquí se puede agregar lógica para compartir en redes sociales, copiar enlace, etc.
+  }
+
+  /**
+   * Maneja navegación al perfil del autor
+   */
+  onViewProfile(userId: string): void {
+    console.log('Ver perfil del usuario:', userId);
+    this.router.navigate(['/profile', userId]);
   }
 }

@@ -46,13 +46,14 @@ export interface Comment {
   id: string;
   content: string;
   author: FeedAuthor;
-  post: string;
-  parent?: string;
-  created_at: Date;
-  updated_at: Date;
+  parent_comment?: string;
   likes_count: number;
   replies_count: number;
-  is_liked?: boolean;
+  user_has_liked: boolean;
+  is_deleted: boolean;
+  created_at: Date;
+  updated_at: Date;
+  replies?: Comment[];
 }
 
 /**
@@ -108,4 +109,22 @@ export interface UserFeedStats {
   engagement_rate: number;
   followers_count: number;
   following_count: number;
+}
+
+/**
+ * Representa los datos para crear un comentario
+ */
+export interface CreateCommentData {
+  content: string;
+  parent_comment?: string;
+}
+
+/**
+ * Representa la respuesta de comentarios del API
+ */
+export interface CommentsResponse {
+  count: number;
+  next?: string;
+  previous?: string;
+  results: Comment[];
 }

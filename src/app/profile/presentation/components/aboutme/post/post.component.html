@@ -11,13 +11,13 @@
   </div>
 
   <!-- Formulario para crear post (solo si es el propio perfil) -->
-  <div *ngIf="user?.isOwnProfile && isLoggedIn">
+  <div *ngIf="user.isOwnProfile && isLoggedIn">
     <app-post-creator
       [placeholder]="'Comparte tu conocimiento y experiencias académicas...'"
       [buttonText]="'Publicar en tu perfil'"
       [showOptions]="true"
-      [userAvatar]="user?.profile_picture || '/assets/profile.png'"
-      [userName]="user?.first_name + ' ' + user?.last_name"
+      [userAvatar]="user.profile_picture || '/assets/profile.png'"
+      [userName]="user.first_name + ' ' + user.last_name"
       [isLoading]="isSubmittingPost"
       (postSubmitted)="onPostSubmitted($event)">
     </app-post-creator>
