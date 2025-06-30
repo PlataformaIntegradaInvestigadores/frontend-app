@@ -162,11 +162,13 @@
   </div>
   <button
     *ngIf="isOwnProfile"
-    class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
+    class="absolute top-4 right-4 md:right-8 flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm group"
     (click)="toggleForm()"
   >
-    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2" />
-    <span class="hidden md:inline">Edit Profile</span>
+    <svg class="w-4 h-4 mr-2 text-gray-500 group-hover:text-gray-700 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+    </svg>
+    <span class="font-medium">Edit Profile</span>
   </button>
   <div
     *ngIf="showForm"
@@ -243,14 +245,20 @@
                 </div>
               </div>
             </div>
-            <!-- Botón -->
+            <!-- Botón VIEW IN SCOPUS -->
             <div class="flex justify-end">
-              <a
+              <button
                 (click)="goToScopus(authorCentinela.scopus_id)"
-                class="flex justify-center items-center  h-10 w-40  rounded-md color-text transition duration-300 text-center"
+                class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-lg shadow-md hover:from-orange-600 hover:to-red-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 group"
               >
-                VIEW IN SCOPUS
-              </a>
+                <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span class="tracking-wide">VIEW IN SCOPUS</span>
+                <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -278,11 +286,13 @@
 
   <button
     *ngIf="isOwnProfile"
-    class="absolute top-4 right-8 flex items-center px-2 py-1 bg-transparent text-gray-600 border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-800 focus:outline-none"
+    class="absolute top-4 right-4 md:right-8 flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm group"
     (click)="toggleForm()"
   >
-    <img src="assets/pencil-solid.svg" alt="Edit" class="w-4 h-4 md:mr-2" />
-    <span class="hidden md:inline">Edit Profile</span>
+    <svg class="w-4 h-4 mr-2 text-gray-500 group-hover:text-gray-700 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+    </svg>
+    <span class="font-medium">Edit Profile</span>
   </button>
   <div
     *ngIf="showForm"

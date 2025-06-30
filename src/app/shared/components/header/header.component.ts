@@ -20,7 +20,10 @@ export class HeaderComponent {
   users: User[] = [];
   filteredUsers: User[] = [];
   searchQuery: string = '';
-  searchOpen: boolean = false;  // Variable para controlar la apertura del buscador  // FontAwesome icons
+  searchOpen: boolean = false;  // Variable para controlar la apertura del buscador
+  userMenuOpen: boolean = false; // Variable para controlar la apertura del menú de usuario
+
+  // FontAwesome icons
   faSearch = faSearch;
   faHome = faHome;
   faBell = faBell;
@@ -60,13 +63,34 @@ export class HeaderComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    if (!target.closest('.relative')) {
+    
+    // Close search dropdown if clicking outside
+    if (!target.closest('.search-container')) {
       this.closeSearch();
+    }
+    
+    // Close user menu dropdown if clicking outside the user dropdown container
+    const userDropdownContainer = target.closest('.nav-item.relative');
+    if (!userDropdownContainer && this.userMenuOpen) {
+      this.userMenuOpen = false;
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Escape' && this.userMenuOpen) {
+      this.userMenuOpen = false;
+      event.preventDefault();
     }
   }
 
   @Input({ required: false })
   showInformation: boolean = false;
+
+  // Check if current route is jobs
+  get isJobsActive(): boolean {
+    return this.router.url.includes('/jobs');
+  }
 
   ngOnInit(): void {
     this.showLogin = !this.authService.isLoggedIn();
@@ -163,5 +187,9 @@ export class HeaderComponent {
   getUserType(): string {
     const userType = this.authService.getUserType();
     return userType === 'company' ? 'Company' : 'Researcher';
+  }
+
+  toggleUserMenu() {
+    this.userMenuOpen = !this.userMenuOpen;
   }
 }

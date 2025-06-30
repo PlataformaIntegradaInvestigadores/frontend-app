@@ -19,7 +19,7 @@
   </div>
 </nav>
 <nav [ngClass]="{'hidden': !navOpen, 'block': navOpen, 'md:flex': true}"
-  class="bg-white/95 backdrop-blur-md border-t border-white/20 shadow-sm">
+  class="bg-white/95 backdrop-blur-md border-t border-white/20 shadow-sm" style="z-index: 1000; position: relative;">
   <div class="container mx-auto max-w-screen-xl px-4 py-3">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
 
@@ -40,7 +40,7 @@
 
         <!-- Job Posting (New) -->
         <div class="nav-item" *ngIf="!showLogin">
-          <a routerLinkActive="active" class="nav-link" (click)="navigateToJobs()">
+          <a class="nav-link" (click)="navigateToJobs()" [class.active]="isJobsActive">
             <fa-icon [icon]="faBriefcase" class="nav-icon"></fa-icon>
             <span>Jobs</span>
           </a>
@@ -84,18 +84,44 @@
 
       <!-- Right Navigation Items -->
       <div class="flex flex-col md:flex-row md:items-center md:space-x-3" [ngClass]="{'md:ml-auto': showInformation}">
-        <!-- Profile -->
-        <div class="nav-item" *ngIf="!showLogin">
-          <a class="nav-link cursor-pointer" (click)="profile()">
-            <fa-icon [icon]="faUser" class="nav-icon"></fa-icon>
-            <span>Profile</span>
-          </a>
-        </div> <!-- Auth Buttons -->
-        <div class="nav-item" *ngIf="!showLogin">
-          <button class="btn-logout" (click)="logout()">
-            <fa-icon [icon]="faSignOutAlt" class="w-4 h-4 mr-2"></fa-icon>
-            <span>Logout</span>
+        <!-- User Dropdown -->
+        <div class="nav-item relative" *ngIf="!showLogin">
+          <button class="nav-link-user-button" 
+                  (click)="toggleUserMenu()" 
+                  [class.active]="userMenuOpen"
+                  [attr.aria-expanded]="userMenuOpen"
+                  [attr.aria-haspopup]="true"
+                  aria-label="User menu">
+            <div class="user-info-display">
+              <fa-icon [icon]="faUser" class="user-icon"></fa-icon>
+              <span class="user-type-text">{{ getUserType() }}</span>
+            </div>
+            <fa-icon [icon]="faChevronDown" class="chevron-icon" 
+                     [class.rotate-180]="userMenuOpen"></fa-icon>
           </button>
+          
+          <!-- Dropdown Menu -->
+          <div *ngIf="userMenuOpen" class="dropdown-menu" role="menu">
+            <a class="dropdown-item" 
+               (click)="profile(); userMenuOpen = false"
+               role="menuitem"
+               tabindex="0">
+              <div class="dropdown-item-content">
+                <fa-icon [icon]="faUser" class="dropdown-icon"></fa-icon>
+                <span class="dropdown-text">View Profile</span>
+              </div>
+            </a>
+            <div class="dropdown-separator"></div>
+            <button class="dropdown-item logout-item" 
+                    (click)="logout(); userMenuOpen = false"
+                    role="menuitem"
+                    tabindex="0">
+              <div class="dropdown-item-content">
+                <fa-icon [icon]="faSignOutAlt" class="dropdown-icon logout-icon"></fa-icon>
+                <span class="dropdown-text">Logout</span>
+              </div>
+            </button>
+          </div>
         </div>
 
         <div class="nav-item auth-buttons" *ngIf="showLogin">
