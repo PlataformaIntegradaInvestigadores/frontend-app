@@ -29,6 +29,31 @@ export interface Job {
   company: string; // ID de la empresa
   company_info: CompanyInfo;
   applications_count: number;
+  has_applied?: boolean; // Indica si el usuario actual ya postuló
+  user_application?: UserApplication; // Información de la postulación del usuario si existe
+  recent_applications?: RecentApplication[]; // Postulaciones recientes para empresas
+}
+
+export interface UserApplication {
+  id: number;
+  status: string;
+  status_display: string;
+  applied_at: string;
+}
+
+export interface RecentApplication {
+  id: number;
+  status: string;
+  status_display: string;
+  applied_at: string;
+  user_info: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    full_name: string;
+    username: string;
+    profile_picture?: string;
+  };
 }
 
 export interface JobCreate {

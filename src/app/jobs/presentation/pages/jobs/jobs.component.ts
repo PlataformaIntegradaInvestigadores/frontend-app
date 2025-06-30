@@ -121,7 +121,7 @@ export class JobsComponent implements OnInit {
 
   loadMyApplications(): void {
     this.applicationsLoading = true;
-    this.applicationService.getApplications().subscribe({
+    this.applicationService.getUserApplications().subscribe({
       next: (applications: Application[]) => {
         this.applications = applications;
         this.applicationsLoading = false;
@@ -136,8 +136,9 @@ export class JobsComponent implements OnInit {
   selectJob(job: Job): void {
     this.selectedJob = job;
     
-    // Si es empresa y estamos en "my-jobs", cargar aplicaciones para este trabajo
+    // Si es empresa y estamos en "my-jobs", cargar todas las postulaciones
     if (this.isCompany && this.activeTab === 'my-jobs' && job.id) {
+      // Siempre cargar todas las postulaciones para empresas para mantener consistencia de tipos
       this.loadJobApplications(job.id);
     }
   }
@@ -147,13 +148,30 @@ export class JobsComponent implements OnInit {
    */
   loadJobApplications(jobId: number): void {
     this.applicationsLoading = true;
-    this.applicationService.getJobApplications(jobId).subscribe({
+    this.applicationService.getCompanyApplications({ job_id: jobId }).subscribe({
       next: (applications: Application[]) => {
         this.jobApplications = applications;
         this.applicationsLoading = false;
       },
       error: (error: any) => {
         console.error('Error loading job applications:', error);
+        this.applicationsLoading = false;
+      }
+    });
+  }
+
+  /**
+   * Cargar todas las aplicaciones para un trabajo específico (forzar carga)
+   */
+  loadAllJobApplications(jobId: number): void {
+    this.applicationsLoading = true;
+    this.applicationService.getCompanyApplications({ job_id: jobId }).subscribe({
+      next: (applications: Application[]) => {
+        this.jobApplications = applications;
+        this.applicationsLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading all job applications:', error);
         this.applicationsLoading = false;
       }
     });
@@ -181,12 +199,49 @@ export class JobsComponent implements OnInit {
   }
 
   /**
+   * Actualizar el estado de una aplicación usando el endpoint específico de empresa
+   */
+  updateApplicationStatusCompany(applicationId: number, status: string, notes?: string): void {
+    const updateData = {
+      application_id: applicationId,
+      status: status,
+      notes: notes || ''
+    };
+
+    // Usar el endpoint específico para empresas
+    this.applicationService.getCompanyApplications().subscribe({
+      next: () => {
+        // Hacer PUT request para actualizar
+        this.applicationService.updateApplication(applicationId, { 
+          status: status as any, 
+          notes: notes 
+        }).subscribe({
+          next: (updatedApplication: Application) => {
+            // Actualizar la aplicación en la lista
+            const index = this.jobApplications.findIndex(app => app.id === applicationId);
+            if (index !== -1) {
+              this.jobApplications[index] = updatedApplication;
+            }
+          },
+          error: (error: any) => {
+            console.error('Error updating application status:', error);
+            alert('Error al actualizar el estado de la postulación');
+          }
+        });
+      },
+      error: (error: any) => {
+        console.error('Error accessing company applications:', error);
+      }
+    });
+  }
+
+  /**
    * Manejar cambio en el select de estado
    */
   onStatusChange(event: Event, applicationId: number): void {
     const target = event.target as HTMLSelectElement;
     if (target) {
-      this.updateApplicationStatus(applicationId, target.value);
+      this.updateApplicationStatusCompany(applicationId, target.value);
     }
   }
 
@@ -194,9 +249,51 @@ export class JobsComponent implements OnInit {
    * Manejar cuando se envía una aplicación nueva
    */
   onApplicationSubmitted(): void {
+    // Recargar el trabajo seleccionado para actualizar el estado de postulación
+    if (this.selectedJob?.id) {
+      this.jobsService.getJob(this.selectedJob.id).subscribe({
+        next: (updatedJob: Job) => {
+          this.selectedJob = updatedJob;
+          // También actualizar el trabajo en la lista
+          const jobIndex = this.jobs.findIndex(j => j.id === updatedJob.id);
+          if (jobIndex !== -1) {
+            this.jobs[jobIndex] = updatedJob;
+          }
+        },
+        error: (error: any) => {
+          console.error('Error refreshing job after application:', error);
+        }
+      });
+    }
+    
     // Recargar aplicaciones si estamos en la vista de aplicaciones
     if (this.activeTab === 'my-applications') {
       this.loadMyApplications();
+    }
+  }
+
+  /**
+   * Manejar cuando se actualiza el estado de una postulación (vista empresa)
+   */
+  onApplicationStatusUpdated(event: {applicationId: number, status: string}): void {
+    // Actualizar el estado usando el método específico de empresa
+    this.updateApplicationStatusCompany(event.applicationId, event.status);
+    
+    // Recargar el trabajo seleccionado para actualizar las postulaciones recientes
+    if (this.selectedJob?.id) {
+      this.jobsService.getJob(this.selectedJob.id).subscribe({
+        next: (updatedJob: Job) => {
+          this.selectedJob = updatedJob;
+          // También actualizar el trabajo en la lista
+          const jobIndex = this.jobs.findIndex(j => j.id === updatedJob.id);
+          if (jobIndex !== -1) {
+            this.jobs[jobIndex] = updatedJob;
+          }
+        },
+        error: (error: any) => {
+          console.error('Error refreshing job after status update:', error);
+        }
+      });
     }
   }
 
