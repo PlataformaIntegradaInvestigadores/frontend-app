@@ -11,7 +11,10 @@ import { AuthService } from 'src/app/auth/domain/services/auth.service';
 })
 export class JobDetailComponent {
   @Input() job: Job | null = null;
+  @Input() showCompanyActions = false; // Nueva propiedad para mostrar acciones de empresa
   @Output() applicationSubmitted = new EventEmitter<void>();
+  @Output() editJob = new EventEmitter<Job>(); // Nuevo evento para editar trabajo
+  @Output() deleteJob = new EventEmitter<Job>(); // Nuevo evento para eliminar trabajo
   
   showApplicationModal = false;
   applicationData: ApplicationCreate = { job: 0 };
@@ -150,5 +153,23 @@ export class JobDetailComponent {
         }
       }
     });
+  }
+  
+  /**
+   * Emitir evento para editar trabajo
+   */
+  onEditJob(): void {
+    if (this.job) {
+      this.editJob.emit(this.job);
+    }
+  }
+
+  /**
+   * Emitir evento para eliminar trabajo
+   */
+  onDeleteJob(): void {
+    if (this.job) {
+      this.deleteJob.emit(this.job);
+    }
   }
 }

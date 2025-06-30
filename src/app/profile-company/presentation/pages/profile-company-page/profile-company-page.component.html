@@ -151,17 +151,14 @@
                                 </svg>
                                 Acerca de la Empresa
                             </button>
-                            <button (click)="setActiveTab('jobs')" [class.border-blue-500]="activeTab === 'jobs'"
-                                [class.text-blue-600]="activeTab === 'jobs'"
-                                [class.border-transparent]="activeTab !== 'jobs'"
-                                [class.text-gray-500]="activeTab !== 'jobs'"
-                                class="flex items-center gap-2 px-6 py-4 border-b-2 font-medium text-sm hover:text-gray-700 hover:border-gray-300">
+                            <button (click)="goToJobsPage()" 
+                                class="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8">
                                     </path>
                                 </svg>
-                                Trabajos Publicados ({{ companyJobs.length }})
+                                Gestionar Trabajos →
                             </button>
                         </nav>
                     </div>
@@ -182,110 +179,12 @@
                                 <p class="text-gray-700 leading-relaxed">{{ company.industry_display }}</p>
                             </div>
                         </div>
-
-                        <!-- Jobs Tab -->
-                        <div *ngIf="activeTab === 'jobs'" class="space-y-6">
-
-                            <!-- Create Job Button (solo si es el dueño de la empresa) -->
-                            <div class="flex justify-between items-center">
-                                <h3 class="text-lg font-semibold text-gray-900">Trabajos Publicados</h3>
-                                <button *ngIf="isCompanyOwner()" (click)="openCreateJobModal()"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                    Crear Trabajo
-                                </button>
-                            </div>
-
-                            <!-- Jobs List -->
-                            <div *ngIf="companyJobs.length === 0" class="text-center py-12">
-                                <div class="text-gray-400 mb-4">
-                                    <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay trabajos publicados</h3>
-                                <p class="text-gray-600 mb-4">
-                                    <span *ngIf="isCompanyOwner()">Comienza creando tu primera oferta de trabajo.</span>
-                                    <span *ngIf="!isCompanyOwner()">Esta empresa aún no ha publicado trabajos.</span>
-                                </p>
-                                <button *ngIf="isCompanyOwner()" (click)="openCreateJobModal()"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
-                                    Crear Primer Trabajo
-                                </button>
-                            </div>
-
-                            <div *ngIf="companyJobs.length > 0" class="space-y-4">
-                                <div *ngFor="let job of companyJobs; trackBy: trackByJobId"
-                                    class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
-
-                                    <div class="flex justify-between items-start mb-4">
-                                        <div class="flex-1">
-                                            <h4 class="text-lg font-semibold text-gray-900 mb-2">{{ job.title }}</h4>
-                                            <p class="text-gray-600 mb-2">{{ job.location }}</p>
-
-                                            <div class="flex items-center gap-3 mb-3">
-                                                <span
-                                                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                                                    [class]="getJobTypeClasses(job.job_type)">
-                                                    {{ job.job_type_display }}
-                                                </span>
-                                                <span *ngIf="job.is_remote"
-                                                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                                                    🏠 Remoto
-                                                </span>
-                                            </div>
-
-                                            <p class="text-lg font-bold text-green-600">{{ getFormattedSalary(job) }}</p>
-                                        </div>
-
-                                        <div class="flex gap-2" *ngIf="isCompanyOwner()">
-                                            <button class="text-blue-600 hover:text-blue-800 p-2">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                                                    </path>
-                                                </svg>
-                                            </button>
-                                            <button class="text-red-600 hover:text-red-800 p-2">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16">
-                                                    </path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <p class="text-gray-700 text-sm mb-4">{{ job.description | slice:0:150 }}...</p>
-
-                                    <div class="flex justify-between items-center text-sm text-gray-500">
-                                        <span>Publicado: {{ job.created_at | date:'dd/MM/yyyy' }}</span>
-                                        <span>Aplicaciones: {{ job.applications_count || 0 }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Create Job Modal -->
-<app-create-job-modal *ngIf="showCreateJobModal" (jobCreated)="onJobCreated($event)"
-    (closeModal)="closeCreateJobModal()">
-</app-create-job-modal>
 
 <!-- Loading State -->
 <div *ngIf="loading" class="min-h-screen bg-gray-50 flex items-center justify-center">

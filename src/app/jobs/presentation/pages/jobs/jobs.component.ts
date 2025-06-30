@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Job } from 'src/app/jobs/domain/entities/job.interface';
+import { Job, JobCreate } from 'src/app/jobs/domain/entities/job.interface';
 import { Application } from 'src/app/jobs/domain/entities/application.interface';
 import { JobsService } from 'src/app/jobs/domain/services/job.service';
 import { ApplicationService } from 'src/app/jobs/domain/services/application.service';
@@ -22,6 +22,25 @@ export class JobsComponent implements OnInit {
   showNotesModal = false;
   selectedApplication: Application | null = null;
   notesText = '';
+  
+  // Propiedades para CRUD de jobs
+  showJobModal = false;
+  isEditingJob = false;
+  currentJobData: JobCreate = {
+    title: '',
+    description: '',
+    requirements: '',
+    benefits: '',
+    location: '',
+    job_type: 'full_time',
+    experience_level: 'entry',
+    salary_min: undefined,
+    salary_max: undefined,
+    is_remote: false,
+    application_deadline: ''
+  };
+  showDeleteConfirm = false;
+  jobToDelete: Job | null = null;
 
   constructor(
     private jobsService: JobsService,
@@ -218,6 +237,155 @@ export class JobsComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error updating application notes:', error);
+      }
+    });
+  }
+
+  // CRUD Operations for Jobs
+
+  /**
+   * Abrir modal para crear nuevo trabajo
+   */
+  openCreateJobModal(): void {
+    this.isEditingJob = false;
+    this.currentJobData = {
+      title: '',
+      description: '',
+      requirements: '',
+      benefits: '',
+      location: '',
+      job_type: 'full_time',
+      experience_level: 'entry',
+      salary_min: undefined,
+      salary_max: undefined,
+      is_remote: false,
+      application_deadline: ''
+    };
+    this.showJobModal = true;
+  }
+
+  /**
+   * Abrir modal para editar trabajo existente
+   */
+  openEditJobModal(job: Job): void {
+    this.isEditingJob = true;
+    this.currentJobData = {
+      title: job.title,
+      description: job.description,
+      requirements: job.requirements || '',
+      benefits: job.benefits || '',
+      location: job.location,
+      job_type: job.job_type,
+      experience_level: job.experience_level,
+      salary_min: job.salary_min,
+      salary_max: job.salary_max,
+      is_remote: job.is_remote,
+      application_deadline: job.application_deadline ? new Date(job.application_deadline).toISOString().split('T')[0] : ''
+    };
+    this.showJobModal = true;
+  }
+
+  /**
+   * Cerrar modal de trabajo
+   */
+  closeJobModal(): void {
+    this.showJobModal = false;
+    this.isEditingJob = false;
+    this.currentJobData = {
+      title: '',
+      description: '',
+      requirements: '',
+      benefits: '',
+      location: '',
+      job_type: 'full_time',
+      experience_level: 'entry',
+      salary_min: undefined,
+      salary_max: undefined,
+      is_remote: false,
+      application_deadline: ''
+    };
+  }
+
+  /**
+   * Crear o actualizar trabajo
+   */
+  saveJob(): void {
+    if (!this.currentJobData.title || !this.currentJobData.description) {
+      alert('Por favor completa todos los campos obligatorios.');
+      return;
+    }
+
+    const jobData = { ...this.currentJobData };
+    
+    if (this.isEditingJob && this.selectedJob) {
+      // Actualizar trabajo existente
+      this.jobsService.updateJob(this.selectedJob.id!, jobData).subscribe({
+        next: (updatedJob: Job) => {
+          const index = this.jobs.findIndex(job => job.id === updatedJob.id);
+          if (index !== -1) {
+            this.jobs[index] = updatedJob;
+          }
+          if (this.selectedJob?.id === updatedJob.id) {
+            this.selectedJob = updatedJob;
+          }
+          this.closeJobModal();
+          alert('Trabajo actualizado exitosamente!');
+        },
+        error: (error: any) => {
+          console.error('Error updating job:', error);
+          alert('Error al actualizar el trabajo. Por favor intenta de nuevo.');
+        }
+      });
+    } else {
+      // Crear nuevo trabajo
+      this.jobsService.createJob(jobData).subscribe({
+        next: (newJob: Job) => {
+          this.jobs.unshift(newJob);
+          this.closeJobModal();
+          alert('Trabajo creado exitosamente!');
+        },
+        error: (error: any) => {
+          console.error('Error creating job:', error);
+          alert('Error al crear el trabajo. Por favor intenta de nuevo.');
+        }
+      });
+    }
+  }
+
+  /**
+   * Confirmar eliminación de trabajo
+   */
+  confirmDeleteJob(job: Job): void {
+    this.jobToDelete = job;
+    this.showDeleteConfirm = true;
+  }
+
+  /**
+   * Cancelar eliminación
+   */
+  cancelDelete(): void {
+    this.showDeleteConfirm = false;
+    this.jobToDelete = null;
+  }
+
+  /**
+   * Eliminar trabajo
+   */
+  deleteJob(): void {
+    if (!this.jobToDelete?.id) return;
+
+    this.jobsService.deleteJob(this.jobToDelete.id).subscribe({
+      next: () => {
+        this.jobs = this.jobs.filter(job => job.id !== this.jobToDelete!.id);
+        if (this.selectedJob?.id === this.jobToDelete!.id) {
+          this.selectedJob = this.jobs.length > 0 ? this.jobs[0] : null;
+        }
+        this.cancelDelete();
+        alert('Trabajo eliminado exitosamente!');
+      },
+      error: (error: any) => {
+        console.error('Error deleting job:', error);
+        alert('Error al eliminar el trabajo. Por favor intenta de nuevo.');
       }
     });
   }
