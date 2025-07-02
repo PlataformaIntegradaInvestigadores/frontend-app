@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import {
   FeedPost,
@@ -154,17 +154,32 @@ export class FeedService {
   }
 
   /**
-   * Busca posts
+   * Busca posts usando búsqueda vectorial semántica
    */
-  searchPosts(query: string, tags?: string[], author?: string): Observable<FeedPost[]> {
+  searchPosts(query: string, tags?: string[], author?: string, useVectorSearch: boolean = true): Observable<FeedPost[]> {
     const headers = this.getHeaders();
     let params = new HttpParams().set('q', query);
 
-    if (tags) params = params.set('tags', tags.join(','));
+    if (tags && tags.length > 0) params = params.set('tags', tags.join(','));
     if (author) params = params.set('author', author);
+    
+    // Parámetro para habilitar/deshabilitar búsqueda vectorial
+    params = params.set('vector', useVectorSearch.toString());
+    params = params.set('limit', '20');
 
     return this.http.get<FeedPost[]>(`${this.apiUrl}/posts/search/`, { headers, params })
-      .pipe(map(posts => posts.map(post => this.convertPostDates(post))));
+      .pipe(
+        map(posts => posts.map(post => this.convertPostDates(post))),
+        catchError((error) => {
+          console.error('Error en búsqueda de posts:', error);
+          // Si falla la búsqueda vectorial, intentar búsqueda básica
+          if (useVectorSearch && error.status !== 404) {
+            console.log('Fallback a búsqueda básica de texto');
+            return this.searchPosts(query, tags, author, false);
+          }
+          return throwError(() => error);
+        })
+      );
   }
 
   /**

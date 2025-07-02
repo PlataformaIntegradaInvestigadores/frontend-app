@@ -37,15 +37,8 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   searchQuery = '';
   selectedTags: string[] = [];
   currentUserId: string | null = null;
-
-  // Trending topics with static post counts
-  trendingTopics = [
-    { name: '#TechNews', posts: 45 },
-    { name: '#Angular', posts: 62 },
-    { name: '#WebDev', posts: 38 },
-    { name: '#AI', posts: 71 },
-    { name: '#Innovation', posts: 29 }
-  ];
+  isSearching = false;
+  isSearchMode = false;
 
   // Exponer Math para el template
   Math = Math;
@@ -211,41 +204,55 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Busca posts
+   * Busca posts usando búsqueda vectorial semántica
    */
   onSearch(): void {
     if (!this.searchQuery.trim()) {
-      this.loadFeed();
+      this.clearSearch();
       return;
     }
 
-    this.isLoading = true;
+    this.isSearching = true;
+    this.isSearchMode = true;
     this.error = null;
+
+    console.log('🔍 Iniciando búsqueda semántica:', this.searchQuery);
 
     this.feedService.searchPosts(this.searchQuery, this.selectedTags)
       .pipe(
         takeUntil(this.destroy$),
-        finalize(() => this.isLoading = false)
+        finalize(() => {
+          this.isSearching = false;
+          console.log('🔍 Búsqueda completada');
+        })
       )
       .subscribe({
         next: (posts) => {
           this.posts = posts;
           this.hasMore = false;
           this.nextCursor = null;
+          console.log(`🔍 Encontrados ${posts.length} posts para "${this.searchQuery}"`);
+          
+          if (posts.length === 0) {
+            this.error = `No se encontraron posts relacionados con "${this.searchQuery}". Intenta con otros términos.`;
+          }
         },
         error: (error) => {
-          console.error('Error searching posts:', error);
+          console.error('Error en búsqueda:', error);
           this.error = 'No se pudo realizar la búsqueda. Intenta de nuevo.';
         }
       });
   }
 
   /**
-   * Limpia la búsqueda
+   * Limpia la búsqueda y vuelve al feed normal
    */
   clearSearch(): void {
     this.searchQuery = '';
     this.selectedTags = [];
+    this.isSearchMode = false;
+    this.error = null;
+    console.log('🔍 Limpiando búsqueda, volviendo al feed normal');
     this.loadFeed();
   }
 

@@ -12,7 +12,7 @@ import { FingerprintComponent } from './profile/presentation/components/fingerpr
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HomePageModule } from "./search-engine/presentation/home-page/home-page.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {  HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -24,6 +24,7 @@ import { LoginFormComponent } from './auth/presentation/login-form/login-form.co
 import { RegisterFormComponent } from './auth/presentation/register-form/register-form.component';
 import { CompanyRegisterFormComponent } from './auth/presentation/company-register-form/company-register-form.component';
 import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 @NgModule({  declarations: [
     AppComponent,
     NetworkComponent,
@@ -53,7 +54,13 @@ import { RedirectComponent } from './auth/presentation/redirect/redirect.compone
     AboutUsRoutingModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
