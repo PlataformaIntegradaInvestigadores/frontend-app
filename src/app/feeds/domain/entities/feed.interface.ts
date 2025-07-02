@@ -5,6 +5,7 @@ export interface FeedPost {
   id: string;
   content: string;
   files?: PostFile[];
+  poll?: Poll;
   tags: string[];
   is_public: boolean;
   author: FeedAuthor;
@@ -24,6 +25,8 @@ export interface PostFile {
   file: string;
   file_type: string;
   file_size: number;
+  original_filename?: string;
+  alt_text?: string;
   uploaded_at: Date;
 }
 
@@ -49,7 +52,7 @@ export interface Comment {
   parent_comment?: string;
   likes_count: number;
   replies_count: number;
-  user_has_liked: boolean;
+  is_liked?: boolean;
   is_deleted: boolean;
   created_at: Date;
   updated_at: Date;
@@ -64,6 +67,45 @@ export interface Like {
   user: FeedAuthor;
   content_type: string;
   object_id: string;
+  created_at: Date;
+}
+
+/**
+ * Representa una encuesta
+ */
+export interface Poll {
+  id: string;
+  question: string;
+  is_multiple_choice: boolean;
+  is_anonymous: boolean;
+  allows_other: boolean;
+  expires_at?: Date;
+  is_active: boolean;
+  options: PollOption[];
+  total_votes: number;
+  user_voted: boolean;
+  user_votes: string[];
+  created_at: Date;
+  updated_at: Date;
+}
+
+/**
+ * Representa una opción de encuesta
+ */
+export interface PollOption {
+  id: string;
+  text: string;
+  votes_count: number;
+  order: number;
+  user_voted: boolean;
+}
+
+/**
+ * Representa un voto en encuesta
+ */
+export interface PollVote {
+  id: string;
+  option: string;
   created_at: Date;
 }
 
@@ -97,6 +139,10 @@ export interface CreatePostData {
   files?: File[];
   tags?: string[];
   is_public?: boolean;
+  poll_data?: {
+    question: string;
+    options: string[];
+  };
 }
 
 /**

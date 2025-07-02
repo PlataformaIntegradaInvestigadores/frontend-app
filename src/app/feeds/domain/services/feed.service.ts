@@ -123,6 +123,11 @@ export class FeedService {
       });
     }
 
+    // Agregar datos de encuesta si existe
+    if (postData.poll_data) {
+      formData.append('poll_data', JSON.stringify(postData.poll_data));
+    }
+
     return this.http.post<FeedPost>(`${this.apiUrl}/posts/`, formData, { headers })
       .pipe(map(post => this.convertPostDates(post)));
   }
@@ -207,10 +212,8 @@ export class FeedService {
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    return this.http.get<Comment[]>(`${this.apiUrl}/comments/`, {
-      headers,
-      params: params.set('post', postId)
-    }).pipe(map(comments => comments.map(comment => this.convertCommentDates(comment))));
+    return this.http.get<Comment[]>(`${this.apiUrl}/posts/${postId}/comments/`, { headers, params })
+      .pipe(map(comments => comments.map(comment => this.convertCommentDates(comment))));
   }
 
   /**
@@ -218,10 +221,10 @@ export class FeedService {
    */
   createComment(postId: string, content: string, parentId?: string): Observable<Comment> {
     const headers = this.getHeaders();
-    const data: any = { post: postId, content };
-    if (parentId) data.parent = parentId;
+    const data: any = { content };
+    if (parentId) data.parent_comment = parentId;
 
-    return this.http.post<Comment>(`${this.apiUrl}/comments/`, data, { headers })
+    return this.http.post<Comment>(`${this.apiUrl}/posts/${postId}/comments/`, data, { headers })
       .pipe(map(comment => this.convertCommentDates(comment)));
   }
 
@@ -282,6 +285,52 @@ export class FeedService {
       post_id: postId,
       interaction_type: interactionType
     }, { headers });
+  }
+
+  /**
+   * Vota en una encuesta
+   */
+  votePoll(pollId: string, optionIds: string[]): Observable<any> {
+    const headers = this.getHeaders();
+    const body = { option_ids: optionIds };
+
+    return this.http.post(`${this.apiUrl}/polls/${pollId}/vote/`, body, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error voting in poll:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  /**
+   * Elimina el voto en una encuesta
+   */
+  removePollVote(pollId: string): Observable<any> {
+    const headers = this.getHeaders();
+
+    return this.http.delete(`${this.apiUrl}/polls/${pollId}/remove-vote/`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error removing poll vote:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  /**
+   * Obtiene los detalles de una encuesta
+   */
+  getPollDetails(pollId: string): Observable<any> {
+    const headers = this.getHeaders();
+
+    return this.http.get(`${this.apiUrl}/polls/${pollId}/`, { headers })
+      .pipe(
+        catchError(error => {
+          console.error('Error getting poll details:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   /**

@@ -5,6 +5,10 @@ export interface PostCreatorData {
   tags?: string[];
   attachments?: any[];
   files?: File[];
+  poll?: {
+    question: string;
+    options: string[];
+  };
 }
 
 export interface PostInteractionData {

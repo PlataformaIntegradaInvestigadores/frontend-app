@@ -159,25 +159,27 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Maneja el like/unlike de un post
+   * Maneja el toggle de like en un post
    */
   onToggleLike(post: FeedPost): void {
     this.feedService.toggleLikePost(post.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          // Actualizar el post en la lista
-          const index = this.posts.findIndex(p => p.id === post.id);
-          if (index !== -1) {
-            this.posts[index] = {
-              ...this.posts[index],
+          // Actualizar el estado del post en la lista
+          const postIndex = this.posts.findIndex(p => p.id === post.id);
+          if (postIndex !== -1) {
+            this.posts[postIndex] = {
+              ...this.posts[postIndex],
               is_liked: response.liked,
               likes_count: response.likes_count
             };
           }
+          console.log(`Post ${post.id} ${response.liked ? 'liked' : 'unliked'}`);
         },
         error: (error) => {
           console.error('Error toggling like:', error);
+          this.error = 'No se pudo procesar el like. Intenta de nuevo.';
         }
       });
   }
@@ -186,21 +188,55 @@ export class FeedPageComponent implements OnInit, OnDestroy {
    * Maneja la eliminación de un post
    */
   onDeletePost(postId: string): void {
-    if (confirm('¿Estás seguro de que quieres eliminar este post?')) {
-      this.feedService.deletePost(postId)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: () => {
-            // Remover el post de la lista
-            this.posts = this.posts.filter(p => p.id !== postId);
-            this.loadUserStats();
-          },
-          error: (error) => {
-            console.error('Error deleting post:', error);
-            this.error = 'No se pudo eliminar el post. Intenta de nuevo.';
-          }
-        });
+    if (!confirm('¿Estás seguro de que quieres eliminar este post?')) {
+      return;
     }
+
+    this.feedService.deletePost(postId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          // Remover el post de la lista
+          this.posts = this.posts.filter(p => p.id !== postId);
+          this.loadUserStats(); // Actualizar estadísticas
+          console.log(`Post ${postId} eliminado`);
+        },
+        error: (error) => {
+          console.error('Error deleting post:', error);
+          this.error = 'No se pudo eliminar el post. Intenta de nuevo.';
+        }
+      });
+  }
+
+  /**
+   * Maneja la votación en una encuesta
+   */
+  onVotePoll(voteData: {pollId: string, optionId: string, isMultipleChoice: boolean}): void {
+    // Convertir optionId a array ya que el servicio espera un array
+    const optionIds = [voteData.optionId];
+    
+    this.feedService.votePoll(voteData.pollId, optionIds)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          // Actualizar el post con los nuevos datos de la encuesta
+          const postIndex = this.posts.findIndex(p => p.poll?.id === voteData.pollId);
+          if (postIndex !== -1 && this.posts[postIndex].poll) {
+            // El backend retorna la encuesta dentro de response.poll
+            const updatedPoll = response.poll || response;
+            this.posts[postIndex] = {
+              ...this.posts[postIndex],
+              poll: updatedPoll
+            };
+          }
+          console.log(`Voto registrado para encuesta ${voteData.pollId}, opción ${voteData.optionId}`);
+        },
+        error: (error) => {
+          console.error('Error voting in poll:', error);
+          const errorMessage = error.error?.error || 'No se pudo registrar el voto. Intenta de nuevo.';
+          this.error = errorMessage;
+        }
+      });
   }
 
   /**
@@ -301,7 +337,11 @@ export class FeedPageComponent implements OnInit, OnDestroy {
       content: postData.content,
       tags: postData.tags,
       files: postData.files,
-      is_public: true  // Todos los posts serán públicos por defecto
+      is_public: true,  // Todos los posts serán públicos por defecto
+      poll_data: postData.poll ? {
+        question: postData.poll.question,
+        options: postData.poll.options
+      } : undefined
     };
 
     this.feedService.createPost(createPostData)

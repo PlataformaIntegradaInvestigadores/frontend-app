@@ -1,116 +1,177 @@
-import { Component, Input, OnInit } from '@angular/core';
-
-interface Comment {
-  id: string;
-  content: string;
-  created_at: string;
-  author: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    profile_picture?: string;
-  };
-}
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Subject, takeUntil, finalize } from 'rxjs';
+import { CommentService } from '../../../domain/services/comment.service';
+import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { Comment, CreateCommentData } from '../../../domain/entities/feed.interface';
 
 @Component({
   selector: 'app-post-comments',
   templateUrl: './post-comments.component.html',
   styleUrls: ['./post-comments.component.css']
 })
-export class PostCommentsComponent implements OnInit {
+export class PostCommentsComponent implements OnInit, OnDestroy {
   @Input() postId!: string;
   @Input() commentsCount: number = 0;
+  
+  @Output() commentAdded = new EventEmitter<Comment>();
+  @Output() commentsCountUpdated = new EventEmitter<number>();
 
+  private destroy$ = new Subject<void>();
+  
   comments: Comment[] = [];
   newCommentContent = '';
   isLoadingComments = false;
   isSubmittingComment = false;
+  currentUserId: string | null = null;
+  error: string | null = null;
+
+  constructor(
+    private commentService: CommentService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    // For now, we'll use mock data
-    this.loadMockComments();
+    this.currentUserId = this.authService.getCurrentUserId();
+    // Cargar comentarios automáticamente cuando se inicializa el componente
+    this.loadComments();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
-   * Load mock comments for demonstration
+   * Carga los comentarios del post
    */
-  loadMockComments(): void {
-    // Mock comments data
-    this.comments = [
-      {
-        id: '1',
-        content: 'This is a great post! Thanks for sharing.',
-        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-        author: {
-          id: '1',
-          first_name: 'John',
-          last_name: 'Doe',
-          profile_picture: '/assets/profile.png'
+  loadComments(): void {
+    if (!this.postId) return;
+
+    this.isLoadingComments = true;
+    this.error = null;
+
+    this.commentService.getPostComments(this.postId)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isLoadingComments = false)
+      )
+      .subscribe({
+        next: (comments) => {
+          this.comments = comments;
+          console.log(`Comentarios cargados para post ${this.postId}:`, comments.length);
+        },
+        error: (error) => {
+          console.error('Error loading comments:', error);
+          this.error = 'No se pudieron cargar los comentarios.';
         }
-      },
-      {
-        id: '2',
-        content: 'I completely agree with your perspective on this topic.',
-        created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
-        author: {
-          id: '2',
-          first_name: 'Jane',
-          last_name: 'Smith',
-          profile_picture: '/assets/profile.png'
-        }
-      }
-    ];
+      });
   }
 
   /**
-   * Submit a new comment
+   * Envía un nuevo comentario
    */
-  onSubmitComment(): void {
-    if (!this.newCommentContent.trim() || this.isSubmittingComment) {
+  submitComment(): void {
+    if (!this.newCommentContent.trim() || !this.postId) return;
+
+    this.isSubmittingComment = true;
+    this.error = null;
+
+    const commentData: CreateCommentData = {
+      content: this.newCommentContent.trim()
+    };
+
+    this.commentService.createComment(this.postId, commentData)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isSubmittingComment = false)
+      )
+      .subscribe({
+        next: (newComment) => {
+          // Agregar el comentario al principio de la lista
+          this.comments.unshift(newComment);
+          this.newCommentContent = '';
+          this.commentsCount++;
+          
+          // Emitir eventos para notificar al componente padre
+          this.commentAdded.emit(newComment);
+          this.commentsCountUpdated.emit(this.commentsCount);
+          
+          console.log('Comentario creado:', newComment);
+        },
+        error: (error) => {
+          console.error('Error creating comment:', error);
+          this.error = 'No se pudo enviar el comentario. Intenta de nuevo.';
+        }
+      });
+  }
+
+  /**
+   * Alterna el like de un comentario
+   */
+  toggleCommentLike(comment: Comment): void {
+    this.commentService.toggleCommentLike(comment.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          comment.is_liked = response.liked;
+          comment.likes_count = response.likes_count;
+        },
+        error: (error) => {
+          console.error('Error toggling comment like:', error);
+        }
+      });
+  }
+
+  /**
+   * Elimina un comentario
+   */
+  deleteComment(comment: Comment): void {
+    if (!confirm('¿Estás seguro de que quieres eliminar este comentario?')) {
       return;
     }
 
-    this.isSubmittingComment = true;
-
-    // Simulate API call
-    setTimeout(() => {
-      const newComment: Comment = {
-        id: Date.now().toString(),
-        content: this.newCommentContent.trim(),
-        created_at: new Date().toISOString(),
-        author: {
-          id: 'current-user',
-          first_name: 'You',
-          last_name: '',
-          profile_picture: '/assets/profile.png'
+    this.commentService.deleteComment(comment.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.comments = this.comments.filter(c => c.id !== comment.id);
+          this.commentsCount--;
+        },
+        error: (error) => {
+          console.error('Error deleting comment:', error);
+          this.error = 'No se pudo eliminar el comentario.';
         }
-      };
-
-      this.comments.push(newComment);
-      this.newCommentContent = '';
-      this.isSubmittingComment = false;
-      this.commentsCount = this.comments.length;
-    }, 1000);
+      });
   }
 
   /**
-   * Get time ago string
+   * Verifica si el usuario actual puede eliminar el comentario
    */
-  getTimeAgo(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+  canDeleteComment(comment: Comment): boolean {
+    return this.currentUserId === comment.author.id;
+  }
 
-    if (diffInMinutes < 1) {
-      return 'just now';
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes}m`;
-    } else if (diffInMinutes < 1440) {
-      const hours = Math.floor(diffInMinutes / 60);
-      return `${hours}h`;
-    } else {
-      const days = Math.floor(diffInMinutes / 1440);
-      return `${days}d`;
-    }
+  /**
+   * Formatea la fecha de creación del comentario
+   */
+  formatDate(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'ahora';
+    if (diffMins < 60) return `${diffMins}m`;
+    if (diffHours < 24) return `${diffHours}h`;
+    if (diffDays < 7) return `${diffDays}d`;
+    return date.toLocaleDateString();
+  }
+
+  /**
+   * TrackBy function para optimizar el rendering de comentarios
+   */
+  trackByCommentId(index: number, comment: Comment): string {
+    return comment.id;
   }
 }

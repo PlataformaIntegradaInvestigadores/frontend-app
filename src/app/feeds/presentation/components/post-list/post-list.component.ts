@@ -17,6 +17,7 @@ export class PostListComponent {
   @Output() deletePost = new EventEmitter<string>();
   @Output() sharePost = new EventEmitter<FeedPost>();
   @Output() viewProfile = new EventEmitter<string>();
+  @Output() votePoll = new EventEmitter<{pollId: string, optionId: string, isMultipleChoice: boolean}>();
 
   /**
    * Maneja el toggle de like en un post
@@ -44,6 +45,13 @@ export class PostListComponent {
    */
   onViewProfile(userId: string): void {
     this.viewProfile.emit(userId);
+  }
+
+  /**
+   * Maneja la votación en una encuesta
+   */
+  onVotePoll(voteData: {pollId: string, optionId: string, isMultipleChoice: boolean}): void {
+    this.votePoll.emit(voteData);
   }
 
   /**
