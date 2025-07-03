@@ -8,10 +8,32 @@
       onerror="this.src='/assets/profile.png'">
     
     <div class="flex flex-col gap-0.5">
-      <h3 class="text-sm font-semibold text-gray-900 hover:underline leading-tight">
-        {{ post.author.first_name }} {{ post.author.last_name }}
-      </h3>
-      <p class="text-xs text-gray-500 leading-tight">{{ formattedDate }}</p>
+      <div class="flex items-center gap-2">
+        <h3 class="text-sm font-semibold text-gray-900 hover:underline leading-tight">
+          {{ post.author.first_name }} {{ post.author.last_name }}
+        </h3>
+        
+        <!-- Trending Indicator -->
+        <div *ngIf="post.trending_metadata && post.trending_metadata.trending_rank > 5" 
+             class="flex items-center gap-1 bg-gradient-to-r from-orange-50 to-red-50 px-2 py-0.5 rounded-full border border-orange-200">
+          <i class="fas fa-fire text-orange-500 text-xs"></i>
+          <span class="text-xs font-medium text-orange-700">
+            Trending
+          </span>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <p class="text-xs text-gray-500 leading-tight">{{ formattedDate }}</p>
+        
+        <!-- Engagement Score Indicator -->
+        <div *ngIf="post.engagement_score && post.engagement_score > 0" 
+             class="text-xs text-gray-500 flex items-center gap-1" 
+             [title]="getEngagementTooltip()">
+          <i class="fas fa-chart-line"></i>
+          <span>{{ post.engagement_score | number:'1.1-1' }}</span>
+        </div>
+      </div>
     </div>
   </div>
 

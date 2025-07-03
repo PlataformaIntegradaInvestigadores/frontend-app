@@ -3,11 +3,13 @@
   <!-- Stats -->
   <div class="px-4 py-2" *ngIf="post.likes_count > 0 || post.comments_count > 0">
     <div class="flex items-center text-xs text-gray-500 space-x-4">
-      <span *ngIf="post.likes_count > 0" class="flex items-center">
-        <i class="fas fa-heart text-red-500 mr-1"></i>
-        {{ post.likes_count }}
+      <span *ngIf="post.likes_count > 0" class="flex items-center hover:text-red-500 transition-colors cursor-pointer">
+        <i class="fas fa-heart text-red-500 mr-1 animate-pulse"></i>
+        <span class="font-semibold">{{ post.likes_count }}</span>
+        <span class="ml-1">{{ post.likes_count === 1 ? 'persona le gusta esto' : 'personas les gusta esto' }}</span>
       </span>
       <span *ngIf="post.comments_count > 0" class="flex items-center">
+        <i class="far fa-comment text-blue-500 mr-1"></i>
         {{ post.comments_count }} {{ post.comments_count === 1 ? 'comentario' : 'comentarios' }}
       </span>
     </div>
@@ -16,9 +18,9 @@
   <!-- Action Buttons -->
   <div class="flex items-center border-t border-gray-100" *ngIf="showActions">
     <button 
-      class="flex-1 flex items-center justify-center py-3 px-4 text-sm font-medium transition-colors hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
+      class="like-button flex-1 flex items-center justify-center py-3 px-4 text-sm font-medium transition-all duration-200 hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
       [ngClass]="{
-        'text-red-600': post.is_liked,
+        'text-red-600 liked': post.is_liked,
         'text-gray-700': !post.is_liked
       }"
       [disabled]="isLiking"
@@ -26,8 +28,8 @@
       <i [ngClass]="{
         'fas fa-heart': post.is_liked,
         'far fa-heart': !post.is_liked
-      }" class="mr-2"></i>
-      <span>{{ post.is_liked ? 'Te gusta' : 'Me gusta' }}</span>
+      }" class="heart-icon mr-2 text-lg transition-all duration-200"></i>
+      <span class="font-semibold">{{ post.is_liked ? '¡Te gusta!' : 'Me gusta' }}</span>
     </button>
 
     <button 

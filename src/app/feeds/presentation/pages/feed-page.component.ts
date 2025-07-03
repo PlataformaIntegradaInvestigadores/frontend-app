@@ -32,6 +32,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   nextCursor: string | null = null;
   error: string | null = null;
   selectedFilter: 'personalized' | 'trending' | 'latest' = 'personalized';
+  trendingTimeRange: '24h' | '7d' | '30d' = '24h';
   
   // UI State
   searchQuery = '';
@@ -75,6 +76,12 @@ export class FeedPageComponent implements OnInit, OnDestroy {
       feed_type: this.selectedFilter,
       limit: 20
     };
+    
+    // Agregar filtro de tiempo para trending
+    if (this.selectedFilter === 'trending') {
+      filters.time_range = this.trendingTimeRange === '24h' ? 'day' : 
+                          this.trendingTimeRange === '7d' ? 'week' : 'month';
+    }
 
     console.log('FeedPageComponent: Enviando request con filtros:', filters);
 
@@ -114,6 +121,12 @@ export class FeedPageComponent implements OnInit, OnDestroy {
       cursor: this.nextCursor,
       limit: 20
     };
+    
+    // Agregar filtro de tiempo para trending
+    if (this.selectedFilter === 'trending') {
+      filters.time_range = this.trendingTimeRange === '24h' ? 'day' : 
+                          this.trendingTimeRange === '7d' ? 'week' : 'month';
+    }
 
     this.feedService.getFeed(filters)
       .pipe(
@@ -155,6 +168,20 @@ export class FeedPageComponent implements OnInit, OnDestroy {
     if (this.selectedFilter !== filter) {
       this.selectedFilter = filter;
       this.loadFeed();
+    }
+  }
+
+  /**
+   * Cambia el rango de tiempo para trending
+   */
+  setTrendingTimeRange(range: '24h' | '7d' | '30d'): void {
+    if (this.trendingTimeRange !== range) {
+      this.trendingTimeRange = range;
+      
+      // Solo recargar si estamos en modo trending
+      if (this.selectedFilter === 'trending') {
+        this.loadFeed();
+      }
     }
   }
 

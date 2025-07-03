@@ -1,1 +1,161 @@
 /* Estilos específicos de las acciones si son necesarios */
+
+/* Animaciones para el botón de like */
+.like-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.like-button:hover .heart-icon {
+  animation: heartPulse 0.6s ease-in-out;
+}
+
+.like-button.liked .heart-icon {
+  animation: heartPop 0.5s ease-in-out;
+  color: #ef4444 !important;
+}
+
+.like-button.liked:hover .heart-icon {
+  animation: heartBeat 1s ease-in-out infinite;
+}
+
+/* Animación de pulso en hover */
+@keyframes heartPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Animación de pop cuando se da like */
+@keyframes heartPop {
+  0% { 
+    transform: scale(1); 
+    color: #6b7280;
+  }
+  50% { 
+    transform: scale(1.4) rotate(-3deg); 
+    color: #ef4444;
+  }
+  100% { 
+    transform: scale(1); 
+    color: #ef4444;
+  }
+}
+
+/* Animación de latido cuando está liked */
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.05); }
+}
+
+/* Efecto de partículas de corazón */
+.like-button.liked::after {
+  content: '💖';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0;
+  animation: particleHeart 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes particleHeart {
+  0% {
+    font-size: 0;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    font-size: 1.5rem;
+    opacity: 0.8;
+    transform: translate(-50%, -60%) scale(1.2);
+  }
+  100% {
+    font-size: 2rem;
+    opacity: 0;
+    transform: translate(-50%, -80%) scale(0);
+  }
+}
+
+/* Efecto de onda en el botón */
+.like-button.liked {
+  animation: buttonWave 0.3s ease-out;
+}
+
+@keyframes buttonWave {
+  0% { background-color: rgba(239, 68, 68, 0); }
+  50% { background-color: rgba(239, 68, 68, 0.1); }
+  100% { background-color: rgba(239, 68, 68, 0); }
+}
+
+/* Mejorar el hover del botón */
+.like-button:hover {
+  background-color: rgba(239, 68, 68, 0.05) !important;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+.like-button:active {
+  transform: translateY(0);
+}
+
+/* Efecto de corazones flotantes múltiples */
+.like-button.liked::before {
+  content: '❤️';
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  font-size: 0;
+  animation: floatingHeart1 1.2s ease-out forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.like-button.liked .heart-icon::after {
+  content: '💕';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 0;
+  animation: floatingHeart2 1s ease-out 0.2s forwards;
+  pointer-events: none;
+}
+
+@keyframes floatingHeart1 {
+  0% {
+    font-size: 0;
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    font-size: 1rem;
+    opacity: 0.9;
+    transform: translate(-20px, -30px) rotate(-15deg);
+  }
+  100% {
+    font-size: 0.5rem;
+    opacity: 0;
+    transform: translate(-40px, -60px) rotate(-30deg);
+  }
+}
+
+@keyframes floatingHeart2 {
+  0% {
+    font-size: 0;
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    transform: translate(20px, -25px) rotate(15deg);
+  }
+  100% {
+    font-size: 0.3rem;
+    opacity: 0;
+    transform: translate(35px, -50px) rotate(25deg);
+  }
+}

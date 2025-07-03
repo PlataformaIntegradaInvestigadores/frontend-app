@@ -58,6 +58,15 @@ export class PostCommentsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (comments) => {
           this.comments = comments;
+          
+          // Actualizar el contador de comentarios real
+          // Solo emitimos la actualización si los comentarios devueltos son diferentes al contador actual
+          // Pero no cambiamos el contador interno ya que ese es un Input desde el post
+          if (comments.length !== this.commentsCount) {
+            console.log(`Actualizando contador de comentarios de ${this.commentsCount} a ${comments.length}`);
+            this.commentsCountUpdated.emit(comments.length);
+          }
+          
           console.log(`Comentarios cargados para post ${this.postId}:`, comments.length);
         },
         error: (error) => {

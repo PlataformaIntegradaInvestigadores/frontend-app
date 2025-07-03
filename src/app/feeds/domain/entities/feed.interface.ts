@@ -1,4 +1,13 @@
 /**
+ * Representa metadatos de trending para un post
+ */
+export interface TrendingMetadata {
+  hours_old: number;
+  engagement_score: number;
+  trending_rank: number;
+}
+
+/**
  * Representa un post en el feed
  */
 export interface FeedPost {
@@ -15,6 +24,7 @@ export interface FeedPost {
   comments_count: number;
   is_liked?: boolean;
   engagement_score?: number;
+  trending_metadata?: TrendingMetadata;
 }
 
 /**
