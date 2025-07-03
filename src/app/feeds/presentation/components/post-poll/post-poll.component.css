@@ -1,0 +1,10 @@
+/* Progress bar animation */
+.poll-progress-bar {
+  animation: progressBarGrow 0.3s ease;
+}
+
+@keyframes progressBarGrow {
+  from {
+    width: 0;
+  }
+}

@@ -47,6 +47,13 @@ export class FeedPostComponent implements OnInit, OnDestroy {
     this.imageFiles = this.post.files?.filter(file => this.getFileType(file) === 'image') || [];
   }
 
+  ngOnDestroy(): void {
+    // Restore body scroll if lightbox was open
+    if (this.showImageLightbox) {
+      document.body.style.overflow = 'auto';
+    }
+  }
+
   /**
    * Determina si el post puede ser editado/eliminado por el usuario actual
    */
@@ -155,6 +162,14 @@ export class FeedPostComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.isLiking = false;
     }, 1000);
+  }
+
+  /**
+   * Maneja el click en editar
+   */
+  onEditClick(): void {
+    // TODO: Implementar edición de posts
+    console.log('Editar post:', this.post.id);
   }
 
   /**
@@ -355,16 +370,6 @@ export class FeedPostComponent implements OnInit, OnDestroy {
       return `en ${diffHours}h ${diffMins}m`;
     } else {
       return `en ${diffMins}m`;
-    }
-  }
-
-  /**
-   * Limpieza cuando se destruye el componente
-   */
-  ngOnDestroy(): void {
-    // Restore body scroll if lightbox was open
-    if (this.showImageLightbox) {
-      document.body.style.overflow = 'auto';
     }
   }
 }

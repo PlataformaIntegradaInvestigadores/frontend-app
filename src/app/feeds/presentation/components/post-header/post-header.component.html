@@ -1,0 +1,41 @@
+<!-- Post Header -->
+<div class="flex items-center justify-between p-4">
+  <div class="flex items-center space-x-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity" (click)="onProfileClick()">
+    <img 
+      [src]="post.author.profile_picture || '/assets/profile.png'" 
+      [alt]="post.author.first_name + ' ' + post.author.last_name"
+      class="w-12 h-12 rounded-full object-cover flex-shrink-0"
+      onerror="this.src='/assets/profile.png'">
+    
+    <div class="flex flex-col gap-0.5">
+      <h3 class="text-sm font-semibold text-gray-900 hover:underline leading-tight">
+        {{ post.author.first_name }} {{ post.author.last_name }}
+      </h3>
+      <p class="text-xs text-gray-500 leading-tight">{{ formattedDate }}</p>
+    </div>
+  </div>
+
+  <!-- Post Actions Menu -->
+  <div class="relative" *ngIf="canEditPost">
+    <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-all" 
+            type="button" data-bs-toggle="dropdown">
+      <i class="fas fa-ellipsis-h"></i>
+    </button>
+    <ul class="dropdown-menu min-w-[150px] shadow-lg border-0 rounded-lg">
+      <li>
+        <button class="dropdown-item px-4 py-2.5 text-sm transition-colors hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                (click)="onEditClick()">
+          <i class="fas fa-edit mr-2 w-4"></i>
+          Editar
+        </button>
+      </li>
+      <li>
+        <button class="dropdown-item px-4 py-2.5 text-sm transition-colors hover:bg-red-50 hover:text-red-600 w-full text-left" 
+                (click)="onDeleteClick()">
+          <i class="fas fa-trash mr-2 w-4"></i>
+          Eliminar
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>

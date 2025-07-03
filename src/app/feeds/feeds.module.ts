@@ -12,6 +12,14 @@ import { PostCommentsComponent } from './presentation/components/post-comments/p
 import { PostCreatorComponent } from './presentation/components/post-creator/post-creator.component';
 import { PostListComponent } from './presentation/components/post-list/post-list.component';
 
+// Feed Post Subcomponents
+import { PostHeaderComponent } from './presentation/components/post-header/post-header.component';
+import { PostContentComponent } from './presentation/components/post-content/post-content.component';
+import { PostPollComponent } from './presentation/components/post-poll/post-poll.component';
+import { PostFilesComponent } from './presentation/components/post-files/post-files.component';
+import { PostActionsComponent } from './presentation/components/post-actions/post-actions.component';
+import { ImageLightboxComponent } from './presentation/components/image-lightbox/image-lightbox.component';
+
 // Services
 import { FeedService } from './domain/services/feed.service';
 
@@ -24,7 +32,14 @@ import { SharedModule } from '../shared/shared.module';
     FeedPostComponent,
     PostCommentsComponent,
     PostCreatorComponent,
-    PostListComponent
+    PostListComponent,
+    // Feed Post Subcomponents
+    PostHeaderComponent,
+    PostContentComponent,
+    PostPollComponent,
+    PostFilesComponent,
+    PostActionsComponent,
+    ImageLightboxComponent
   ],
   imports: [
     CommonModule,

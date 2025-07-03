@@ -52,11 +52,6 @@ export class JobDetailComponent {
       return false;
     }
     
-    // No puede postularse si el trabajo no está activo
-    if (this.job.status !== 'active') {
-      return false;
-    }
-    
     return true;
   }
 
@@ -68,10 +63,6 @@ export class JobDetailComponent {
     
     if (this.job.has_applied) {
       return 'Ya postulado';
-    }
-    
-    if (this.job.status !== 'active') {
-      return 'No disponible';
     }
     
     return 'Postularse';
@@ -240,9 +231,20 @@ export class JobDetailComponent {
     this.applicationService.updateApplication(applicationId, { 
       status: status as any
     }).subscribe({
-      next: () => {
+      next: (updatedApplication) => {
         // Emitir evento para que el componente padre actualice los datos
-        this.statusUpdated.emit();
+        // Enviamos el ID de la aplicación y el nuevo estado para que se actualice correctamente
+        this.statusUpdated.emit({ applicationId, status });
+        
+        // Actualizar las aplicaciones recientes en el job actual si existen
+        if (this.job && this.job.recent_applications) {
+          const index = this.job.recent_applications.findIndex(app => app.id === applicationId);
+          if (index !== -1) {
+            this.job.recent_applications[index].status = status;
+            this.job.recent_applications[index].status_display = 
+              this.getStatusOptions().find(opt => opt.value === status)?.label || '';
+          }
+        }
       },
       error: (error: any) => {
         console.error('Error updating application status:', error);
@@ -282,7 +284,8 @@ export class JobDetailComponent {
       { value: 'reviewing', label: 'En revisión' },
       { value: 'interviewed', label: 'Entrevistado' },
       { value: 'accepted', label: 'Aceptado' },
-      { value: 'rejected', label: 'Rechazado' }
+      { value: 'rejected', label: 'Rechazado' },
+      { value: 'withdrawn', label: 'Retirado' }
     ];
   }
 
@@ -292,7 +295,9 @@ export class JobDetailComponent {
   onStatusChange(event: Event, applicationId: number): void {
     const target = event.target as HTMLSelectElement;
     if (target) {
-      this.statusUpdated.emit({ applicationId, status: target.value });
+      // Llamar a updateApplicationStatus en lugar de emitir directamente
+      // Esto asegura que la base de datos se actualice correctamente
+      this.updateApplicationStatus(applicationId, target.value);
     }
   }
 

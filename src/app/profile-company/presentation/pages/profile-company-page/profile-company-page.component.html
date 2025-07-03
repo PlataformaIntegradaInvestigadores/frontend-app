@@ -8,7 +8,7 @@
 
         <!-- Edit Profile Button (solo mostrar si es el dueño de la empresa) -->
         <div class="absolute top-4 right-4" *ngIf="isCompanyOwner()">
-            <button
+            <button (click)="openEditModal()"
                 class="bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md transition-colors duration-200 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,14 +30,17 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                     <div class="p-6 text-center">
                         <div class="mx-auto w-32 h-32 mb-4">
-                            <img [src]="company.logo || 'assets/default-company-logo.png'" [alt]="company.company_name + ' logo'"
+                            <img [src]="company.logo || 'assets/default-company-logo.png'"
+                                [alt]="company.company_name + ' logo'"
                                 class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg">
                         </div>
                         <h1 class="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
                             {{ company.company_name }}
                             <span *ngIf="company.is_verified" class="text-blue-500" title="Empresa Verificada">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd"></path>
                                 </svg>
                             </span>
                         </h1>
@@ -66,10 +69,12 @@
                                 <p class="text-sm text-gray-600">Empleados</p>
                             </div>
                             <div *ngIf="!company.founded_year && !company.employee_count">
-                                <p class="text-2xl font-bold text-purple-600">{{ company.date_joined | date:'yyyy' }}</p>
+                                <p class="text-2xl font-bold text-purple-600">{{ company.date_joined | date:'yyyy' }}
+                                </p>
                                 <p class="text-sm text-gray-600">En la plataforma</p>
                             </div>
-                            <div *ngIf="company.is_verified" [class.col-span-2]="!company.founded_year && !company.employee_count">
+                            <div *ngIf="company.is_verified"
+                                [class.col-span-2]="!company.founded_year && !company.employee_count">
                                 <p class="text-2xl font-bold text-green-600">✓</p>
                                 <p class="text-sm text-gray-600">Verificada</p>
                             </div>
@@ -98,7 +103,8 @@
                                 </svg>
                                 <span class="text-gray-700">{{ company.phone }}</span>
                             </div>
-                            <div class="flex items-center gap-2 text-sm" *ngIf="company.website && company.website.trim()">
+                            <div class="flex items-center gap-2 text-sm"
+                                *ngIf="company.website && company.website.trim()">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -125,7 +131,8 @@
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
                                     </path>
                                 </svg>
-                                <span class="text-gray-700">Miembro desde {{ company.date_joined | date:'MMMM yyyy' }}</span>
+                                <span class="text-gray-700">Miembro desde {{ company.date_joined | date:'MMMM yyyy'
+                                    }}</span>
                             </div>
                         </div>
                     </div>
@@ -150,15 +157,6 @@
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                                 Acerca de la Empresa
-                            </button>
-                            <button (click)="goToJobsPage()" 
-                                class="flex items-center gap-2 px-6 py-4 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 01-2 2H10a2 2 0 01-2-2V6m8 0H8">
-                                    </path>
-                                </svg>
-                                Gestionar Trabajos →
                             </button>
                         </nav>
                     </div>
@@ -193,3 +191,8 @@
         <p class="text-gray-600">Cargando perfil de empresa...</p>
     </div>
 </div>
+
+<!-- Edit Profile Modal -->
+<app-edit-company-profile-modal [company]="company" [isVisible]="showEditModal" (onClose)="closeEditModal()"
+    (onSave)="onProfileUpdated($event)">
+</app-edit-company-profile-modal>

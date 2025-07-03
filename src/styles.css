@@ -63,3 +63,28 @@ app-graph {
   overflow: hidden;
   max-width: 100%;
 }
+
+/* ===== MODAL Z-INDEX FIXES ===== */
+/* Asegurar que todos los modales aparezcan por encima del header */
+.modal-backdrop,
+.fixed.inset-0.bg-black.bg-opacity-50,
+.fixed.inset-0.bg-gray-900.bg-opacity-50 {
+  z-index: 100000 !important;
+}
+
+/* Modal containers */
+.modal-container,
+.bg-white.rounded-lg.shadow-xl {
+  z-index: 100001 !important;
+}
+
+/* Estilos específicos para modales que usan clases fijas */
+.fixed.inset-0 {
+  z-index: 100000 !important;
+}
+
+.fixed.inset-0 > .bg-white,
+.fixed.inset-0 > .modal-container,
+.fixed.inset-0 .bg-white.rounded-lg {
+  z-index: 100001 !important;
+}

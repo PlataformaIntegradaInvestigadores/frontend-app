@@ -30,8 +30,8 @@
             <fa-icon [icon]="faHome" class="nav-icon"></fa-icon>
             <span>Home</span>
           </a>
-        </div> <!-- Feeds (New) -->
-        <div class="nav-item" *ngIf="!showLogin">
+        </div>        <!-- Feeds (New) - Solo para investigadores -->
+        <div class="nav-item" *ngIf="!showLogin && isUser()">
           <a routerLink="/feeds" routerLinkActive="active" class="nav-link" (click)="navigateToFeeds()">
             <fa-icon [icon]="faRss" class="nav-icon"></fa-icon>
             <span>Feeds</span>

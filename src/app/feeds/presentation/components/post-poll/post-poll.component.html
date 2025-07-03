@@ -1,0 +1,79 @@
+<!-- Poll Section -->
+<div class="mt-3" *ngIf="poll">
+  <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+    <h4 class="font-medium text-gray-900 mb-3 text-sm">{{ poll.question }}</h4>
+    
+    <div class="space-y-2">
+      <div 
+        *ngFor="let option of poll.options; let i = index"
+        class="relative">
+        
+        <!-- Option Button/Display -->
+        <div 
+          class="cursor-pointer border border-gray-200 rounded-lg p-3 transition-all duration-200"
+          [ngClass]="{
+            'bg-blue-50 border-blue-300': option.user_voted,
+            'hover:bg-gray-100': !poll.user_voted && poll.is_active,
+            'cursor-not-allowed': poll.user_voted || !poll.is_active
+          }"
+          (click)="onOptionClick(option)">
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center flex-1">
+              <!-- Radio/Checkbox icon -->
+              <div class="mr-3">
+                <i *ngIf="!poll.is_multiple_choice" 
+                   [ngClass]="{
+                     'fas fa-circle text-blue-600': option.user_voted,
+                     'far fa-circle text-gray-400': !option.user_voted
+                   }"
+                   class="text-sm"></i>
+                <i *ngIf="poll.is_multiple_choice" 
+                   [ngClass]="{
+                     'fas fa-check-square text-blue-600': option.user_voted,
+                     'far fa-square text-gray-400': !option.user_voted
+                   }"
+                   class="text-sm"></i>
+              </div>
+              
+              <span class="text-sm font-medium text-gray-900 flex-1">{{ option.text }}</span>
+            </div>
+            
+            <!-- Vote count and percentage -->
+            <div class="text-right ml-4" *ngIf="poll.user_voted || !poll.is_active">
+              <div class="text-sm font-medium text-gray-900">{{ option.votes_count }}</div>
+              <div class="text-xs text-gray-500">{{ getOptionPercentage(option) }}%</div>
+            </div>
+          </div>
+          
+          <!-- Progress bar -->
+          <div *ngIf="poll.user_voted || !poll.is_active" 
+               class="mt-2 bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div 
+              class="bg-blue-600 h-2 rounded-full poll-progress-bar transition-all duration-300"
+              [style.width.%]="getOptionPercentage(option)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Poll Footer -->
+    <div class="mt-4 flex items-center justify-between text-xs text-gray-500 flex-col sm:flex-row gap-2 sm:gap-0">
+      <div class="flex items-center space-x-4 flex-wrap">
+        <span>{{ poll.total_votes }} {{ poll.total_votes === 1 ? 'voto' : 'votos' }}</span>
+        <span *ngIf="poll.expires_at">
+          Expira {{ getTimeUntilExpiry() }}
+        </span>
+        <span *ngIf="poll.is_anonymous" class="flex items-center">
+          <i class="fas fa-user-secret mr-1"></i>
+          Anónima
+        </span>
+      </div>
+      
+      <div *ngIf="!poll.is_active" class="text-red-500 font-medium">
+        Encuesta cerrada
+      </div>
+    </div>
+  </div>
+</div>

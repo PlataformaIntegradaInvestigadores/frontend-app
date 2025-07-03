@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
 import { AuthRedirectGuard } from 'src/guards/auth-redirect.guard';
+import { researcherOnlyGuard } from 'src/guards/researcher-only.guard';
 // import { DebateChatComponent } from './consensus/presentation/components/debate-chat/debate-chat.component';
 
 const routerOptions: ExtraOptions = {
@@ -33,7 +34,8 @@ const routes: Routes = [
   },
   {
     path: 'feeds',
-    loadChildren: () => import('src/app/feeds/feeds.module').then(m => m.FeedsModule)
+    loadChildren: () => import('src/app/feeds/feeds.module').then(m => m.FeedsModule),
+    canActivate: [researcherOnlyGuard]
   },
   {
     path: 'jobs/:id',

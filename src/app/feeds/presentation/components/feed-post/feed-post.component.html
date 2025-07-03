@@ -1,238 +1,54 @@
-<div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+<div class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+  
   <!-- Post Header -->
-  <div class="flex items-center p-4">
-    <div class="flex-shrink-0 cursor-pointer" (click)="navigateToProfile()">
-      <img 
-        [src]="post.author.profile_picture || '/assets/profile.png'" 
-        [alt]="post.author.first_name + ' ' + post.author.last_name"
-        class="w-10 h-10 rounded-full object-cover"
-        onerror="this.src='/assets/profile.png'">
-    </div>
-    
-    <div class="ml-3 flex-1 cursor-pointer" (click)="navigateToProfile()">
-      <div class="flex items-center">
-        <h3 class="text-sm font-semibold text-gray-900 hover:underline">
-          {{ post.author.first_name }} {{ post.author.last_name }}
-        </h3>
-      </div>
-      <p class="text-xs text-gray-500">{{ formattedDate }}</p>
-    </div>
-
-    <!-- Post Actions Menu -->
-    <div class="relative" *ngIf="canEditPost">
-      <button class="p-2 text-gray-400 hover:text-gray-600 transition-colors" type="button" data-bs-toggle="dropdown">
-        <i class="fas fa-ellipsis-h"></i>
-      </button>
-      <ul class="dropdown-menu">
-        <li>
-          <button class="dropdown-item" type="button">
-            <i class="fas fa-edit mr-2"></i>
-            Editar
-          </button>
-        </li>
-        <li>
-          <button class="dropdown-item" type="button" (click)="onDeleteClick()">
-            <i class="fas fa-trash mr-2"></i>
-            Eliminar
-          </button>
-        </li>
-      </ul>
-    </div>
-  </div>
+  <app-post-header
+    [post]="post"
+    [canEditPost]="canEditPost"
+    [formattedDate]="formattedDate"
+    (profileClick)="navigateToProfile()"
+    (deleteClick)="onDeleteClick()"
+    (editClick)="onEditClick()">
+  </app-post-header>
 
   <!-- Post Content -->
-  <div class="px-4 pb-3">
-    <div class="text-sm text-gray-800 leading-relaxed">
-      <p [innerHTML]="displayContent"></p>
-      
-      <!-- Show More/Less Button -->
-      <button 
-        *ngIf="shouldTruncateContent"
-        class="text-blue-600 hover:text-blue-800 font-medium text-sm mt-2 transition-colors"
-        (click)="toggleFullContent()">
-        {{ showFullContent ? 'Ver menos' : 'Ver más' }}
-      </button>
-    </div>
+  <app-post-content
+    [content]="post.content"
+    [displayContent]="displayContent"
+    [showFullContent]="showFullContent"
+    [shouldTruncateContent]="shouldTruncateContent"
+    [tags]="post.tags || []"
+    (toggleContent)="toggleFullContent()">
+  </app-post-content>
 
-    <!-- Post Tags -->
-    <div class="mt-3 flex flex-wrap gap-2" *ngIf="post.tags && post.tags.length > 0">
-      <span 
-        *ngFor="let tag of post.tags"
-        class="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-md font-medium">
-        #{{ tag }}
-      </span>
-    </div>
-
-    <!-- Poll Section -->
-    <div class="mt-3" *ngIf="post.poll">
-      <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-        <h4 class="font-medium text-gray-900 mb-3">{{ post.poll.question }}</h4>
-        
-        <div class="space-y-2">
-          <div 
-            *ngFor="let option of post.poll.options; let i = index"
-            class="relative">
-            
-            <!-- Option Button/Display -->
-            <div 
-              class="cursor-pointer border border-gray-200 rounded-lg p-3 transition-all duration-200"
-              [class.bg-blue-50]="option.user_voted"
-              [class.border-blue-300]="option.user_voted"
-              [class.hover:bg-gray-100]="!post.poll.user_voted && post.poll.is_active"
-              [class.cursor-not-allowed]="post.poll.user_voted || !post.poll.is_active"
-              (click)="onPollOptionClick(option)">
-              
-              <div class="flex items-center justify-between">
-                <div class="flex items-center flex-1">
-                  <!-- Radio/Checkbox icon -->
-                  <div class="mr-3">
-                    <i *ngIf="!post.poll.is_multiple_choice" 
-                       [class]="option.user_voted ? 'fas fa-circle text-blue-600' : 'far fa-circle text-gray-400'"
-                       class="text-sm"></i>
-                    <i *ngIf="post.poll.is_multiple_choice" 
-                       [class]="option.user_voted ? 'fas fa-check-square text-blue-600' : 'far fa-square text-gray-400'"
-                       class="text-sm"></i>
-                  </div>
-                  
-                  <span class="text-sm font-medium text-gray-900 flex-1">{{ option.text }}</span>
-                </div>
-                
-                <!-- Vote count and percentage -->
-                <div class="text-right ml-4" *ngIf="post.poll.user_voted || !post.poll.is_active">
-                  <div class="text-sm font-medium text-gray-900">{{ option.votes_count }}</div>
-                  <div class="text-xs text-gray-500">{{ getOptionPercentage(option) }}%</div>
-                </div>
-              </div>
-              
-              <!-- Progress bar -->
-              <div *ngIf="post.poll.user_voted || !post.poll.is_active" 
-                   class="mt-2 bg-gray-200 rounded-full h-2">
-                <div 
-                  class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  [style.width.%]="getOptionPercentage(option)">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Poll Footer -->
-        <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
-          <div class="flex items-center space-x-4">
-            <span>{{ post.poll.total_votes }} {{ post.poll.total_votes === 1 ? 'voto' : 'votos' }}</span>
-            <span *ngIf="post.poll.expires_at">
-              Expira {{ getTimeUntilExpiry() }}
-            </span>
-            <span *ngIf="post.poll.is_anonymous" class="flex items-center">
-              <i class="fas fa-user-secret mr-1"></i>
-              Anónima
-            </span>
-          </div>
-          
-          <div *ngIf="!post.poll.is_active" class="text-red-500 font-medium">
-            Encuesta cerrada
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Post Files -->
-    <div class="mt-3" *ngIf="post.files && post.files.length > 0">
-      <div class="grid gap-2" [class.grid-cols-1]="post.files.length === 1" [class.grid-cols-2]="post.files.length > 1">
-        <div 
-          *ngFor="let file of post.files"
-          class="relative rounded-lg overflow-hidden border border-gray-200">
-          
-          <!-- Image Files -->
-          <div *ngIf="getFileType(file) === 'image'" class="cursor-pointer group relative" (click)="openImageLightbox(file)">
-            <img 
-              [src]="file.file" 
-              [alt]="'Imagen del post'"
-              class="w-full h-48 object-cover group-hover:opacity-95 transition-opacity"
-              loading="lazy">
-            
-            <!-- Overlay hover effect -->
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
-              <i class="fas fa-expand text-white text-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></i>
-            </div>
-          </div>
-
-          <!-- Video Files -->
-          <div *ngIf="getFileType(file) === 'video'">
-            <video 
-              [src]="file.file" 
-              controls 
-              class="w-full h-48 object-cover"
-              preload="metadata">
-              Tu navegador no soporta videos.
-            </video>
-          </div>
-
-          <!-- Other Files -->
-          <div *ngIf="getFileType(file) !== 'image' && getFileType(file) !== 'video'" 
-               class="p-4 bg-gray-50 flex items-center justify-between">
-            <div class="flex items-center">
-              <i [class]="getFileIcon(getFileType(file))" class="text-2xl text-gray-500 mr-3"></i>
-              <div>
-                <p class="text-sm font-medium text-gray-900">{{ file.original_filename || file.file.split('/').pop() }}</p>
-                <p class="text-xs text-gray-500">{{ formatFileSize(file.file_size) }}</p>
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <button 
-                class="p-2 text-gray-500 hover:text-blue-600 transition-colors" 
-                (click)="openFile(file)" 
-                title="Ver">
-                <i class="fas fa-eye"></i>
-              </button>
-              <button 
-                class="p-2 text-gray-500 hover:text-green-600 transition-colors" 
-                (click)="downloadFile(file)" 
-                title="Descargar">
-                <i class="fas fa-download"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- Poll Section -->
+  <div class="px-4">
+    <app-post-poll
+      *ngIf="post.poll"
+      [poll]="post.poll"
+      (optionClick)="onPollOptionClick($event)">
+    </app-post-poll>
   </div>
 
-  <!-- Post Stats and Actions -->
-  <div class="border-t border-gray-100">
-    <!-- Stats -->
-    <div class="px-4 py-2" *ngIf="post.likes_count > 0 || post.comments_count > 0">
-      <div class="flex items-center text-xs text-gray-500 space-x-4">
-        <span *ngIf="post.likes_count > 0" class="flex items-center">
-          <i class="fas fa-heart text-red-500 mr-1"></i>
-          {{ post.likes_count }}
-        </span>
-        <span *ngIf="post.comments_count > 0" class="flex items-center">
-          {{ post.comments_count }} {{ post.comments_count === 1 ? 'comentario' : 'comentarios' }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="flex items-center border-t border-gray-100">
-      <button 
-        class="flex-1 flex items-center justify-center py-2 px-4 text-sm font-medium transition-colors hover:bg-gray-50"
-        [class.text-red-600]="post.is_liked"
-        [class.text-gray-700]="!post.is_liked"
-        [disabled]="isLiking"
-        (click)="onLikeClick()">
-        <i [class]="post.is_liked ? 'fas fa-heart' : 'far fa-heart'" class="mr-2"></i>
-        <span>{{ post.is_liked ? 'Te gusta' : 'Me gusta' }}</span>
-      </button>
-
-      <button 
-        class="flex-1 flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 border-l border-gray-100"
-        (click)="showCommentsSection = !showCommentsSection">
-        <i class="far fa-comment mr-2"></i>
-        <span>Comentar</span>
-      </button>
-    </div>
+  <!-- Post Files -->
+  <div class="px-4">
+    <app-post-files
+      [files]="post.files || []"
+      (imageClick)="openImageLightbox($event)"
+      (fileOpen)="openFile($event)"
+      (fileDownload)="downloadFile($event)">
+    </app-post-files>
   </div>
+
+  <!-- Post Actions -->
+  <app-post-actions
+    [post]="post"
+    [showActions]="showActions"
+    [showComments]="showComments"
+    [isLiking]="isLiking"
+    [showCommentsSection]="showCommentsSection"
+    (likeClick)="onLikeClick()"
+    (commentToggle)="showCommentsSection = !showCommentsSection">
+  </app-post-actions>
 
   <!-- Comments Section -->
   <div class="border-t border-gray-100 bg-gray-50" *ngIf="showCommentsSection">
@@ -245,62 +61,14 @@
   </div>
 </div>
 
-<!-- Image Lightbox Modal -->
-<div 
-  *ngIf="showImageLightbox" 
-  class="lightbox-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
-  (click)="onLightboxOverlayClick($event)"
-  (keydown)="onLightboxKeydown($event)"
-  tabindex="0">
-  
-  <!-- Close Button -->
-  <button 
-    class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
-    (click)="closeImageLightbox()"
-    aria-label="Cerrar">
-    <i class="fas fa-times text-2xl"></i>
-  </button>
-
-  <!-- Previous Button -->
-  <button 
-    *ngIf="imageFiles.length > 1"
-    class="absolute left-4 text-white hover:text-gray-300 transition-colors z-10"
-    (click)="previousImage()"
-    aria-label="Imagen anterior">
-    <i class="fas fa-chevron-left text-3xl"></i>
-  </button>
-
-  <!-- Next Button -->
-  <button 
-    *ngIf="imageFiles.length > 1"
-    class="absolute right-4 text-white hover:text-gray-300 transition-colors z-10"
-    (click)="nextImage()"
-    aria-label="Siguiente imagen">
-    <i class="fas fa-chevron-right text-3xl"></i>
-  </button>
-
-  <!-- Image Container -->
-  <div class="lightbox-content max-w-full max-h-full p-4 flex items-center justify-center">
-    <img 
-      *ngIf="currentImage"
-      [src]="currentImage.file" 
-      [alt]="'Imagen del post'"
-      class="lightbox-image max-w-full max-h-full object-contain shadow-2xl"
-      (click)="$event.stopPropagation()">
-  </div>
-
-  <!-- Image Counter -->
-  <div 
-    *ngIf="imageFiles.length > 1" 
-    class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-3 py-1 rounded-full text-sm">
-    {{ currentImageIndex + 1 }} / {{ imageFiles.length }}
-  </div>
-
-  <!-- Image Info -->
-  <div 
-    *ngIf="currentImage" 
-    class="absolute bottom-4 right-4 text-white bg-black bg-opacity-50 px-3 py-1 rounded text-sm max-w-xs">
-    <div class="font-medium">{{ currentImage.original_filename || 'Imagen' }}</div>
-    <div *ngIf="currentImage.file_size" class="text-xs opacity-75">{{ formatFileSize(currentImage.file_size) }}</div>
-  </div>
-</div>
+<!-- Image Lightbox -->
+<app-image-lightbox
+  [showLightbox]="showImageLightbox"
+  [imageFiles]="imageFiles"
+  [currentImageIndex]="currentImageIndex"
+  (close)="closeImageLightbox()"
+  (previous)="previousImage()"
+  (next)="nextImage()"
+  (overlayClick)="onLightboxOverlayClick($event)"
+  (keydown)="onLightboxKeydown($event)">
+</app-image-lightbox>

@@ -20,8 +20,6 @@ export interface Job {
   experience_display: string;
   salary_min?: number;
   salary_max?: number;
-  status: string;
-  status_display: string;
   is_remote: boolean;
   application_deadline?: string;
   created_at: string;
@@ -66,7 +64,6 @@ export interface JobCreate {
   experience_level: string;
   salary_min?: number;
   salary_max?: number;
-  status?: string;
   is_remote?: boolean;
   application_deadline?: string;
 }

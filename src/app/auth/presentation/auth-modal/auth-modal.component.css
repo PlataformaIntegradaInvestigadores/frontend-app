@@ -1,7 +1,7 @@
 /* ===== MODAL CORE STYLES ===== */
 :host {
   position: relative;
-  z-index: 9999;
+  z-index: 100000 !important;
 }
 
 /* Prevent body scroll when modal is open */

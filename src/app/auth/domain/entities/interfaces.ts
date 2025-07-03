@@ -82,37 +82,3 @@ export interface AuthResponse {
   company_id?: string;
   user_type?: UserType;
 }
-
-/**
- * Opciones de industria para empresas
- */
-export const INDUSTRY_OPTIONS = [
-  { value: 'technology', label: 'Tecnología' },
-  { value: 'health', label: 'Salud' },
-  { value: 'sales', label: 'Ventas' },
-  { value: 'finance', label: 'Finanzas' },
-  { value: 'education', label: 'Educación' },
-  { value: 'manufacturing', label: 'Manufactura' },
-  { value: 'retail', label: 'Comercio' },
-  { value: 'consulting', label: 'Consultoría' },
-  { value: 'energy', label: 'Energía' },
-  { value: 'telecommunications', label: 'Telecomunicaciones' },
-  { value: 'automotive', label: 'Automotriz' },
-  { value: 'food', label: 'Alimentaria' },
-  { value: 'real_estate', label: 'Bienes Raíces' },
-  { value: 'media', label: 'Medios de Comunicación' },
-  { value: 'transportation', label: 'Transporte' },
-  { value: 'other', label: 'Otro' }
-];
-
-/**
- * Opciones de tamaño de empleados
- */
-export const EMPLOYEE_COUNT_OPTIONS = [
-  { value: '1-10', label: '1-10 empleados' },
-  { value: '11-50', label: '11-50 empleados' },
-  { value: '51-200', label: '51-200 empleados' },
-  { value: '201-500', label: '201-500 empleados' },
-  { value: '501-1000', label: '501-1000 empleados' },
-  { value: '1000+', label: 'Más de 1000 empleados' }
-];

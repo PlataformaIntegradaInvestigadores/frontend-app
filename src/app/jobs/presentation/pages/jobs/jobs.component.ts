@@ -276,25 +276,44 @@ export class JobsComponent implements OnInit {
    * Manejar cuando se actualiza el estado de una postulación (vista empresa)
    */
   onApplicationStatusUpdated(event: {applicationId: number, status: string}): void {
-    // Actualizar el estado usando el método específico de empresa
-    this.updateApplicationStatusCompany(event.applicationId, event.status);
+    // Solo actualizar el estado en la vista local sin recargar todo
+    // Esto evita que desaparezcan las aplicaciones
     
-    // Recargar el trabajo seleccionado para actualizar las postulaciones recientes
-    if (this.selectedJob?.id) {
-      this.jobsService.getJob(this.selectedJob.id).subscribe({
-        next: (updatedJob: Job) => {
-          this.selectedJob = updatedJob;
-          // También actualizar el trabajo en la lista
-          const jobIndex = this.jobs.findIndex(j => j.id === updatedJob.id);
-          if (jobIndex !== -1) {
-            this.jobs[jobIndex] = updatedJob;
-          }
-        },
-        error: (error: any) => {
-          console.error('Error refreshing job after status update:', error);
-        }
-      });
+    // Actualizar en jobApplications (vista detallada de aplicaciones)
+    const appIndex = this.jobApplications.findIndex(app => app.id === event.applicationId);
+    if (appIndex !== -1) {
+      this.jobApplications[appIndex].status = event.status as any;
+      this.jobApplications[appIndex].status_display = 
+        this.getStatusDisplayName(event.status);
     }
+    
+    // Actualizar en las recent_applications del trabajo seleccionado
+    if (this.selectedJob && this.selectedJob.recent_applications) {
+      const recentIndex = this.selectedJob.recent_applications.findIndex(app => app.id === event.applicationId);
+      if (recentIndex !== -1) {
+        this.selectedJob.recent_applications[recentIndex].status = event.status as any;
+        this.selectedJob.recent_applications[recentIndex].status_display = 
+          this.getStatusDisplayName(event.status);
+      }
+    }
+    
+    // Opcional: Solo recargar si es necesario para obtener datos actualizados del servidor
+    // pero esto no debería ser necesario para el cambio de estado básico
+  }
+
+  /**
+   * Obtener el nombre de visualización del estado
+   */
+  private getStatusDisplayName(status: string): string {
+    const statusMap: {[key: string]: string} = {
+      'pending': 'Pendiente',
+      'reviewing': 'En revisión', 
+      'interviewed': 'Entrevistado',
+      'accepted': 'Aceptado',
+      'rejected': 'Rechazado',
+      'withdrawn': 'Retirado'
+    };
+    return statusMap[status] || status;
   }
 
   /**

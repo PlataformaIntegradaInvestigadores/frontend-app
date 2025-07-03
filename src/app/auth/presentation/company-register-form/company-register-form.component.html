@@ -78,8 +78,10 @@
                             id="industry"
                             formControlName="industry"
                             class="form-control select-field"
+                            [disabled]="isLoadingChoices"
                         >
-                            <option value="">Select industry (optional)</option>
+                            <option value="" *ngIf="!isLoadingChoices">Select industry (optional)</option>
+                            <option value="" *ngIf="isLoadingChoices">Loading options...</option>
                             <option *ngFor="let industry of industryOptions" [value]="industry.value">
                                 {{ industry.label }}
                             </option>
@@ -93,8 +95,10 @@
                             id="employee_count"
                             formControlName="employee_count"
                             class="form-control select-field"
+                            [disabled]="isLoadingChoices"
                         >
-                            <option value="">Select size (optional)</option>
+                            <option value="" *ngIf="!isLoadingChoices">Select size (optional)</option>
+                            <option value="" *ngIf="isLoadingChoices">Loading options...</option>
                             <option *ngFor="let option of employeeCountOptions" [value]="option.value">
                                 {{ option.label }}
                             </option>

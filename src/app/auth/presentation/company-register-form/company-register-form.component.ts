@@ -2,7 +2,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../domain/services/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
-import { Company, INDUSTRY_OPTIONS, EMPLOYEE_COUNT_OPTIONS } from '../../domain/entities/interfaces';
+import { Company } from '../../domain/entities/interfaces';
+import { CompanyChoicesService, ChoiceOption } from '../../../profile-company/domain/services/company-choices.service';
 
 @Component({
     selector: 'app-company-register-form',
@@ -15,8 +16,9 @@ export class CompanyRegisterFormComponent implements OnInit {
     registerForm: FormGroup = new FormGroup({});
     errorMessages: string[] = [];
     isLoading: boolean = false;
-    industryOptions = INDUSTRY_OPTIONS;
-    employeeCountOptions = EMPLOYEE_COUNT_OPTIONS;
+    industryOptions: ChoiceOption[] = [];
+    employeeCountOptions: ChoiceOption[] = [];
+    isLoadingChoices: boolean = false;
     
     // Step wizard properties
     currentStep: number = 1;
@@ -31,10 +33,17 @@ export class CompanyRegisterFormComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private authService: AuthService
+        private authService: AuthService,
+        private companyChoicesService: CompanyChoicesService
     ) { }
 
-    ngOnInit(): void {        this.registerForm = this.fb.group({
+    ngOnInit(): void {
+        this.initializeForm();
+        this.loadChoices();
+    }
+
+    private initializeForm(): void {
+        this.registerForm = this.fb.group({
             company_name: ['', Validators.required],
             username: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(8)]],
@@ -46,6 +55,24 @@ export class CompanyRegisterFormComponent implements OnInit {
             phone: [''],
             agree_terms: [false, Validators.requiredTrue]
         }, { validators: passwordMatchValidator });
+    }
+
+    private loadChoices(): void {
+        this.isLoadingChoices = true;
+        this.companyChoicesService.getCompanyChoices().subscribe({
+            next: (choices) => {
+                this.industryOptions = choices.industries;
+                this.employeeCountOptions = choices.employee_counts;
+                this.isLoadingChoices = false;
+            },
+            error: (error) => {
+                console.error('Error loading company choices:', error);
+                this.isLoadingChoices = false;
+                // Fallback to empty arrays - could also set default values here
+                this.industryOptions = [];
+                this.employeeCountOptions = [];
+            }
+        });
     }
 
     /**
