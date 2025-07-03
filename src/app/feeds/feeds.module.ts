@@ -18,7 +18,7 @@ import { PostContentComponent } from './presentation/components/post-content/pos
 import { PostPollComponent } from './presentation/components/post-poll/post-poll.component';
 import { PostFilesComponent } from './presentation/components/post-files/post-files.component';
 import { PostActionsComponent } from './presentation/components/post-actions/post-actions.component';
-import { ImageLightboxComponent } from './presentation/components/image-lightbox/image-lightbox.component';
+import { PostEditorComponent } from './presentation/components/post-editor/post-editor.component';
 
 // Services
 import { FeedService } from './domain/services/feed.service';
@@ -39,7 +39,7 @@ import { SharedModule } from '../shared/shared.module';
     PostPollComponent,
     PostFilesComponent,
     PostActionsComponent,
-    ImageLightboxComponent
+    PostEditorComponent
   ],
   imports: [
     CommonModule,

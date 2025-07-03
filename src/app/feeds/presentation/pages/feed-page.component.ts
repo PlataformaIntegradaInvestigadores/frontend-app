@@ -236,6 +236,35 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Maneja la edición de un post
+   */
+  onEditPost(editData: {postId: string, content: string, tags: string[]}): void {
+    console.log('feed-page: onEditPost called with data:', editData);
+    
+    this.feedService.updatePost(editData.postId, {
+      content: editData.content,
+      tags: editData.tags
+    })
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (updatedPost) => {
+        console.log('feed-page: post updated successfully:', updatedPost);
+        // Actualizar el post en la lista
+        const postIndex = this.posts.findIndex(p => p.id === editData.postId);
+        if (postIndex !== -1) {
+          this.posts[postIndex] = updatedPost;
+          console.log('feed-page: post updated in list at index:', postIndex);
+        }
+        console.log(`Post ${editData.postId} editado`);
+      },
+      error: (error) => {
+        console.error('Error updating post:', error);
+        this.error = 'No se pudo editar el post. Intenta de nuevo.';
+      }
+    });
+  }
+
+  /**
    * Maneja la votación en una encuesta
    */
   onVotePoll(voteData: {pollId: string, optionId: string, isMultipleChoice: boolean}): void {

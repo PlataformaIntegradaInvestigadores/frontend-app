@@ -18,6 +18,7 @@ export class PostListComponent {
   @Output() sharePost = new EventEmitter<FeedPost>();
   @Output() viewProfile = new EventEmitter<string>();
   @Output() votePoll = new EventEmitter<{pollId: string, optionId: string, isMultipleChoice: boolean}>();
+  @Output() editPost = new EventEmitter<{postId: string, content: string, tags: string[]}>();
 
   /**
    * Maneja el toggle de like en un post
@@ -45,6 +46,13 @@ export class PostListComponent {
    */
   onViewProfile(userId: string): void {
     this.viewProfile.emit(userId);
+  }
+
+  /**
+   * Maneja la edición de un post
+   */
+  onEditPost(editData: {postId: string, content: string, tags: string[]}): void {
+    this.editPost.emit(editData);
   }
 
   /**

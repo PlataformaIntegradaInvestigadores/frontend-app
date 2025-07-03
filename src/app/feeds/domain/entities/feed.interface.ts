@@ -159,12 +159,22 @@ export interface CreatePostData {
  * Representa las estadísticas del usuario en el feed
  */
 export interface UserFeedStats {
-  posts_count: number;
-  likes_received: number;
-  comments_received: number;
-  engagement_rate: number;
-  followers_count: number;
-  following_count: number;
+  total_posts: number;
+  total_likes_received: number;
+  total_comments_received: number;
+  total_views_received: number;
+  total_shares_received: number;
+  average_engagement: number;
+  most_liked_post?: {
+    id: string;
+    content: string;
+    likes_count: number;
+  };
+  most_commented_post?: {
+    id: string;
+    content: string;
+    comments_count: number;
+  };
 }
 
 /**

@@ -33,7 +33,6 @@
   <div class="px-4">
     <app-post-files
       [files]="post.files || []"
-      (imageClick)="openImageLightbox($event)"
       (fileOpen)="openFile($event)"
       (fileDownload)="downloadFile($event)">
     </app-post-files>
@@ -59,16 +58,12 @@
       (commentsCountUpdated)="onCommentsCountUpdated($event)">
     </app-post-comments>
   </div>
-</div>
 
-<!-- Image Lightbox -->
-<app-image-lightbox
-  [showLightbox]="showImageLightbox"
-  [imageFiles]="imageFiles"
-  [currentImageIndex]="currentImageIndex"
-  (close)="closeImageLightbox()"
-  (previous)="previousImage()"
-  (next)="nextImage()"
-  (overlayClick)="onLightboxOverlayClick($event)"
-  (keydown)="onLightboxKeydown($event)">
-</app-image-lightbox>
+  <!-- Post Editor Modal -->
+  <app-post-editor
+    [post]="post"
+    [showModal]="showEditModal"
+    (close)="onCloseEditModal()"
+    (save)="onSaveEdit($event)">
+  </app-post-editor>
+</div>

@@ -22,15 +22,12 @@ export class FeedPostComponent implements OnInit, OnDestroy {
   @Output() sharePost = new EventEmitter<FeedPost>();
   @Output() viewProfile = new EventEmitter<string>();
   @Output() votePoll = new EventEmitter<{pollId: string, optionId: string, isMultipleChoice: boolean}>();
+  @Output() editPost = new EventEmitter<{postId: string, content: string, tags: string[]}>();
 
   showFullContent = false;
   showCommentsSection = false;
   isLiking = false;
-  
-  // Image lightbox properties
-  showImageLightbox = false;
-  currentImageIndex = 0;
-  imageFiles: any[] = [];
+  showEditModal = false;
 
   constructor(
     private authService: AuthService,
@@ -42,16 +39,10 @@ export class FeedPostComponent implements OnInit, OnDestroy {
     if (this.currentUserId === null) {
       this.currentUserId = this.authService.getCurrentUserId();
     }
-    
-    // Filtrar solo las imágenes para el lightbox
-    this.imageFiles = this.post.files?.filter(file => this.getFileType(file) === 'image') || [];
   }
 
   ngOnDestroy(): void {
-    // Restore body scroll if lightbox was open
-    if (this.showImageLightbox) {
-      document.body.style.overflow = 'auto';
-    }
+    // Component cleanup
   }
 
   /**
@@ -168,8 +159,30 @@ export class FeedPostComponent implements OnInit, OnDestroy {
    * Maneja el click en editar
    */
   onEditClick(): void {
-    // TODO: Implementar edición de posts
-    console.log('Editar post:', this.post.id);
+    console.log('feed-post: onEditClick called, showEditModal =', this.showEditModal);
+    this.showEditModal = true;
+    console.log('feed-post: showEditModal set to', this.showEditModal);
+  }
+
+  /**
+   * Cierra el modal de edición
+   */
+  onCloseEditModal(): void {
+    this.showEditModal = false;
+  }
+
+  /**
+   * Guarda los cambios de edición
+   */
+  onSaveEdit(editData: {content: string, tags: string[]}): void {
+    console.log('feed-post: onSaveEdit called with data:', editData);
+    this.editPost.emit({
+      postId: this.post.id,
+      content: editData.content,
+      tags: editData.tags
+    });
+    this.showEditModal = false;
+    console.log('feed-post: edit event emitted and modal closed');
   }
 
   /**
@@ -204,92 +217,7 @@ export class FeedPostComponent implements OnInit, OnDestroy {
    * Abre el archivo en una nueva ventana
    */
   openFile(file: any): void {
-    if (this.getFileType(file) === 'image') {
-      this.openImageLightbox(file);
-    } else {
-      window.open(file.file, '_blank');
-    }
-  }
-
-  /**
-   * Abre el lightbox de imagen
-   */
-  openImageLightbox(file: any): void {
-    const imageIndex = this.imageFiles.findIndex(img => img.id === file.id);
-    this.currentImageIndex = imageIndex >= 0 ? imageIndex : 0;
-    this.showImageLightbox = true;
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    
-    // Focus the lightbox for keyboard navigation
-    setTimeout(() => {
-      const lightboxElement = document.querySelector('.lightbox-overlay') as HTMLElement;
-      if (lightboxElement) {
-        lightboxElement.focus();
-      }
-    }, 100);
-  }
-
-  /**
-   * Cierra el lightbox de imagen
-   */
-  closeImageLightbox(): void {
-    this.showImageLightbox = false;
-    document.body.style.overflow = 'auto'; // Restore scrolling
-  }
-
-  /**
-   * Navega a la imagen anterior
-   */
-  previousImage(): void {
-    if (this.imageFiles.length <= 1) return;
-    
-    this.currentImageIndex = this.currentImageIndex > 0 
-      ? this.currentImageIndex - 1 
-      : this.imageFiles.length - 1;
-  }
-
-  /**
-   * Navega a la siguiente imagen
-   */
-  nextImage(): void {
-    if (this.imageFiles.length <= 1) return;
-    
-    this.currentImageIndex = this.currentImageIndex < this.imageFiles.length - 1 
-      ? this.currentImageIndex + 1 
-      : 0;
-  }
-
-  /**
-   * Obtiene la imagen actual para el lightbox
-   */
-  get currentImage(): any {
-    return this.imageFiles[this.currentImageIndex];
-  }
-
-  /**
-   * Maneja el click en el overlay del lightbox
-   */
-  onLightboxOverlayClick(event: Event): void {
-    if (event.target === event.currentTarget) {
-      this.closeImageLightbox();
-    }
-  }
-
-  /**
-   * Maneja las teclas del teclado en el lightbox
-   */
-  onLightboxKeydown(event: KeyboardEvent): void {
-    switch (event.key) {
-      case 'Escape':
-        this.closeImageLightbox();
-        break;
-      case 'ArrowLeft':
-        this.previousImage();
-        break;
-      case 'ArrowRight':
-        this.nextImage();
-        break;
-    }
+    window.open(file.file, '_blank');
   }
 
   /**

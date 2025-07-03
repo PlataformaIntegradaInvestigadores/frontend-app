@@ -30,6 +30,25 @@ export class PostCreatorComponent {
   pollOptions: string[] = ['', ''];
 
   /**
+   * Verifica si la encuesta actual es válida
+   */
+  get isPollValid(): boolean {
+    if (!this.showPollCreator) return true;
+    
+    const hasQuestion = this.pollQuestion.trim() !== '';
+    const validOptions = this.pollOptions.filter(option => option.trim() !== '');
+    
+    return hasQuestion && validOptions.length >= 2;
+  }
+
+  /**
+   * Obtiene el número de opciones válidas
+   */
+  get validPollOptionsCount(): number {
+    return this.pollOptions.filter(option => option.trim() !== '').length;
+  }
+
+  /**
    * Maneja el focus del textarea
    */
   onTextAreaFocus(): void {
@@ -72,13 +91,33 @@ export class PostCreatorComponent {
    * Envía el post
    */
   submitPost(): void {
-    if (!this.newPostContent.trim() && !this.showPollCreator) return;
+    if (!this.canSubmit()) return;
+
+    // Validación específica para encuestas
+    if (this.showPollCreator) {
+      if (!this.pollQuestion.trim()) {
+        alert('Por favor, escriba una pregunta para la encuesta.');
+        return;
+      }
+      
+      const validOptions = this.pollOptions.filter(option => option.trim() !== '');
+      if (validOptions.length < 2) {
+        alert('Por favor, proporcione al menos 2 opciones válidas para la encuesta.');
+        return;
+      }
+    }
+
+    // Generar contenido automático si hay encuesta sin contenido
+    let content = this.newPostContent.trim();
+    if (this.showPollCreator && !content) {
+      content = this.pollQuestion.trim(); // Usar la pregunta como contenido
+    }
 
     const postData: PostCreatorData = {
-      content: this.newPostContent.trim(),
+      content: content,
       files: this.selectedFiles.length > 0 ? this.selectedFiles : undefined,
       poll: this.showPollCreator ? {
-        question: this.pollQuestion,
+        question: this.pollQuestion.trim(),
         options: this.pollOptions.filter(option => option.trim() !== '')
       } : undefined
     };
@@ -180,6 +219,15 @@ export class PostCreatorComponent {
   addPollOption(): void {
     if (this.pollOptions.length < 10) {
       this.pollOptions.push('');
+      
+      // Enfocar la nueva opción después de que se renderice
+      setTimeout(() => {
+        const newIndex = this.pollOptions.length - 1;
+        const newInput = document.getElementById(`poll-option-${newIndex}`);
+        if (newInput) {
+          newInput.focus();
+        }
+      }, 0);
     }
   }
 
@@ -190,6 +238,31 @@ export class PostCreatorComponent {
     if (this.pollOptions.length > 2) {
       this.pollOptions.splice(index, 1);
     }
+  }
+
+  /**
+   * Actualiza una opción específica de la encuesta
+   * Este método ayuda a evitar problemas con el focus
+   */
+  updatePollOption(index: number, value: string): void {
+    if (index >= 0 && index < this.pollOptions.length) {
+      this.pollOptions[index] = value;
+    }
+  }
+
+  /**
+   * Maneja el evento de input en las opciones de encuesta
+   */
+  onPollOptionInput(event: Event, index: number): void {
+    const target = event.target as HTMLInputElement;
+    this.updatePollOption(index, target.value);
+  }
+
+  /**
+   * Función de tracking para ngFor para evitar problemas con el focus
+   */
+  trackByIndex(index: number, item: any): number {
+    return index;
   }
 
   /**
@@ -205,12 +278,12 @@ export class PostCreatorComponent {
    * Verifica si se puede enviar el post
    */
   canSubmit(): boolean {
-    // Debe tener contenido O una encuesta válida
-    const hasContent = this.newPostContent.trim() !== '';
-    const hasValidPoll = this.showPollCreator && 
-                        this.pollQuestion.trim() !== '' && 
-                        this.pollOptions.filter(option => option.trim() !== '').length >= 2;
+    // Si no hay encuesta, debe tener contenido o archivos
+    if (!this.showPollCreator) {
+      return this.newPostContent.trim() !== '' || this.selectedFiles.length > 0;
+    }
     
-    return hasContent || hasValidPoll || this.selectedFiles.length > 0;
+    // Si hay encuesta, debe ser válida (la encuesta puede existir sin contenido de texto)
+    return this.isPollValid;
   }
 }

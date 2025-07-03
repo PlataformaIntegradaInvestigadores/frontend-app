@@ -1,19 +1,63 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-post-files',
   templateUrl: './post-files.component.html',
   styleUrls: ['./post-files.component.css']
 })
-export class PostFilesComponent {
+export class PostFilesComponent implements OnInit, OnChanges {
   @Input() files: any[] = [];
   
-  @Output() imageClick = new EventEmitter<any>();
   @Output() fileOpen = new EventEmitter<any>();
   @Output() fileDownload = new EventEmitter<any>();
 
+  // Track image load states
+  imageLoadStates: { [key: string]: 'loading' | 'loaded' | 'error' } = {};
+  
+  // Cache para evitar recálculos
+  private fileTypeCache: { [key: string]: string } = {};
+  private imageUrlCache: { [key: string]: string } = {};
+  
+  // Processed files para optimización
+  processedFiles: any[] = [];
+
+  ngOnInit() {
+    this.processFiles();
+  }
+
+  ngOnChanges() {
+    this.processFiles();
+  }
+
+  private processFiles() {
+    this.processedFiles = this.files.map(file => {
+      const fileType = this.getFileTypeCached(file);
+      const imageUrl = this.getImageUrlCached(file);
+      
+      // Inicializar estado de carga para imágenes
+      if (fileType === 'image' && file.id) {
+        this.imageLoadStates[file.id] = 'loading';
+      }
+      
+      return {
+        ...file,
+        _fileType: fileType,
+        _imageUrl: imageUrl
+      };
+    });
+  }
+
   onImageClick(file: any): void {
-    this.imageClick.emit(file);
+    this.fileOpen.emit(file);
+  }
+
+  onImageLoad(file: any): void {
+    this.imageLoadStates[file.id] = 'loaded';
+  }
+
+  onImageError(file: any): void {
+    this.imageLoadStates[file.id] = 'error';
   }
 
   onFileOpen(file: any): void {
@@ -24,23 +68,73 @@ export class PostFilesComponent {
     this.fileDownload.emit(file);
   }
 
-  getFileType(file: any): string {
-    if (!file.file) return 'other';
+  private getFileTypeCached(file: any): string {
+    if (!file || !file.file) return 'other';
     
+    const cacheKey = file.id || file.file;
+    if (this.fileTypeCache[cacheKey]) {
+      return this.fileTypeCache[cacheKey];
+    }
+    
+    const fileType = this.calculateFileType(file);
+    this.fileTypeCache[cacheKey] = fileType;
+    return fileType;
+  }
+
+  private getImageUrlCached(file: any): string {
+    if (!file || !file.file) return '';
+    
+    const cacheKey = file.id || file.file;
+    if (this.imageUrlCache[cacheKey]) {
+      return this.imageUrlCache[cacheKey];
+    }
+    
+    const imageUrl = this.calculateImageUrl(file);
+    this.imageUrlCache[cacheKey] = imageUrl;
+    return imageUrl;
+  }
+
+  private calculateFileType(file: any): string {
     const url = file.file.toLowerCase();
-    if (url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png') || url.includes('.gif') || url.includes('.webp')) {
+    
+    if (url.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i)) {
       return 'image';
-    } else if (url.includes('.mp4') || url.includes('.avi') || url.includes('.mov') || url.includes('.wmv')) {
+    } else if (url.match(/\.(mp4|avi|mov|wmv|flv|webm|mkv)(\?.*)?$/i)) {
       return 'video';
-    } else if (url.includes('.pdf')) {
+    } else if (url.match(/\.pdf(\?.*)?$/i)) {
       return 'pdf';
-    } else if (url.includes('.doc') || url.includes('.docx')) {
+    } else if (url.match(/\.(doc|docx)(\?.*)?$/i)) {
       return 'document';
-    } else if (url.includes('.zip') || url.includes('.rar')) {
+    } else if (url.match(/\.(zip|rar|7z|tar|gz)(\?.*)?$/i)) {
       return 'archive';
     } else {
       return 'other';
     }
+  }
+
+  private calculateImageUrl(file: any): string {
+    let url = file.file.trim();
+    
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    if (!url.startsWith('/')) {
+      url = '/' + url;
+    }
+    
+    return `${baseUrl}${url}`;
+  }
+
+  getFileType(file: any): string {
+    // Usar la cache si existe
+    const cacheKey = file.id || file.file;
+    if (this.fileTypeCache[cacheKey]) {
+      return this.fileTypeCache[cacheKey];
+    }
+    
+    return this.getFileTypeCached(file);
   }
 
   getFileIcon(fileType: string): string {
@@ -54,6 +148,19 @@ export class PostFilesComponent {
       default:
         return 'fas fa-file';
     }
+  }
+
+  /**
+   * Corrige la URL de la imagen si es necesario
+   */
+  getImageUrl(file: any): string {
+    // Usar la cache si existe
+    const cacheKey = file.id || file.file;
+    if (this.imageUrlCache[cacheKey]) {
+      return this.imageUrlCache[cacheKey];
+    }
+    
+    return this.getImageUrlCached(file);
   }
 
   formatFileSize(size: number): string {

@@ -1,34 +1,45 @@
 <!-- Post Files -->
-<div class="mt-3" *ngIf="files && files.length > 0">
+<div class="mt-3" *ngIf="processedFiles && processedFiles.length > 0">
+  
   <div class="grid gap-2" 
        [ngClass]="{
-         'grid-cols-1': files.length === 1,
-         'grid-cols-2': files.length > 1
+         'grid-cols-1': processedFiles.length === 1,
+         'grid-cols-2': processedFiles.length > 1
        }">
     <div 
-      *ngFor="let file of files"
-      class="relative rounded-lg overflow-hidden border border-gray-200">
+      *ngFor="let file of processedFiles; let i = index"
+      class="relative rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
       
       <!-- Image Files -->
-      <div *ngIf="getFileType(file) === 'image'" 
-           class="cursor-pointer group relative image-hover" 
+      <div *ngIf="file._fileType === 'image'" 
+           class="cursor-pointer relative" 
            (click)="onImageClick(file)">
-        <img 
-          [src]="file.file" 
-          [alt]="'Imagen del post'"
-          class="w-full h-48 object-cover transition-transform duration-300"
-          loading="lazy">
         
-        <!-- Overlay hover effect -->
-        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
-          <i class="fas fa-expand text-white text-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></i>
+        <!-- Imagen -->
+        <img 
+          [src]="file._imageUrl" 
+          [alt]="file.original_filename || 'Imagen del post'"
+          class="w-full h-48 object-contain bg-gray-50"
+          (load)="onImageLoad(file)"
+          (error)="onImageError(file)">
+        
+        <!-- Error placeholder -->
+        <div *ngIf="imageLoadStates[file.id] === 'error'" 
+             class="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-500 cursor-pointer"
+             (click)="onImageClick(file)">
+          <div class="text-center p-4">
+            <i class="fas fa-image text-4xl mb-2"></i>
+            <p class="text-sm font-medium">Error al cargar imagen</p>
+            <p class="text-xs text-gray-400 mt-1">{{ file.original_filename || 'Imagen' }}</p>
+            <p class="text-xs text-blue-500 mt-2">Haz clic para ver en grande</p>
+          </div>
         </div>
       </div>
 
       <!-- Video Files -->
-      <div *ngIf="getFileType(file) === 'video'">
+      <div *ngIf="file._fileType === 'video'">
         <video 
-          [src]="file.file" 
+          [src]="file._imageUrl" 
           controls 
           class="w-full h-48 object-cover"
           preload="metadata">
@@ -37,24 +48,24 @@
       </div>
 
       <!-- Other Files -->
-      <div *ngIf="getFileType(file) !== 'image' && getFileType(file) !== 'video'" 
-           class="p-4 bg-gray-50 flex items-center justify-between">
-        <div class="flex items-center">
-          <i [class]="getFileIcon(getFileType(file))" class="text-2xl text-gray-500 mr-3 flex-shrink-0"></i>
-          <div class="flex flex-col gap-1">
-            <p class="text-sm font-semibold text-gray-900 break-all">{{ file.original_filename || file.file.split('/').pop() }}</p>
+      <div *ngIf="file._fileType !== 'image' && file._fileType !== 'video'" 
+           class="p-4 bg-gray-50 h-48 flex items-center justify-between">
+        <div class="flex items-center flex-1">
+          <i [class]="getFileIcon(file._fileType)" class="text-3xl text-gray-500 mr-3 flex-shrink-0"></i>
+          <div class="flex flex-col gap-1 min-w-0 flex-1">
+            <p class="text-sm font-semibold text-gray-900 truncate">{{ file.original_filename || file.file.split('/').pop() }}</p>
             <p class="text-xs text-gray-500">{{ formatFileSize(file.file_size) }}</p>
           </div>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 ml-2">
           <button 
-            class="p-2 text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded transition-colors" 
+            class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" 
             (click)="onFileOpen(file)" 
-            title="Ver">
+            title="Ver archivo">
             <i class="fas fa-eye"></i>
           </button>
           <button 
-            class="p-2 text-gray-500 hover:text-green-600 hover:bg-gray-100 rounded transition-colors" 
+            class="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition-colors" 
             (click)="onFileDownload(file)" 
             title="Descargar">
             <i class="fas fa-download"></i>
