@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
+import { MagicLinkComponent } from './auth/magic-link/magic-link.component';
 import { AuthRedirectGuard } from 'src/guards/auth-redirect.guard';
 import { researcherOnlyGuard } from 'src/guards/researcher-only.guard';
 // import { DebateChatComponent } from './consensus/presentation/components/debate-chat/debate-chat.component';
@@ -18,6 +19,11 @@ const routes: Routes = [
   {
     path: 'register',
     component: RedirectComponent,
+    canActivate: [AuthRedirectGuard]
+  },
+  {
+    path: 'magic-link',
+    component: MagicLinkComponent,
     canActivate: [AuthRedirectGuard]
   },
   {

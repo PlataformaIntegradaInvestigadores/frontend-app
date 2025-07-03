@@ -19,11 +19,13 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AboutUsModule } from './search-engine/presentation/about-us/about-us.module';
 import { AboutUsRoutingModule } from './search-engine/presentation/about-us/about-us.routing.module';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { AuthModalComponent } from './auth/presentation/auth-modal/auth-modal.component';
 import { LoginFormComponent } from './auth/presentation/login-form/login-form.component';
 import { RegisterFormComponent } from './auth/presentation/register-form/register-form.component';
 import { CompanyRegisterFormComponent } from './auth/presentation/company-register-form/company-register-form.component';
 import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
+import { MagicLinkComponent } from './auth/magic-link/magic-link.component';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 @NgModule({  declarations: [
     AppComponent,
@@ -39,6 +41,7 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
   ],
   imports: [
     AppRoutingModule,
+    RouterModule,
     SharedModule,
     ProfilePageRoutingModule,
     FontAwesomeModule,
@@ -48,6 +51,7 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
     HttpClientModule,
     BrowserModule,
     NoopAnimationsModule,
+    MagicLinkComponent,
     NgxPaginationModule,
     BrowserAnimationsModule,
     AboutUsModule,

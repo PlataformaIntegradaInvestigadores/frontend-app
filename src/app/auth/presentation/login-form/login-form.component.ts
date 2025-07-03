@@ -4,7 +4,6 @@ import { AuthService } from '../../domain/services/auth.service';
 import { ErrorService } from '../../domain/services/error.service';
 import { LoginCredentials, UserType } from '../../domain/entities/interfaces';
 import { Router } from '@angular/router';
-import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-login-form',
@@ -47,14 +46,10 @@ export class LoginFormComponent implements OnInit {
       
       const formData = this.loginForm.value;
       
-      // Para researcher, cifrar la contraseña. Para company, enviar en texto plano
-      const password = this.userType === 'user' 
-        ? CryptoJS.SHA256(formData.password).toString()
-        : formData.password;
-      
+      // Enviar contraseña en texto plano - el backend se encarga del hasheo
       const loginData: LoginCredentials = {
         username: formData.username,
-        password: password
+        password: formData.password
       };      this.authService.login(loginData, this.userType).subscribe({
         next: (response) => {
           this.isLoading = false;

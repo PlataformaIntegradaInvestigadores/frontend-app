@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../domain/services/auth.service';
 import { passwordMatchValidator } from '../../domain/entities/custom-validators';
 import { User, UserType } from '../../domain/entities/interfaces';
-import * as CryptoJS from 'crypto-js';
 
 @Component({
     selector: 'app-register-form',
@@ -55,7 +54,7 @@ export class RegisterFormComponent implements OnInit {
 
         const user: User = {
             ...formValues,
-            password: CryptoJS.SHA256(formValues.password).toString(),  // Cifrar contraseña para researcher
+            password: formValues.password,  // Enviar contraseña en texto plano - el backend se encarga del hasheo
             scopus_id: formValues.scopus_id ? formValues.scopus_id : null,
             id: null
         };
