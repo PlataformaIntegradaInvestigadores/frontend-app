@@ -563,4 +563,31 @@ export class JobsComponent implements OnInit {
 
     return `${baseUrl}${url}`;
   }
+
+  /**
+ * Manejar edición de trabajo
+ */
+  editJob(job: Job): void {
+    console.log('Editing job:', job);
+    // Aquí puedes implementar la lógica de edición
+    // Por ejemplo, abrir un modal de edición o navegar a una página de edición
+
+    // Ejemplo básico - puedes expandir según tus necesidades:
+    this.currentJobData = {
+      title: job.title,
+      description: job.description,
+      requirements: job.requirements || '',
+      benefits: job.benefits || '',
+      location: job.location || '',
+      job_type: job.job_type,
+      experience_level: job.experience_level,
+      salary_min: job.salary_min,
+      salary_max: job.salary_max,
+      is_remote: job.is_remote,
+      application_deadline: job.application_deadline || ''
+    };
+
+    this.isEditingJob = true;
+    this.showJobModal = true;
+  }
 }

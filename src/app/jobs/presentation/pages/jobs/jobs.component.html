@@ -101,9 +101,9 @@
 
           <!-- Vista extendida para empresas: trabajo + aplicaciones -->
           <div *ngIf="isCompany" class="space-y-6">
-            <app-job-detail [job]="selectedJob" [showCompanyActions]="true" (editJob)="openEditJobModal($event)"
-              (deleteJob)="confirmDeleteJob($event)" (statusUpdated)="onApplicationStatusUpdated($event)"
-              (viewAllApplications)="loadAllJobApplications($event)">
+            <app-job-detail [job]="selectedJob" [showCompanyActions]="isCompany && activeTab === 'my-jobs'"
+              (applicationSubmitted)="onApplicationSubmitted()" (editJob)="editJob($event)"
+              (deleteJob)="confirmDeleteJob($event)">
             </app-job-detail>
           </div>
         </div>

@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { Job } from 'src/app/jobs/domain/entities/job.interface';
-import { ApplicationCreate, Application } from 'src/app/jobs/domain/entities/application.interface';
+import { Application, ApplicationCreate } from 'src/app/jobs/domain/entities/application.interface';
 import { ApplicationService } from 'src/app/jobs/domain/services/application.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { environment } from 'src/environments/environment';
@@ -10,52 +10,124 @@ import { environment } from 'src/environments/environment';
   templateUrl: './job-detail.component.html',
   styleUrls: ['./job-detail.component.css']
 })
-export class JobDetailComponent {
+export class JobDetailComponent implements OnInit, OnChanges {
   @Input() job: Job | null = null;
-  @Input() showCompanyActions = false; // Nueva propiedad para mostrar acciones de empresa
-  @Output() applicationSubmitted = new EventEmitter<void>();
-  @Output() editJob = new EventEmitter<Job>(); // Nuevo evento para editar trabajo
-  @Output() deleteJob = new EventEmitter<Job>(); // Nuevo evento para eliminar trabajo
-  @Output() statusUpdated = new EventEmitter<{ applicationId: number, status: string }>(); // Evento para actualizar estado
-  @Output() viewAllApplications = new EventEmitter<number>(); // Evento para ver todas las postulaciones
+  @Input() showCompanyActions: boolean = false;
 
+  @Output() applicationSubmitted = new EventEmitter<void>();
+  @Output() editJob = new EventEmitter<Job>();
+  @Output() deleteJob = new EventEmitter<Job>();
+
+  // ✅ NUEVO: Propiedades para aplicaciones
+  public jobApplications: Application[] = [];
+  public applicationsLoading: boolean = false;
+
+  // Propiedades existentes del modal de aplicación
   showApplicationModal = false;
-  applicationData: ApplicationCreate = { job: 0 };
-  selectedFile: File | null = null;
   isSubmitting = false;
-  isResearcher = false;
-  loadingAllApplications = false;
-  showAllApplications = false;
+  selectedFile: File | null = null;
+  applicationData: any = { job: 0 };
 
   constructor(
     private applicationService: ApplicationService,
     private authService: AuthService
-  ) {
-    this.checkUserType();
+  ) { }
+
+  ngOnInit(): void {
+    // Initialization logic if needed
   }
 
-  private checkUserType(): void {
+  // ✅ NUEVO: Detectar cambios en el trabajo
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['job'] && this.job?.id && this.isCompany) {
+      console.log('Loading applications for job:', this.job.id);
+      this.loadJobApplications(this.job.id);
+    }
+  }
+
+  // ✅ NUEVO: Cargar aplicaciones específicas del trabajo
+  private loadJobApplications(jobId: number): void {
+    this.applicationsLoading = true;
+    this.jobApplications = []; // Limpiar aplicaciones anteriores
+
+    this.applicationService.getCompanyApplications({ job_id: jobId }).subscribe({
+      next: (applications: Application[]) => {
+        console.log('Applications received:', applications);
+        this.jobApplications = applications;
+        this.applicationsLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading job applications:', error);
+        this.jobApplications = [];
+        this.applicationsLoading = false;
+      }
+    });
+  }
+
+  // ✅ NUEVO: Verificar si hay CV válido
+  public hasValidResumeFile(application: any): boolean {
+    if (!application?.resume_file) {
+      return false;
+    }
+
+    if (typeof application.resume_file === 'string') {
+      return application.resume_file.trim().length > 0;
+    }
+
+    return true;
+  }
+
+  // ✅ NUEVO: Manejar cambio de estado
+  public onStatusChange(event: Event, applicationId: number): void {
+    const target = event.target as HTMLSelectElement;
+    if (target && this.job?.id) {
+      this.updateApplicationStatus(applicationId, target.value);
+    }
+  }
+
+  // ✅ NUEVO: Actualizar estado de aplicación
+  private updateApplicationStatus(applicationId: number, newStatus: string): void {
+    this.applicationService.updateApplication(applicationId, {
+      status: newStatus as any
+    }).subscribe({
+      next: (updatedApplication: Application) => {
+        // Actualizar la aplicación en la lista local
+        const index = this.jobApplications.findIndex(app => app.id === applicationId);
+        if (index !== -1) {
+          this.jobApplications[index] = updatedApplication;
+        }
+        console.log('Application status updated:', updatedApplication);
+      },
+      error: (error: any) => {
+        console.error('Error updating application status:', error);
+        alert('Error al actualizar el estado de la postulación');
+      }
+    });
+  }
+
+  // Propiedades computadas
+  get isCompany(): boolean {
+    const companyId = this.authService.getCompanyId();
+    return !!companyId;
+  }
+
+  get isResearcher(): boolean {
     const userId = this.authService.getUserId();
     const companyId = this.authService.getCompanyId();
-    this.isResearcher = !!userId && !companyId;
+    return !!userId && !companyId;
   }
 
-  /**
-    * Construye la URL completa del archivo usando la URL base del backend
-    */
+  // Métodos existentes (mantén todos tus métodos actuales)
   getFullFileUrl(relativePath: string): string {
     if (!relativePath) return '';
 
-    // Si ya es una URL completa, devolverla tal como está
     if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
       return relativePath;
     }
 
-    // Construir la URL completa
     const baseUrl = environment.apiUrl.replace('/api', '');
     let url = relativePath;
 
-    // Asegurar que la URL comience con '/'
     if (!url.startsWith('/')) {
       url = '/' + url;
     }
@@ -63,54 +135,26 @@ export class JobDetailComponent {
     return `${baseUrl}${url}`;
   }
 
-  /**
-   * Verificar si el usuario puede postularse a este trabajo
-   */
   canApplyToJob(): boolean {
     if (!this.job || !this.isResearcher) {
       return false;
     }
-
-    // No puede postularse si ya postuló
-    if (this.job.has_applied) {
-      return false;
-    }
-
-    return true;
+    return !this.job.has_applied;
   }
 
-  /**
-   * Obtener el texto del botón de postulación
-   */
   getApplicationButtonText(): string {
     if (!this.job) return 'Postularse';
-
     if (this.job.has_applied) {
       return 'Ya postulado';
     }
-
     return 'Postularse';
   }
 
-  /**
-   * Obtener el estado de la postulación del usuario
-   */
   getUserApplicationStatus(): string | null {
     if (!this.job?.user_application) return null;
     return this.job.user_application.status_display;
   }
 
-  /**
-   * Verificar si es una empresa
-   */
-  get isCompany(): boolean {
-    const companyId = this.authService.getCompanyId();
-    return !!companyId;
-  }
-
-  /**
-   * Get CSS classes for job type badge
-   */
   getJobTypeClasses(jobType: string): string {
     switch (jobType) {
       case 'full_time':
@@ -128,9 +172,6 @@ export class JobDetailComponent {
     }
   }
 
-  /**
-   * Get formatted salary for display
-   */
   getFormattedSalary(job: Job): string {
     if (job.salary_min && job.salary_max) {
       return `$${job.salary_min.toLocaleString()} - $${job.salary_max.toLocaleString()}`;
@@ -142,25 +183,16 @@ export class JobDetailComponent {
     return 'Salario a convenir';
   }
 
-  /**
-   * Convierte requirements string en array para mostrar como lista
-   */
   getRequirementsArray(requirements?: string): string[] {
     if (!requirements) return [];
     return requirements.split('\n').filter(req => req.trim() !== '');
   }
 
-  /**
-   * Convierte benefits string en array para mostrar como lista
-   */
   getBenefitsArray(benefits?: string): string[] {
     if (!benefits) return [];
     return benefits.split('\n').filter(benefit => benefit.trim() !== '');
   }
 
-  /**
-   * Abrir modal de aplicación
-   */
   openApplicationModal(): void {
     if (!this.job) return;
 
@@ -173,23 +205,17 @@ export class JobDetailComponent {
     this.showApplicationModal = true;
   }
 
-  /**
-   * Cerrar modal de aplicación
-   */
   closeApplicationModal(): void {
     this.showApplicationModal = false;
     this.applicationData = { job: 0 };
     this.selectedFile = null;
 
-    // Resetear el input file
     const fileInput = document.getElementById('resumeFile') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
   }
-  /**
-   * Manejar selección de archivo
-   */
+
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
@@ -203,13 +229,9 @@ export class JobDetailComponent {
     }
   }
 
-  /**
-   * Enviar aplicación
-   */
   submitApplication(): void {
     if (!this.job?.id) return;
 
-    // Validar que el CV sea obligatorio
     if (!this.selectedFile) {
       alert('El CV es obligatorio para postular a este trabajo.');
       return;
@@ -220,7 +242,7 @@ export class JobDetailComponent {
     const applicationData: ApplicationCreate = {
       job: this.job.id,
       cover_letter: this.applicationData.cover_letter,
-      resume_file: this.selectedFile // Ahora siempre será requerido
+      resume_file: this.selectedFile
     };
 
     this.applicationService.createApplication(applicationData).subscribe({
@@ -243,151 +265,26 @@ export class JobDetailComponent {
   }
 
   canSubmitApplication(): boolean {
-    return this.selectedFile !== null && this.selectedFile !== undefined;
+    return !!this.selectedFile && !!this.job?.id;
   }
 
-
-  /**
-   * Emitir evento para editar trabajo
-   */
   onEditJob(): void {
     if (this.job) {
       this.editJob.emit(this.job);
     }
   }
 
-  /**
-   * Emitir evento para eliminar trabajo
-   */
   onDeleteJob(): void {
     if (this.job) {
       this.deleteJob.emit(this.job);
     }
   }
 
-  /**
-   * Actualizar el estado de una postulación (solo para empresas)
-   */
-  updateApplicationStatus(applicationId: number, status: string): void {
-    if (!this.isCompany) return;
-
-    this.applicationService.updateApplication(applicationId, {
-      status: status as any
-    }).subscribe({
-      next: (updatedApplication) => {
-        // Emitir evento para que el componente padre actualice los datos
-        // Enviamos el ID de la aplicación y el nuevo estado para que se actualice correctamente
-        this.statusUpdated.emit({ applicationId, status });
-
-        // Actualizar las aplicaciones recientes en el job actual si existen
-        if (this.job && this.job.recent_applications) {
-          const index = this.job.recent_applications.findIndex(app => app.id === applicationId);
-          if (index !== -1) {
-            this.job.recent_applications[index].status = status;
-            this.job.recent_applications[index].status_display =
-              this.getStatusOptions().find(opt => opt.value === status)?.label || '';
-          }
-        }
-      },
-      error: (error: any) => {
-        console.error('Error updating application status:', error);
-        alert('Error al actualizar el estado de la postulación');
-      }
-    });
-  }
-
-  /**
-   * Obtener clases CSS para el badge de estado
-   */
-  getStatusBadgeClass(status: string): string {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'reviewing':
-        return 'bg-blue-100 text-blue-800';
-      case 'interviewed':
-        return 'bg-purple-100 text-purple-800';
-      case 'accepted':
-        return 'bg-green-100 text-green-800';
-      case 'rejected':
-        return 'bg-orange-100 text-orange-800'; // Naranja para "Cerrado"
-
-      case 'withdrawn':
-        return 'bg-gray-100 text-gray-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  }
-
-  /**
-   * Obtener opciones de estado para el select
-   */
-  getStatusOptions(): { value: string, label: string }[] {
-    return [
-      { value: 'pending', label: 'Pendiente' },
-      { value: 'reviewing', label: 'En revisión' },
-      { value: 'interviewed', label: 'Entrevistado' },
-      { value: 'accepted', label: 'Aceptado' },
-      { value: 'rejected', label: 'Cerrado' }, // 🎭 MAQUILLADO: de "Rechazado" a "Cerrado"
-      { value: 'withdrawn', label: 'Retirado' }
-    ];
-  }
-  /**
-   * Manejar cambio de estado desde la vista de empresa
-   */
-  onStatusChange(event: Event, applicationId: number): void {
-    const target = event.target as HTMLSelectElement;
-    if (target) {
-      // Llamar a updateApplicationStatus en lugar de emitir directamente
-      // Esto asegura que la base de datos se actualice correctamente
-      this.updateApplicationStatus(applicationId, target.value);
-    }
-  }
-
-  /**
-   * Ver todas las postulaciones
-   */
-  onViewAllApplications(): void {
-    if (this.job?.id) {
-      this.viewAllApplications.emit(this.job.id);
-    }
-  }
-
-  /**
-   * Verificar si la empresa tiene postulaciones recientes para mostrar
-   */
   hasRecentApplications(): boolean {
-    return !!(this.isCompany && this.job?.recent_applications && this.job.recent_applications.length > 0);
+    return !!(this.job?.recent_applications && this.job.recent_applications.length > 0);
   }
 
-  /**
-   * Verificar si hay más postulaciones que las mostradas
-   */
-  hasMoreApplications(): boolean {
-    if (!this.job?.applications_count || !this.job?.recent_applications) {
-      return false;
-    }
-    return this.job.applications_count > this.job.recent_applications.length;
-  }
-
-  /**
-   * Obtener el número de postulaciones recientes mostradas
-   */
-  getRecentApplicationsCount(): number {
-    return this.job?.recent_applications?.length || 0;
-  }
-
-  /**
-   * Obtener el total de postulaciones
-   */
-  getTotalApplicationsCount(): number {
-    return this.job?.applications_count || 0;
-  }
-
-  /**
-   * Verificar si no hay postulaciones para empresas
-   */
   hasNoApplications(): boolean {
-    return !!(this.isCompany && this.job?.applications_count === 0);
+    return this.isCompany && (!this.jobApplications || this.jobApplications.length === 0) && !this.applicationsLoading;
   }
 }
