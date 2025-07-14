@@ -16,13 +16,13 @@ export class FeedPostComponent implements OnInit, OnDestroy {
   @Input() allowDelete: boolean = true;
   @Input() allowEdit: boolean = true;
   @Input() currentUserId: string | null = null;
-  
+
   @Output() toggleLike = new EventEmitter<FeedPost>();
   @Output() deletePost = new EventEmitter<string>();
   @Output() sharePost = new EventEmitter<FeedPost>();
   @Output() viewProfile = new EventEmitter<string>();
-  @Output() votePoll = new EventEmitter<{pollId: string, optionId: string, isMultipleChoice: boolean}>();
-  @Output() editPost = new EventEmitter<{postId: string, content: string, tags: string[]}>();
+  @Output() votePoll = new EventEmitter<{ pollId: string, optionId: string, isMultipleChoice: boolean }>();
+  @Output() editPost = new EventEmitter<{ postId: string, content: string, tags: string[] }>();
 
   showFullContent = false;
   showCommentsSection = false;
@@ -67,7 +67,7 @@ export class FeedPostComponent implements OnInit, OnDestroy {
     if (diffMins < 60) return `${diffMins}m`;
     if (diffHours < 24) return `${diffHours}h`;
     if (diffDays < 7) return `${diffDays}d`;
-    
+
     return postDate.toLocaleDateString('es-ES', {
       day: '2-digit',
       month: 'short',
@@ -100,16 +100,16 @@ export class FeedPostComponent implements OnInit, OnDestroy {
     if (file.file_type) {
       return file.file_type;
     }
-    
+
     // Fallback: determinar por extensión
     const extension = file.file.split('.').pop()?.toLowerCase();
-    
+
     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) return 'image';
     if (['mp4', 'avi', 'mov', 'wmv'].includes(extension)) return 'video';
     if (['pdf'].includes(extension)) return 'document';
     if (['doc', 'docx'].includes(extension)) return 'document';
     if (['xls', 'xlsx'].includes(extension)) return 'document';
-    
+
     return 'other';
   }
 
@@ -132,11 +132,11 @@ export class FeedPostComponent implements OnInit, OnDestroy {
    */
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
@@ -145,10 +145,10 @@ export class FeedPostComponent implements OnInit, OnDestroy {
    */
   onLikeClick(): void {
     if (this.isLiking) return;
-    
+
     this.isLiking = true;
     this.toggleLike.emit(this.post);
-    
+
     // Reset flag after a delay to prevent double clicks
     setTimeout(() => {
       this.isLiking = false;
@@ -174,7 +174,7 @@ export class FeedPostComponent implements OnInit, OnDestroy {
   /**
    * Guarda los cambios de edición
    */
-  onSaveEdit(editData: {content: string, tags: string[]}): void {
+  onSaveEdit(editData: { content: string, tags: string[] }): void {
     console.log('feed-post: onSaveEdit called with data:', editData);
     this.editPost.emit({
       postId: this.post.id,
@@ -211,6 +211,7 @@ export class FeedPostComponent implements OnInit, OnDestroy {
    */
   navigateToProfile(): void {
     this.viewProfile.emit(this.post.author.id);
+
   }
 
   /**

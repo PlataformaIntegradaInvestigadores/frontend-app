@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { PortalModule } from '@angular/cdk/portal';
 
 // Routing
 import { FeedsRoutingModule } from './feeds-routing.module';
@@ -45,13 +47,16 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     FormsModule,
     FeedsRoutingModule,
-    SharedModule
+    SharedModule,
+    OverlayModule,
+    PortalModule,
   ],
   exports: [
     FeedPostComponent,
     PostCommentsComponent,
     PostCreatorComponent,
-    PostListComponent
+    PostListComponent,
+    PostEditorComponent // <-- exportar el editor de post
   ],
   providers: [
     FeedService

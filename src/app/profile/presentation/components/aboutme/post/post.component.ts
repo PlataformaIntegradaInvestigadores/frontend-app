@@ -20,6 +20,8 @@ export class PostComponent implements OnInit {
   error: string | null = null;
   success: string | null = null;
   currentUserId: string | null = null;
+  editModalVisible: boolean = false;
+  postToEdit: FeedPost | null = null;
 
   constructor(
     private authService: AuthService,
@@ -45,7 +47,7 @@ export class PostComponent implements OnInit {
 
     // Verificar si es el usuario actual para usar el endpoint específico
     const isCurrentUser = this.currentUserId === userId;
-    const postsObservable = isCurrentUser 
+    const postsObservable = isCurrentUser
       ? this.feedService.getCurrentUserPosts(20)
       : this.feedService.getUserPosts(userId, 20);
 
@@ -133,7 +135,7 @@ export class PostComponent implements OnInit {
    * Maneja navegación al perfil
    */
   onViewProfile(userId: string): void {
-    this.router.navigate(['/profile', userId]);
+    this.router.navigate(['/profile', userId, 'about-me']);
   }
 
   /**
@@ -156,6 +158,58 @@ export class PostComponent implements OnInit {
       error: (error) => {
         console.error('Error deleting post:', error);
         this.error = 'No se pudo eliminar el post';
+      }
+    });
+  }
+
+  /**
+   * Abre el modal de edición para un post
+   */
+  onEditPost(postId: string): void {
+    const post = this.posts.find(p => p.id === postId);
+    if (post) {
+      this.postToEdit = { ...post };
+      this.editModalVisible = true;
+    }
+  }
+
+  /**
+   * Cierra el modal de edición
+   */
+  closeEditModal(): void {
+    this.editModalVisible = false;
+    this.postToEdit = null;
+  }
+
+  /**
+   * Guarda los cambios del post editado
+   */
+  saveEditPost(editData: { content: string, tags: string[] }): void {
+    if (!this.postToEdit) return;
+    this.isSubmittingPost = true;
+    this.error = null;
+    this.success = null;
+    this.feedService.updatePost(this.postToEdit.id, {
+      content: editData.content,
+      tags: editData.tags
+    }).subscribe({
+      next: (updatedPost) => {
+        const postIndex = this.posts.findIndex(p => p.id === this.postToEdit!.id);
+        if (postIndex !== -1) {
+          this.posts[postIndex] = updatedPost;
+        }
+        this.isSubmittingPost = false;
+        this.success = 'Post editado exitosamente!';
+        setTimeout(() => {
+          this.success = null;
+        }, 3000);
+        this.closeEditModal();
+      },
+      error: (error) => {
+        console.error('Error editando post:', error);
+        this.error = 'No se pudo editar el post. Intenta de nuevo.';
+        this.isSubmittingPost = false;
+        this.closeEditModal();
       }
     });
   }

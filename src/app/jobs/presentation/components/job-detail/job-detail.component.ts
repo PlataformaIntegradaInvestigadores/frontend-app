@@ -3,6 +3,7 @@ import { Job } from 'src/app/jobs/domain/entities/job.interface';
 import { ApplicationCreate, Application } from 'src/app/jobs/domain/entities/application.interface';
 import { ApplicationService } from 'src/app/jobs/domain/services/application.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-job-detail',
@@ -15,9 +16,9 @@ export class JobDetailComponent {
   @Output() applicationSubmitted = new EventEmitter<void>();
   @Output() editJob = new EventEmitter<Job>(); // Nuevo evento para editar trabajo
   @Output() deleteJob = new EventEmitter<Job>(); // Nuevo evento para eliminar trabajo
-  @Output() statusUpdated = new EventEmitter<{applicationId: number, status: string}>(); // Evento para actualizar estado
+  @Output() statusUpdated = new EventEmitter<{ applicationId: number, status: string }>(); // Evento para actualizar estado
   @Output() viewAllApplications = new EventEmitter<number>(); // Evento para ver todas las postulaciones
-  
+
   showApplicationModal = false;
   applicationData: ApplicationCreate = { job: 0 };
   selectedFile: File | null = null;
@@ -40,18 +41,41 @@ export class JobDetailComponent {
   }
 
   /**
+    * Construye la URL completa del archivo usando la URL base del backend
+    */
+  getFullFileUrl(relativePath: string): string {
+    if (!relativePath) return '';
+
+    // Si ya es una URL completa, devolverla tal como está
+    if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
+      return relativePath;
+    }
+
+    // Construir la URL completa
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    let url = relativePath;
+
+    // Asegurar que la URL comience con '/'
+    if (!url.startsWith('/')) {
+      url = '/' + url;
+    }
+
+    return `${baseUrl}${url}`;
+  }
+
+  /**
    * Verificar si el usuario puede postularse a este trabajo
    */
   canApplyToJob(): boolean {
     if (!this.job || !this.isResearcher) {
       return false;
     }
-    
+
     // No puede postularse si ya postuló
     if (this.job.has_applied) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -60,11 +84,11 @@ export class JobDetailComponent {
    */
   getApplicationButtonText(): string {
     if (!this.job) return 'Postularse';
-    
+
     if (this.job.has_applied) {
       return 'Ya postulado';
     }
-    
+
     return 'Postularse';
   }
 
@@ -139,8 +163,8 @@ export class JobDetailComponent {
    */
   openApplicationModal(): void {
     if (!this.job) return;
-    
-    this.applicationData = { 
+
+    this.applicationData = {
       job: this.job.id!,
       cover_letter: '',
       resume_file: undefined
@@ -156,8 +180,13 @@ export class JobDetailComponent {
     this.showApplicationModal = false;
     this.applicationData = { job: 0 };
     this.selectedFile = null;
-  }
 
+    // Resetear el input file
+    const fileInput = document.getElementById('resumeFile') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
   /**
    * Manejar selección de archivo
    */
@@ -165,9 +194,12 @@ export class JobDetailComponent {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
       this.selectedFile = file;
-    } else {
+    } else if (file) {
       alert('Por favor selecciona un archivo PDF válido.');
       event.target.value = '';
+      this.selectedFile = null;
+    } else {
+      this.selectedFile = null;
     }
   }
 
@@ -177,12 +209,18 @@ export class JobDetailComponent {
   submitApplication(): void {
     if (!this.job?.id) return;
 
+    // Validar que el CV sea obligatorio
+    if (!this.selectedFile) {
+      alert('El CV es obligatorio para postular a este trabajo.');
+      return;
+    }
+
     this.isSubmitting = true;
-    
+
     const applicationData: ApplicationCreate = {
       job: this.job.id,
       cover_letter: this.applicationData.cover_letter,
-      resume_file: this.selectedFile || undefined
+      resume_file: this.selectedFile // Ahora siempre será requerido
     };
 
     this.applicationService.createApplication(applicationData).subscribe({
@@ -203,7 +241,12 @@ export class JobDetailComponent {
       }
     });
   }
-  
+
+  canSubmitApplication(): boolean {
+    return this.selectedFile !== null && this.selectedFile !== undefined;
+  }
+
+
   /**
    * Emitir evento para editar trabajo
    */
@@ -228,20 +271,20 @@ export class JobDetailComponent {
   updateApplicationStatus(applicationId: number, status: string): void {
     if (!this.isCompany) return;
 
-    this.applicationService.updateApplication(applicationId, { 
+    this.applicationService.updateApplication(applicationId, {
       status: status as any
     }).subscribe({
       next: (updatedApplication) => {
         // Emitir evento para que el componente padre actualice los datos
         // Enviamos el ID de la aplicación y el nuevo estado para que se actualice correctamente
         this.statusUpdated.emit({ applicationId, status });
-        
+
         // Actualizar las aplicaciones recientes en el job actual si existen
         if (this.job && this.job.recent_applications) {
           const index = this.job.recent_applications.findIndex(app => app.id === applicationId);
           if (index !== -1) {
             this.job.recent_applications[index].status = status;
-            this.job.recent_applications[index].status_display = 
+            this.job.recent_applications[index].status_display =
               this.getStatusOptions().find(opt => opt.value === status)?.label || '';
           }
         }
@@ -267,7 +310,8 @@ export class JobDetailComponent {
       case 'accepted':
         return 'bg-green-100 text-green-800';
       case 'rejected':
-        return 'bg-red-100 text-red-800';
+        return 'bg-orange-100 text-orange-800'; // Naranja para "Cerrado"
+
       case 'withdrawn':
         return 'bg-gray-100 text-gray-800';
       default:
@@ -278,17 +322,16 @@ export class JobDetailComponent {
   /**
    * Obtener opciones de estado para el select
    */
-  getStatusOptions(): {value: string, label: string}[] {
+  getStatusOptions(): { value: string, label: string }[] {
     return [
       { value: 'pending', label: 'Pendiente' },
       { value: 'reviewing', label: 'En revisión' },
       { value: 'interviewed', label: 'Entrevistado' },
       { value: 'accepted', label: 'Aceptado' },
-      { value: 'rejected', label: 'Rechazado' },
+      { value: 'rejected', label: 'Cerrado' }, // 🎭 MAQUILLADO: de "Rechazado" a "Cerrado"
       { value: 'withdrawn', label: 'Retirado' }
     ];
   }
-
   /**
    * Manejar cambio de estado desde la vista de empresa
    */

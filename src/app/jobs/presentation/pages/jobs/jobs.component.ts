@@ -4,6 +4,7 @@ import { Application } from 'src/app/jobs/domain/entities/application.interface'
 import { JobsService } from 'src/app/jobs/domain/services/job.service';
 import { ApplicationService } from 'src/app/jobs/domain/services/application.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-jobs',
@@ -22,7 +23,7 @@ export class JobsComponent implements OnInit {
   showNotesModal = false;
   selectedApplication: Application | null = null;
   notesText = '';
-  
+
   // Propiedades para CRUD de jobs
   showJobModal = false;
   isEditingJob = false;
@@ -55,10 +56,10 @@ export class JobsComponent implements OnInit {
   private checkUserType(): void {
     const userId = this.authService.getUserId();
     const companyId = this.authService.getCompanyId();
-    
+
     this.isCompany = !!companyId;
     this.isResearcher = !!userId && !companyId;
-    
+
     if (this.isCompany) {
       this.activeTab = 'my-jobs';
       this.loadCompanyJobs();
@@ -135,7 +136,7 @@ export class JobsComponent implements OnInit {
 
   selectJob(job: Job): void {
     this.selectedJob = job;
-    
+
     // Si es empresa y estamos en "my-jobs", cargar todas las postulaciones
     if (this.isCompany && this.activeTab === 'my-jobs' && job.id) {
       // Siempre cargar todas las postulaciones para empresas para mantener consistencia de tipos
@@ -181,9 +182,9 @@ export class JobsComponent implements OnInit {
    * Actualizar el estado de una aplicación (vista empresa)
    */
   updateApplicationStatus(applicationId: number, status: string, notes?: string): void {
-    this.applicationService.updateApplication(applicationId, { 
-      status: status as any, 
-      notes: notes 
+    this.applicationService.updateApplication(applicationId, {
+      status: status as any,
+      notes: notes
     }).subscribe({
       next: (updatedApplication: Application) => {
         // Actualizar la aplicación en la lista
@@ -212,9 +213,9 @@ export class JobsComponent implements OnInit {
     this.applicationService.getCompanyApplications().subscribe({
       next: () => {
         // Hacer PUT request para actualizar
-        this.applicationService.updateApplication(applicationId, { 
-          status: status as any, 
-          notes: notes 
+        this.applicationService.updateApplication(applicationId, {
+          status: status as any,
+          notes: notes
         }).subscribe({
           next: (updatedApplication: Application) => {
             // Actualizar la aplicación en la lista
@@ -265,7 +266,7 @@ export class JobsComponent implements OnInit {
         }
       });
     }
-    
+
     // Recargar aplicaciones si estamos en la vista de aplicaciones
     if (this.activeTab === 'my-applications') {
       this.loadMyApplications();
@@ -275,28 +276,28 @@ export class JobsComponent implements OnInit {
   /**
    * Manejar cuando se actualiza el estado de una postulación (vista empresa)
    */
-  onApplicationStatusUpdated(event: {applicationId: number, status: string}): void {
+  onApplicationStatusUpdated(event: { applicationId: number, status: string }): void {
     // Solo actualizar el estado en la vista local sin recargar todo
     // Esto evita que desaparezcan las aplicaciones
-    
+
     // Actualizar en jobApplications (vista detallada de aplicaciones)
     const appIndex = this.jobApplications.findIndex(app => app.id === event.applicationId);
     if (appIndex !== -1) {
       this.jobApplications[appIndex].status = event.status as any;
-      this.jobApplications[appIndex].status_display = 
+      this.jobApplications[appIndex].status_display =
         this.getStatusDisplayName(event.status);
     }
-    
+
     // Actualizar en las recent_applications del trabajo seleccionado
     if (this.selectedJob && this.selectedJob.recent_applications) {
       const recentIndex = this.selectedJob.recent_applications.findIndex(app => app.id === event.applicationId);
       if (recentIndex !== -1) {
         this.selectedJob.recent_applications[recentIndex].status = event.status as any;
-        this.selectedJob.recent_applications[recentIndex].status_display = 
+        this.selectedJob.recent_applications[recentIndex].status_display =
           this.getStatusDisplayName(event.status);
       }
     }
-    
+
     // Opcional: Solo recargar si es necesario para obtener datos actualizados del servidor
     // pero esto no debería ser necesario para el cambio de estado básico
   }
@@ -305,12 +306,12 @@ export class JobsComponent implements OnInit {
    * Obtener el nombre de visualización del estado
    */
   private getStatusDisplayName(status: string): string {
-    const statusMap: {[key: string]: string} = {
+    const statusMap: { [key: string]: string } = {
       'pending': 'Pendiente',
-      'reviewing': 'En revisión', 
+      'reviewing': 'En revisión',
       'interviewed': 'Entrevistado',
       'accepted': 'Aceptado',
-      'rejected': 'Rechazado',
+      'rejected': 'Cancelado',
       'withdrawn': 'Retirado'
     };
     return statusMap[status] || status;
@@ -432,7 +433,7 @@ export class JobsComponent implements OnInit {
     }
 
     const jobData = { ...this.currentJobData };
-    
+
     if (this.isEditingJob && this.selectedJob) {
       // Actualizar trabajo existente
       this.jobsService.updateJob(this.selectedJob.id!, jobData).subscribe({
@@ -508,7 +509,7 @@ export class JobsComponent implements OnInit {
 
   setActiveTab(tab: 'recommendations' | 'trending' | 'my-jobs' | 'my-applications'): void {
     this.activeTab = tab;
-    
+
     switch (tab) {
       case 'recommendations':
         this.loadRecommendations();
@@ -538,5 +539,28 @@ export class JobsComponent implements OnInit {
       default:
         return 'Trabajos Disponibles';
     }
+  }
+
+  /**
+  * Construye la URL completa del archivo usando la URL base del backend
+  */
+  getFullFileUrl(relativePath: string): string {
+    if (!relativePath) return '';
+
+    // Si ya es una URL completa, devolverla tal como está
+    if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
+      return relativePath;
+    }
+
+    // Construir la URL completa
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    let url = relativePath;
+
+    // Asegurar que la URL comience con '/'
+    if (!url.startsWith('/')) {
+      url = '/' + url;
+    }
+
+    return `${baseUrl}${url}`;
   }
 }

@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { FeedService } from '../../domain/services/feed.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
-import { 
-  FeedPost, 
-  FeedResponse, 
-  FeedFilters, 
+import {
+  FeedPost,
+  FeedResponse,
+  FeedFilters,
   CreatePostData,
-  UserFeedStats 
+  UserFeedStats
 } from '../../domain/entities/feed.interface';
 import { PostCreatorData } from '../types/post.types';
 
@@ -19,11 +19,11 @@ import { PostCreatorData } from '../types/post.types';
 })
 export class FeedPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   // Data
   posts: FeedPost[] = [];
   userStats: UserFeedStats | null = null;
-  
+
   // State
   isLoading = false;
   isLoadingMore = false;
@@ -33,7 +33,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   error: string | null = null;
   selectedFilter: 'personalized' | 'trending' | 'latest' = 'personalized';
   trendingTimeRange: '24h' | '7d' | '30d' = '24h';
-  
+
   // UI State
   searchQuery = '';
   selectedTags: string[] = [];
@@ -76,11 +76,11 @@ export class FeedPageComponent implements OnInit, OnDestroy {
       feed_type: this.selectedFilter,
       limit: 20
     };
-    
+
     // Agregar filtro de tiempo para trending
     if (this.selectedFilter === 'trending') {
-      filters.time_range = this.trendingTimeRange === '24h' ? 'day' : 
-                          this.trendingTimeRange === '7d' ? 'week' : 'month';
+      filters.time_range = this.trendingTimeRange === '24h' ? 'day' :
+        this.trendingTimeRange === '7d' ? 'week' : 'month';
     }
 
     console.log('FeedPageComponent: Enviando request con filtros:', filters);
@@ -121,11 +121,11 @@ export class FeedPageComponent implements OnInit, OnDestroy {
       cursor: this.nextCursor,
       limit: 20
     };
-    
+
     // Agregar filtro de tiempo para trending
     if (this.selectedFilter === 'trending') {
-      filters.time_range = this.trendingTimeRange === '24h' ? 'day' : 
-                          this.trendingTimeRange === '7d' ? 'week' : 'month';
+      filters.time_range = this.trendingTimeRange === '24h' ? 'day' :
+        this.trendingTimeRange === '7d' ? 'week' : 'month';
     }
 
     this.feedService.getFeed(filters)
@@ -177,7 +177,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   setTrendingTimeRange(range: '24h' | '7d' | '30d'): void {
     if (this.trendingTimeRange !== range) {
       this.trendingTimeRange = range;
-      
+
       // Solo recargar si estamos en modo trending
       if (this.selectedFilter === 'trending') {
         this.loadFeed();
@@ -238,39 +238,39 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   /**
    * Maneja la edición de un post
    */
-  onEditPost(editData: {postId: string, content: string, tags: string[]}): void {
+  onEditPost(editData: { postId: string, content: string, tags: string[] }): void {
     console.log('feed-page: onEditPost called with data:', editData);
-    
+
     this.feedService.updatePost(editData.postId, {
       content: editData.content,
       tags: editData.tags
     })
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (updatedPost) => {
-        console.log('feed-page: post updated successfully:', updatedPost);
-        // Actualizar el post en la lista
-        const postIndex = this.posts.findIndex(p => p.id === editData.postId);
-        if (postIndex !== -1) {
-          this.posts[postIndex] = updatedPost;
-          console.log('feed-page: post updated in list at index:', postIndex);
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedPost) => {
+          console.log('feed-page: post updated successfully:', updatedPost);
+          // Actualizar el post en la lista
+          const postIndex = this.posts.findIndex(p => p.id === editData.postId);
+          if (postIndex !== -1) {
+            this.posts[postIndex] = updatedPost;
+            console.log('feed-page: post updated in list at index:', postIndex);
+          }
+          console.log(`Post ${editData.postId} editado`);
+        },
+        error: (error) => {
+          console.error('Error updating post:', error);
+          this.error = 'No se pudo editar el post. Intenta de nuevo.';
         }
-        console.log(`Post ${editData.postId} editado`);
-      },
-      error: (error) => {
-        console.error('Error updating post:', error);
-        this.error = 'No se pudo editar el post. Intenta de nuevo.';
-      }
-    });
+      });
   }
 
   /**
    * Maneja la votación en una encuesta
    */
-  onVotePoll(voteData: {pollId: string, optionId: string, isMultipleChoice: boolean}): void {
+  onVotePoll(voteData: { pollId: string, optionId: string, isMultipleChoice: boolean }): void {
     // Convertir optionId a array ya que el servicio espera un array
     const optionIds = [voteData.optionId];
-    
+
     this.feedService.votePoll(voteData.pollId, optionIds)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -324,7 +324,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
           this.hasMore = false;
           this.nextCursor = null;
           console.log(`🔍 Encontrados ${posts.length} posts para "${this.searchQuery}"`);
-          
+
           if (posts.length === 0) {
             this.error = `No se encontraron posts relacionados con "${this.searchQuery}". Intenta con otros términos.`;
           }
@@ -446,6 +446,6 @@ export class FeedPageComponent implements OnInit, OnDestroy {
    */
   onViewProfile(userId: string): void {
     console.log('Ver perfil del usuario:', userId);
-    this.router.navigate(['/profile', userId]);
+    this.router.navigate(['/profile', userId, 'about-me']); 
   }
 }

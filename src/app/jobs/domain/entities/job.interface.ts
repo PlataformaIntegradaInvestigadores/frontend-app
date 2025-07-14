@@ -44,6 +44,9 @@ export interface RecentApplication {
   status: string;
   status_display: string;
   applied_at: string;
+  cover_letter?: string; // Agregar esta propiedad
+  resume_file?: string;  // Agregar esta propiedad
+  notes?: string;        // Agregar esta propiedad (opcional)
   user_info: {
     id: number;
     first_name: string;

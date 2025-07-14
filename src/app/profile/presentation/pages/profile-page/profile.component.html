@@ -16,3 +16,12 @@
   </div>
 </div>
 <app-footer></app-footer>
+
+<!-- Modal de edición de post, global y aislado -->
+<app-post-editor
+  *ngIf="editModalVisible && postToEdit"
+  [post]="postToEdit"
+  [showModal]="editModalVisible"
+  (close)="closeEditModal()"
+  (save)="saveEditPost($event)">
+</app-post-editor>
