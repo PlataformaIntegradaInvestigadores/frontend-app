@@ -1,0 +1,90 @@
+<!-- ===================================================
+     post-editor.component.html - ARCHIVO SEPARADO
+     =================================================== -->
+
+<!-- Template que será renderizado en el overlay (fuera del árbol DOM) -->
+<ng-template #modalTemplate>
+  <div class="post-editor-overlay" (click)="onOverlayClick($event)" (keydown)="onKeyDown($event)" tabindex="-1">
+
+    <div class="post-editor-modal modal-active" (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="post-editor-header">
+        <h2 class="post-editor-title">
+          <i class="fas fa-edit mr-2 text-blue-600"></i>
+          Editar Post
+        </h2>
+        <button type="button" class="post-editor-close-btn" (click)="onClose()" [disabled]="isSubmitting">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="post-editor-content">
+
+        <!-- Content Editor -->
+        <div class="form-group">
+          <label class="form-label">Contenido</label>
+          <textarea [(ngModel)]="editedContent" class="form-textarea" rows="6" placeholder="¿Qué está pasando?"
+            maxlength="5000" [disabled]="isSubmitting" #contentTextarea></textarea>
+          <div class="character-count">{{ editedContent.length }}/5000</div>
+        </div>
+
+        <!-- Tags Editor -->
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+
+          <!-- Tag Input -->
+          <div class="tag-input-container">
+            <input type="text" [(ngModel)]="tagInput" (keydown)="onTagKeyDown($event)" class="tag-input"
+              placeholder="Agregar tag..." maxlength="20" [disabled]="isSubmitting" #tagInputRef>
+            <button type="button" (click)="addTag()" class="tag-add-btn"
+              [disabled]="!tagInput.trim() || isSubmitting || editedTags.length >= 10">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <!-- Tags List -->
+          <div class="tags-list" *ngIf="editedTags.length > 0">
+            <span *ngFor="let tag of editedTags; let i = index; trackBy: trackByIndex" class="tag-item">
+              # {{ tag }}
+              <button type="button" (click)="removeTag(i)" class="tag-remove-btn" [disabled]="isSubmitting">
+                <i class="fas fa-times text-xs"></i>
+              </button>
+            </span>
+          </div>
+
+          <!-- Tag limit info -->
+          <div class="tag-info" *ngIf="editedTags.length >= 8">
+            <i class="fas fa-info-circle text-yellow-600 mr-1"></i>
+            <span class="text-xs text-yellow-700">
+              Máximo {{ editedTags.length }}/10 tags
+            </span>
+          </div>
+        </div>
+
+        <!-- Info Notice -->
+        <div class="info-notice">
+          <div class="info-content">
+            <i class="fas fa-info-circle text-yellow-600 mr-2"></i>
+            <span class="info-text">
+              Los posts editados mostrarán una etiqueta "editado" a otros usuarios.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="post-editor-footer">
+        <button type="button" (click)="onClose()" class="btn-cancel" [disabled]="isSubmitting">
+          Cancelar
+        </button>
+        <button type="button" (click)="onSave()" [disabled]="!editedContent.trim() || isSubmitting" class="btn-save">
+          <i class="fas fa-check mr-2" *ngIf="!isSubmitting"></i>
+          <i class="fas fa-spinner fa-spin mr-2" *ngIf="isSubmitting"></i>
+          {{ isSubmitting ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

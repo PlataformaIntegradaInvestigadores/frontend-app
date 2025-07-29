@@ -20,6 +20,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isOwnProfile: boolean = false;
   private routeSub: Subscription = new Subscription();
   authorCentinela: Author | undefined;
+  editModalVisible: boolean = false;
+  postToEdit: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -101,5 +103,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
       const title = `${this.authorCentinela.first_name} ${this.authorCentinela.last_name}`;
       this.titleService.setTitle(title);
     }
+  }
+
+  closeEditModal(): void {
+    this.editModalVisible = false;
+    this.postToEdit = null;
+  }
+
+  saveEditPost(editData: { content: string, tags: string[] }): void {
+    // Aquí deberías emitir un evento o llamar a un servicio para actualizar el post
+    // y luego cerrar el modal. Puedes personalizar según tu lógica.
+    this.closeEditModal();
   }
 }

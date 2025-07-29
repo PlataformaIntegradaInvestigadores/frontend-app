@@ -1,0 +1,158 @@
+<!-- Post Creator Component - Facebook-like design -->
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+  <!-- Header section with avatar and textarea -->
+  <div class="flex items-start gap-3 mb-4">
+    <img [src]="userAvatar" [alt]="userName || 'Tu foto'" class="w-10 h-10 rounded-full object-cover">
+
+    <div class="flex-1">
+      <textarea #textArea 
+        [(ngModel)]="newPostContent" 
+        [placeholder]="placeholder || 'What\'s on your mind?'"
+        class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-700"
+        rows="3" 
+        [disabled]="isLoading"
+        (focus)="onTextAreaFocus()"
+        (blur)="onTextAreaBlur()">
+      </textarea>
+    </div>
+  </div>
+
+  <!-- File upload hidden inputs -->
+  <input type="file" #imageInput (change)="onFileSelected($event, 'image')" multiple accept="image/*" class="hidden">
+  <input type="file" #videoInput (change)="onFileSelected($event, 'video')" multiple accept="video/*" class="hidden">
+  <input type="file" #documentInput (change)="onFileSelected($event, 'file')" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" class="hidden">
+
+  <!-- Selected files preview -->
+  <div class="mb-4" *ngIf="selectedFiles.length > 0">
+    <div class="flex flex-wrap gap-2">
+      <div *ngFor="let file of selectedFiles; let i = index"
+        class="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">
+        <i [class]="getFileIcon(file)"></i>
+        <span>{{ file.name }}</span>
+        <button type="button" (click)="removeFile(i)" class="text-blue-500 hover:text-blue-700 ml-1">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Poll creator section -->
+  <div class="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50" *ngIf="showPollCreator">
+    <div class="flex items-center justify-between mb-3">
+      <h4 class="font-medium text-gray-900">Crear Encuesta</h4>
+      <button (click)="cancelPoll()" class="text-gray-500 hover:text-gray-700">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="space-y-3">
+      <input
+        [(ngModel)]="pollQuestion"
+        placeholder="Escribe tu pregunta..."
+        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+        [disabled]="isLoading">
+      
+      <div class="space-y-2">
+        <div *ngFor="let option of pollOptions; let i = index; trackBy: trackByIndex" class="flex items-center gap-2">
+          <input
+            [value]="pollOptions[i]"
+            (input)="onPollOptionInput($event, i)"
+            [placeholder]="'Opción ' + (i + 1)"
+            class="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            [disabled]="isLoading"
+            [id]="'poll-option-' + i">
+          <button 
+            *ngIf="pollOptions.length > 2"
+            (click)="removePollOption(i)" 
+            class="text-red-500 hover:text-red-700 p-1">
+            <i class="fas fa-minus-circle"></i>
+          </button>
+        </div>
+      </div>
+      
+      <button 
+        *ngIf="pollOptions.length < 10"
+        (click)="addPollOption()" 
+        class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+        <i class="fas fa-plus-circle mr-1"></i>
+        Agregar opción
+      </button>
+
+      <!-- Validación visual de la encuesta -->
+      <div class="mt-3 text-sm" *ngIf="showPollCreator">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-info-circle text-blue-500"></i>
+          <span class="text-gray-600">
+            Se necesita una pregunta y al menos 2 opciones válidas.
+          </span>
+        </div>
+        <div class="mt-1 text-xs text-gray-500">
+          Opciones válidas: {{ validPollOptionsCount }}/{{ pollOptions.length }}
+          <span *ngIf="!isPollValid" class="text-red-500 ml-2">
+            <i class="fas fa-exclamation-triangle"></i>
+            Incompleta
+          </span>
+          <span *ngIf="isPollValid" class="text-green-500 ml-2">
+            <i class="fas fa-check-circle"></i>
+            Lista
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom section with options and post button -->
+  <div class="border-t border-gray-200 pt-3">
+    <div class="flex items-center justify-between">
+      <!-- Left side options -->
+      <div class="flex items-center gap-2" *ngIf="showOptions">
+        <button
+          class="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm disabled:opacity-50"
+          (click)="onOptionClick('photo')" [disabled]="isLoading" title="Agregar fotos">
+          <i class="fas fa-image text-green-500"></i>
+          <span class="hidden sm:inline">Fotos</span>
+        </button>
+
+        <button
+          class="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm disabled:opacity-50"
+          (click)="onOptionClick('video')" [disabled]="isLoading" title="Agregar videos">
+          <i class="fas fa-video text-blue-500"></i>
+          <span class="hidden sm:inline">Videos</span>
+        </button>
+
+        <button
+          class="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm disabled:opacity-50"
+          (click)="onOptionClick('file')" [disabled]="isLoading" title="Agregar archivos">
+          <i class="fas fa-file-alt text-purple-500"></i>
+          <span class="hidden sm:inline">Archivos</span>
+        </button>
+
+        <button
+          class="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm disabled:opacity-50"
+          (click)="onOptionClick('poll')" [disabled]="isLoading" title="Crear encuesta">
+          <i class="fas fa-poll text-orange-500"></i>
+          <span class="hidden sm:inline">Encuesta</span>
+        </button>
+      </div>
+
+      <!-- Right side post button -->
+      <button
+        class="inline-flex items-center justify-center px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-md hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        (click)="submitPost()" [disabled]="!canSubmit() || isLoading">
+        <span *ngIf="!isLoading" class="flex items-center">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+          </svg>
+          {{ buttonText || 'Post' }}
+        </span>
+        <span *ngIf="isLoading" class="flex items-center">
+          <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Posting...
+        </span>
+      </button>
+    </div>
+  </div>
+</div>

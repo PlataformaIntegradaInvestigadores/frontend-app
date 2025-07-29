@@ -1,70 +1,67 @@
 <!-- data-nav.component.html -->
-<nav class="bg-white shadow">
-  <div class="container mx-auto max-w-screen-xl px-3 py-1">
+<nav class="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200" style="z-index: 100; position: relative;">
+  <div class="container mx-auto max-w-screen-xl px-4 py-3">
     <button
-      class="inline-flex items-center p-1 w-8 h-8 justify-center text-sm text-gray-500 rounded-lg md:hidden focus:outline-none focus:ring-2 focus:ring-gray-200"
+      class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200"
       aria-controls="navbar-default" aria-expanded="false" (click)="toggleNav()" type="button">
-      <span class="sr-only">Open main menu</span>
-      <div class="w-4 h-4">
-        <img src="assets/svg-data-nav/menu.svg" alt="Menu icon"
-          class="w-4 h-4 text-white-400 group-hover:text-white-500 dark:text-white-500 dark:group-hover:text-white-300">
-      </div>
+      <span class="sr-only">Open profile navigation menu</span>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
     </button>
     <div [ngClass]="{'hidden': !navOpen, 'block': navOpen}" class="w-full md:block md:w-auto" id="navbar-default">
-      <ul class="flex flex-col md:flex-row md:mt-0 md:border-0 md:p-0 rtl:space-x-reverse">
-        <li *ngIf="isLoggedIn && !authorCentinela">
-          <a routerLink="./about-me" routerLinkActive="active" ariaCurrentWhenActive="page"
-            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
-            <div class="w-4 h-4 mr-2">
+      <div class="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-1">
+        <div class="nav-item" *ngIf="isLoggedIn && !authorCentinela">
+          <a routerLink="about-me" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="nav-link">
+            <div class="nav-icon">
               <img src="assets/svg-data-nav/about-me.svg" alt="About me icon"
-                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+                class="w-4 h-4 transition-colors duration-200">
             </div>
-            About {{ user?.first_name }}
+            <span>About {{ user?.first_name }}</span>
           </a>
-        </li>
-        <li *ngIf="user?.scopus_id || authorCentinela ">
-          <a routerLink="./network" routerLinkActive="active" ariaCurrentWhenActive="page"
-            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
-            aria-current="page">
-            <div class="w-4 h-4 mr-2">
+        </div>
+        <div class="nav-item" *ngIf="user?.scopus_id || authorCentinela">
+          <a routerLink="network" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="nav-link">
+            <div class="nav-icon">
               <img src="assets/svg-data-nav/network.svg" alt="Network icon"
-                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+                class="w-4 h-4 transition-colors duration-200">
             </div>
-            Network
+            <span>Network</span>
           </a>
-        </li>
-        <li *ngIf="user?.scopus_id || authorCentinela">
-          <a routerLink="./article" routerLinkActive="active" ariaCurrentWhenActive="page"
-            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group"
-            aria-current="page">
-            <div class="w-4 h-4 mr-2">
+        </div>
+        <div class="nav-item" *ngIf="user?.scopus_id || authorCentinela">
+          <a routerLink="article" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="nav-link">
+            <div class="nav-icon">
               <img src="assets/svg-data-nav/article.svg" alt="Article icon"
-                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+                class="w-4 h-4 transition-colors duration-200">
             </div>
-            Article
+            <span>Articles</span>
           </a>
-        </li>
-        <li *ngIf="user?.scopus_id || authorCentinela">
-          <a routerLink="./fingerprint" routerLinkActive="active" ariaCurrentWhenActive="page"
-            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
-            <div class="w-4 h-4 mr-2">
+        </div>
+        <div class="nav-item" *ngIf="user?.scopus_id || authorCentinela">
+          <a routerLink="fingerprint" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="nav-link">
+            <div class="nav-icon">
               <img src="assets/svg-data-nav/fingerprint.svg" alt="Fingerprint icon"
-                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+                class="w-4 h-4 transition-colors duration-200">
             </div>
-            Fingerprint
+            <span>Fingerprint</span>
           </a>
-        </li>
-        <li *ngIf="isOwnProfile">
-          <a routerLink="./my-groups" routerLinkActive="active" ariaCurrentWhenActive="page"
-            class="inline-flex items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-xs group">
-            <div class="w-4 h-4 mr-2">
+        </div>
+        <div class="nav-item" *ngIf="isOwnProfile">
+          <a routerLink="my-groups" routerLinkActive="active" ariaCurrentWhenActive="page"
+            class="nav-link">
+            <div class="nav-icon">
               <img src="assets/svg-data-nav/groups.svg" alt="My groups icon"
-                class="w-4 h-4 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300">
+                class="w-4 h-4 transition-colors duration-200">
             </div>
-            Groups
+            <span>Groups</span>
           </a>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
 </nav>

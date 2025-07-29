@@ -1,0 +1,77 @@
+<!-- Post Files -->
+<div class="mt-3" *ngIf="processedFiles && processedFiles.length > 0">
+  
+  <div class="grid gap-2" 
+       [ngClass]="{
+         'grid-cols-1': processedFiles.length === 1,
+         'grid-cols-2': processedFiles.length > 1
+       }">
+    <div 
+      *ngFor="let file of processedFiles; let i = index"
+      class="relative rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+      
+      <!-- Image Files -->
+      <div *ngIf="file._fileType === 'image'" 
+           class="cursor-pointer relative" 
+           (click)="onImageClick(file)">
+        
+        <!-- Imagen -->
+        <img 
+          [src]="file._imageUrl" 
+          [alt]="file.original_filename || 'Imagen del post'"
+          class="w-full h-48 object-contain bg-gray-50"
+          (load)="onImageLoad(file)"
+          (error)="onImageError(file)">
+        
+        <!-- Error placeholder -->
+        <div *ngIf="imageLoadStates[file.id] === 'error'" 
+             class="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-500 cursor-pointer"
+             (click)="onImageClick(file)">
+          <div class="text-center p-4">
+            <i class="fas fa-image text-4xl mb-2"></i>
+            <p class="text-sm font-medium">Error al cargar imagen</p>
+            <p class="text-xs text-gray-400 mt-1">{{ file.original_filename || 'Imagen' }}</p>
+            <p class="text-xs text-blue-500 mt-2">Haz clic para ver en grande</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Files -->
+      <div *ngIf="file._fileType === 'video'">
+        <video 
+          [src]="file._imageUrl" 
+          controls 
+          class="w-full h-48 object-cover"
+          preload="metadata">
+          Tu navegador no soporta videos.
+        </video>
+      </div>
+
+      <!-- Other Files -->
+      <div *ngIf="file._fileType !== 'image' && file._fileType !== 'video'" 
+           class="p-4 bg-gray-50 h-48 flex items-center justify-between">
+        <div class="flex items-center flex-1">
+          <i [class]="getFileIcon(file._fileType)" class="text-3xl text-gray-500 mr-3 flex-shrink-0"></i>
+          <div class="flex flex-col gap-1 min-w-0 flex-1">
+            <p class="text-sm font-semibold text-gray-900 truncate">{{ file.original_filename || file.file.split('/').pop() }}</p>
+            <p class="text-xs text-gray-500">{{ formatFileSize(file.file_size) }}</p>
+          </div>
+        </div>
+        <div class="flex gap-2 ml-2">
+          <button 
+            class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" 
+            (click)="onFileOpen(file)" 
+            title="Ver archivo">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button 
+            class="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition-colors" 
+            (click)="onFileDownload(file)" 
+            title="Descargar">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

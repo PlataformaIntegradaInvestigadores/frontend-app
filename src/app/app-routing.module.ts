@@ -1,21 +1,24 @@
 import { NgModule } from '@angular/core';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './auth/presentation/login/login.component';
-import { RegisterComponent } from './auth/presentation/register/register.component';
+import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
+import { AuthRedirectGuard } from 'src/guards/auth-redirect.guard';
+import { researcherOnlyGuard } from 'src/guards/researcher-only.guard';
 // import { DebateChatComponent } from './consensus/presentation/components/debate-chat/debate-chat.component';
 
-const routerOptions:ExtraOptions = {
+const routerOptions: ExtraOptions = {
   anchorScrolling: 'enabled',
   scrollPositionRestoration: 'enabled',
 };
 const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent
+    component: RedirectComponent,
+    canActivate: [AuthRedirectGuard]
   },
   {
     path: 'register',
-    component: RegisterComponent
+    component: RedirectComponent,
+    canActivate: [AuthRedirectGuard]
   },
   {
     path: 'home',
@@ -29,9 +32,19 @@ const routes: Routes = [
     path: 'profile/:id',
     loadChildren: () => import('src/app/profile/profile-page.module').then(m => m.ProfilePageModule)
   },
-  // {
-  //   path:'debate-chat/:id', component: DebateChatComponent
-  // },
+  {
+    path: 'feeds',
+    loadChildren: () => import('src/app/feeds/feeds.module').then(m => m.FeedsModule),
+    canActivate: [researcherOnlyGuard]
+  },
+  {
+    path: 'jobs/:id',
+    loadChildren: () => import('src/app/jobs/jobs-page.module').then(m => m.JobsPageModule)
+  },
+  {
+    path: 'company/:id',
+    loadChildren: () => import('src/app/profile-company/profile-company.module').then(m => m.ProfileCompanyPageModule)
+  },
 
   /* Siempre al ultimo */
   {

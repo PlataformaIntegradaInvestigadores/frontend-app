@@ -5,18 +5,24 @@ npm-debug.log
 # IDE
 .idea
 .vscode
+*.swp
+*.swo
 
 # Git
 .git
 .gitignore
+.gitattributes
 
 # Angular
 .angular
 coverage
 dist
+tmp
 
 # Environment
 .env
+.env.local
+.env.production
 
 # System Files
 .DS_Store
@@ -32,3 +38,36 @@ LICENSE
 e2e
 *.spec.ts
 *.test.ts
+karma.conf.js
+protractor.conf.js
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Build artifacts
+build
+out
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Temporary folders
+.tmp
+.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

@@ -1,0 +1,69 @@
+<div class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+  
+  <!-- Post Header -->
+  <app-post-header
+    [post]="post"
+    [canEditPost]="canEditPost"
+    [formattedDate]="formattedDate"
+    (profileClick)="navigateToProfile()"
+    (deleteClick)="onDeleteClick()"
+    (editClick)="onEditClick()">
+  </app-post-header>
+
+  <!-- Post Content -->
+  <app-post-content
+    [content]="post.content"
+    [displayContent]="displayContent"
+    [showFullContent]="showFullContent"
+    [shouldTruncateContent]="shouldTruncateContent"
+    [tags]="post.tags || []"
+    (toggleContent)="toggleFullContent()">
+  </app-post-content>
+
+  <!-- Poll Section -->
+  <div class="px-4">
+    <app-post-poll
+      *ngIf="post.poll"
+      [poll]="post.poll"
+      (optionClick)="onPollOptionClick($event)">
+    </app-post-poll>
+  </div>
+
+  <!-- Post Files -->
+  <div class="px-4">
+    <app-post-files
+      [files]="post.files || []"
+      (fileOpen)="openFile($event)"
+      (fileDownload)="downloadFile($event)">
+    </app-post-files>
+  </div>
+
+  <!-- Post Actions -->
+  <app-post-actions
+    [post]="post"
+    [showActions]="showActions"
+    [showComments]="showComments"
+    [isLiking]="isLiking"
+    [showCommentsSection]="showCommentsSection"
+    (likeClick)="onLikeClick()"
+    (commentToggle)="showCommentsSection = !showCommentsSection">
+  </app-post-actions>
+
+  <!-- Comments Section -->
+  <div class="border-t border-gray-100 bg-gray-50" *ngIf="showCommentsSection">
+    <app-post-comments 
+      [postId]="post.id"
+      [commentsCount]="post.comments_count"
+      (commentAdded)="onCommentAdded($event)"
+      (commentsCountUpdated)="onCommentsCountUpdated($event)">
+    </app-post-comments>
+  </div>
+
+  <!-- Post Editor Modal -->
+  <app-post-editor
+    [post]="post"
+    [showModal]="showEditModal"
+    (close)="onCloseEditModal()"
+    (save)="onSaveEdit($event)">
+  </app-post-editor>
+</div>

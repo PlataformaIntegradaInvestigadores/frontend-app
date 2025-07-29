@@ -5,8 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { ProfilePageRoutingModule } from './profile/profile-page-routing.module';
-import { LoginComponent } from './auth/presentation/login/login.component';
-import { RegisterComponent } from './auth/presentation/register/register.component';
 import { NetworkComponent } from './profile/presentation/components/network/network.component';
 import { ContactComponent } from './profile/presentation/components/contact/contact.component';
 import { ArticleComponent } from './profile/presentation/components/article/article.component';
@@ -14,25 +12,35 @@ import { FingerprintComponent } from './profile/presentation/components/fingerpr
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HomePageModule } from "./search-engine/presentation/home-page/home-page.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {  HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AboutUsModule } from './search-engine/presentation/about-us/about-us.module';
 import { AboutUsRoutingModule } from './search-engine/presentation/about-us/about-us.routing.module';
 import { FormsModule } from '@angular/forms';
-@NgModule({
-  declarations: [
+import { RouterModule } from '@angular/router';
+import { AuthModalComponent } from './auth/presentation/auth-modal/auth-modal.component';
+import { LoginFormComponent } from './auth/presentation/login-form/login-form.component';
+import { RegisterFormComponent } from './auth/presentation/register-form/register-form.component';
+import { CompanyRegisterFormComponent } from './auth/presentation/company-register-form/company-register-form.component';
+import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+@NgModule({  declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent,
     NetworkComponent,
     ContactComponent,
     ArticleComponent,
     FingerprintComponent,
+    AuthModalComponent,
+    LoginFormComponent,
+    RegisterFormComponent,
+    CompanyRegisterFormComponent,
+    RedirectComponent,
   ],
   imports: [
     AppRoutingModule,
+    RouterModule,
     SharedModule,
     ProfilePageRoutingModule,
     FontAwesomeModule,
@@ -48,7 +56,13 @@ import { FormsModule } from '@angular/forms';
     AboutUsRoutingModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

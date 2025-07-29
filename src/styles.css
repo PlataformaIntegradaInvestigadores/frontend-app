@@ -5,7 +5,6 @@
 @import 'flowbite';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-
 .auth_bg {
   background-color: black;
   background-image: url('/assets/background.jpg');
@@ -32,5 +31,60 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Clase para controlar el scroll cuando el modal está abierto */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+/* Asegurar que los SVGs no causen overflow */
+svg {
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Prevenir overflow en contenedores de visualizaciones */
+.visual-container {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Asegurar que los gráficos D3 no excedan sus contenedores */
+figure svg,
+.d3-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Corregir overflow en componentes de gráficos */
+app-word-cloud,
+app-ecuador-map,
+app-graph {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* ===== MODAL Z-INDEX FIXES ===== */
+/* Asegurar que todos los modales aparezcan por encima del header */
+.modal-backdrop,
+.fixed.inset-0.bg-black.bg-opacity-50,
+.fixed.inset-0.bg-gray-900.bg-opacity-50 {
+  z-index: 100000 !important;
+}
+
+/* Modal containers */
+.modal-container,
+.bg-white.rounded-lg.shadow-xl {
+  z-index: 100001 !important;
+}
+
+/* Estilos específicos para modales que usan clases fijas */
+.fixed.inset-0 {
+  z-index: 100000 !important;
+}
+
+.fixed.inset-0 > .bg-white,
+.fixed.inset-0 > .modal-container,
+.fixed.inset-0 .bg-white.rounded-lg {
+  z-index: 100001 !important;
+}

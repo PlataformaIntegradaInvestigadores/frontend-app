@@ -1,0 +1,75 @@
+/* Estilos adicionales para el modal de edición de perfil de empresa */
+.modal-backdrop {
+  backdrop-filter: blur(2px);
+  z-index: 100000 !important;
+}
+
+.form-field {
+  transition: border-color 0.2s ease-in-out;
+}
+
+.form-field:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.error-field {
+  border-color: #ef4444;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.logo-preview-container {
+  transition: all 0.3s ease;
+}
+
+.logo-preview-container:hover {
+  transform: scale(1.02);
+}
+
+.upload-button {
+  transition: all 0.2s ease;
+}
+
+.upload-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Custom scrollbar for modal */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Asegurar que este modal específico tenga prioridad sobre el header */
+:host {
+  z-index: 100000 !important;
+}

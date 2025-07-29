@@ -1,0 +1,27 @@
+/* Estilos personalizados que no se pueden reemplazar fácilmente con Tailwind */
+
+/* Tag gradient background */
+.tag-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Image hover effects */
+.image-hover:hover img {
+  transform: scale(1.02);
+}
+
+/* Poll option active animation */
+.poll-option:active:not(.poll-option-disabled) {
+  transform: scale(0.98);
+}
+
+/* Progress bar animation */
+.poll-progress-bar {
+  animation: progressBarGrow 0.3s ease;
+}
+
+@keyframes progressBarGrow {
+  from {
+    width: 0;
+  }
+}

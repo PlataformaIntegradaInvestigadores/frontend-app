@@ -1,0 +1,98 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-5">
+  <div class="flex flex-col space-y-1">
+    <label for="modal-username" class="px-2 text-sm font-semibold text-gray-500">Email address</label>
+    <input 
+      formControlName="username" 
+      type="email" 
+      id="modal-username" 
+      autofocus
+      class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200" 
+      [class.border-red-500]="loginForm.get('username')?.errors && loginForm.get('username')?.touched"
+    />
+    <div *ngIf="loginForm.get('username')?.errors && loginForm.get('username')?.touched" class="text-red-500 text-sm">
+      <div *ngIf="loginForm.get('username')?.hasError('required')">Email is required.</div>
+      <div *ngIf="loginForm.get('username')?.hasError('email')">Invalid email address.</div>
+    </div>
+  </div>
+
+  <div class="flex flex-col space-y-1">
+    <div class="flex items-center justify-between">
+      <label for="modal-password" class="px-2 text-sm font-semibold text-gray-500">Password</label>
+      <a class="text-xs text-blue-600 hover:underline focus:text-primary_tailwind cursor-pointer">Forgot Password?</a>
+    </div>
+    <input 
+      formControlName="password" 
+      type="password" 
+      id="modal-password"
+      class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+      [class.border-red-500]="loginForm.get('password')?.errors && loginForm.get('password')?.touched"
+    />
+    <div *ngIf="loginForm.get('password')?.errors && loginForm.get('password')?.touched" class="text-red-500 text-sm">
+      <div *ngIf="loginForm.get('password')?.hasError('required')">Password is required.</div>
+    </div>
+  </div>
+
+  <div class="flex items-center space-x-2">
+    <input 
+      type="checkbox" 
+      id="modal-remember"
+      class="w-4 h-4 transition duration-300 rounded focus:ring-2 focus:ring-offset-0 focus:outline-none focus:ring-blue-200" 
+    />
+    <label for="modal-remember" class="text-sm font-semibold text-gray-500">Remember me</label>
+  </div>
+
+  <div>
+    <button 
+      type="submit"
+      [disabled]="isLoading"
+      class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-md hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+      <span *ngIf="!isLoading" class="flex items-center justify-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+        </svg>
+        Log In
+      </span>
+      <span *ngIf="isLoading" class="flex items-center justify-center">
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Logging in...
+      </span>
+    </button>
+  </div>
+
+  <!-- Error messages -->
+  <div *ngIf="errorMessages.length > 0" class="text-red-500 text-sm">
+    <ul class="list-disc list-inside">
+      <li *ngFor="let error of errorMessages">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Social login options -->
+  <div class="flex flex-col space-y-5">
+    <span class="flex items-center justify-center space-x-2">
+      <span class="h-px bg-gray-400 w-14"></span>
+      <span class="font-normal text-gray-500">or login with</span>
+      <span class="h-px bg-gray-400 w-14"></span>
+    </span>
+    <div class="flex flex-col space-y-4">
+      <a class="flex items-center justify-center px-4 py-2 space-x-2 border border-gray-800 rounded-md focus:outline-none cursor-not-allowed opacity-50">
+        <span>
+          <div class="w-6 h-6">
+            <img src="assets/google_logo.svg" alt="Google Logo" class="w-full h-full">
+          </div>
+        </span>
+        <span class="text-sm font-medium text-gray-800">Google</span>
+      </a>
+      <a class="flex items-center justify-center px-4 py-2 space-x-2 border border-primary_tailwind rounded-md focus:outline-none cursor-not-allowed opacity-50">
+        <span>
+          <div class="w-6 h-6">
+            <img src="assets/orc_logo.svg" alt="ORCID Logo" class="w-full h-full">
+          </div>
+        </span>
+        <span class="text-sm font-medium text-gray-800">ORCID</span>
+      </a>
+    </div>
+  </div>
+</form>

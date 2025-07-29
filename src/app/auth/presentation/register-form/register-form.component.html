@@ -1,0 +1,153 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
+  <!-- First and Last Name -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col space-y-1">
+      <label for="modal-firstName" class="px-2 text-sm font-semibold text-gray-500">First Name *</label>
+      <input 
+        formControlName="first_name" 
+        type="text" 
+        id="modal-firstName"
+        class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+        [class.border-red-500]="registerForm.get('first_name')?.errors && registerForm.get('first_name')?.touched"
+        (keypress)="preventNonAlphabetic($event)" 
+        (input)="capitalizeInput($event)" 
+      />
+      <div *ngIf="registerForm.get('first_name')?.errors && registerForm.get('first_name')?.touched" class="text-red-500 text-xs">
+        <div *ngIf="registerForm.get('first_name')?.hasError('required')">First Name is required.</div>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-1">
+      <label for="modal-lastName" class="px-2 text-sm font-semibold text-gray-500">Last Name *</label>
+      <input 
+        formControlName="last_name" 
+        type="text" 
+        id="modal-lastName"
+        class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+        [class.border-red-500]="registerForm.get('last_name')?.errors && registerForm.get('last_name')?.touched"
+        (keypress)="preventNonAlphabetic($event)" 
+        (input)="capitalizeInput($event)" 
+      />
+      <div *ngIf="registerForm.get('last_name')?.errors && registerForm.get('last_name')?.touched" class="text-red-500 text-xs">
+        <div *ngIf="registerForm.get('last_name')?.hasError('required')">Last Name is required.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div class="flex flex-col space-y-1">
+    <label for="modal-register-username" class="px-2 text-sm font-semibold text-gray-500">Email Address *</label>
+    <input 
+      formControlName="username" 
+      type="email" 
+      id="modal-register-username"
+      class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+      [class.border-red-500]="registerForm.get('username')?.errors && registerForm.get('username')?.touched"
+    />
+    <div *ngIf="registerForm.get('username')?.errors && registerForm.get('username')?.touched" class="text-red-500 text-xs">
+      <div *ngIf="registerForm.get('username')?.hasError('required')">Email is required.</div>
+      <div *ngIf="registerForm.get('username')?.hasError('email')">Invalid email address.</div>
+    </div>
+  </div>
+
+  <!-- Passwords -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col space-y-1">
+      <label for="modal-register-password" class="px-2 text-sm font-semibold text-gray-500">Password *</label>
+      <input 
+        formControlName="password" 
+        type="password" 
+        id="modal-register-password"
+        class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+        [class.border-red-500]="registerForm.get('password')?.errors && registerForm.get('password')?.touched"
+      />
+    </div>
+    <div class="flex flex-col space-y-1">
+      <label for="modal-confirmPassword" class="px-2 text-sm font-semibold text-gray-500">Confirm Password *</label>
+      <input 
+        formControlName="confirm_password" 
+        type="password" 
+        id="modal-confirmPassword"
+        class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+        [class.border-red-500]="registerForm.get('confirm_password')?.errors && registerForm.get('confirm_password')?.touched"
+      />
+    </div>
+  </div>
+
+  <!-- Password validation messages -->
+  <div *ngIf="registerForm.get('password')?.errors && registerForm.get('password')?.touched" class="text-red-500 text-xs">
+    <div *ngIf="registerForm.get('password')?.hasError('required')">Password is required.</div>
+    <div *ngIf="registerForm.get('password')?.hasError('minlength')">Password must be at least 8 characters long.</div>
+    <div *ngIf="registerForm.get('password')?.hasError('pattern')">Password must contain at least one uppercase letter, one lowercase letter and one number.</div>
+  </div>
+
+  <div *ngIf="registerForm.get('confirm_password')?.errors && registerForm.get('confirm_password')?.touched" class="text-red-500 text-xs">
+    <div *ngIf="registerForm.get('confirm_password')?.hasError('required')">Confirm Password is required.</div>
+    <div *ngIf="registerForm.get('confirm_password')?.hasError('mismatch')">Passwords do not match.</div>
+  </div>
+
+  <!-- Scopus ID -->
+  <div class="flex flex-col space-y-1">
+    <label for="modal-scopusID" class="px-2 text-sm font-semibold text-gray-500">Scopus ID (optional)</label>
+    <input 
+      formControlName="scopus_id" 
+      type="text" 
+      id="modal-scopusID"
+      class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+      pattern="^[0-9]*$" 
+      (keypress)="preventNonNumeric($event)" 
+    />
+    <div *ngIf="registerForm.get('scopus_id')?.hasError('pattern') && registerForm.get('scopus_id')?.touched" class="text-red-500 text-xs">
+      Scopus ID must be a positive number.
+    </div>
+  </div>
+
+  <!-- Terms agreement -->
+  <div class="flex items-center space-x-2">
+    <input 
+      formControlName="agree_terms" 
+      type="checkbox" 
+      id="modal-agree_terms"
+      class="w-4 h-4 transition duration-300 rounded focus:ring-2 focus:ring-offset-0 focus:outline-none focus:ring-blue-200" 
+    />
+    <label for="modal-agree_terms" class="text-sm font-semibold text-gray-500">
+      I agree to the <a href="#" class="underline text-blue-600 hover:text-blue-800">terms</a> and 
+      <a href="#" class="underline text-blue-600 hover:text-blue-800">conditions</a>
+    </label>
+  </div>
+  <div *ngIf="registerForm.get('agree_terms')?.errors && registerForm.get('agree_terms')?.touched" class="text-red-500 text-xs">
+    You must agree to the terms and conditions.
+  </div>
+
+  <!-- Submit button -->
+  <div>
+    <button 
+      type="submit"
+      [disabled]="isLoading"
+      class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg shadow-md hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+      <span *ngIf="!isLoading" class="flex items-center justify-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+        </svg>
+        Create Account
+      </span>
+      <span *ngIf="isLoading" class="flex items-center justify-center">
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Creating Account...
+      </span>
+    </button>
+  </div>
+
+  <!-- Error messages -->
+  <div *ngIf="errorMessages.length > 0" class="mt-4 bg-red-100 border border-red-400 text-red-700 rounded p-3">
+    <p class="font-bold">Errors:</p>
+    <ul class="list-disc list-inside">
+      <li *ngFor="let errorMessage of errorMessages" class="mt-1">
+        {{ errorMessage }}
+      </li>
+    </ul>
+  </div>
+</form>

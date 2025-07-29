@@ -1,0 +1,56 @@
+/* Estilos adicionales para el perfil de empresa */
+
+.company-profile-container {
+  min-height: 100vh;
+}
+
+.cover-image-overlay {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8));
+}
+
+.profile-image {
+  border: 4px solid white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.job-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.job-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.social-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+.tech-tag {
+  transition: all 0.2s ease-in-out;
+}
+
+.tech-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}

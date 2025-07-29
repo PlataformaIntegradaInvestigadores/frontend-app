@@ -1,12 +1,159 @@
-.active {
-    padding-left: 12px;
-    padding-right: 12px;
-    font-weight: bold;
-    border-bottom-width: 2px;
-    border-bottom-color: theme('colors.primary_tailwind');
-    border-bottom-style: solid;
+/* ===== PROFILE NAVIGATION STYLES ===== */
+.nav-item {
+  margin-bottom: 0.5rem;
+}
 
-    :is(svg) {
-        fill: theme('colors.primary_tailwind');
-    }
+@media (min-width: 768px) {
+  .nav-item {
+    margin-bottom: 0;
+  }
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  min-height: 2.5rem;
+}
+
+.nav-link:hover {
+  background-color: #f8fafc;
+  color: #1e3c8b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(30, 60, 139, 0.1);
+}
+
+/* Active state styling - Enhanced specificity */
+a.nav-link.active,
+.nav-item a.nav-link.active,
+.nav-link[routerLinkActive="active"].active {
+  background-color: #1e3c8b !important;
+  color: white !important;
+  border-color: #1e3c8b !important;
+  box-shadow: 0 4px 12px rgba(30, 60, 139, 0.3) !important;
+  font-weight: 600 !important;
+}
+
+/* Active state for icons - Enhanced specificity */
+a.nav-link.active .nav-icon img,
+.nav-item a.nav-link.active .nav-icon img,
+.nav-link[routerLinkActive="active"].active .nav-icon img {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* Active state for text - Enhanced specificity */
+a.nav-link.active span,
+.nav-item a.nav-link.active span,
+.nav-link[routerLinkActive="active"].active span {
+  color: white !important;
+}
+
+/* Global override for Angular Router Active states in profile navigation */
+app-data-nav .nav-link.active,
+app-data-nav a[routerLinkActive="active"].active,
+app-data-nav .nav-item .nav-link.active {
+  background-color: #1e3c8b !important;
+  color: #ffffff !important;
+  border-color: #1e3c8b !important;
+  box-shadow: 0 4px 12px rgba(30, 60, 139, 0.3) !important;
+  font-weight: 600 !important;
+}
+
+/* Override for icons in active state */
+app-data-nav .nav-link.active .nav-icon img,
+app-data-nav a[routerLinkActive="active"].active .nav-icon img {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* Override for text in active state */
+app-data-nav .nav-link.active span,
+app-data-nav a[routerLinkActive="active"].active span {
+  color: #ffffff !important;
+}
+
+.nav-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.nav-link:hover .nav-icon {
+  transform: scale(1.1);
+}
+
+/* Profile-specific navigation styling */
+.nav-link span {
+  font-weight: inherit;
+  transition: color 0.2s ease;
+}
+
+/* Mobile improvements */
+@media (max-width: 767px) {
+  .nav-link {
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 0.25rem;
+    padding: 0.875rem 1rem;
+  }
+}
+
+/* Enhanced accessibility */
+.nav-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(30, 60, 139, 0.5);
+}
+
+/* Animation for active state transition */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #1e3c8b;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+/* Enhanced active state for bottom border */
+a.nav-link.active::before,
+.nav-item a.nav-link.active::before,
+.nav-link[routerLinkActive="active"].active::before {
+  transform: scaleX(1) !important;
+}
+
+/* Ensure our custom styles override Tailwind classes */
+.nav-link.active {
+  background-color: #1e3c8b !important;
+  color: white !important;
+}
+
+/* Force override Tailwind text color classes */
+.nav-link.active.text-gray-400,
+.nav-link.active .text-gray-400 {
+  color: white !important;
+}
+
+/* Force override any group hover states when active */
+.nav-link.active:hover,
+.nav-link.active .group-hover\:text-primary_tailwind {
+  color: white !important;
 }

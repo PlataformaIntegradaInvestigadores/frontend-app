@@ -1,0 +1,91 @@
+/* ===== FEED PAGE STYLES ===== */
+/* Solo estilos específicos que no se pueden hacer con Tailwind */
+
+/* Animaciones personalizadas */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes progress {
+  0% {
+    width: 0%;
+    opacity: 1;
+  }
+  50% {
+    width: 100%;
+    opacity: 0.5;
+  }
+  100% {
+    width: 0%;
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Estilos para sidebars sticky en desktop */
+@media (min-width: 1024px) {
+  aside {
+    position: sticky;
+    top: 120px;
+    align-self: flex-start;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus visible para accesibilidad */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* Hover effects para links */
+a:hover {
+  text-decoration: none;
+}
+
+/* Custom scrollbar para el feed y sidebars */
+.feed-scroll::-webkit-scrollbar,
+aside::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.feed-scroll::-webkit-scrollbar-track,
+aside::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.feed-scroll::-webkit-scrollbar-thumb,
+aside::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.feed-scroll::-webkit-scrollbar-thumb:hover,
+aside::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
