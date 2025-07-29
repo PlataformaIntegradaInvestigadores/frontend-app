@@ -1,6 +1,6 @@
 export const environment = {
-  production: false,
-  apiCentinela: "http://localhost:8001/api-se",
-  wsUrl: 'ws://localhost:8000/ws',
-  apiUrl: 'http://localhost:8000/api',
+  production: true,
+  apiCentinela: "http://centinela.epn.edu.ec:8001/api-se",
+  wsUrl: 'ws://centinela.epn.edu.ec:8000/ws',
+  apiUrl: 'http://centinela.epn.edu.ec:8000/api',
 };
