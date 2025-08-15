@@ -55,7 +55,7 @@ export interface ModelDetailsResponse {
 })
 export class AnalyticsService {
   // Ajusta esta URL a la de tu backend.
-  private apiUrl = 'https://centinela.epn.edu.ec:8003/api/v1'; 
+  private apiUrl = 'https://centinela.epn.edu.ec/api-predictiva'; 
 
   constructor(private http: HttpClient) { }
 
