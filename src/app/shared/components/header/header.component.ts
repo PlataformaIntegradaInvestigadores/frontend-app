@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { AuthModalService } from 'src/app/auth/domain/services/auth-modal.service';
 import { User } from 'src/app/group/presentation/user.interface';
+import { faBrain } from '@fortawesome/free-solid-svg-icons';
 import { faSearch, faHome, faBell, faUser, faRss, faBriefcase, faChevronDown, faCog, faSignOutAlt, faUsers, faBuilding, faBars, faTimes, faChartBar, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -24,6 +25,7 @@ export class HeaderComponent {
   userMenuOpen: boolean = false; // Variable para controlar la apertura del menú de usuario
 
   // FontAwesome icons
+  faBrain = faBrain;
   faSearch = faSearch;
   faHome = faHome;
   faBell = faBell;

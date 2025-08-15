@@ -44,13 +44,22 @@
             <fa-icon [icon]="faBriefcase" class="nav-icon"></fa-icon>
             <span>Jobs</span>
           </a>
-        </div> <!-- Analytics -->
+        </div>
+        <!-- Descriptive Analytics -->
         <div class="nav-item" *ngIf="showInformation">
           <a routerLink="./analitica" routerLinkActive="active" class="nav-link">
             <fa-icon [icon]="faChartBar" class="nav-icon"></fa-icon>
-            <span>Analytics</span>
+            <span>Descriptive Analytics</span>
           </a>
-        </div> <!-- About -->
+        </div>
+        <!-- Predictive Analytics -->
+        <div class="nav-item">
+          <a routerLink="./predictive-analytics" routerLinkActive="active" class="nav-link">
+            <fa-icon [icon]="faBrain" class="nav-icon"></fa-icon>
+            <span>Predictive Analytics</span>
+          </a>
+        </div>
+        <!-- About -->
         <div class="nav-item" *ngIf="showInformation">
           <a routerLink="./about-us/getting-started" routerLinkActive="active" class="nav-link">
             <fa-icon [icon]="faInfoCircle" class="nav-icon"></fa-icon>
