@@ -47,7 +47,7 @@ export class SearchBoxComponent implements OnInit{
   ngOnInit(): void {
     initFlowbite();
 
-    }
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['setSearch']?.currentValue) {

@@ -3,4 +3,5 @@ export const environment = {
   apiCentinela: "https://centinela.epn.edu.ec:8001/api-se",
   wsUrl: 'wss://centinela.epn.edu.ec:8000/ws',
   apiUrl: 'https://centinela.epn.edu.ec:8000/api',
+  apiRag: 'https://centinela.epn.edu.ec:8181'
 };

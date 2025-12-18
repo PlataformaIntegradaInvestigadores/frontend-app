@@ -49,12 +49,42 @@
     <!--    <app-filter-sidebar class="w-1/4" [code]="searchValue.option"  [ngClass]="{'hidden':isAuthorSearch()}" ></app-filter-sidebar>-->
     <div class="w-5/6" [ngClass]="{'w-full':isAuthorSearch()}">
       <div>
-        <!-- Most Relevant Authors Results -->
-        <app-article-information
-          *ngSwitchCase="'mrar'"
-          query="{{ searchValue.query }}"
+        <ng-container *ngSwitchCase="'mrar'">
+          <!-- Most Relevant Authors Results -->
+          <div class="p-2">
+            <!-- Contenedor IA -->
+            <div class="w-full bg-white border rounded-md shadow px-4 py-2 mb-3 flex items-center justify-between">
+              <span class="font-semibold">IA summary</span>
+              <button type="button" (click)="closeOverlay()" class="text-xs underline">Cerrar</button>
+            </div>
 
-        />
+            <!-- Loading -->
+            <div *ngIf="aiLoading" class="mt-2 text-sm opacity-70">
+              Generando respuesta…
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="!aiLoading && aiError" class="mt-2 text-sm text-red-600">
+              {{ aiError }}
+            </div>
+
+            <!-- Respuesta -->
+            <div *ngIf="!aiLoading && !aiError && aiAnswer"
+                 class="mt-2 text-sm whitespace-pre-line">
+              {{ aiAnswer.answer_text }}
+            </div>
+
+            <!-- Fuentes -->
+            <details *ngIf="!aiLoading && !aiError && aiAnswer?.used_refs_report" class="mt-2">
+              <summary class="text-xs underline">Ver fuentes usadas</summary>
+              <pre class="text-xs whitespace-pre-wrap">{{ aiAnswer?.used_refs_report }}</pre>
+            </details>
+            <!-- Resultados de artículos -->
+            <app-article-information
+              [query]="searchValue.query">
+            </app-article-information>
+          </div>
+        </ng-container>
         <!-- Author Results -->
         <app-author-retrieve
           class="p-2"
