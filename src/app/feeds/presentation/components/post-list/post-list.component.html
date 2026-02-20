@@ -30,7 +30,7 @@
   </div>
 
   <!-- Empty state -->
-  <div *ngIf="!isLoading && posts.length === 0"
+  <div *ngIf="showEmptyState && !isLoading && posts.length === 0"
     class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
 
     <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">

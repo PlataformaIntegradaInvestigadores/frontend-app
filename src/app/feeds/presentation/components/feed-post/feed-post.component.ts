@@ -1,15 +1,16 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeedPost } from '../../types/post.types';
 import { Comment } from '../../../domain/entities/feed.interface';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { FeedService } from '../../../domain/services/feed.service';
 
 @Component({
   selector: 'app-feed-post',
   templateUrl: './feed-post.component.html',
   styleUrls: ['./feed-post.component.css']
 })
-export class FeedPostComponent implements OnInit, OnDestroy {
+export class FeedPostComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() post!: FeedPost;
   @Input() showActions: boolean = true;
   @Input() showComments: boolean = true;
@@ -28,10 +29,15 @@ export class FeedPostComponent implements OnInit, OnDestroy {
   showCommentsSection = false;
   isLiking = false;
   showEditModal = false;
+  
+  private observer: IntersectionObserver | null = null;
+  private hasRecordedView = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private feedService: FeedService,
+    private el: ElementRef
   ) { }
 
   ngOnInit(): void {
@@ -41,8 +47,49 @@ export class FeedPostComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    this.setupIntersectionObserver();
+  }
+
   ngOnDestroy(): void {
-    // Component cleanup
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  private setupIntersectionObserver(): void {
+    if (!this.post || this.hasRecordedView) return;
+
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5 // El 50% del post debe ser visible
+    };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !this.hasRecordedView) {
+          this.recordView();
+        }
+      });
+    }, options);
+
+    this.observer.observe(this.el.nativeElement);
+  }
+
+  private recordView(): void {
+    this.hasRecordedView = true;
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+    
+    this.feedService.recordUserInteraction(this.post.id, 'view').subscribe({
+      next: () => {
+        // Opcional: actualizar el contador localmente si se desea
+        // this.post.views_count = (this.post.views_count || 0) + 1;
+      },
+      error: (err) => console.error('Error recording view:', err)
+    });
   }
 
   /**

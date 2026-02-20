@@ -21,6 +21,12 @@ export class PostPollComponent {
     return Math.round((option.votes_count / this.poll.total_votes) * 100);
   }
 
+  isWinningOption(option: any): boolean {
+    if (!this.poll.options || this.poll.options.length === 0) return false;
+    const maxVotes = Math.max(...this.poll.options.map((o: any) => o.votes_count || 0));
+    return maxVotes > 0 && option.votes_count === maxVotes;
+  }
+
   getTimeUntilExpiry(): string {
     if (!this.poll.expires_at) return '';
     

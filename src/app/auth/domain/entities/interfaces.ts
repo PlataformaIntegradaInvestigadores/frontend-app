@@ -53,6 +53,7 @@ export interface UserUpdate {
   institution?: string;
   website?: string;
   investigation_camp?: string;
+  interests?: string;
   profile_picture?: string;
   email_institution?: string;
 }

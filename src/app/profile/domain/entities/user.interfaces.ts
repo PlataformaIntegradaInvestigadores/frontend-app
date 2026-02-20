@@ -6,6 +6,8 @@ export interface UserProfile {
   institution?: string;
   website?: string;
   investigation_camp?: string;
+  interests?: string;
+  skills?: string;
   profile_picture?: string;
   email_institution?: string;
 }

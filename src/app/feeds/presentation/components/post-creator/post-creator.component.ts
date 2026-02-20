@@ -23,11 +23,16 @@ export class PostCreatorComponent {
 
   newPostContent = '';
   selectedFiles: File[] = [];
+  tags: string[] = [];
+  newTag: string = '';
   
   // Poll related properties
   showPollCreator = false;
   pollQuestion = '';
   pollOptions: string[] = ['', ''];
+  
+  // Tags related properties
+  showTagInput = false;
 
   /**
    * Verifica si la encuesta actual es válida
@@ -115,6 +120,7 @@ export class PostCreatorComponent {
 
     const postData: PostCreatorData = {
       content: content,
+      tags: this.tags.length > 0 ? this.tags : undefined,
       files: this.selectedFiles.length > 0 ? this.selectedFiles : undefined,
       poll: this.showPollCreator ? {
         question: this.pollQuestion.trim(),
@@ -132,6 +138,9 @@ export class PostCreatorComponent {
   clearForm(): void {
     this.newPostContent = '';
     this.selectedFiles = [];
+    this.tags = [];
+    this.newTag = '';
+    this.showTagInput = false;
     this.showPollCreator = false;
     this.pollQuestion = '';
     this.pollOptions = ['', ''];
@@ -168,7 +177,7 @@ export class PostCreatorComponent {
   /**
    * Maneja opciones adicionales (photo, video, file, poll)
    */
-  onOptionClick(option: 'photo' | 'video' | 'file' | 'poll'): void {
+  onOptionClick(option: 'photo' | 'video' | 'file' | 'poll' | 'tag'): void {
     switch(option) {
       case 'photo':
         this.imageInput.nativeElement.click();
@@ -186,7 +195,34 @@ export class PostCreatorComponent {
           this.pollOptions = ['', ''];
         }
         break;
+      case 'tag':
+        this.showTagInput = !this.showTagInput;
+        break;
     }
+  }
+
+  /**
+   * Agrega un tag
+   */
+  addTag(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+    
+    const tag = this.newTag.trim().toLowerCase();
+    if (tag && !this.tags.includes(tag)) {
+      // Remove # if user typed it
+      const cleanTag = tag.startsWith('#') ? tag.substring(1) : tag;
+      this.tags.push(cleanTag);
+    }
+    this.newTag = '';
+  }
+
+  /**
+   * Remueve un tag
+   */
+  removeTag(index: number): void {
+    this.tags.splice(index, 1);
   }
 
   /**
