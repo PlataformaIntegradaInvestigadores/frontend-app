@@ -4,3 +4,5 @@ services:
     container_name: angular-app
     ports:
       - "8082:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

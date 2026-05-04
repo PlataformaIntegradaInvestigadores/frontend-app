@@ -137,6 +137,9 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/token/refresh/`, { refresh: refreshToken }).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.access);
+        if (response.refresh) {
+          localStorage.setItem('refreshToken', response.refresh);
+        }
         this.tokenSubject.next(response.access);
         this.notifyTokenRefresh();
       })
@@ -239,6 +242,12 @@ export class AuthService {
    * Cierra la sesión del usuario eliminando los tokens del almacenamiento local.
    */
   logout(): void {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      this.http.post(`${this.apiUrl}/logout/`, { refresh: refreshToken }).subscribe({
+        error: error => console.warn('Logout server-side revocation failed:', error)
+      });
+    }
     const dontShowOnboarding = localStorage.getItem('dontShowOnboarding');
     localStorage.clear();
     if (dontShowOnboarding) {
