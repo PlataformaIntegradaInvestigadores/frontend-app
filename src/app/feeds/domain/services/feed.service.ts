@@ -109,8 +109,8 @@ export class FeedService {
 
     formData.append('content', postData.content);
 
-    if (postData.tags) {
-      formData.append('tags', JSON.stringify(postData.tags));
+    if (postData.tags && postData.tags.length > 0) {
+      formData.append('tags', postData.tags.join(','));
     }
 
     // Asegurar que todos los posts sean públicos por defecto

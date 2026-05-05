@@ -60,7 +60,7 @@ export class AuthService {
   login(credentials: LoginCredentials, userType: UserType = 'user'): Observable<AuthResponse> {
     const endpoint = userType === 'company' ? '/companies/token/' : '/token/';
     
-    return this.http.post<AuthResponse>(`${this.apiUrl}${endpoint}`, credentials).pipe(
+    return this.http.post<AuthResponse>(`${this.apiUrl}${endpoint}`, credentials, { withCredentials: true }).pipe(
       tap(response => {
         this.setSession(response, userType);
         // Notificar al monitor de tokens que reinicie el monitoreo
@@ -130,11 +130,8 @@ export class AuthService {
    */
   private refreshAccessToken(): Observable<AuthResponse> {
     const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) {
-      this.logout();
-      return throwError(() => new Error('Refresh token not found'));
-    }
-    return this.http.post<AuthResponse>(`${this.apiUrl}/token/refresh/`, { refresh: refreshToken }).pipe(
+    const body = refreshToken ? { refresh: refreshToken } : {};
+    return this.http.post<AuthResponse>(`${this.apiUrl}/token/refresh/`, body, { withCredentials: true }).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.access);
         if (response.refresh) {
@@ -222,7 +219,11 @@ export class AuthService {
    */
   private setSession(authResult: AuthResponse, userType: UserType): void {
     localStorage.setItem('accessToken', authResult.access);
-    localStorage.setItem('refreshToken', authResult.refresh);
+    if (authResult.refresh) {
+      localStorage.setItem('refreshToken', authResult.refresh);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
     localStorage.setItem('userType', userType);
     
     // Decodificar token para obtener IDs
@@ -243,11 +244,10 @@ export class AuthService {
    */
   logout(): void {
     const refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
-      this.http.post(`${this.apiUrl}/logout/`, { refresh: refreshToken }).subscribe({
-        error: error => console.warn('Logout server-side revocation failed:', error)
-      });
-    }
+    const body = refreshToken ? { refresh: refreshToken } : {};
+    this.http.post(`${this.apiUrl}/logout/`, body, { withCredentials: true }).subscribe({
+      error: error => console.warn('Logout server-side revocation failed:', error)
+    });
     const dontShowOnboarding = localStorage.getItem('dontShowOnboarding');
     localStorage.clear();
     if (dontShowOnboarding) {

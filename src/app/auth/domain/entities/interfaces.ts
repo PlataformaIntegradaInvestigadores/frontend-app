@@ -78,7 +78,7 @@ export interface CompanyUpdate {
  */
 export interface AuthResponse {
   access: string;
-  refresh: string;
+  refresh?: string;
   user_id?: string;
   company_id?: string;
   user_type?: UserType;
