@@ -94,7 +94,9 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.showLogin = !this.authService.isLoggedIn();
-    this.loadUsers();
+    if (!this.showLogin) {
+      this.loadUsers();
+    }
   }
   logout() {
     this.authService.logout();
@@ -136,6 +138,9 @@ export class HeaderComponent {
     this.authService.getUsers().subscribe((users: User[]) => {
       this.users = users;
       this.filteredUsers = users;
+    }, () => {
+      this.users = [];
+      this.filteredUsers = [];
     });
   }
 

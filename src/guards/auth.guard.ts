@@ -14,7 +14,7 @@ export const authGuard: CanActivateFn = (
 
   // Verificar si hay un token y si no ha expirado
   if (!authService.isLoggedIn()) {
-    router.navigate(['/admin']);
+    router.navigate(['/login']);
     return false;
   }
 
@@ -27,7 +27,7 @@ export const authGuard: CanActivateFn = (
       catchError((error) => {
         console.error('Error refreshing token in guard:', error);
         authService.logout();
-        router.navigate(['/admin']);
+        router.navigate(['/login']);
         return of(false);
       })
     );

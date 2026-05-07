@@ -11,6 +11,11 @@ const routerOptions: ExtraOptions = {
 };
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
     path: 'login',
     component: RedirectComponent,
     canActivate: [AuthRedirectGuard]

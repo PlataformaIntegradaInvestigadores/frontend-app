@@ -139,6 +139,10 @@ export class AuthService {
         }
         this.tokenSubject.next(response.access);
         this.notifyTokenRefresh();
+      }),
+      catchError((error: HttpErrorResponse) => {
+        this.clearLocalSession();
+        return throwError(() => error);
       })
     );
   }
@@ -165,8 +169,17 @@ export class AuthService {
    * @returns Un Observable que emite la lista de usuarios.
    */
   getUsers(): Observable<Users[]> {
+    if (!this.isLoggedIn()) {
+      return of([]);
+    }
     return this.http.get<Users[]>(`${this.apiUrl}/users/`).pipe(
-      catchError(this.handleError)
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403) {
+          this.clearLocalSession();
+          return of([]);
+        }
+        return this.handleError(error);
+      })
     );
   }
 
@@ -246,8 +259,15 @@ export class AuthService {
     const refreshToken = localStorage.getItem('refreshToken');
     const body = refreshToken ? { refresh: refreshToken } : {};
     this.http.post(`${this.apiUrl}/logout/`, body, { withCredentials: true }).subscribe({
-      error: error => console.warn('Logout server-side revocation failed:', error)
+      error: () => {}
     });
+    this.clearLocalSession();
+  }
+
+  /**
+   * Limpia la sesion local sin depender de una respuesta del backend.
+   */
+  clearLocalSession(): void {
     const dontShowOnboarding = localStorage.getItem('dontShowOnboarding');
     localStorage.clear();
     if (dontShowOnboarding) {
