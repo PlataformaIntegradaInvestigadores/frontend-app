@@ -1,3 +1,4 @@
+<ng-container *ngIf="authStep === 'credentials'; else mfaStep">
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-5">
   <div class="flex flex-col space-y-1">
     <label for="modal-username" class="px-2 text-sm font-semibold text-gray-500">Email address</label>
@@ -20,13 +21,31 @@
       <label for="modal-password" class="px-2 text-sm font-semibold text-gray-500">Password</label>
       <a class="text-xs text-blue-600 hover:underline focus:text-primary_tailwind cursor-pointer">Forgot Password?</a>
     </div>
-    <input 
-      formControlName="password" 
-      type="password" 
-      id="modal-password"
-      class="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-      [class.border-red-500]="loginForm.get('password')?.errors && loginForm.get('password')?.touched"
-    />
+    <div class="relative">
+      <input 
+        formControlName="password" 
+        [type]="showPassword ? 'text' : 'password'" 
+        id="modal-password"
+        class="w-full px-4 py-2 pr-10 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+        [class.border-red-500]="loginForm.get('password')?.errors && loginForm.get('password')?.touched"
+      />
+      <button
+        type="button"
+        class="password-toggle"
+        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+        (click)="togglePasswordVisibility()">
+        <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12s-3.75 6.75-9.75 6.75S2.25 12 2.25 12z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.58 10.58A2 2 0 0012 14a2 2 0 001.42-.58"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.88 4.49A8.8 8.8 0 0112 4.25C18 4.25 21.75 12 21.75 12a18.8 18.8 0 01-3.03 4.12"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.61 6.61C3.85 8.47 2.25 12 2.25 12S6 19.75 12 19.75c1.38 0 2.65-.32 3.8-.84"></path>
+        </svg>
+      </button>
+    </div>
     <div *ngIf="loginForm.get('password')?.errors && loginForm.get('password')?.touched" class="text-red-500 text-sm">
       <div *ngIf="loginForm.get('password')?.hasError('required')">Password is required.</div>
     </div>
@@ -96,3 +115,22 @@
     </div>
   </div>
 </form>
+</ng-container>
+
+<ng-template #mfaStep>
+  <app-mfa-enrollment-form
+    *ngIf="authStep === 'enrollment' && mfaChallenge"
+    [challenge]="mfaChallenge"
+    [expiresIn]="mfaExpiresIn"
+    (completed)="onMfaCompleted()"
+    (back)="backToCredentials()">
+  </app-mfa-enrollment-form>
+
+  <app-mfa-verify-form
+    *ngIf="authStep === 'verify' && mfaChallenge"
+    [challenge]="mfaChallenge"
+    [expiresIn]="mfaExpiresIn"
+    (completed)="onMfaCompleted()"
+    (back)="backToCredentials()">
+  </app-mfa-verify-form>
+</ng-template>
