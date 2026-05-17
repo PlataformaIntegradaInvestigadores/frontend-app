@@ -54,23 +54,69 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="flex flex-col space-y-1">
       <label for="modal-register-password" class="px-2 text-sm font-semibold text-gray-500">Password *</label>
-      <input 
-        formControlName="password" 
-        type="password" 
-        id="modal-register-password"
-        class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-        [class.border-red-500]="registerForm.get('password')?.errors && registerForm.get('password')?.touched"
-      />
+      <div class="relative">
+        <input 
+          formControlName="password" 
+          [type]="showPassword ? 'text' : 'password'" 
+          id="modal-register-password"
+          class="w-full p-2 pr-10 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+          [class.border-red-500]="registerForm.get('password')?.errors && registerForm.get('password')?.touched"
+        />
+        <button
+          type="button"
+          class="password-toggle"
+          [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          (click)="togglePasswordVisibility()">
+          <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12s-3.75 6.75-9.75 6.75S2.25 12 2.25 12z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.58 10.58A2 2 0 0012 14a2 2 0 001.42-.58"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.88 4.49A8.8 8.8 0 0112 4.25C18 4.25 21.75 12 21.75 12a18.8 18.8 0 01-3.03 4.12"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.61 6.61C3.85 8.47 2.25 12 2.25 12S6 19.75 12 19.75c1.38 0 2.65-.32 3.8-.84"></path>
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="flex flex-col space-y-1">
       <label for="modal-confirmPassword" class="px-2 text-sm font-semibold text-gray-500">Confirm Password *</label>
-      <input 
-        formControlName="confirm_password" 
-        type="password" 
-        id="modal-confirmPassword"
-        class="p-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-        [class.border-red-500]="registerForm.get('confirm_password')?.errors && registerForm.get('confirm_password')?.touched"
-      />
+      <div class="relative">
+        <input 
+          formControlName="confirm_password" 
+          [type]="showConfirmPassword ? 'text' : 'password'" 
+          id="modal-confirmPassword"
+          class="w-full p-2 pr-10 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+          [class.border-red-500]="registerForm.get('confirm_password')?.errors && registerForm.get('confirm_password')?.touched"
+        />
+        <button
+          type="button"
+          class="password-toggle"
+          [attr.aria-label]="showConfirmPassword ? 'Hide password confirmation' : 'Show password confirmation'"
+          (click)="toggleConfirmPasswordVisibility()">
+          <svg *ngIf="!showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12s-3.75 6.75-9.75 6.75S2.25 12 2.25 12z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          <svg *ngIf="showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.58 10.58A2 2 0 0012 14a2 2 0 001.42-.58"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.88 4.49A8.8 8.8 0 0112 4.25C18 4.25 21.75 12 21.75 12a18.8 18.8 0 01-3.03 4.12"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.61 6.61C3.85 8.47 2.25 12 2.25 12S6 19.75 12 19.75c1.38 0 2.65-.32 3.8-.84"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 rounded-lg bg-gray-50 px-3 py-2">
+    <div
+      *ngFor="let rule of passwordChecklist"
+      class="password-rule"
+      [class.password-rule-valid]="rule.passed">
+      <span class="password-rule-icon">{{ rule.passed ? '✓' : '•' }}</span>
+      <span>{{ rule.label }}</span>
     </div>
   </div>
 

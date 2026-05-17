@@ -20,6 +20,7 @@ export class LoginFormComponent implements OnInit {
   authStep: 'credentials' | 'enrollment' | 'verify' = 'credentials';
   mfaChallenge: string | null = null;
   mfaExpiresIn = 300;
+  showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -86,6 +87,10 @@ export class LoginFormComponent implements OnInit {
   backToCredentials(): void {
     this.resetMfaState();
     this.loginForm.get('password')?.reset();
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   /**
