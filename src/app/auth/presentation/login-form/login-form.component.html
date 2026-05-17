@@ -1,3 +1,4 @@
+<ng-container *ngIf="authStep === 'credentials'; else mfaStep">
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-5">
   <div class="flex flex-col space-y-1">
     <label for="modal-username" class="px-2 text-sm font-semibold text-gray-500">Email address</label>
@@ -96,3 +97,22 @@
     </div>
   </div>
 </form>
+</ng-container>
+
+<ng-template #mfaStep>
+  <app-mfa-enrollment-form
+    *ngIf="authStep === 'enrollment' && mfaChallenge"
+    [challenge]="mfaChallenge"
+    [expiresIn]="mfaExpiresIn"
+    (completed)="onMfaCompleted()"
+    (back)="backToCredentials()">
+  </app-mfa-enrollment-form>
+
+  <app-mfa-verify-form
+    *ngIf="authStep === 'verify' && mfaChallenge"
+    [challenge]="mfaChallenge"
+    [expiresIn]="mfaExpiresIn"
+    (completed)="onMfaCompleted()"
+    (back)="backToCredentials()">
+  </app-mfa-verify-form>
+</ng-template>

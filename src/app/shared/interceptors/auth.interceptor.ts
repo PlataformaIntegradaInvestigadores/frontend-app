@@ -56,6 +56,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private isAuthEndpoint(url: string): boolean {
     return url.includes('/token/') ||
            url.includes('/token/refresh/') ||
+           url.includes('/auth/mfa/') ||
            url.includes('/register/') ||
            url.includes('/logout/');
   }

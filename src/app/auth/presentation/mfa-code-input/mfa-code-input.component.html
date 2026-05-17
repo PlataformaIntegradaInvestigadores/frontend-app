@@ -1,0 +1,17 @@
+<div class="flex justify-center gap-2" (paste)="handlePaste($event)">
+  <input
+    #digitInput
+    *ngFor="let digit of digits; let index = index"
+    [value]="digit"
+    [disabled]="disabled"
+    type="text"
+    inputmode="numeric"
+    maxlength="1"
+    autocomplete="one-time-code"
+    class="digit-input"
+    [attr.aria-label]="'MFA digit ' + (index + 1)"
+    (input)="handleInput($event, index)"
+    (keydown)="handleKeydown($event, index)"
+    (blur)="markTouched()"
+  />
+</div>

@@ -82,4 +82,21 @@ export interface AuthResponse {
   user_id?: string;
   company_id?: string;
   user_type?: UserType;
+  detail?: string;
+}
+
+export type MfaLoginStatus = 'mfa_required' | 'mfa_enrollment_required';
+
+export interface MfaChallengeResponse {
+  status: MfaLoginStatus;
+  mfa_challenge: string;
+  expires_in: number;
+}
+
+export type LoginResponse = AuthResponse | MfaChallengeResponse;
+
+export interface MfaSetupResponse {
+  otpauth_uri: string;
+  manual_key: string;
+  qr_code?: string;
 }
