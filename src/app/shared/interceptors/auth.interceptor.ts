@@ -47,10 +47,25 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private shouldAttemptRefresh(request: HttpRequest<any>, error: HttpErrorResponse): boolean {
-    if (this.isAuthEndpoint(request.url)) {
+    if (this.isAuthEndpoint(request.url) || error.status !== 401) {
       return false;
     }
-    return this.isTokenExpiredError(error) || error.status === 401;
+
+    if (this.isTokenExpiredError(error)) {
+      return true;
+    }
+
+    // Social consensus endpoints may return 401 for their own auth model.
+    // Do not clear the identity session when a non-identity endpoint rejects a request.
+    return this.isIdentityProtectedEndpoint(request.url);
+  }
+
+  private isIdentityProtectedEndpoint(url: string): boolean {
+    return url.includes('/api/users') ||
+           url.includes('/api/groups') ||
+           url.includes('/api/test/user/groups') ||
+           url.includes('/api/test/users/groups') ||
+           url.includes('/api/profile-information');
   }
 
   private isAuthEndpoint(url: string): boolean {
