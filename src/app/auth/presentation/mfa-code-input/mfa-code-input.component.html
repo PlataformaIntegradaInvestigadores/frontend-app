@@ -1,4 +1,4 @@
-<div class="flex justify-center gap-2" (paste)="handlePaste($event)">
+<div class="flex justify-center gap-2">
   <input
     #digitInput
     *ngFor="let digit of digits; let index = index"
@@ -7,11 +7,14 @@
     type="text"
     inputmode="numeric"
     maxlength="1"
-    autocomplete="one-time-code"
+    [attr.autocomplete]="index === 0 ? 'one-time-code' : 'off'"
+    [attr.name]="'mfa_digit_' + index"
     class="digit-input"
     [attr.aria-label]="'MFA digit ' + (index + 1)"
     (input)="handleInput($event, index)"
     (keydown)="handleKeydown($event, index)"
+    (paste)="handlePaste($event, index)"
+    (focus)="handleFocus($event)"
     (blur)="markTouched()"
   />
 </div>

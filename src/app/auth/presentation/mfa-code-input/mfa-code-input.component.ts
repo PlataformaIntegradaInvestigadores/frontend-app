@@ -62,23 +62,75 @@ export class MfaCodeInputComponent implements ControlValueAccessor {
   }
 
   handleKeydown(event: KeyboardEvent, index: number): void {
-    if (event.key === 'Backspace' && !this.digits[index] && index > 0) {
+    if (event.ctrlKey || event.metaKey) {
+      return;
+    }
+
+    if (/^\d$/.test(event.key)) {
+      event.preventDefault();
+      this.setDigit(index, event.key);
+      this.focusInput(index + 1);
+      return;
+    }
+
+    if (event.key === 'Backspace') {
+      event.preventDefault();
+      if (this.digits[index]) {
+        this.setDigit(index, '');
+        this.focusInput(index);
+      } else if (index > 0) {
+        this.setDigit(index - 1, '');
+        this.focusInput(index - 1);
+      }
+      return;
+    }
+
+    if (event.key === 'Delete') {
+      event.preventDefault();
+      this.setDigit(index, '');
+      this.focusInput(index);
+      return;
+    }
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
       this.focusInput(index - 1);
+      return;
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.focusInput(index + 1);
+      return;
+    }
+
+    if (event.key.length === 1) {
+      event.preventDefault();
     }
   }
 
-  handlePaste(event: ClipboardEvent): void {
+  handlePaste(event: ClipboardEvent, index: number): void {
     const pastedCode = this.onlyDigits(event.clipboardData?.getData('text') || '');
     if (!pastedCode) {
       return;
     }
 
     event.preventDefault();
-    this.applyCode(pastedCode, 0);
+    this.applyCode(pastedCode, pastedCode.length >= 6 ? 0 : index);
+  }
+
+  handleFocus(event: FocusEvent): void {
+    const input = event.target as HTMLInputElement;
+    setTimeout(() => input.select());
   }
 
   markTouched(): void {
     this.onTouched();
+  }
+
+  private setDigit(index: number, digit: string): void {
+    this.digits[index] = digit;
+    this.emitCode();
   }
 
   private applyCode(code: string, startIndex: number): void {
