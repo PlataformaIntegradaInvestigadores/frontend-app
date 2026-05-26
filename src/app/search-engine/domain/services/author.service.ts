@@ -34,9 +34,16 @@ export class AuthorService {
     page?: number,
     size?: number
   ): Observable<PaginationAuthorResult> {
+    const bodyParams = {
+      query: query,
+      page: page ?? 1,
+      page_size: size ?? 10
+    };
+
     return this.http
-      .get<PaginationAuthorResult>(
-        `${this.rootURL}/v1/authors/authors/find_by_query/?query=${query}&page=${page}&page_size=${size}`
+      .post<PaginationAuthorResult>(
+        `${this.rootURL}/v2/authors/search`,
+        bodyParams
       )
       .pipe(
         map((response) => {
@@ -49,7 +56,7 @@ export class AuthorService {
   }
 
   getAuthorById(id: string): Observable<Author> {
-    return this.http.get<Author>(`${this.rootURL}/v1/authors/authors/${id}`);
+    return this.http.get<Author>(`${this.rootURL}/v2/authors/${id}`);
   }
 
   getCoauthorsById(id: number): Observable<CoauthorInfo> {
@@ -60,22 +67,25 @@ export class AuthorService {
     topic: string,
     authors_number?: number,
     typeFilter?: string,
-    affiliations?: number[]
+    affiliations?: string[]
   ): Observable<Coauthors> {
-    let bodyParams: any = {
-      topic: topic,
-      authors_number: authors_number,
+    const bodyParams: any = {
+      query: topic,
+      page: 1,
+      page_size: authors_number
     };
 
-    if (typeFilter) {
-      bodyParams['type'] = typeFilter;
-      bodyParams['affiliations'] = affiliations;
+    if (typeFilter || (affiliations && affiliations.length > 0)) {
+      bodyParams['filters'] = {
+        mode: typeFilter,
+        affiliations: affiliations ?? []
+      };
     }
-    let data = this.http.post<Coauthors>(
-      `${this.rootURL}/v1/authors/authors/most_relevant_authors/`,
+
+    return this.http.post<Coauthors>(
+      `${this.rootURL}/v2/authors/relevant`,
       bodyParams
     );
-    return data;
   }
 
   mapAuthorTopics(author: AuthorResult) {
@@ -129,7 +139,7 @@ export class AuthorService {
 
   getArticles(scopus_id:string):Observable<ArticlesResponse[]>{
     let params = new HttpParams().set('author_id', scopus_id.toString())
-    return this.http.get<ArticlesResponse[]>(`${this.rootURL}/v1/articles/find-articles-by-author-id/`, {params});
+    return this.http.get<ArticlesResponse[]>(`${this.rootURL}/v2/articles/by-author`, {params});
   }
 
 }

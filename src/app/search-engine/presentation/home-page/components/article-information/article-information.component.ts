@@ -23,8 +23,8 @@ export class ArticleInformationComponent {
   size = 10;
   total = 0;
   isLoadingResults = true;
-  refreshTable$: BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>
-    = new BehaviorSubject<{ page: number, size: number, type?: string, years?: number[] }>({
+  refreshTable$: BehaviorSubject<{ page: number, size: number, years?: number[] }>
+    = new BehaviorSubject<{ page: number, size: number, years?: number[] }>({
     page: this.page,
     size: this.size
   })
@@ -33,11 +33,10 @@ export class ArticleInformationComponent {
 
   article!: Article
 
-  years!: number[]
+  years: number[] = []
   setYears = true
 
   selectedYears: number[] = []
-  selectedType!: string
 
   constructor(private articleService: ArticleService,
               private modalService: NgbModal,
@@ -45,31 +44,27 @@ export class ArticleInformationComponent {
   }
 
   ngOnInit() {
+    this.loadSearchFilters();
     this.articles$ = this.refreshTable$
       .pipe(
         tap(() => {
           this.loading.emit(true)
           this.isLoadingResults = true
         }),
-        switchMap(({page, size, type, years}) => {
-            if (type) {
-              return this.articleService.getMostRelevantArticlesByQuery(this.query, page, size, type, years)
-            } else {
-              return this.articleService.getMostRelevantArticlesByQuery(this.query, page, size)
+        switchMap(({page, size, years}) => {
+            if (years && years.length > 0) {
+              return this.articleService.getMostRelevantArticlesByQuery(this.query, page, size, years)
             }
+            return this.articleService.getMostRelevantArticlesByQuery(this.query, page, size)
           }
         ),
         tap((response) => {
           this.loading.emit(false);
           this.isLoadingResults = false;
-          this.total = response.total;
+          this.total = response.total_results ?? response.total;
           
-          if (this.setYears && response.years) {
-            this.years = [];
-            this.selectedYears = [];
-            this.selectedType = '';
-            this.years = response.years.sort((a, b) => b - a);
-            this.isLoadingResults = false;
+          if (this.setYears && response.years && this.years.length === 0) {
+            this.years = response.years.map((year) => Number(year)).sort((a, b) => b - a);
           }
         }),
         catchError((error) => {
@@ -84,6 +79,7 @@ export class ArticleInformationComponent {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['query']) {
       this.setYears = true
+      this.selectedYears = []
       this.refreshTable$.next({page: this.page, size: this.size})
     }
   }
@@ -104,38 +100,53 @@ asi es como esta haciendo la paginacion
     this.setYears = false;
     this.page = event.pageIndex + 1; // Ya se está haciendo bien
     this.size = event.pageSize;
-    const payload: { page: number; size: number; type?: string; years?: number[] } = {
+    const payload: { page: number; size: number; years?: number[] } = {
       page: this.page,
       size: this.size
     };
 
-    if (this.selectedType) {
-      payload.type = this.selectedType;
+    if (this.selectedYears.length > 0) {
       payload.years = this.selectedYears;
     }
 
     this.refreshTable$.next(payload);
   }
 
-  onClickCheckbox(event: any) {
-    let item = Number(event.target.id)
-    if (event.target.checked) {
-      this.selectedYears.push(item)
+  onYearToggle(year: number, isChecked: boolean) {
+    if (isChecked) {
+      if (!this.selectedYears.includes(year)) {
+        this.selectedYears = [...this.selectedYears, year]
+      }
     } else {
-      this.selectedYears.splice(this.selectedYears.indexOf(item), 1)
+      this.selectedYears = this.selectedYears.filter((item) => item !== year)
     }
-    this.onClickYearsFilter('include')
+    this.applyFilters()
   }
 
-  onClickYearsFilter(type: string) {
-    if (this.selectedYears.length > 0) {
-      this.setYears = false
-      this.selectedType = type
-      this.refreshTable$.next({page: this.page, size: this.size, type: this.selectedType, years: this.selectedYears})
-    }else{
-      this.refreshTable$.next({page: this.page, size: this.size})
+  private applyFilters() {
+    this.setYears = false
+    this.page = 1
+    const payload: { page: number; size: number; years?: number[] } = {
+      page: this.page,
+      size: this.size
     }
 
+    if (this.selectedYears.length > 0) {
+      payload.years = [...this.selectedYears]
+    }
+
+    this.refreshTable$.next(payload)
+  }
+
+  private loadSearchFilters() {
+    this.articleService.getSearchFilters().subscribe({
+      next: (filters) => {
+        this.years = (filters.years ?? []).map((year) => Number(year)).sort((a, b) => b - a)
+      },
+      error: (error) => {
+        console.error('Error fetching filters', error)
+      }
+    })
   }
 
   seeMoreInformation(scopusId: string) {

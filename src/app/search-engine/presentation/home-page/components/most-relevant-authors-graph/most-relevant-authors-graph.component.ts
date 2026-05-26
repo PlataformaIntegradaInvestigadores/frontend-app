@@ -27,8 +27,8 @@ export class MostRelevantAuthorsGraphComponent {
   showGraph: boolean = false
 
   authorsNumber: number = 50
-  affiliations!: { scopusId: number, name: string }[]
-  selectedAffiliations: number[] = []
+  affiliations!: { scopusId: string, name: string }[]
+  selectedAffiliations: string[] = []
   noResults = false;
   isLoadingResults = false;
 
@@ -83,11 +83,13 @@ export class MostRelevantAuthorsGraphComponent {
 
   onClickCheckbox(event: any) {
 
-    let item = Number(event.target.id)
+    let item = String(event.target.id)
     if (event.target.checked) {
-      this.selectedAffiliations.push(item)
+      if (!this.selectedAffiliations.includes(item)) {
+        this.selectedAffiliations.push(item)
+      }
     } else {
-      this.selectedAffiliations.splice(this.selectedAffiliations.indexOf(item), 1)
+      this.selectedAffiliations = this.selectedAffiliations.filter((id) => id !== item)
     }
     // console.log(this.selectedAffiliations)
     this.onClickAffiliationsFilter('include')
@@ -149,7 +151,7 @@ export class MostRelevantAuthorsGraphComponent {
     }
   }
 
-  getD3Links(links: { source: number, target: number, collabStrength: number }[]) {
+  getD3Links(links: { source: string | number, target: string | number, collabStrength: number }[]) {
     return links.map(link => {
       this.d3Nodes[this.getIndexByScopusId(link.source)].degree++
       this.d3Nodes[this.getIndexByScopusId(link.target)].degree++
@@ -158,7 +160,7 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   getIndexByScopusId(scopusId: any) {
-    return this.apiNodes.map(node => node.scopus_id).indexOf(scopusId)
+    return this.apiNodes.map(node => String(node.scopus_id)).indexOf(String(scopusId))
   }
 
   downloadDataUrl(dataUrl: string, filename: string): void {

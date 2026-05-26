@@ -13,7 +13,13 @@
       </div>
       <div class="py-3 px-3 flex md:flex-col gap-3 max-h-100 overflow-y-scroll">
         <div class="flex gap-3" *ngFor="let year of years">
-          <input [id]="year" type="checkbox" (click)="onClickCheckbox($event)" class="form-checkbox h-5 w-5">
+          <input
+            [id]="year"
+            type="checkbox"
+            [checked]="selectedYears.includes(year)"
+            (change)="onYearToggle(year, $any($event.target).checked)"
+            class="form-checkbox h-5 w-5"
+          >
           <label [for]="year" class="ml-2">{{year}}</label>
         </div>
       </div>
