@@ -11,7 +11,7 @@ export class MfaVerifyFormComponent implements OnInit, OnDestroy {
   @Input({ required: true }) challenge!: string;
   @Input() expiresIn = 300;
   @Output() completed = new EventEmitter<void>();
-  @Output() back = new EventEmitter<void>();
+  @Output() back = new EventEmitter<string | undefined>();
 
   verifyForm: FormGroup;
   errorMessages: string[] = [];
@@ -19,6 +19,8 @@ export class MfaVerifyFormComponent implements OnInit, OnDestroy {
   remainingSeconds = 300;
 
   private challengeTimer: ReturnType<typeof setInterval> | null = null;
+  private failedCodeAttempts = 0;
+  private readonly challengeFailedAttemptLimit = 3;
 
   constructor(
     private fb: FormBuilder,
@@ -39,7 +41,7 @@ export class MfaVerifyFormComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.challengeExpired) {
-      this.errorMessages = ['MFA verification expired. Please restart login and try again.'];
+      this.restartLogin('MFA verification expired. Please sign in again.');
       return;
     }
 
@@ -55,11 +57,24 @@ export class MfaVerifyFormComponent implements OnInit, OnDestroy {
     this.authService.verifyMfa(this.challenge, code).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.failedCodeAttempts = 0;
         this.completed.emit();
       },
       error: error => {
         this.isSubmitting = false;
-        this.errorMessages = ['Invalid verification code. Please try again.'];
+        if (this.challengeExpired) {
+          this.restartLogin('MFA verification expired. Please sign in again.');
+          return;
+        }
+        this.failedCodeAttempts += 1;
+        if (this.failedCodeAttempts >= this.challengeFailedAttemptLimit) {
+          this.restartLogin('Too many invalid MFA codes. Please sign in again to generate a new verification challenge.');
+          return;
+        }
+        const attemptsLeft = this.challengeFailedAttemptLimit - this.failedCodeAttempts;
+        this.errorMessages = [
+          `Invalid verification code. ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} left before restarting sign-in.`
+        ];
       }
     });
   }
@@ -72,6 +87,11 @@ export class MfaVerifyFormComponent implements OnInit, OnDestroy {
     const minutes = Math.floor(this.remainingSeconds / 60);
     const seconds = this.remainingSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  private restartLogin(message: string): void {
+    this.stopChallengeTimer();
+    this.back.emit(message);
   }
 
   private startChallengeTimer(): void {

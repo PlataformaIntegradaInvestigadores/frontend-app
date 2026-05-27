@@ -123,7 +123,7 @@
     [challenge]="mfaChallenge"
     [expiresIn]="mfaExpiresIn"
     (completed)="onMfaCompleted()"
-    (back)="backToCredentials()">
+    (back)="backToCredentials($event)">
   </app-mfa-enrollment-form>
 
   <app-mfa-verify-form
@@ -131,6 +131,6 @@
     [challenge]="mfaChallenge"
     [expiresIn]="mfaExpiresIn"
     (completed)="onMfaCompleted()"
-    (back)="backToCredentials()">
+    (back)="backToCredentials($event)">
   </app-mfa-verify-form>
 </ng-template>

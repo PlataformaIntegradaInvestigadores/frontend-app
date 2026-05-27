@@ -22,6 +22,9 @@ export class LoginFormComponent implements OnInit {
   mfaExpiresIn = 300;
   showPassword: boolean = false;
 
+  private failedCredentialAttempts = 0;
+  private readonly credentialWarningThreshold = 3;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -62,12 +65,14 @@ export class LoginFormComponent implements OnInit {
           this.isLoading = false;
 
           if (this.authService.isMfaChallengeResponse(response)) {
+            this.failedCredentialAttempts = 0;
             this.mfaChallenge = response.mfa_challenge;
             this.mfaExpiresIn = response.expires_in || 300;
             this.authStep = response.status === 'mfa_enrollment_required' ? 'enrollment' : 'verify';
             return;
           }
 
+          this.failedCredentialAttempts = 0;
           this.completeLogin();
         },
         error: (error) => {
@@ -84,9 +89,10 @@ export class LoginFormComponent implements OnInit {
     this.completeLogin();
   }
 
-  backToCredentials(): void {
+  backToCredentials(message?: string): void {
     this.resetMfaState();
     this.loginForm.get('password')?.reset();
+    this.errorMessages = message ? [message] : [];
   }
 
   togglePasswordVisibility(): void {
@@ -97,7 +103,14 @@ export class LoginFormComponent implements OnInit {
    * Procesa los errores de la respuesta de la API y actualiza los mensajes de error.
    */
   private processErrors(errors: any): void {
+    this.failedCredentialAttempts += 1;
     this.errorMessages = this.errorService.processErrors(errors);
+    if (this.failedCredentialAttempts >= this.credentialWarningThreshold) {
+      this.errorMessages = [
+        ...this.errorMessages,
+        'Too many failed attempts may temporarily block sign-in. Wait a few minutes before trying again.'
+      ];
+    }
     console.error('Error logging in', this.errorMessages);
   }
 

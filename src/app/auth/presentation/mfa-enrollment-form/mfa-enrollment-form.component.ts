@@ -12,7 +12,7 @@ export class MfaEnrollmentFormComponent implements OnInit, OnDestroy {
   @Input({ required: true }) challenge!: string;
   @Input() expiresIn = 300;
   @Output() completed = new EventEmitter<void>();
-  @Output() back = new EventEmitter<void>();
+  @Output() back = new EventEmitter<string | undefined>();
 
   mfaForm: FormGroup;
   setupData: MfaSetupResponse | null = null;
@@ -22,6 +22,8 @@ export class MfaEnrollmentFormComponent implements OnInit, OnDestroy {
   remainingSeconds = 300;
 
   private challengeTimer: ReturnType<typeof setInterval> | null = null;
+  private failedCodeAttempts = 0;
+  private readonly challengeFailedAttemptLimit = 3;
 
   constructor(
     private fb: FormBuilder,
@@ -43,7 +45,7 @@ export class MfaEnrollmentFormComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.challengeExpired) {
-      this.errorMessages = ['MFA setup expired. Please restart login to generate a new QR code.'];
+      this.restartLogin('MFA setup expired. Please sign in again to generate a new QR code.');
       return;
     }
 
@@ -59,18 +61,31 @@ export class MfaEnrollmentFormComponent implements OnInit, OnDestroy {
     this.authService.confirmMfa(this.challenge, code).subscribe({
       next: () => {
         this.isSubmitting = false;
+        this.failedCodeAttempts = 0;
         this.completed.emit();
       },
       error: error => {
         this.isSubmitting = false;
-        this.errorMessages = ['Invalid verification code. Please try again.'];
+        if (this.challengeExpired) {
+          this.restartLogin('MFA setup expired. Please sign in again to generate a new QR code.');
+          return;
+        }
+        this.failedCodeAttempts += 1;
+        if (this.failedCodeAttempts >= this.challengeFailedAttemptLimit) {
+          this.restartLogin('Too many invalid MFA codes. Please sign in again to generate a new MFA setup.');
+          return;
+        }
+        const attemptsLeft = this.challengeFailedAttemptLimit - this.failedCodeAttempts;
+        this.errorMessages = [
+          `Invalid verification code. ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} left before restarting sign-in.`
+        ];
       }
     });
   }
 
   retrySetup(): void {
     if (this.challengeExpired) {
-      this.errorMessages = ['MFA setup expired. Please restart login to generate a new QR code.'];
+      this.restartLogin('MFA setup expired. Please sign in again to generate a new QR code.');
       return;
     }
 
@@ -89,12 +104,12 @@ export class MfaEnrollmentFormComponent implements OnInit, OnDestroy {
 
   private loadEnrollmentSetup(): void {
     if (!this.challenge) {
-      this.errorMessages = ['The MFA challenge is no longer available.'];
+      this.restartLogin('The MFA session is no longer available. Please sign in again.');
       return;
     }
 
     if (this.challengeExpired) {
-      this.errorMessages = ['MFA setup expired. Please restart login to generate a new QR code.'];
+      this.restartLogin('MFA setup expired. Please sign in again to generate a new QR code.');
       return;
     }
 
@@ -108,9 +123,14 @@ export class MfaEnrollmentFormComponent implements OnInit, OnDestroy {
       },
       error: error => {
         this.isLoadingSetup = false;
-        this.errorMessages = ['Unable to generate the QR code. Please restart login and try again.'];
+        this.restartLogin('The MFA setup session is no longer valid. Please sign in again.');
       }
     });
+  }
+
+  private restartLogin(message: string): void {
+    this.stopChallengeTimer();
+    this.back.emit(message);
   }
 
   private startChallengeTimer(): void {
