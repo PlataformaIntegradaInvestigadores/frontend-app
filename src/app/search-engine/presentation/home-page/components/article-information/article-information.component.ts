@@ -22,7 +22,10 @@ export class ArticleInformationComponent {
   page = 1;
   size = 10;
   total = 0;
-  isLoadingResults = true;
+  isFirstLoad = true;
+  isFiltering = false;
+  isPaginating = false;
+  isServerOnline = true;
   refreshTable$: BehaviorSubject<{ page: number, size: number, years?: number[] }>
     = new BehaviorSubject<{ page: number, size: number, years?: number[] }>({
     page: this.page,
@@ -48,8 +51,7 @@ export class ArticleInformationComponent {
     this.articles$ = this.refreshTable$
       .pipe(
         tap(() => {
-          this.loading.emit(true)
-          this.isLoadingResults = true
+          this.loading.emit(true);
         }),
         switchMap(({page, size, years}) => {
             if (years && years.length > 0) {
@@ -60,7 +62,9 @@ export class ArticleInformationComponent {
         ),
         tap((response) => {
           this.loading.emit(false);
-          this.isLoadingResults = false;
+          this.isFiltering = false;
+          this.isPaginating = false;
+          this.isFirstLoad = false;
           this.total = response.total_results ?? response.total;
           
           if (this.setYears && response.years && this.years.length === 0) {
@@ -69,7 +73,8 @@ export class ArticleInformationComponent {
         }),
         catchError((error) => {
           console.error('Error fetching data', error)
-          this.isLoadingResults = false
+          this.isFiltering = false;
+          this.isPaginating = false;
           this.loading.emit(false)
           return []
         })
@@ -80,6 +85,7 @@ export class ArticleInformationComponent {
     if (changes['query']) {
       this.setYears = true
       this.selectedYears = []
+      this.isFirstLoad = true
       this.refreshTable$.next({page: this.page, size: this.size})
     }
   }
@@ -109,6 +115,7 @@ asi es como esta haciendo la paginacion
       payload.years = this.selectedYears;
     }
 
+    this.isPaginating = true;
     this.refreshTable$.next(payload);
   }
 
@@ -135,6 +142,7 @@ asi es como esta haciendo la paginacion
       payload.years = [...this.selectedYears]
     }
 
+    this.isFiltering = true;
     this.refreshTable$.next(payload)
   }
 

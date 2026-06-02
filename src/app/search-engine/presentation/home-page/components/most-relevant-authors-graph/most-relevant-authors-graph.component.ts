@@ -4,8 +4,9 @@ import {AuthorNode, Coauthors} from "../../../../../shared/interfaces/author.int
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
 import {DOCUMENT} from "@angular/common";
 import {AuthorService} from "../../../../domain/services/author.service";
-import {tap} from "rxjs";
+import {catchError, EMPTY, of, tap} from "rxjs";
 import * as htmlToImage from "html-to-image";
+import * as d3 from 'd3';
 
 @Component({
   selector: 'app-most-relevant-authors-graph',
@@ -31,6 +32,8 @@ export class MostRelevantAuthorsGraphComponent {
   selectedAffiliations: string[] = []
   noResults = false;
   isLoadingResults = false;
+  isFirstLoad = true;
+  isFiltering = false;
 
   @ViewChild("downloadEl") downloadEl!: ElementRef;
   faDownload = faDownload
@@ -45,6 +48,12 @@ export class MostRelevantAuthorsGraphComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['query'] && !changes['query'].firstChange) {
+      this.isFirstLoad = true;
+      this.noResults = false;
+      this.selectedAffiliations = [];
+      if (this.authorsNumber === 0) {
+        this.authorsNumber = 50;
+      }
       this.refreshGraph()
     }
   }
@@ -54,15 +63,25 @@ export class MostRelevantAuthorsGraphComponent {
     this.loading.emit(true)
     this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
       .pipe(
+        catchError(error => {
+          console.error("Error fetching most relevant authors graph:", error);
+          this.noResults = true;
+          this.showGraph = true;
+          this.isFirstLoad = false;
+          this.isFiltering = false;
+          this.d3Nodes = [];
+          this.d3Links = [];
+          this.loading.emit(false);
+          return EMPTY;
+        }),
         tap((coauthors) => {
           this.affiliations = []
           coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
-          if (coauthors.nodes.length == 0) {
-            this.authorsNumber = 0;
-          }
           this.affiliations = coauthors.affiliations;
           this.setupGraph(coauthors);
           this.showGraph = true;
+          this.isFirstLoad = false;
+          this.isFiltering = false;
           this.loading.emit(false);
         })
       ).subscribe();
@@ -73,12 +92,24 @@ export class MostRelevantAuthorsGraphComponent {
     this.apiNodes = coauthors.nodes
     this.d3Nodes = this.getD3Nodes()
     this.d3Links = this.getD3Links(coauthors.links)
+    
+    // Zoom out initially — only if there are actual nodes to display
+    if (coauthors.nodes.length > 0) {
+      setTimeout(() => {
+        this.resetZoom();
+      }, 100);
+    }
   }
 
   onAuthorsNumberChange() {
-    this.selectedAffiliations = []
     console.log(this.authorsNumber);
+    this.isFiltering = true;
     this.refreshGraph()
+  }
+
+  setAuthorsNumber(num: number) {
+    this.authorsNumber = num;
+    this.onAuthorsNumberChange();
   }
 
   onClickCheckbox(event: any) {
@@ -91,21 +122,50 @@ export class MostRelevantAuthorsGraphComponent {
     } else {
       this.selectedAffiliations = this.selectedAffiliations.filter((id) => id !== item)
     }
+    
+    this.sortAffiliations()
+
     // console.log(this.selectedAffiliations)
     this.onClickAffiliationsFilter('include')
   }
 
+  sortAffiliations() {
+    if (this.affiliations) {
+      this.affiliations.sort((a, b) => {
+        const aSelected = this.selectedAffiliations.includes(a.scopusId);
+        const bSelected = this.selectedAffiliations.includes(b.scopusId);
+        if (aSelected && !bSelected) return -1;
+        if (!aSelected && bSelected) return 1;
+        return 0;
+      });
+    }
+  }
+
   onClickAffiliationsFilter(type: string) {
-    this.showGraph = false
+    this.showGraph = false;
+    this.isFiltering = true;
     if (this.selectedAffiliations.length > 0) {
       this.loading.emit(true)
       this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber, type, this.selectedAffiliations)
         .pipe(
+          catchError(error => {
+            console.error("Error fetching filtered most relevant authors graph:", error);
+            this.noResults = true;
+            this.showGraph = true;
+            this.isFirstLoad = false;
+            this.isFiltering = false;
+            this.d3Nodes = [];
+            this.d3Links = [];
+            this.loading.emit(false);
+            return EMPTY;
+          }),
           tap((coauthors) => {
             console.log(coauthors);
             // console.log('dentro2: '+ this.authorsNumber)
             this.setupGraph(coauthors);
             this.showGraph = true;
+            this.isFirstLoad = false;
+            this.isFiltering = false;
             this.loading.emit(false);
           })
         ).subscribe();
@@ -114,12 +174,25 @@ export class MostRelevantAuthorsGraphComponent {
       console.log(this.query)
       this.authorService.getMostRelevantAuthors(this.query, this.authorsNumber)
         .pipe(
+          catchError(error => {
+            console.error("Error fetching most relevant authors graph:", error);
+            this.noResults = true;
+            this.showGraph = true;
+            this.isFirstLoad = false;
+            this.isFiltering = false;
+            this.d3Nodes = [];
+            this.d3Links = [];
+            this.loading.emit(false);
+            return EMPTY;
+          }),
           tap((coauthors) => {
             coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
             // console.log('dentro2: xd'+ this.authorsNumber)
             this.affiliations = coauthors.affiliations;
             this.setupGraph(coauthors);
             this.showGraph = true;
+            this.isFirstLoad = false;
+            this.isFiltering = false;
             this.loading.emit(false);
           })
         ).subscribe();
@@ -177,5 +250,39 @@ export class MostRelevantAuthorsGraphComponent {
     htmlToImage.toPng(theElement).then(dataUrl => {
       this.downloadDataUrl(dataUrl, `most-relevant-authors-graph-${this.query}`);
     });
+  }
+
+  // Zoom Controls
+  private getSvgAndZoom() {
+    if (!this.downloadEl) return null;
+    // Note: using 'graph svg' to avoid selecting the icon's svg
+    const svgEl = this.downloadEl.nativeElement.querySelector('graph svg');
+    if (!svgEl) return null;
+    const svg = d3.select(svgEl);
+    const zoom = (svgEl as any).__zoomBehavior;
+    return { svg, zoom, svgEl };
+  }
+
+  zoomIn() {
+    const data = this.getSvgAndZoom();
+    if (data && data.zoom) {
+      data.svg.transition().duration(300).call(data.zoom.scaleBy, 1.3);
+    }
+  }
+
+  zoomOut() {
+    const data = this.getSvgAndZoom();
+    if (data && data.zoom) {
+      data.svg.transition().duration(300).call(data.zoom.scaleBy, 0.7);
+    }
+  }
+
+  resetZoom() {
+    const data = this.getSvgAndZoom();
+    if (data && data.zoom) {
+      const width = data.svgEl.clientWidth || 800;
+      const height = data.svgEl.clientHeight || 600;
+      data.svg.transition().duration(750).call(data.zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.3).translate(-width / 2, -height / 2));
+    }
   }
 }

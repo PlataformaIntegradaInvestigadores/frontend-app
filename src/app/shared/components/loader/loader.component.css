@@ -1,0 +1,5 @@
+/* Styles for loader, utilizing tailwind classes mostly */
+:host {
+  display: block;
+  width: 100%;
+}

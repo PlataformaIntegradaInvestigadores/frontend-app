@@ -21,6 +21,8 @@ export class AuthorRetrieveComponent {
   authors!:Observable<PaginationAuthorResult>
   refreshTable$: BehaviorSubject<{ page: number, size: number }> = new BehaviorSubject<{ page: number, size: number }>({ page: this.page, size: this.size });
   isLoading: boolean = false;
+  isFirstLoad: boolean = true;
+  isPaginating: boolean = false;
   displayedColumns: string[] = ['name','current_affiliation','articles','topics', 'affiliations', 'citation_count', 'updated'];
   isServerOnline: boolean = true;
   constructor(private authorService: AuthorService, @Inject(Router) private router: Router) { }
@@ -42,6 +44,8 @@ export class AuthorRetrieveComponent {
                 this.isServerOnline = false;
               }
               this.isLoading = false;
+              this.isFirstLoad = false;
+              this.isPaginating = false;
             return of({authors: [], total: 0, data: []} as PaginationAuthorResult);
           }
           )
@@ -53,6 +57,8 @@ export class AuthorRetrieveComponent {
       tap((authors) => {
         this.total = authors.total;
         this.isLoading = false;
+        this.isFirstLoad = false;
+        this.isPaginating = false;
       }),
 
     );
@@ -61,6 +67,7 @@ export class AuthorRetrieveComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['query']) {
+      this.isFirstLoad = true;
       this.refreshTable$.next({ page: this.page, size: this.size });
     }
 
@@ -69,6 +76,7 @@ export class AuthorRetrieveComponent {
   onChangePagination(event: PageEvent) {
     this.page = event.pageIndex + 1;
     this.size = event.pageSize;
+    this.isPaginating = true;
     this.refreshTable$.next({ page: this.page, size: this.size });
   }
 

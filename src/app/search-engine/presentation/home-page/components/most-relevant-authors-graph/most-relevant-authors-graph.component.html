@@ -1,61 +1,78 @@
-<div class="flex flex-col md:flex-row justify-center gap-x-5">
-  <div class="rounded max-w-72 mat-elevation-z8 h-fit" *ngIf="showGraph">
-    <!-- Title -->
-    <div class="text-center py-3 font-bold border-b-gray-400 border-b-2">
-      FILTERS
-    </div>
-
+<div class="flex flex-col md:flex-row justify-center gap-6 items-start mt-4 w-full px-4 xl:px-8">
+  <app-filters-sidebar class="w-full md:w-72 flex-shrink-0" [isFirstLoad]="isFirstLoad" [isLoading]="isFiltering" [isDisabled]="noResults">
     <!-- Authors number -->
-    <div class="py-2 px-3 subtitle border-b-gray-400 border-b-2">
+    <div class="py-2 px-4 font-semibold border-b border-gray-200 text-gray-700 bg-gray-50 text-sm tracking-wide">
       Number of authors
     </div>
-    <div class="py-3 px-3 border-b-gray-400 border-b-2">
-      <input id="authorsRange" type="range" class="form-range" min="10" max="200" step="10"
+    <div class="py-3 px-4 border-b border-gray-200">
+      <input id="authorsRange" type="range" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-600" min="10" max="200" step="10"
              [(ngModel)]="authorsNumber" (change)="onAuthorsNumberChange()">
-      <label for="authorsRange" class="form-label">Authors: {{authorsNumber}}</label>
+      <label for="authorsRange" class="form-label font-semibold mt-2 block text-sm text-gray-700">Authors: <span class="text-red-600">{{authorsNumber}}</span></label>
+      
+      <!-- Quick Select Cards -->
+      <div class="flex gap-2 mt-3">
+        <button class="flex-1 py-1.5 px-2 border border-gray-300 rounded-md hover:bg-red-50 text-xs font-medium transition-colors text-gray-600" [class.bg-red-100]="authorsNumber === 50" [class.border-red-400]="authorsNumber === 50" [class.text-red-800]="authorsNumber === 50" (click)="setAuthorsNumber(50)">50</button>
+        <button class="flex-1 py-1.5 px-2 border border-gray-300 rounded-md hover:bg-red-50 text-xs font-medium transition-colors text-gray-600" [class.bg-red-100]="authorsNumber === 100" [class.border-red-400]="authorsNumber === 100" [class.text-red-800]="authorsNumber === 100" (click)="setAuthorsNumber(100)">100</button>
+        <button class="flex-1 py-1.5 px-2 border border-gray-300 rounded-md hover:bg-red-50 text-xs font-medium transition-colors text-gray-600" [class.bg-red-100]="authorsNumber === 200" [class.border-red-400]="authorsNumber === 200" [class.text-red-800]="authorsNumber === 200" (click)="setAuthorsNumber(200)">200</button>
+      </div>
     </div>
 
     <!-- Affiliations -->
-    <div class="py-2 px-3 subtitle border-b-gray-400 border-b-2" *ngIf="affiliations && affiliations.length > 0">
+    <div class="py-2 px-4 font-semibold border-b border-gray-200 text-gray-700 bg-gray-50 text-sm tracking-wide" *ngIf="affiliations && affiliations.length > 0">
       Affiliations
     </div>
-    <div class="py-3 px-3 flex md:flex-col gap-3 max-h-96 overflow-scroll" *ngIf="affiliations && affiliations.length > 0">
-      <div class="flex gap-3" *ngFor="let aff of affiliations">
+    <div class="py-3 px-4 flex md:flex-col gap-3 max-h-96 overflow-y-auto bg-white" *ngIf="affiliations && affiliations.length > 0">
+      <div class="flex gap-3 items-center hover:bg-gray-50 p-1 rounded transition-colors" *ngFor="let aff of affiliations">
         <input
           [id]="aff.scopusId"
           type="checkbox"
           [checked]="selectedAffiliations.includes(aff.scopusId)"
           (change)="onClickCheckbox($any($event))"
+          class="form-checkbox h-4 w-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
         >
-        <label [for]="aff.scopusId">{{aff.name}}</label>
+        <label [for]="aff.scopusId" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1 leading-tight">{{aff.name}}</label>
       </div>
     </div>
-  </div>
+  </app-filters-sidebar>
 
 
-  <div class="md:ml-4">
-    <div class="flex flex-col justify-between w-full bg-white border-gray-300 rounded">
-      <div *ngIf="!showGraph">
-        <div *ngIf="!showGraph">
-          <mat-spinner></mat-spinner>
-        </div>
+  <div class="flex-1 w-full flex flex-col">
+    <div class="flex flex-col justify-between w-full bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+      <div *ngIf="!showGraph" class="w-full min-w-full md:min-w-[800px]">
+        <app-loader [rows]="10"></app-loader>
       </div>
-      <ng-container *ngIf="showGraph">
-        <div class="pt-2">
-          <div><b>Nodes:</b> {{d3Nodes.length}}</div>
-          <div><b>Relations:</b> {{d3Links.length}}</div>
+      <ng-container *ngIf="showGraph && !noResults">
+        <div class="flex flex-row justify-between items-center w-full p-4 bg-white border-b border-gray-200">
+          <div class="flex items-center gap-6 text-gray-700">
+            <div class="flex items-center gap-2"><span class="font-bold text-gray-900">Nodes:</span> <span class="bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">{{d3Nodes.length}}</span></div>
+            <div class="flex items-center gap-2"><span class="font-bold text-gray-900">Relations:</span> <span class="bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">{{d3Links.length}}</span></div>
+          </div>
+          <button type="button" class="bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors font-medium text-sm"
+                  (click)="onDownloadGraph()"
+                  *ngIf="d3Nodes.length > 0;">
+            <fa-icon [icon]="faDownload"></fa-icon>
+            Download
+          </button>
         </div>
-        <button type="button" class="bg-red-700 text-white mt-2 p-3 rounded self-start"
-                (click)="onDownloadGraph()"
-                *ngIf="d3Nodes.length > 0;">
-          <fa-icon [icon]="faDownload"></fa-icon>
-          Download
-        </button>
       </ng-container>
     </div>
-    <div class="w-auto mt-4 mat-elevation-z8" *ngIf="showGraph">
-      <!-- Añadido margen top para separación -->
-      <div class="w-full" #downloadEl>
+    
+    <ng-container *ngIf="showGraph && noResults">
+      <app-no-results [isServerOnline]="true" title="No results found"></app-no-results>
+    </ng-container>
+
+    <div class="w-full max-w-full overflow-hidden mt-4 mat-elevation-z8" *ngIf="showGraph && !noResults">
+      <div class="w-full h-[600px] md:h-[800px] overflow-hidden bg-white rounded relative" #downloadEl>
+        
+        <!-- Zoom Controls Overlay -->
+        <div class="absolute top-4 right-4 z-10 flex flex-col gap-2">
+          <button (click)="zoomIn()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">+</button>
+          <button (click)="zoomOut()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">-</button>
+          <button (click)="resetZoom()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-700 mt-2" title="Center">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Zm40 360q-134 0-227-93T160-400q0-134 93-227t227-93q134 0 227 93t93 227q0 134-93 227t-227 93Zm0-80q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm0-240Z"/></svg>
+          </button>
+        </div>
+
         <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>
       </div>
     </div>

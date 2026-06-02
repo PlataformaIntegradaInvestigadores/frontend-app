@@ -22,9 +22,19 @@ export class D3Service {
       container.attr('transform', 'translate(' + transform.x + ',' + transform.y + ') scale(' + transform.k + ')');
     }
 
-    zoom = d3.zoom().on('zoom', zoomed);
+    zoom = d3.zoom().scaleExtent([0.1, 4]).on('zoom', zoomed);
     // @ts-ignore
     svg.call(zoom);
+
+    // Apply an initial zoom-out scale so the graph fits better on the screen
+    const width = svgElement.clientWidth || 800;
+    const height = svgElement.clientHeight || 600;
+    // @ts-ignore
+    svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.6).translate(-width / 2, -height / 2));
+    
+    // Attach the behavior for external use
+    // @ts-ignore
+    svgElement.__zoomBehavior = zoom;
   }
 
   /** A method to bind a draggable behaviour to an svg element */

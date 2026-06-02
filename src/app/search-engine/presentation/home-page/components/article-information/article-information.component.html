@@ -1,108 +1,108 @@
-<div class="flex flex-col md:flex-row justify-center">
-  <div  class="col-lg-2  px-0 mt-3">
-    <div class="rounded mx-4 mat-elevation-z8" *ngIf="!isLoadingResults">
-
-      <!-- Title -->
-      <div class="text-center py-3 font-bold border-b-gray-400 border-b-2">
-        FILTERS
-      </div>
-
+<div class="flex flex-col md:flex-row justify-center gap-6 items-start mt-4 w-full px-4 xl:px-8">
+  <div class="md:w-72 w-full flex-shrink-0">
+    <app-filters-sidebar [isFirstLoad]="isFirstLoad" [isLoading]="isFiltering" [isDisabled]="total === 0 && !isFirstLoad && !isFiltering && !isPaginating">
       <!-- Years -->
-      <div class="py-2 px-3 font-semibold border-b-gray-400 border-b-2">
+      <div class="py-2 px-4 font-semibold border-b border-gray-200 text-gray-700 bg-gray-50 text-sm tracking-wide">
         Publication year
       </div>
-      <div class="py-3 px-3 flex md:flex-col gap-3 max-h-100 overflow-y-scroll">
-        <div class="flex gap-3" *ngFor="let year of years">
+      <div class="py-3 px-4 flex md:flex-col gap-3 max-h-100 overflow-y-auto bg-white">
+        <div class="flex gap-3 items-center hover:bg-gray-50 p-1 rounded transition-colors" *ngFor="let year of years">
           <input
             [id]="year"
             type="checkbox"
             [checked]="selectedYears.includes(year)"
             (change)="onYearToggle(year, $any($event.target).checked)"
-            class="form-checkbox h-5 w-5"
+            class="form-checkbox h-4 w-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
           >
-          <label [for]="year" class="ml-2">{{year}}</label>
+          <label [for]="year" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1">{{year}}</label>
         </div>
       </div>
-
-    </div>
+    </app-filters-sidebar>
   </div>
+  <div class="flex-1 w-full flex flex-col">
+    <ng-container *ngIf="{ data: articles$ | async } as obs">
+      <ng-container *ngIf="!(isFirstLoad || isFiltering || isPaginating); else loadingTpl">
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden w-full">
+          <div *ngIf="obs.data as response">
+            <table
+              mat-table
+              [dataSource]="response.data"
+              matSort
+              matSortActive="publication_date"
+              matSortDisableClear
+              matSortDirection="desc"
+            >
+              <!-- Title Column -->
+              <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef>Title</th>
+                <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+              </ng-container>
 
-  <div class="container border-b-gray-400 border-b-2 mt-3">
-    <div *ngIf="isLoadingResults">
-      <mat-spinner></mat-spinner>
-    </div>
-    <div class="table-container mat-elevation-z8">
-      <div *ngIf="articles$ | async as response">
-        <table
-          mat-table
-          [dataSource]="response.data"
-          matSort
-          matSortActive="publication_date"
-          matSortDisableClear
-          matSortDirection="desc"
+              <!-- Author Count Column -->
+              <ng-container matColumnDef="author_count">
+                <th mat-header-cell *matHeaderCellDef>Authors</th>
+                <td mat-cell *matCellDef="let row">{{ row.author_count }}</td>
+              </ng-container>
+
+              <!-- Affiliation Count Column -->
+              <ng-container matColumnDef="affiliation_count">
+                <th mat-header-cell *matHeaderCellDef>Affiliations</th>
+                <td mat-cell *matCellDef="let row">{{ row.affiliation_count }}</td>
+              </ng-container>
+
+              <!-- Publication Date Column -->
+              <ng-container matColumnDef="publication_date">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+                  Publication Date
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.publication_date | date }}
+                </td>
+              </ng-container>
+
+              <!-- Add this after the publication_date column -->
+              <ng-container matColumnDef="relevance">
+                <th mat-header-cell *matHeaderCellDef>Relevance Score</th>
+                <td mat-cell *matCellDef="let row">{{ row.relevance?.toFixed(4) || 'N/A' }}</td>
+              </ng-container>
+
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                (click)="clickedRows(row)"
+                class="hover:cursor-pointer hover:bg-gray-200"
+              ></tr>
+            </table>
+          </div>
+        </div>
+
+      </ng-container>
+      <ng-template #loadingTpl>
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden w-full">
+          <app-loader [rows]="10"></app-loader>
+        </div>
+      </ng-template>
+
+      <div class="flex flex-col sm:flex-row items-center justify-end px-4 py-2 bg-white mt-4 rounded-xl shadow-md border border-gray-200" *ngIf="total > 0">
+        <div class="text-sm text-gray-600 font-medium mr-4 flex items-center">
+          <app-mini-loader *ngIf="isPaginating" class="mr-2"></app-mini-loader>
+          Current Page: <span class="text-red-700 font-bold ml-1">{{ page }}</span>
+        </div>
+        <mat-paginator
+          [length]="total"
+          [pageSize]="size"
+          [pageIndex]="page - 1"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          aria-label="Select page"
+          (page)="onChangePagination($event)"
         >
-          <!-- Title Column -->
-          <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef>Title</th>
-            <td mat-cell *matCellDef="let row">{{ row.title }}</td>
-          </ng-container>
-
-          <!-- Author Count Column -->
-          <ng-container matColumnDef="author_count">
-            <th mat-header-cell *matHeaderCellDef>Authors</th>
-            <td mat-cell *matCellDef="let row">{{ row.author_count }}</td>
-          </ng-container>
-
-          <!-- Affiliation Count Column -->
-          <ng-container matColumnDef="affiliation_count">
-            <th mat-header-cell *matHeaderCellDef>Affiliations</th>
-            <td mat-cell *matCellDef="let row">{{ row.affiliation_count }}</td>
-          </ng-container>
-
-          <!-- Publication Date Column -->
-          <ng-container matColumnDef="publication_date">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-              Publication Date
-            </th>
-            <td mat-cell *matCellDef="let row">
-              {{ row.publication_date | date }}
-            </td>
-          </ng-container>
-
-          <!-- Add this after the publication_date column -->
-          <ng-container matColumnDef="relevance">
-            <th mat-header-cell *matHeaderCellDef>Relevance Score</th>
-            <td mat-cell *matCellDef="let row">{{ row.relevance?.toFixed(4) || 'N/A' }}</td>
-          </ng-container>
-
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumns"
-            (click)="clickedRows(row)"
-            class="hover:cursor-pointer hover:bg-gray-200"
-          ></tr>
-        </table>
+        </mat-paginator>
       </div>
-    </div>
-
-    <mat-paginator
-      [length]="total"
-      [pageSize]="size"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page"
-      class="w-full"
-      (page)="onChangePagination($event)"
-      *ngIf="!isLoadingResults"
-    >
-    </mat-paginator>
-    <ng-container *ngIf="!isLoadingResults && total === 0">
-      <div class="flex justify-center text-center">
-        <mat-icon >sentiment_very_dissatisfied</mat-icon>
-        <p class="text-2xl">No results found</p>
-      </div>
-
+    </ng-container>
+    <ng-container *ngIf="!(isFirstLoad || isFiltering || isPaginating) && total === 0">
+      <app-no-results [isServerOnline]="isServerOnline" title="No results found"></app-no-results>
     </ng-container>
 
   </div>
