@@ -12,6 +12,7 @@ import { FingerprintComponent } from './profile/presentation/components/fingerpr
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HomePageModule } from "./search-engine/presentation/home-page/home-page.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatTableModule } from '@angular/material/table';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
@@ -54,7 +55,8 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
     BrowserAnimationsModule,
     AboutUsModule,
     AboutUsRoutingModule,
-    FormsModule
+    FormsModule,
+    MatTableModule
   ],
   providers: [
     {

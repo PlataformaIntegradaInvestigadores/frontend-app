@@ -46,4 +46,8 @@ export class ArticleService {
       bodyParams
     );
   }
+
+  getArticlesByAuthor(authorId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.rootURL}/v2/articles/by-author?author_id=${authorId}`);
+  }
 }
