@@ -62,9 +62,10 @@ export class CoauthorsGraphComponent {
 
   setupNodes() {
     this.apiNodes.forEach((node) => {
+      const nodeId = String(node.scopus_id);
       this.d3Nodes.push(
         new Node(
-          node.scopus_id,
+          nodeId,
           this.apiNodes.length,
           this.truncarCadena(node.first_name) +
           ' ' +
@@ -99,19 +100,22 @@ export class CoauthorsGraphComponent {
   }
 
   setupLinks(
-    links: { source: number; target: number; collabStrength: number }[]
+    links: { source: string | number; target: string | number; collabStrength: number }[]
   ) {
     links.forEach((link) => {
-      this.d3Nodes[this.getIndexByScopusId(link.source)].degree++;
-      this.d3Nodes[this.getIndexByScopusId(link.target)].degree++;
+      const sourceId = String(link.source);
+      const targetId = String(link.target);
+      this.d3Nodes[this.getIndexByScopusId(sourceId)].degree++;
+      this.d3Nodes[this.getIndexByScopusId(targetId)].degree++;
       this.d3Links.push(
-        new Link(link.source, link.target, link.collabStrength * 5)
+        new Link(sourceId, targetId, link.collabStrength * 5)
       );
     });
   }
 
-  getIndexByScopusId(scopusId: any) {
-    return this.apiNodes.map((node) => node.scopus_id).indexOf(scopusId);
+  getIndexByScopusId(scopusId: string | number) {
+    const lookupId = String(scopusId);
+    return this.apiNodes.findIndex((node) => String(node.scopus_id) === lookupId);
   }
 
   downloadDataUrl(dataUrl: string, filename: string): void {

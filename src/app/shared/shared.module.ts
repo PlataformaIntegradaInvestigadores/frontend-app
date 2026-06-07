@@ -1,5 +1,9 @@
 import {NgModule} from '@angular/core';
 import {SearchBoxComponent} from './components/search-box/search-box.component';
+import {LoaderComponent} from './components/loader/loader.component';
+import {MiniLoaderComponent} from './components/loader/mini-loader/mini-loader.component';
+import {FiltersSidebarComponent} from './components/filters-sidebar/filters-sidebar.component';
+import {NoResultsComponent} from './components/no-results/no-results.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
@@ -37,6 +41,10 @@ import {CountUpModule} from "ngx-countup";
     EvolutionLineChartComponent,
     TreeMapChartComponent,
     SummaryComponent,
+    LoaderComponent,
+    MiniLoaderComponent,
+    FiltersSidebarComponent,
+    NoResultsComponent,
   ],
   exports: [
     SearchBoxComponent,
@@ -51,6 +59,10 @@ import {CountUpModule} from "ngx-countup";
     TreeMapChartComponent,
     SummaryComponent,
     EvolutionLineChartComponent,
+    LoaderComponent,
+    MiniLoaderComponent,
+    FiltersSidebarComponent,
+    NoResultsComponent,
   ],
   imports: [
     MatButtonModule,

@@ -1,5 +1,11 @@
 <!-- profile-data.component.html -->
-<div *ngIf="user && !isAuthor"
+<div *ngIf="isLoading" class="mx-auto max-w-screen-xl p-4 lg:p-8">
+  <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden w-full">
+    <app-loader [rows]="10"></app-loader>
+  </div>
+</div>
+
+<div *ngIf="!isLoading && user && !isAuthor"
      class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
   <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
     <div class="flex justify-center md:justify-start w-full md:w-1/4">
@@ -194,108 +200,119 @@
   </div>
 </div>
 
-<div *ngIf="authorCentinela && isAuthor"
-     class="mx-auto max-w-screen-xl p-4 lg:p-8 flex flex-col md:flex-row justify-center md:justify-start relative">
-  <div class="flex flex-col md:flex-row items-center gap-x-4 gap-y-2 w-full">
-    <!-- Profile Picture -->
-    <div class="flex justify-center md:justify-start w-full md:w-1/4">
-      <div
-        class="relative w-32 h-40 sm:w-40 sm:h-48 overflow-hidden rounded border-4 border-gray-200 shadow-xl"
-      >
+<div *ngIf="!isLoading && authorCentinela && isAuthor"
+     class="max-w-6xl mx-auto flex flex-col lg:flex-row items-start gap-6 p-4 sm:px-6 lg:px-8 relative">
+  
+  <!-- MAIN COLUMN (Left) -->
+  <div class="lg:w-2/3 w-full flex flex-col gap-6 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+    
+    <!-- Header: Photo + Name/Affil -->
+    <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start border-b border-gray-100 pb-6">
+      <!-- Profile Picture -->
+      <div class="relative w-32 h-32 overflow-hidden rounded-full border-4 border-red-50 shadow-md ring-4 ring-gray-50 flex-shrink-0">
         <img
           class="object-cover w-full h-full"
           [src]="'./assets/profile.png'"
           alt="Profile Picture"
         />
       </div>
-    </div>
-    <div
-      class="w-full flex flex-col sm:flex-row md:flex-col md:flex-grow justify-center md:justify-start gap-x-4 gap-y-2">
-      <div class="w-full md:border-r pr-7">
-        <div class="text-center">
-          <strong
-            class="block text-xl sm:text-2xl font-bold mb-2">{{ authorCentinela.first_name }} {{ authorCentinela.last_name }}</strong>
+      
+      <!-- Core Info -->
+      <div class="text-center sm:text-left flex-1">
+        <h1 class="text-3xl font-extrabold text-gray-900 leading-tight mb-2">
+          {{ authorCentinela.first_name }} {{ authorCentinela.last_name }}
+        </h1>
+        
+        <div *ngIf="authorCentinela.current_affiliation" class="mt-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+            <svg class="w-3.5 h-3.5 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            Affiliation
+          </span>
+          <p class="text-sm text-gray-700 mt-2 font-medium">{{ authorCentinela.current_affiliation }}</p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-          <!-- Información de la Institución y Email -->
-          <div class="space-y-6">
-            <ng-container *ngIf="authorCentinela.current_affiliation">
-              <div class="break-words">
-                <strong class="block text-lg font-semibold text-gray-700">Affiliation</strong>
-                <p class="text-base text-gray-900">{{ authorCentinela.current_affiliation }}</p>
-              </div>
-            </ng-container>
-
-            <ng-container *ngIf="authorCentinela.email">
-              <div class="break-words">
-                <strong class="block text-lg font-semibold text-gray-700">Institutional Email</strong>
-                <p class="text-base text-gray-900">{{ authorCentinela.email }}</p>
-              </div>
-            </ng-container>
-
-          </div>
-
-          <!-- Información de Scopus y Botón -->
-          <div class="space-y-6">
-            <!-- Información de Scopus -->
-            <div>
-              <div class="space-y-4">
-                <div>
-                  <strong class="block text-lg font-bold text-gray-800">Citations</strong>
-                  <p class="text-base  text-gray-900">{{ authorCentinela.citation_count }}</p>
-                </div>
-
-                <div>
-                  <strong class="block text-lg font-bold text-gray-800">Scopus</strong>
-                  <p class="text-base  text-gray-900">{{ authorCentinela.scopus_id }}</p>
-                </div>
-
-                <div>
-                  <strong class="block text-lg font-bold text-gray-800">Articles</strong>
-                  <p class="text-base text-gray-900">{{ authorCentinela.articles }}</p>
-                </div>
-              </div>
-            </div>
-            <!-- Botón VIEW IN SCOPUS -->
-            <div class="flex justify-end">
-              <button
-                (click)="goToScopus(authorCentinela.scopus_id)"
-                class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-lg shadow-md hover:from-orange-600 hover:to-red-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 group"
-              >
-                <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-                <span class="tracking-wide">VIEW IN SCOPUS</span>
-                <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
+        <div *ngIf="authorCentinela.email" class="mt-3">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+            <svg class="w-3.5 h-3.5 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            Email
+          </span>
+          <p class="text-sm text-gray-700 mt-2">{{ authorCentinela.email }}</p>
         </div>
       </div>
-      <!-- Scopus Information and Line Chart -->
-        <div class="w-full md:w-3/5 flex flex-col gap-6 md:pl-4 mt-6 md:mt-0">
-          <!-- Line Chart -->
-          <ng-container *ngIf="years && charged">
-            <div class="flex justify-center items-center">
-              <div class="max-h-fit" *ngIf="years[0].series.length > 1">
-                <app-evolution-line-chart
-                  [multi]="years"
-                  [width]="600"
-                  [height]="300"
-                  [boolean]="true"
-                ></app-evolution-line-chart>
-              </div>
-            </div>
-          </ng-container>
+    </div>
+
+    <!-- Chart -->
+    <div class="pt-2">
+      <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Articles Timeline</h2>
+      
+      <!-- Loaded Chart -->
+      <div *ngIf="years && charged" class="w-full flex justify-center items-center bg-gray-50 rounded-xl border border-gray-100 p-4">
+        <div class="max-h-fit" *ngIf="years[0].series.length > 1">
+          <app-evolution-line-chart
+            [multi]="years"
+            [width]="600"
+            [height]="250"
+            [boolean]="true"
+          ></app-evolution-line-chart>
         </div>
+        <div *ngIf="years[0].series.length <= 1" class="text-gray-500 text-sm text-center py-10">
+          Not enough data to display chart.
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="chartError" class="w-full flex flex-col justify-center items-center bg-gray-50 rounded-xl border border-gray-200 border-dashed p-8 text-center">
+        <svg class="w-10 h-10 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        <p class="text-gray-600 font-medium">Timeline data is temporarily unavailable.</p>
+        <p class="text-sm text-gray-500 mt-1">This will be populated once connected to the metrics service.</p>
+      </div>
 
     </div>
 
   </div>
 
+  <!-- SIDEBAR COLUMN (Right) -->
+  <div class="lg:w-1/3 flex flex-col gap-6">
+    
+    <!-- SCOPUS BUTTON CARD -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+      <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center mb-4 p-2 shadow-sm border border-gray-100">
+        <img src="assets/icons/scopus.svg" onerror="this.src='assets/scopus.png'; this.onerror=null;" alt="Scopus Logo" class="w-full h-full object-contain">
+      </div>
+      <h3 class="text-lg font-bold text-gray-900 mb-2">View Original Profile</h3>
+      <p class="text-sm text-gray-500 mb-6">Explore the complete author profile directly on Scopus.</p>
+      <button 
+        (click)="goToScopus(authorCentinela.scopus_id)" 
+        class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all duration-200 transform hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:ring-4 focus:ring-red-200">
+        <span>View in Scopus</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+      </button>
+    </div>
+
+    <!-- DETAILS CARD (Metrics) -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Author Metrics</h2>
+      <div class="flex flex-col gap-4">
+        <div>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Citations</p>
+          <p class="text-sm text-gray-900 font-medium flex items-center gap-2">
+            <span class="bg-red-50 text-red-700 text-xs font-bold px-2 py-0.5 rounded-md border border-red-100">{{ authorCentinela.citation_count || 0 }}</span>
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Articles</p>
+          <p class="text-sm text-gray-900 font-medium flex items-center gap-2">
+            <span class="bg-gray-100 text-gray-800 text-xs font-bold px-2.5 py-1 rounded-md">{{ authorCentinela.articles || 0 }}</span>
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Scopus ID</p>
+          <p class="text-sm text-gray-900 font-medium break-all">{{ authorCentinela.scopus_id }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
   <button
     *ngIf="isOwnProfile"
     class="absolute top-4 right-4 md:right-8 flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm group"

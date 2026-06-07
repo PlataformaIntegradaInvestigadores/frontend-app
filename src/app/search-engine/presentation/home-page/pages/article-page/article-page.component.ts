@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { ArticleService } from 'src/app/search-engine/domain/services/article.service';
 import { Article } from 'src/app/shared/interfaces/article.interface';
 
@@ -11,6 +12,7 @@ import { Article } from 'src/app/shared/interfaces/article.interface';
 })
 export class ArticlePageComponent {
   article!: Article | undefined;
+  isLoading: boolean = true;
 
   scopusId: string = '';
 
@@ -18,6 +20,7 @@ export class ArticlePageComponent {
     private route: ActivatedRoute,
     private articleService: ArticleService,
     private title: Title,
+    private location: Location,
     @Inject(Router) private router: Router
   ) {}
   setArticleTitle() {
@@ -32,10 +35,12 @@ export class ArticlePageComponent {
   }
 
   retrieveArticle() {
+    this.isLoading = true;
     this.articleService.getArticleById(this.scopusId).subscribe((article) => {
       console.log(article);
       this.article = article;
       this.setArticleTitle();
+      this.isLoading = false;
     });
   }
   goToArticle(scopus: string | undefined) {

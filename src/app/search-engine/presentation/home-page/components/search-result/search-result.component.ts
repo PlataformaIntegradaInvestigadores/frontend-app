@@ -38,6 +38,15 @@ export class SearchResultComponent implements OnInit {
       ...searchValue,
       query: searchValue.query.trim().replace(/\s\s+/g, ' ')
     };
+    
+    // Scroll down to results section smoothly
+    setTimeout(() => {
+      const headerHeight = document.querySelector('.custom-bg')?.clientHeight || 500;
+      window.scrollTo({
+        top: headerHeight,
+        behavior: 'smooth'
+      });
+    }, 100);
   }
 
   yearSelected(years: number[]) {

@@ -30,6 +30,7 @@ export class SearchBoxComponent implements OnInit{
 
   selectedOption!: SearchOption;
   inputValue: string = ""
+  showError: boolean = false;
 
   @Output() search: EventEmitter<Search> = new EventEmitter<Search>()
   @Input()
@@ -67,12 +68,21 @@ export class SearchBoxComponent implements OnInit{
     }
   }
 
+  triggerSearch() {
+    if (!this.inputValue || this.inputValue.trim() === '') {
+      this.showError = true;
+      return;
+    }
+    this.showError = false;
+    this.search.emit({
+      option: this.selectedOption.code,
+      query: this.inputValue.trim()
+    });
+  }
+
   onEnter(event: KeyboardEvent) {
     if (event.code === 'Enter')
-      this.search.emit({
-        option: this.selectedOption.code,
-        query: this.inputValue
-      })
+      this.triggerSearch();
   }
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {

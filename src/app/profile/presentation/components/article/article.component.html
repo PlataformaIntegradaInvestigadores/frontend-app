@@ -1,18 +1,40 @@
-<table class="article-table">
-  <thead>
-  <tr>
-    <th>Títle</th>
-    <th>Publicaction date</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let article of articles" (click)="seeMoreInformation(article.scopus_id.toString())">
-    <td>{{article.title}}</td>
-    <td>{{article.publication_date}}</td>
-  </tr>
-  </tbody>
-</table>
-<!--<div class="flex gap-x-5" *ngFor="let article of articles">-->
-<!--  <p>{{article.title}}</p>-->
-<!--  <p>{{article.publication_date}}</p>-->
-<!--</div>-->
+<div class="w-full flex flex-col gap-4 py-4 px-2">
+  <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden w-full">
+    <table
+      mat-table
+      [dataSource]="articles"
+      class="min-w-full"
+    >
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500 uppercase tracking-wider text-xs">Title</th>
+        <td mat-cell *matCellDef="let row" class="text-sm font-medium text-gray-900 py-3 pr-4">
+          <div class="line-clamp-2">{{ row.title }}</div>
+          <div class="text-xs text-gray-500 mt-1">Scopus ID: {{ row.scopus_id }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Publication Date Column -->
+      <ng-container matColumnDef="publication_date">
+        <th mat-header-cell *matHeaderCellDef class="font-bold text-gray-500 uppercase tracking-wider text-xs w-1/4">
+          Publication Date
+        </th>
+        <td mat-cell *matCellDef="let row" class="text-sm text-gray-900 py-3 whitespace-nowrap">
+          {{ row.publication_date | date:'mediumDate' }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['title', 'publication_date']" class="bg-gray-50"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['title', 'publication_date']"
+        (click)="seeMoreInformation(row.scopus_id)"
+        class="hover:cursor-pointer hover:bg-gray-100 transition-colors"
+      ></tr>
+    </table>
+    
+    <div *ngIf="articles.length === 0" class="text-center py-10 bg-gray-50">
+      <p class="text-gray-500">No articles found for this author.</p>
+    </div>
+  </div>
+</div>
