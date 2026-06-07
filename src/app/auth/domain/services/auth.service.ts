@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError, Subject } from 'rxjs';
-import { catchError, tap, switchMap, map } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { User, Company, LoginCredentials, AuthResponse, UserType } from '../entities/interfaces';
+import {
+  User,
+  Company,
+  LoginCredentials,
+  AuthResponse,
+  UserType,
+  LoginResponse,
+  MfaChallengeResponse,
+  MfaSetupResponse
+} from '../entities/interfaces';
 import { User as Users } from 'src/app/group/presentation/user.interface';
 import { jwtDecode } from 'jwt-decode';
 import { CompanyAuthService } from './company-auth.service';
@@ -57,17 +66,23 @@ export class AuthService {
    * @param userType - Tipo de usuario (investigador o empresa).
    * @returns Un Observable que emite la respuesta del inicio de sesión.
    */
-  login(credentials: LoginCredentials, userType: UserType = 'user'): Observable<AuthResponse> {
+  login(credentials: LoginCredentials, userType: UserType = 'user'): Observable<LoginResponse> {
     const endpoint = userType === 'company' ? '/companies/token/' : '/token/';
     
-    return this.http.post<AuthResponse>(`${this.apiUrl}${endpoint}`, credentials, { withCredentials: true }).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}${endpoint}`, credentials, { withCredentials: true }).pipe(
       tap(response => {
-        this.setSession(response, userType);
-        // Notificar al monitor de tokens que reinicie el monitoreo
-        this.notifyTokenRefresh();
+        if (this.isFinalAuthResponse(response)) {
+          this.setSession(response, userType);
+          // Notificar al monitor de tokens que reinicie el monitoreo
+          this.notifyTokenRefresh();
+        }
       }),
       catchError(this.handleError)
     );
+  }
+
+  isMfaChallengeResponse(response: LoginResponse): response is MfaChallengeResponse {
+    return 'status' in response && !!response.mfa_challenge;
   }
   /**
    * Obtiene el tipo de usuario actual.
@@ -106,14 +121,30 @@ export class AuthService {
     if (token) {
       return of(token);
     }
-    const refreshToken = localStorage.getItem('accessToken');
-    if (refreshToken) {
-      return this.refreshAccessToken().pipe(
-        tap((newToken: AuthResponse) => this.tokenSubject.next(newToken.access)), // Extract the 'access' token from the 'AuthResponse' object
-        map(response => response.access)
-      );
+    const storedToken = localStorage.getItem('accessToken');
+    if (storedToken) {
+      this.tokenSubject.next(storedToken);
+      return of(storedToken);
     }
     return of(null);
+  }
+
+  setupMfa(challenge: string): Observable<MfaSetupResponse> {
+    return this.http.post<MfaSetupResponse>(
+      `${this.apiUrl}/auth/mfa/setup/`,
+      { mfa_challenge: challenge },
+      { withCredentials: true }
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  confirmMfa(challenge: string, code: string): Observable<AuthResponse> {
+    return this.completeMfa('/auth/mfa/confirm/', challenge, code);
+  }
+
+  verifyMfa(challenge: string, code: string): Observable<AuthResponse> {
+    return this.completeMfa('/auth/mfa/verify/', challenge, code);
   }
 
   /**
@@ -129,13 +160,15 @@ export class AuthService {
    * @returns Un Observable que emite la nueva respuesta del token de acceso.
    */
   private refreshAccessToken(): Observable<AuthResponse> {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = this.getUserType() === 'company' ? localStorage.getItem('refreshToken') : null;
     const body = refreshToken ? { refresh: refreshToken } : {};
     return this.http.post<AuthResponse>(`${this.apiUrl}/token/refresh/`, body, { withCredentials: true }).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.access);
-        if (response.refresh) {
+        if (this.getUserType() === 'company' && response.refresh) {
           localStorage.setItem('refreshToken', response.refresh);
+        } else {
+          localStorage.removeItem('refreshToken');
         }
         this.tokenSubject.next(response.access);
         this.notifyTokenRefresh();
@@ -232,7 +265,7 @@ export class AuthService {
    */
   private setSession(authResult: AuthResponse, userType: UserType): void {
     localStorage.setItem('accessToken', authResult.access);
-    if (authResult.refresh) {
+    if (userType === 'company' && authResult.refresh) {
       localStorage.setItem('refreshToken', authResult.refresh);
     } else {
       localStorage.removeItem('refreshToken');
@@ -256,7 +289,7 @@ export class AuthService {
    * Cierra la sesión del usuario eliminando los tokens del almacenamiento local.
    */
   logout(): void {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = this.getUserType() === 'company' ? localStorage.getItem('refreshToken') : null;
     const body = refreshToken ? { refresh: refreshToken } : {};
     this.http.post(`${this.apiUrl}/logout/`, body, { withCredentials: true }).subscribe({
       error: () => {}
@@ -361,5 +394,23 @@ export class AuthService {
   getCurrentUserId(): string | null {
     const userType = this.getUserType();
     return userType === 'company' ? this.getCompanyId() : this.getUserId();
+  }
+
+  private completeMfa(endpoint: string, challenge: string, code: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}${endpoint}`,
+      { mfa_challenge: challenge, code },
+      { withCredentials: true }
+    ).pipe(
+      tap(response => {
+        this.setSession(response, 'user');
+        this.notifyTokenRefresh();
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  private isFinalAuthResponse(response: LoginResponse): response is AuthResponse {
+    return 'access' in response && !!response.access;
   }
 }

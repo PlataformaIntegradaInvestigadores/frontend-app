@@ -101,10 +101,9 @@ export class ProfileDataComponent implements OnChanges, OnInit {
    */
   checkLoginStatus(): void {
     const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
     const userId = localStorage.getItem('userId');
 
-    this.isLoggedIn = !!(accessToken && refreshToken && userId);
+    this.isLoggedIn = !!(accessToken && userId);
   }
 
   /**

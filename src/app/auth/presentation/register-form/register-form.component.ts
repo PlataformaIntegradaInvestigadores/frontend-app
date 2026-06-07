@@ -16,6 +16,18 @@ export class RegisterFormComponent implements OnInit {
     registerForm: FormGroup = new FormGroup({});
     errorMessages: string[] = [];
     isLoading: boolean = false;
+    showPassword: boolean = false;
+    showConfirmPassword: boolean = false;
+
+    private commonWeakPasswords = [
+        '12345678',
+        '123456789',
+        'password',
+        'password123',
+        'qwerty123',
+        'admin123',
+        'centinela123'
+    ];
 
     constructor(
         private fb: FormBuilder,
@@ -32,6 +44,35 @@ export class RegisterFormComponent implements OnInit {
             scopus_id: ['', Validators.pattern(/^[0-9]*$/)],
             agree_terms: [false, Validators.requiredTrue]
         }, { validators: passwordMatchValidator });
+    }
+
+    get passwordChecklist(): { label: string; passed: boolean }[] {
+        const password = this.registerForm.get('password')?.value || '';
+        const confirmPassword = this.registerForm.get('confirm_password')?.value || '';
+        const normalizedPassword = this.normalizeValue(password);
+
+        return [
+            {
+                label: 'At least 8 characters',
+                passed: password.length >= 8
+            },
+            {
+                label: 'Not entirely numeric',
+                passed: password.length > 0 && !/^\d+$/.test(password)
+            },
+            {
+                label: 'Not a common password',
+                passed: password.length > 0 && !this.commonWeakPasswords.includes(normalizedPassword)
+            },
+            {
+                label: 'Not similar to your personal information',
+                passed: password.length > 0 && !this.isSimilarToUserInfo(normalizedPassword)
+            },
+            {
+                label: 'Passwords match',
+                passed: password.length > 0 && password === confirmPassword
+            }
+        ];
     }
 
     /**
@@ -110,5 +151,30 @@ export class RegisterFormComponent implements OnInit {
         if (!/[0-9]/.test(char)) {
             event.preventDefault();
         }
+    }
+
+    togglePasswordVisibility(): void {
+        this.showPassword = !this.showPassword;
+    }
+
+    toggleConfirmPasswordVisibility(): void {
+        this.showConfirmPassword = !this.showConfirmPassword;
+    }
+
+    private isSimilarToUserInfo(normalizedPassword: string): boolean {
+        const values = [
+            this.registerForm.get('first_name')?.value,
+            this.registerForm.get('last_name')?.value,
+            this.registerForm.get('username')?.value?.split('@')[0],
+            this.registerForm.get('scopus_id')?.value
+        ]
+            .map(value => this.normalizeValue(value || ''))
+            .filter(value => value.length >= 3);
+
+        return values.some(value => normalizedPassword.includes(value) || value.includes(normalizedPassword));
+    }
+
+    private normalizeValue(value: string): string {
+        return value.toString().trim().toLowerCase();
     }
 }

@@ -27,6 +27,9 @@ import { RegisterFormComponent } from './auth/presentation/register-form/registe
 import { CompanyRegisterFormComponent } from './auth/presentation/company-register-form/company-register-form.component';
 import { RedirectComponent } from './auth/presentation/redirect/redirect.component';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { MfaCodeInputComponent } from './auth/presentation/mfa-code-input/mfa-code-input.component';
+import { MfaEnrollmentFormComponent } from './auth/presentation/mfa-enrollment-form/mfa-enrollment-form.component';
+import { MfaVerifyFormComponent } from './auth/presentation/mfa-verify-form/mfa-verify-form.component';
 @NgModule({  declarations: [
     AppComponent,
     NetworkComponent,
@@ -35,6 +38,9 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
     FingerprintComponent,
     AuthModalComponent,
     LoginFormComponent,
+    MfaCodeInputComponent,
+    MfaEnrollmentFormComponent,
+    MfaVerifyFormComponent,
     RegisterFormComponent,
     CompanyRegisterFormComponent,
     RedirectComponent,

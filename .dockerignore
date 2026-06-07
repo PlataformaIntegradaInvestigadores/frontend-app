@@ -20,6 +20,13 @@ dist
 tmp
 
 # Environment
+.env*
+*.env
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 .env
 .env.local
 .env.production
@@ -45,12 +52,19 @@ protractor.conf.js
 Dockerfile*
 docker-compose*
 .dockerignore
+nginx_produccion.conf
 
 # Build artifacts
 build
 out
 
 # Logs
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+*.backup
 logs
 *.log
 
