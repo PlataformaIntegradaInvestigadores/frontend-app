@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { FeedService } from '../../domain/services/feed.service';
@@ -11,6 +11,7 @@ import {
   UserFeedStats
 } from '../../domain/entities/feed.interface';
 import { PostCreatorData } from '../types/post.types';
+import { PostCreatorComponent } from '../components/post-creator/post-creator.component';
 
 @Component({
   selector: 'app-feed-page',
@@ -19,6 +20,7 @@ import { PostCreatorData } from '../types/post.types';
 })
 export class FeedPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  @ViewChild(PostCreatorComponent) postCreator?: PostCreatorComponent;
 
   // Data
   posts: FeedPost[] = [];
@@ -104,7 +106,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('FeedPageComponent: Error loading feed:', error);
-          this.error = 'No se pudo cargar el feed. Intenta de nuevo.';
+          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo cargar el feed. Intenta de nuevo.');
         }
       });
   }
@@ -207,7 +209,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error toggling like:', error);
-          this.error = 'No se pudo procesar el like. Intenta de nuevo.';
+          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo procesar el like. Intenta de nuevo.');
         }
       });
   }
@@ -231,7 +233,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error deleting post:', error);
-          this.error = 'No se pudo eliminar el post. Intenta de nuevo.';
+          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo eliminar la publicación. Intenta de nuevo.');
         }
       });
   }
@@ -260,7 +262,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error updating post:', error);
-          this.error = 'No se pudo editar el post. Intenta de nuevo.';
+          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo editar la publicación. Intenta de nuevo.');
         }
       });
   }
@@ -429,12 +431,16 @@ export class FeedPageComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (newPost) => {
+          this.postCreator?.clearForm();
           this.posts = [newPost, ...this.posts];
           this.loadUserStats();
         },
         error: (error) => {
           console.error('Error creando post:', error);
-          this.error = 'No se pudo crear el post. Intenta de nuevo.';
+          this.error = this.feedService.getFriendlyErrorMessage(
+            error,
+            'No se pudo crear la publicación. Revisa la descripción y los archivos adjuntos.'
+          );
         }
       });
   }

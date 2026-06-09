@@ -7,6 +7,7 @@
     <div class="flex-1">
       <textarea #textArea 
         [(ngModel)]="newPostContent" 
+        (ngModelChange)="onContentChanged()"
         [placeholder]="placeholder || '¿Qué estás pensando?'"
         class="w-full bg-transparent border-none resize-none focus:ring-0 outline-none text-gray-800 placeholder-gray-500 text-lg min-h-[60px] p-0"
         rows="2" 
@@ -14,6 +15,11 @@
         (focus)="onTextAreaFocus()"
         (blur)="onTextAreaBlur()">
       </textarea>
+      <div *ngIf="validationMessage"
+        class="mt-2 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <i class="fas fa-info-circle mt-0.5 text-amber-500"></i>
+        <span>{{ validationMessage }}</span>
+      </div>
     </div>
   </div>
 
@@ -155,7 +161,7 @@
     <!-- Right side post button -->
     <button
       class="px-5 py-1.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
-      (click)="submitPost()" [disabled]="!canSubmit() || isLoading">
+      (click)="submitPost()" [disabled]="isLoading">
       <span *ngIf="!isLoading">{{ buttonText || 'Publicar' }}</span>
       <i *ngIf="isLoading" class="fas fa-spinner fa-spin"></i>
     </button>

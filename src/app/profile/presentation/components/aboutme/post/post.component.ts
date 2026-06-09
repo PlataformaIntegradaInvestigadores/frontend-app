@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { FeedService } from 'src/app/feeds/domain/services/feed.service';
 import { User } from 'src/app/profile/domain/entities/user.interfaces';
 import { PostCreatorData, FeedPost } from 'src/app/feeds/presentation/types/post.types';
 import { CreatePostData } from 'src/app/feeds/domain/entities/feed.interface';
 import { Router } from '@angular/router';
+import { PostCreatorComponent } from 'src/app/feeds/presentation/components/post-creator/post-creator.component';
 
 @Component({
   selector: 'app-post',
@@ -12,6 +13,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./post.component.css']
 })
 export class PostComponent implements OnInit {
+  @ViewChild(PostCreatorComponent) postCreator?: PostCreatorComponent;
   @Input() user: User | null = null;
   posts: FeedPost[] = [];
   isLoggedIn: boolean = false;
@@ -81,6 +83,7 @@ export class PostComponent implements OnInit {
 
     this.feedService.createPost(createPostData).subscribe({
       next: (newPost) => {
+        this.postCreator?.clearForm();
         // Agregar el nuevo post al inicio de la lista
         this.posts = [newPost, ...this.posts];
         this.isSubmittingPost = false;
@@ -93,7 +96,10 @@ export class PostComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error creando post:', error);
-        this.error = 'No se pudo crear el post. Intenta de nuevo.';
+        this.error = this.feedService.getFriendlyErrorMessage(
+          error,
+          'No se pudo crear la publicación. Revisa la descripción y los archivos adjuntos.'
+        );
         this.isSubmittingPost = false;
       }
     });
@@ -157,7 +163,7 @@ export class PostComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error deleting post:', error);
-        this.error = 'No se pudo eliminar el post';
+        this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo eliminar la publicación.');
       }
     });
   }
@@ -207,7 +213,7 @@ export class PostComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error editando post:', error);
-        this.error = 'No se pudo editar el post. Intenta de nuevo.';
+        this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo editar la publicación. Intenta de nuevo.');
         this.isSubmittingPost = false;
         this.closeEditModal();
       }

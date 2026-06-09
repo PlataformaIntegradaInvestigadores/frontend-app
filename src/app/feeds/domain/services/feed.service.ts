@@ -132,6 +132,69 @@ export class FeedService {
       .pipe(map(post => this.convertPostDates(post)));
   }
 
+  getFriendlyErrorMessage(error: any, fallback: string = 'No se pudo completar la acción. Intenta de nuevo.'): string {
+    if (!error) return fallback;
+
+    if (error.status === 0) {
+      return 'No hay conexión con el servidor. Verifica tu conexión e intenta nuevamente.';
+    }
+
+    const payload = error.error;
+    const rawMessage = this.extractErrorMessage(payload) || error.message || '';
+    const normalized = rawMessage.toLowerCase();
+
+    if (normalized.includes('content cannot be empty') || normalized.includes('content') && normalized.includes('blank')) {
+      return 'Escribe una descripción antes de publicar.';
+    }
+
+    if (normalized.includes('5000')) {
+      return 'La descripción no puede superar los 5000 caracteres.';
+    }
+
+    if (normalized.includes('file size') || normalized.includes('50mb') || normalized.includes('10mb')) {
+      return 'Uno de los archivos supera el tamaño permitido. Usa archivos de hasta 10 MB y un total máximo de 50 MB.';
+    }
+
+    if (normalized.includes('more than 10 files')) {
+      return 'Puedes adjuntar hasta 10 archivos por publicación.';
+    }
+
+    if (normalized.includes('permission') || error.status === 403) {
+      return 'No tienes permisos para realizar esta acción.';
+    }
+
+    if (error.status === 401) {
+      return 'Tu sesión expiró. Inicia sesión nuevamente.';
+    }
+
+    if (rawMessage && rawMessage !== '[object Object]') {
+      return rawMessage;
+    }
+
+    return fallback;
+  }
+
+  private extractErrorMessage(payload: any): string {
+    if (!payload) return '';
+    if (typeof payload === 'string') return payload;
+
+    const directMessage = payload.message || payload.error || payload.detail;
+    if (typeof directMessage === 'string') return directMessage;
+
+    if (Array.isArray(payload)) {
+      return payload.map(item => this.extractErrorMessage(item)).filter(Boolean).join(' ');
+    }
+
+    if (typeof payload === 'object') {
+      const messages = Object.values(payload)
+        .map(value => this.extractErrorMessage(value))
+        .filter(Boolean);
+      return messages.join(' ');
+    }
+
+    return '';
+  }
+
   /**
    * Obtiene un post específico por ID
    */

@@ -25,6 +25,7 @@ export class PostCreatorComponent {
   selectedFiles: File[] = [];
   tags: string[] = [];
   newTag: string = '';
+  validationMessage: string | null = null;
   
   // Poll related properties
   showPollCreator = false;
@@ -96,7 +97,7 @@ export class PostCreatorComponent {
    * Envía el post
    */
   submitPost(): void {
-    if (!this.canSubmit()) return;
+    if (!this.validateBeforeSubmit()) return;
 
     // Validación específica para encuestas
     if (this.showPollCreator) {
@@ -129,7 +130,45 @@ export class PostCreatorComponent {
     };
 
     this.postSubmitted.emit(postData);
-    this.clearForm(); // Limpiar después de enviar
+  }
+
+  /**
+   * Valida el formulario y muestra un mensaje claro para el usuario.
+   */
+  validateBeforeSubmit(): boolean {
+    this.validationMessage = null;
+
+    if (!this.newPostContent.trim()) {
+      this.validationMessage = 'Escribe una descripción para publicar. Puedes agregar imágenes o archivos, pero el texto es obligatorio.';
+      this.focusPostInput();
+      return false;
+    }
+
+    if (this.newPostContent.trim().length > 5000) {
+      this.validationMessage = 'La descripción no puede superar los 5000 caracteres.';
+      this.focusPostInput();
+      return false;
+    }
+
+    if (this.showPollCreator) {
+      if (!this.pollQuestion.trim()) {
+        this.validationMessage = 'Escribe una pregunta para la encuesta.';
+        return false;
+      }
+
+      if (this.validPollOptionsCount < 2) {
+        this.validationMessage = 'Agrega al menos dos opciones válidas para la encuesta.';
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  onContentChanged(): void {
+    if (this.validationMessage && this.newPostContent.trim()) {
+      this.validationMessage = null;
+    }
   }
 
   /**
@@ -140,6 +179,7 @@ export class PostCreatorComponent {
     this.selectedFiles = [];
     this.tags = [];
     this.newTag = '';
+    this.validationMessage = null;
     this.showTagInput = false;
     this.showPollCreator = false;
     this.pollQuestion = '';
@@ -161,6 +201,9 @@ export class PostCreatorComponent {
       const newFiles = Array.from(files) as File[];
       this.selectedFiles = [...this.selectedFiles, ...newFiles];
       console.log('Archivos seleccionados:', newFiles.map(f => f.name));
+      if (!this.newPostContent.trim()) {
+        this.validationMessage = 'Agrega una descripción antes de publicar el archivo.';
+      }
     }
     
     // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
@@ -314,12 +357,6 @@ export class PostCreatorComponent {
    * Verifica si se puede enviar el post
    */
   canSubmit(): boolean {
-    // Si no hay encuesta, debe tener contenido o archivos
-    if (!this.showPollCreator) {
-      return this.newPostContent.trim() !== '' || this.selectedFiles.length > 0;
-    }
-    
-    // Si hay encuesta, debe ser válida (la encuesta puede existir sin contenido de texto)
-    return this.isPollValid;
+    return !this.isLoading;
   }
 }
