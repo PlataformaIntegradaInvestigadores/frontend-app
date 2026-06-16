@@ -28,7 +28,7 @@ export class MostRelevantAuthorsGraphComponent {
   showGraph: boolean = false
 
   authorsNumber: number = 50
-  affiliations!: { scopusId: string, name: string }[]
+  affiliations!: { scopus_id: string, name: string }[]
   selectedAffiliations: string[] = []
   noResults = false;
   isLoadingResults = false;
@@ -132,8 +132,8 @@ export class MostRelevantAuthorsGraphComponent {
   sortAffiliations() {
     if (this.affiliations) {
       this.affiliations.sort((a, b) => {
-        const aSelected = this.selectedAffiliations.includes(a.scopusId);
-        const bSelected = this.selectedAffiliations.includes(b.scopusId);
+        const aSelected = this.selectedAffiliations.includes(a.scopus_id);
+        const bSelected = this.selectedAffiliations.includes(b.scopus_id);
         if (aSelected && !bSelected) return -1;
         if (!aSelected && bSelected) return 1;
         return 0;

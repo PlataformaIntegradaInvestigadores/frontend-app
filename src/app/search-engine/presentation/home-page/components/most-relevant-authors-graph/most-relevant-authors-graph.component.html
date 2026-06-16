@@ -24,13 +24,13 @@
     <div class="py-3 px-4 flex md:flex-col gap-3 max-h-96 overflow-y-auto bg-white" *ngIf="affiliations && affiliations.length > 0">
       <div class="flex gap-3 items-center hover:bg-gray-50 p-1 rounded transition-colors" *ngFor="let aff of affiliations">
         <input
-          [id]="aff.scopusId"
+          [id]="aff.scopus_id"
           type="checkbox"
-          [checked]="selectedAffiliations.includes(aff.scopusId)"
+          [checked]="selectedAffiliations.includes(aff.scopus_id)"
           (change)="onClickCheckbox($any($event))"
           class="form-checkbox h-4 w-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
         >
-        <label [for]="aff.scopusId" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1 leading-tight">{{aff.name}}</label>
+        <label [for]="aff.scopus_id" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1 leading-tight">{{aff.name}}</label>
       </div>
     </div>
   </app-filters-sidebar>
