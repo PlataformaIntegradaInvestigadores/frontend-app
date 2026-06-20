@@ -1,7 +1,7 @@
 import {Component, ElementRef, EventEmitter, Inject, Input, Output, SimpleChanges, ViewChild} from "@angular/core";
 import {Link, Node} from "../../../../../shared/d3";
 import {AuthorNode, Coauthors} from "../../../../../shared/interfaces/author.interface";
-import {faDownload} from "@fortawesome/free-solid-svg-icons";
+import {faDownload, faVectorSquare} from "@fortawesome/free-solid-svg-icons";
 import {DOCUMENT} from "@angular/common";
 import {AuthorService} from "../../../../domain/services/author.service";
 import {catchError, EMPTY, of, tap} from "rxjs";
@@ -37,6 +37,12 @@ export class MostRelevantAuthorsGraphComponent {
 
   @ViewChild("downloadEl") downloadEl!: ElementRef;
   faDownload = faDownload
+  faVectorSquare = faVectorSquare
+
+  // Seleccion de zona para exportar solo una parte del grafo
+  selectingRegion = false
+  regionStart: { x: number, y: number } | null = null
+  regionRect: { x: number, y: number, w: number, h: number } | null = null
 
   constructor(private authorService: AuthorService,
               @Inject(DOCUMENT) private coreDoc: Document) {
@@ -246,9 +252,100 @@ export class MostRelevantAuthorsGraphComponent {
   }
 
   onDownloadGraph(): void {
-    const theElement = this.downloadEl.nativeElement;
-    htmlToImage.toPng(theElement).then(dataUrl => {
-      this.downloadDataUrl(dataUrl, `most-relevant-authors-graph-${this.query}`);
+    // Encajar el grafo COMPLETO en el viewport (fit-to-content) antes de capturar,
+    // para que la imagen muestre todo el grafo centrado y no un zoom recortado.
+    this.fitGraphToView(350);
+    setTimeout(() => {
+      // Capturar el <svg> del grafo (no el contenedor) evita el espacio en blanco
+      // sobrante (svg 600px dentro de un contenedor de 800px) y los botones de zoom.
+      // pixelRatio alto => etiquetas nitidas y legibles al ampliar la imagen.
+      const svgEl = this.downloadEl.nativeElement.querySelector('graph svg') as HTMLElement | null;
+      const target = svgEl ?? this.downloadEl.nativeElement;
+      htmlToImage.toPng(target, { pixelRatio: 3, backgroundColor: '#ffffff' }).then(dataUrl => {
+        this.downloadDataUrl(dataUrl, `most-relevant-authors-graph-${this.query}`);
+      });
+    }, 450); // espera a que termine la transicion del fit (350ms)
+  }
+
+  /** Calcula el bounding box real del grafo y ajusta zoom+pan para que entre
+   *  completo y centrado en el viewport (a diferencia de resetZoom, que aplica
+   *  un escalado fijo que puede recortar grafos dispersos). */
+  private fitGraphToView(durationMs: number): void {
+    const data = this.getSvgAndZoom();
+    if (!data || !data.zoom) return;
+    const container = data.svgEl.querySelector('g.my-border') as SVGGraphicsElement | null;
+    if (!container) return;
+    const bbox = container.getBBox(); // bbox del contenido en coords de la simulacion
+    if (!bbox.width || !bbox.height) return;
+    const vw = data.svgEl.clientWidth || 800;
+    const vh = data.svgEl.clientHeight || 600;
+    const scale = Math.min(Math.min(vw / bbox.width, vh / bbox.height) * 0.9, 1.5); // 0.9 = margen, tope 1.5x
+    const tx = vw / 2 - scale * (bbox.x + bbox.width / 2);
+    const ty = vh / 2 - scale * (bbox.y + bbox.height / 2);
+    data.svg.transition().duration(durationMs).call(
+      data.zoom.transform,
+      d3.zoomIdentity.translate(tx, ty).scale(scale)
+    );
+  }
+
+  // --- Seleccion de zona: arrastrar un rectangulo sobre el grafo y exportar solo ese recorte ---
+  toggleRegionSelect(): void {
+    this.selectingRegion = !this.selectingRegion;
+    this.regionStart = null;
+    this.regionRect = null;
+  }
+
+  private regionCoords(e: MouseEvent): { x: number, y: number } {
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  onRegionMouseDown(e: MouseEvent): void {
+    const p = this.regionCoords(e);
+    this.regionStart = p;
+    this.regionRect = { x: p.x, y: p.y, w: 0, h: 0 };
+  }
+
+  onRegionMouseMove(e: MouseEvent): void {
+    if (!this.regionStart) return;
+    const p = this.regionCoords(e);
+    this.regionRect = {
+      x: Math.min(this.regionStart.x, p.x),
+      y: Math.min(this.regionStart.y, p.y),
+      w: Math.abs(p.x - this.regionStart.x),
+      h: Math.abs(p.y - this.regionStart.y),
+    };
+  }
+
+  onRegionMouseUp(): void {
+    if (this.regionRect && this.regionRect.w > 5 && this.regionRect.h > 5) {
+      this.exportRegion(this.regionRect);
+      this.selectingRegion = false;
+    }
+    this.regionStart = null;
+    this.regionRect = null;
+  }
+
+  /** Exporta solo el rectangulo seleccionado (en coords del viewport del grafo) en alta resolucion. */
+  private exportRegion(rect: { x: number, y: number, w: number, h: number }): void {
+    const svgEl = this.downloadEl.nativeElement.querySelector('graph svg') as HTMLElement | null;
+    if (!svgEl) return;
+    const PR = 3; // pixelRatio: alta resolucion para que las etiquetas se lean
+    htmlToImage.toPng(svgEl, { pixelRatio: PR, backgroundColor: '#ffffff' }).then(dataUrl => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = this.coreDoc.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(rect.w * PR));
+        canvas.height = Math.max(1, Math.round(rect.h * PR));
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // recorta del PNG completo (svg) la region seleccionada (rect * pixelRatio)
+        ctx.drawImage(img, rect.x * PR, rect.y * PR, rect.w * PR, rect.h * PR, 0, 0, canvas.width, canvas.height);
+        this.downloadDataUrl(canvas.toDataURL('image/png'), `grafo-zona-${this.query}`);
+      };
+      img.src = dataUrl;
     });
   }
 
