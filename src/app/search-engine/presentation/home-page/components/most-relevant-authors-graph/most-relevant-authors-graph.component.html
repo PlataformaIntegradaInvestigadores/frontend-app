@@ -24,13 +24,13 @@
     <div class="py-3 px-4 flex md:flex-col gap-3 max-h-96 overflow-y-auto bg-white" *ngIf="affiliations && affiliations.length > 0">
       <div class="flex gap-3 items-center hover:bg-gray-50 p-1 rounded transition-colors" *ngFor="let aff of affiliations">
         <input
-          [id]="aff.scopusId"
+          [id]="aff.scopus_id"
           type="checkbox"
-          [checked]="selectedAffiliations.includes(aff.scopusId)"
+          [checked]="selectedAffiliations.includes(aff.scopus_id)"
           (change)="onClickCheckbox($any($event))"
           class="form-checkbox h-4 w-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
         >
-        <label [for]="aff.scopusId" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1 leading-tight">{{aff.name}}</label>
+        <label [for]="aff.scopus_id" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1 leading-tight">{{aff.name}}</label>
       </div>
     </div>
   </app-filters-sidebar>
@@ -38,8 +38,9 @@
 
   <div class="flex-1 w-full flex flex-col">
     <div class="flex flex-col justify-between w-full bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-      <div *ngIf="!showGraph" class="w-full min-w-full md:min-w-[800px]">
-        <app-loader [rows]="10"></app-loader>
+      <div *ngIf="!showGraph" class="w-full h-[600px] md:h-[800px] flex flex-col items-center justify-center gap-4 bg-white">
+        <div class="w-12 h-12 border-4 border-gray-200 border-t-red-600 rounded-full animate-spin"></div>
+        <span class="text-gray-500 text-sm">Cargando grafo de autores…</span>
       </div>
       <ng-container *ngIf="showGraph && !noResults">
         <div class="flex flex-row justify-between items-center w-full p-4 bg-white border-b border-gray-200">
@@ -47,12 +48,20 @@
             <div class="flex items-center gap-2"><span class="font-bold text-gray-900">Nodes:</span> <span class="bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">{{d3Nodes.length}}</span></div>
             <div class="flex items-center gap-2"><span class="font-bold text-gray-900">Relations:</span> <span class="bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">{{d3Links.length}}</span></div>
           </div>
-          <button type="button" class="bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors font-medium text-sm"
-                  (click)="onDownloadGraph()"
-                  *ngIf="d3Nodes.length > 0;">
-            <fa-icon [icon]="faDownload"></fa-icon>
-            Download
-          </button>
+          <div class="flex items-center gap-2" *ngIf="d3Nodes.length > 0;">
+            <button type="button" class="bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors font-medium text-sm"
+                    (click)="onDownloadGraph()" [disabled]="selectingRegion">
+              <fa-icon [icon]="faDownload"></fa-icon>
+              Descargar todo
+            </button>
+            <button type="button"
+                    class="border border-red-700 py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors font-medium text-sm"
+                    [ngClass]="selectingRegion ? 'bg-red-700 text-white' : 'text-red-700 hover:bg-red-50'"
+                    (click)="toggleRegionSelect()">
+              <fa-icon [icon]="faVectorSquare"></fa-icon>
+              {{ selectingRegion ? 'Cancelar' : 'Seleccionar zona' }}
+            </button>
+          </div>
         </div>
       </ng-container>
     </div>
@@ -64,13 +73,28 @@
     <div class="w-full max-w-full overflow-hidden mt-4 mat-elevation-z8" *ngIf="showGraph && !noResults">
       <div class="w-full h-[600px] md:h-[800px] overflow-hidden bg-white rounded relative" #downloadEl>
         
-        <!-- Zoom Controls Overlay -->
-        <div class="absolute top-4 right-4 z-10 flex flex-col gap-2">
+        <!-- Zoom Controls Overlay (z-30 para quedar sobre el overlay de seleccion y seguir clickeables) -->
+        <div class="absolute top-4 right-4 z-30 flex flex-col gap-2">
           <button (click)="zoomIn()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">+</button>
           <button (click)="zoomOut()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">-</button>
           <button (click)="resetZoom()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-700 mt-2" title="Center">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Zm40 360q-134 0-227-93T160-400q0-134 93-227t227-93q134 0 227 93t93 227q0 134-93 227t-227 93Zm0-80q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm0-240Z"/></svg>
           </button>
+        </div>
+
+        <!-- Overlay de seleccion de zona: arrastrar para recortar y exportar solo esa parte -->
+        <div *ngIf="selectingRegion" class="absolute inset-0 z-20 cursor-crosshair select-none"
+             (mousedown)="onRegionMouseDown($event)"
+             (mousemove)="onRegionMouseMove($event)"
+             (mouseup)="onRegionMouseUp()"
+             (mouseleave)="onRegionMouseUp()">
+          <div *ngIf="!regionRect" class="absolute top-3 left-1/2 -translate-x-1/2 text-white text-xs px-3 py-1 rounded-full whitespace-nowrap" style="background: rgba(0,0,0,0.7)">
+            Arrastra para seleccionar la zona a descargar
+          </div>
+          <div *ngIf="regionRect" class="absolute border-2 border-red-600 pointer-events-none"
+               [style.left.px]="regionRect.x" [style.top.px]="regionRect.y"
+               [style.width.px]="regionRect.w" [style.height.px]="regionRect.h"
+               [style.background]="'rgba(220,38,38,0.12)'"></div>
         </div>
 
         <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>

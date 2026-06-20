@@ -50,7 +50,7 @@ export interface Link {
 export interface Coauthors {
   links: Link[]
   nodes: AuthorNode[]
-  affiliations: { scopusId: string, name: string }[]
+  affiliations: { scopus_id: string, name: string }[]
   total_results?: number
   page?: number
   page_size?: number
