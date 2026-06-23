@@ -542,27 +542,11 @@
   box-shadow: 0 0 0 3px rgba(30, 60, 139, 0.3);
 }
 
-/* ===== DARK MODE SUPPORT ===== */
-@media (prefers-color-scheme: dark) {
-  .nav-link {
-    color: #f9fafb;
-  }
-  
-  .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .search-input {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: white;
-  }
-  
-  .search-dropdown {
-    background-color: rgba(30, 41, 59, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-}
+/* La barra de navegacion siempre es una superficie clara (bg-white/95), por lo que
+   NO debe seguir el modo oscuro del sistema: hacerlo dejaba el texto casi-blanco
+   sobre fondo blanco y las tabs (Home/Analytics/About) quedaban invisibles salvo
+   al hacer hover o cuando estaban activas. El resto de la app tampoco soporta dark
+   mode, asi que se elimina ese bloque @media prefers-color-scheme: dark. */
 
 /* ===== USER DROPDOWN STYLES ===== */
 .nav-item.relative {
@@ -632,10 +616,26 @@
 }
 
 .chevron-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 0.75rem;
   height: 0.75rem;
-  transition: transform 0.2s ease;
   margin-left: 0.5rem;
+  line-height: 0;
+  transition: transform 0.2s ease;
+  /* Gira sobre su propio centro (antes parecia describir un semicirculo porque
+     el <svg> de FontAwesome tiene vertical-align y el origen quedaba descentrado). */
+  transform-origin: center center;
+}
+
+/* El <svg> que renderiza fa-icon debe llenar y centrarse en la caja del chevron,
+   de lo contrario el glifo queda desfasado respecto al centro de rotacion. */
+.chevron-icon ::ng-deep svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
 }
 
 .nav-link-user-button:hover .user-icon {
