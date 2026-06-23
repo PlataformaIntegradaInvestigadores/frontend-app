@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { UserService } from 'src/app/profile/domain/services/user.service';
 import { Subscription } from 'rxjs';
@@ -23,13 +24,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
   editModalVisible: boolean = false;
   postToEdit: any = null;
 
+  @ViewChild('tabsTop') tabsTop?: ElementRef;
+
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
     private userDataService: UserDataService,
     private titleService: Title,
-    private authorService: AuthorService
+    private authorService: AuthorService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -37,6 +41,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.userId = params['id'];
       this.loadUserData();
     });
+
+    // Al cambiar entre pestanas (network/article/fingerprint/...) el alto del
+    // contenido cambia y el navegador deja el scroll donde estaba, lo que se
+    // percibe como un "salto". Llevamos la vista al inicio de la barra de
+    // pestanas para que el cambio de alto ocurra fuera del area visible.
+    this.routeSub.add(
+      this.router.events
+        .pipe(filter(e => e instanceof NavigationEnd))
+        .subscribe((e) => {
+          const url = (e as NavigationEnd).urlAfterRedirects;
+          if (/\/(network|article|fingerprint|about-me|my-groups)(\/|$|\?)/.test(url)) {
+            this.tabsTop?.nativeElement?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+          }
+        })
+    );
   }
 
   ngOnDestroy(): void {
@@ -49,6 +68,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * Carga los datos del usuario si están disponibles, de lo contrario, carga los datos del autor.
    */
   private loadUserData(): void {
+    // Vista publica de autor (Opcion B): si el id es un scopus_id numerico (un autor
+    // proveniente del buscador), se carga el detalle academico publico directamente.
+    // Asi se evita la llamada autenticada a userService, que para un usuario SIN sesion
+    // provoca un 401 y la redireccion a login. Las pestanas (network/article/fingerprint)
+    // ya resuelven el autor por scopus_id contra la API publica del microservicio v2.
+    if (/^\d+$/.test(String(this.userId))) {
+      this.loadAuthorData();
+      return;
+    }
     this.userService.getUserById(this.userId).subscribe({
       next: (data: UserProfile) => {
         this.user = { ...data, id: this.userId, isOwnProfile: this.isOwnProfile };
