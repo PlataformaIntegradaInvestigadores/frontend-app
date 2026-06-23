@@ -1,4 +1,14 @@
-<div *ngIf="words.length > 1" class="flex justify-center items-center">
-<!--  <app-word-cloud [words]="words" [width]="1000" [height]="500" [x]="100" [y]="100" [size]="1" [padding]="0.5" [min]="400" ></app-word-cloud>-->
-  <app-tree-map-chart [width]="900" [height]="500" [topic]="true" [single]="words"></app-tree-map-chart>
+<!-- Cargando -->
+<div *ngIf="loading" class="flex justify-center items-center py-16">
+  <app-mini-loader size="10"></app-mini-loader>
 </div>
+
+<!-- Con datos -->
+<div *ngIf="!loading && words.length >= 1" class="flex justify-center items-center">
+<!--  <app-word-cloud [words]="words" [width]="1000" [height]="500" [x]="100" [y]="100" [size]="1" [padding]="0.5" [min]="400" ></app-word-cloud>-->
+  <app-tree-map-chart [width]="900" [height]="500" [topic]="true" [single]="words" [clickable]="false"></app-tree-map-chart>
+</div>
+
+<!-- Sin datos -->
+<app-no-results *ngIf="!loading && words.length === 0"
+                title="Este autor no tiene áreas temáticas registradas"></app-no-results>

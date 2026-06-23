@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NameValue} from "../../../interfaces/dashboard.interface";
 import {Color, ScaleType} from "@swimlane/ngx-charts";
 import {VisualsService} from "../../../domain/services/visuals.service";
@@ -17,6 +17,11 @@ export class TreeMapChartComponent implements OnInit, OnChanges {
   @Input()
   height!: number;
   @Output() selectedTopic = new EventEmitter<any>();
+
+  // Cuando es false, los recuadros no actuan (no hay accion al clic) y se muestra el
+  // cursor por defecto en vez del de mano (p. ej. en el fingerprint del perfil).
+  @Input() clickable: boolean = true;
+  @HostBinding('class.tm-static') get tmStatic(): boolean { return !this.clickable; }
 
   gradient: boolean = false;
   animations: boolean = true;
