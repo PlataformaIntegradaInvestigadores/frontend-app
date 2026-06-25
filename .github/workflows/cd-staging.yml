@@ -1,0 +1,61 @@
+name: CD — staging · frontend-app
+
+on:
+  workflow_run:
+    workflows: ["CI — frontend-app"]
+    branches: [staging]
+    types: [completed]
+
+jobs:
+  deploy-staging:
+    name: Deploy a servidor staging
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Deploy con health check y rollback automático
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script_stop: false
+          script: |
+            set -e
+            cd /opt/centinela
+
+            echo "=== [1/4] Guardando estado anterior ==="
+            docker compose ps --format json > /tmp/centinela_pre_deploy.json || true
+
+            echo "=== [2/4] Actualizando repositorio ==="
+            cd /opt/centinela/frontend-app && git pull origin staging
+            cd /opt/centinela
+
+            echo "=== [3/4] Rebuilding y desplegando ==="
+            docker compose up -d --build angular-app
+
+            echo "=== [4/4] Health checks ==="
+            sleep 10
+            HEALTHY=false
+
+            for i in 1 2 3 4 5; do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:8082 || echo "000")
+              echo "  Intento $i — HTTP $STATUS"
+              if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ]; then
+                echo "  [OK] frontend responde"
+                HEALTHY=true
+                break
+              fi
+              sleep 6
+            done
+
+            if [ "$HEALTHY" = "false" ]; then
+              echo "=== [ROLLBACK] Health check falló — revirtiendo ==="
+              cd /opt/centinela/frontend-app && git checkout HEAD~1
+              cd /opt/centinela && docker compose up -d --build angular-app
+              echo "  [ROLLBACK COMPLETADO]"
+              exit 1
+            fi
+
+            echo "=== Deploy exitoso ==="
+            docker compose ps
