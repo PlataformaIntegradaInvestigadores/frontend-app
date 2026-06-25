@@ -46,3 +46,26 @@ jobs:
         run: docker build -t frontend-app:${{ github.sha }} .
       - name: Verificar imagen
         run: docker images frontend-app
+
+  # ── Deploy staging ─────────────────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy a servidor staging
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/staging'
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script_stop: false
+          script: |
+            set -e
+            cd /opt/centinela/frontend-app && git pull origin staging
+            cd /opt/centinela && docker compose up -d --build angular-app
+            sleep 10
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:8082 || echo "000")
+            echo "Health check HTTP $STATUS"
+            [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ] || exit 1
