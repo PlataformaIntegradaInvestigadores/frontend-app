@@ -50,22 +50,36 @@ jobs:
   # ── Deploy staging ─────────────────────────────────────────────────────────
   deploy-staging:
     name: Deploy a servidor staging
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: test
     if: github.ref == 'refs/heads/staging'
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.STAGING_HOST }}
-          username: ${{ secrets.STAGING_USER }}
-          key: ${{ secrets.STAGING_SSH_KEY }}
-          script_stop: false
-          script: |
-            set -e
-            cd /opt/centinela/frontend-app && git pull origin staging
-            cd /opt/centinela && docker compose up -d --build angular-app
-            sleep 10
+      - name: Actualizar codigo
+        run: |
+          cd /opt/centinela/frontend-app
+          git fetch origin staging
+          git reset --hard origin/staging
+
+      - name: Reconstruir contenedor
+        run: |
+          cd /opt/centinela
+          docker compose up -d --build angular-app
+
+      - name: Health check
+        run: |
+          sleep 15
+          HEALTHY=false
+          for i in 1 2 3 4 5; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:8082 || echo "000")
-            echo "Health check HTTP $STATUS"
-            [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ] || exit 1
+            echo "Intento $i: HTTP $STATUS"
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ]; then
+              HEALTHY=true; break
+            fi
+            sleep 6
+          done
+          if [ "$HEALTHY" = "false" ]; then
+            echo "Health check fallido — rollback"
+            cd /opt/centinela/frontend-app && git reset --hard HEAD~1
+            cd /opt/centinela && docker compose up -d --build angular-app
+            exit 1
+          fi
