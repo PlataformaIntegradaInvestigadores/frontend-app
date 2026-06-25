@@ -17,6 +17,7 @@ describe('SummaryComponent', () => {
     });
     fixture = TestBed.createComponent(SummaryComponent);
     component = fixture.componentInstance;
+    component.counts = { author: 0, article: 0, affiliation: 0, topic: 0 };
     fixture.detectChanges();
   });
 
