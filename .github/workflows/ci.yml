@@ -2,7 +2,7 @@ name: CI — frontend-app
 
 on:
   push:
-    branches: [staging, dev-Marlow, main]
+    branches: [staging]
   pull_request:
     branches: [dev-Marlow, main]
 
