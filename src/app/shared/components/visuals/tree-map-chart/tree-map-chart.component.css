@@ -1,0 +1,7 @@
+/* Cuando el tree-map NO es interactivo (clickable=false), sus recuadros muestran el
+   cursor por defecto en vez del de mano (que sugiere que son clickeables). Va scoped a
+   :host.tm-static para NO afectar a los tree-maps interactivos del dashboard. */
+:host.tm-static ::ng-deep ngx-charts-tree-map,
+:host.tm-static ::ng-deep ngx-charts-tree-map * {
+  cursor: default !important;
+}
