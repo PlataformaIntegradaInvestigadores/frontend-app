@@ -19,7 +19,6 @@ describe('GeneralComponent', () => {
     });
     fixture = TestBed.createComponent(GeneralComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

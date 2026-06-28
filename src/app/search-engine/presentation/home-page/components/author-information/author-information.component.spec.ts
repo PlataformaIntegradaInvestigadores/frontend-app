@@ -19,7 +19,6 @@ describe('AuthorInformationComponent', () => {
     });
     fixture = TestBed.createComponent(AuthorInformationComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

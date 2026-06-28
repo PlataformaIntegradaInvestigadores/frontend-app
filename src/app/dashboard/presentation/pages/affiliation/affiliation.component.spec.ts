@@ -19,7 +19,6 @@ describe('AffiliationComponent', () => {
     });
     fixture = TestBed.createComponent(AffiliationComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
