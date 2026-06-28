@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConsensusPageComponent } from './consensus-page.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ConsensusPageComponent', () => {
   let component: ConsensusPageComponent;
@@ -8,7 +9,8 @@ describe('ConsensusPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConsensusPageComponent]
+      declarations: [ConsensusPageComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(ConsensusPageComponent);
     component = fixture.componentInstance;

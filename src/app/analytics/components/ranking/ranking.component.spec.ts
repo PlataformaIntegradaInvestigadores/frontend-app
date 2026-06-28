@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RankingComponent } from './ranking.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('RankingComponent', () => {
   let component: RankingComponent;
@@ -8,7 +9,8 @@ describe('RankingComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RankingComponent]
+      declarations: [RankingComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(RankingComponent);
     component = fixture.componentInstance;

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MembersConsensusComponent } from './members-consensus.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('MembersConsensusComponent', () => {
   let component: MembersConsensusComponent;
@@ -8,7 +9,8 @@ describe('MembersConsensusComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MembersConsensusComponent]
+      declarations: [MembersConsensusComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(MembersConsensusComponent);
     component = fixture.componentInstance;

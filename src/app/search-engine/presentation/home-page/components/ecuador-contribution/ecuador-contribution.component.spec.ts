@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EcuadorContributionComponent } from './ecuador-contribution.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('EcuadorContributionComponent', () => {
   let component: EcuadorContributionComponent;
@@ -8,7 +9,8 @@ describe('EcuadorContributionComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EcuadorContributionComponent]
+      declarations: [EcuadorContributionComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(EcuadorContributionComponent);
     component = fixture.componentInstance;

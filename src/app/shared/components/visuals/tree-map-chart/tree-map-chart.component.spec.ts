@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TreeMapChartComponent } from './tree-map-chart.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('TreeMapChartComponent', () => {
   let component: TreeMapChartComponent;
@@ -8,7 +9,8 @@ describe('TreeMapChartComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TreeMapChartComponent]
+      declarations: [TreeMapChartComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(TreeMapChartComponent);
     component = fixture.componentInstance;
