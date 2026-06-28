@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchBarComponent } from './search-bar.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('SearchBarComponent', () => {
   let component: SearchBarComponent;
@@ -8,7 +9,8 @@ describe('SearchBarComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SearchBarComponent]
+      declarations: [SearchBarComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(SearchBarComponent);
     component = fixture.componentInstance;

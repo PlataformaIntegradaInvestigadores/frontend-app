@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BtnMenuGroupComponent } from './btn-menu-group.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('BtnMenuGroupComponent', () => {
   let component: BtnMenuGroupComponent;
@@ -8,7 +9,8 @@ describe('BtnMenuGroupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [BtnMenuGroupComponent]
+      declarations: [BtnMenuGroupComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(BtnMenuGroupComponent);
     component = fixture.componentInstance;

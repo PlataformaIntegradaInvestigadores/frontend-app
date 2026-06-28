@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfirmDeleteModalComponent } from './confirm-delete-modal.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ConfirmDeleteModalComponent', () => {
   let component: ConfirmDeleteModalComponent;
@@ -8,7 +9,8 @@ describe('ConfirmDeleteModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfirmDeleteModalComponent]
+      declarations: [ConfirmDeleteModalComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(ConfirmDeleteModalComponent);
     component = fixture.componentInstance;

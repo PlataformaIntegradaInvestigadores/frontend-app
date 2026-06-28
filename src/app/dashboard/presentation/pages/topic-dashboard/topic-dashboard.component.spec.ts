@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TopicDashboardComponent } from './topic-dashboard.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('TopicDashboardComponent', () => {
   let component: TopicDashboardComponent;
@@ -8,7 +9,8 @@ describe('TopicDashboardComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TopicDashboardComponent]
+      declarations: [TopicDashboardComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(TopicDashboardComponent);
     component = fixture.componentInstance;

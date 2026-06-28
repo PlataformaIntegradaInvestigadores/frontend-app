@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AnaliticaComponent } from './analitica.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AnaliticaComponent', () => {
   let component: AnaliticaComponent;
@@ -8,7 +9,8 @@ describe('AnaliticaComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AnaliticaComponent]
+      declarations: [AnaliticaComponent],
+      imports: [HttpClientTestingModule]
     });
     fixture = TestBed.createComponent(AnaliticaComponent);
     component = fixture.componentInstance;
