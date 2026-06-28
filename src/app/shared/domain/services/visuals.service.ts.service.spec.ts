@@ -13,7 +13,8 @@ describe('VisualsServiceTsService', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
       schemas: [NO_ERRORS_SCHEMA]
-    );
+    });
+
     service = TestBed.inject(VisualsService);
   });
 
