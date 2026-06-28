@@ -19,7 +19,6 @@ describe('CoauthorsGraphComponent', () => {
     });
     fixture = TestBed.createComponent(CoauthorsGraphComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

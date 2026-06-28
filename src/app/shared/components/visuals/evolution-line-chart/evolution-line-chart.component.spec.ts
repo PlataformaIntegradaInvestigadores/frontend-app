@@ -19,7 +19,6 @@ describe('EvolutionLineChartComponent', () => {
     });
     fixture = TestBed.createComponent(EvolutionLineChartComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

@@ -19,7 +19,6 @@ describe('BarChartComponent', () => {
     });
     fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
