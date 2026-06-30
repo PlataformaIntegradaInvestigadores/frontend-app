@@ -1,0 +1,15 @@
+/* El host y el svg llenan el contenedor padre (ej. el div h-[800px] del grafo de
+   autores relevantes). Asi el area interactiva del d3.zoom cubre TODO el contenedor
+   y el arrastre para mover/paneo funciona en cualquier parte, no solo donde llegaba
+   el svg (que antes quedaba mas corto que el contenedor y dejaba zona muerta). */
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
