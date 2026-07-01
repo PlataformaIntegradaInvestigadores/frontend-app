@@ -50,7 +50,7 @@ jobs:
   # ── Deploy staging ─────────────────────────────────────────────────────────
   deploy-staging:
     name: Deploy a servidor staging
-    runs-on: self-hosted
+    runs-on: [self-hosted, staging]
     needs: test
     if: github.ref == 'refs/heads/dev-Marlow'
     steps:
