@@ -1,0 +1,85 @@
+name: CI — frontend-app
+
+on:
+  push:
+    branches: [dev-Marlow]
+  pull_request:
+    branches: [dev-Marlow, main]
+
+jobs:
+  # ── Tests Angular ──────────────────────────────────────────────────────────
+  test:
+    name: Pruebas unitarias (Karma/Jasmine)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: npm
+      - name: Instalar Chromium
+        run: sudo apt-get install -y chromium-browser
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Ejecutar tests
+        env:
+          CHROME_BIN: /usr/bin/chromium-browser
+        run: |
+          npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox \
+            --no-progress --code-coverage
+      - name: Subir reporte de cobertura
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+
+  # ── Docker build ───────────────────────────────────────────────────────────
+  build-docker:
+    name: Build imagen Docker
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/dev-Marlow' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build imagen
+        run: docker build -t frontend-app:${{ github.sha }} .
+      - name: Verificar imagen
+        run: docker images frontend-app
+
+  # ── Deploy staging ─────────────────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy a servidor staging
+    runs-on: self-hosted
+    needs: test
+    if: github.ref == 'refs/heads/dev-Marlow'
+    steps:
+      - name: Actualizar codigo
+        run: |
+          cd /opt/centinela/frontend-app
+          git fetch origin dev-Marlow
+          git reset --hard origin/dev-Marlow
+
+      - name: Reconstruir contenedor
+        run: |
+          cd /opt/centinela
+          docker compose up -d --build angular-app
+
+      - name: Health check
+        run: |
+          sleep 15
+          HEALTHY=false
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:8082 || echo "000")
+            echo "Intento $i: HTTP $STATUS"
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ]; then
+              HEALTHY=true; break
+            fi
+            sleep 6
+          done
+          if [ "$HEALTHY" = "false" ]; then
+            echo "Health check fallido — rollback"
+            cd /opt/centinela/frontend-app && git reset --hard HEAD~1
+            cd /opt/centinela && docker compose up -d --build angular-app
+            exit 1
+          fi
