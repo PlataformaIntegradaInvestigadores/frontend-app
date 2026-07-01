@@ -400,4 +400,10 @@ export class MostRelevantAuthorsGraphComponent {
       data.svg.transition().duration(750).call(data.zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.3).translate(-width / 2, -height / 2));
     }
   }
+
+  /** Ajusta zoom y paneo para que TODO el grafo entre en la vista, igual que la
+   *  descarga. Usado por el boton "Ver todo" (antes "Centrar", que solo escalaba a 0.3). */
+  fitAll(): void {
+    this.fitGraphToView(600);
+  }
 }
