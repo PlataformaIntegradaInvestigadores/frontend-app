@@ -21,8 +21,21 @@
     <div class="py-2 px-4 font-semibold border-b border-gray-200 text-gray-700 bg-gray-50 text-sm tracking-wide" *ngIf="affiliations && affiliations.length > 0">
       Affiliations
     </div>
+    <!-- Buscador de afiliaciones (mejora de usabilidad: evita scroll en lista larga) -->
+    <div class="py-2 px-4 border-b border-gray-200 bg-white" *ngIf="affiliations && affiliations.length > 0">
+      <div class="flex items-center gap-2 border border-gray-300 rounded-md px-3 py-1.5 focus-within:border-red-500">
+        <fa-icon [icon]="faMagnifyingGlass" class="text-red-600 text-sm"></fa-icon>
+        <input
+          type="text"
+          [(ngModel)]="affiliationSearch"
+          placeholder="Search affiliations..."
+          class="text-sm"
+          style="flex:1; background:transparent; border:none; outline:none;"
+        >
+      </div>
+    </div>
     <div class="py-3 px-4 flex md:flex-col gap-3 max-h-96 overflow-y-auto bg-white" *ngIf="affiliations && affiliations.length > 0">
-      <div class="flex gap-3 items-center hover:bg-gray-50 p-1 rounded transition-colors" *ngFor="let aff of affiliations">
+      <div class="flex gap-3 items-center hover:bg-gray-50 p-1 rounded transition-colors" *ngFor="let aff of filteredAffiliations">
         <input
           [id]="aff.scopus_id"
           type="checkbox"
@@ -32,6 +45,7 @@
         >
         <label [for]="aff.scopus_id" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1 leading-tight">{{aff.name}}</label>
       </div>
+      <div *ngIf="filteredAffiliations.length === 0" class="text-sm text-gray-400 italic p-1">Sin coincidencias</div>
     </div>
   </app-filters-sidebar>
 
@@ -77,7 +91,7 @@
         <div class="absolute top-4 right-4 z-30 flex flex-col gap-2">
           <button (click)="zoomIn()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">+</button>
           <button (click)="zoomOut()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">-</button>
-          <button (click)="resetZoom()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-700 mt-2" title="Center">
+          <button (click)="fitAll()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-700 mt-2" title="Ver todo">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Zm40 360q-134 0-227-93T160-400q0-134 93-227t227-93q134 0 227 93t93 227q0 134-93 227t-227 93Zm0-80q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm0-240Z"/></svg>
           </button>
         </div>
