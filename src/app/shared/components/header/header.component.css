@@ -34,6 +34,7 @@
   overflow: hidden;
   white-space: nowrap;
   cursor: pointer;
+  max-width: 100%;
 }
 
 .nav-link:hover {
@@ -573,6 +574,31 @@
   white-space: nowrap;
   backdrop-filter: blur(8px);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 767px) {
+  nav,
+  nav .container {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .nav-link-user-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .user-type-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dropdown-menu {
+    left: 0 !important;
+    right: auto !important;
+    width: min(100%, 16rem) !important;
+  }
 }
 
 .nav-link-user-button:hover {

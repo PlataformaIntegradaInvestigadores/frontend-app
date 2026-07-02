@@ -1,1 +1,94 @@
-/* Estilos específicos para post-files */
+.post-files {
+  width: 100%;
+}
+
+.post-file-tile {
+  background: #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+}
+
+.post-media-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  width: 100%;
+  min-height: 300px;
+}
+
+.post-media-image,
+.post-media-video {
+  display: block;
+}
+
+.single-file-set .post-media-frame.landscape-media,
+.single-file-set .post-media-frame.square-media {
+  aspect-ratio: 16 / 10;
+  min-height: 0;
+}
+
+.single-file-set .post-media-frame.portrait-media {
+  height: clamp(520px, 72vh, 680px);
+}
+
+.single-file-set .post-media-frame:not(.landscape-media):not(.portrait-media):not(.square-media) {
+  aspect-ratio: 16 / 10;
+  min-height: 0;
+}
+
+.single-file-set .post-media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.single-file-set .post-media-video {
+  height: clamp(360px, 58vh, 520px);
+}
+
+.multi-file-set .post-media-image,
+.multi-file-set .post-media-video {
+  height: 260px;
+}
+
+.multi-file-set .post-media-frame {
+  min-height: 0;
+}
+
+@media (max-width: 640px) {
+  .post-files {
+    margin-inline: -0.25rem;
+    width: calc(100% + 0.5rem);
+  }
+
+  .single-file-set .post-media-frame.landscape-media,
+  .single-file-set .post-media-frame.square-media,
+  .single-file-set .post-media-frame:not(.landscape-media):not(.portrait-media):not(.square-media) {
+    aspect-ratio: 4 / 3;
+  }
+
+  .single-file-set .post-media-image,
+  .single-file-set .post-media-video {
+    min-height: 0;
+  }
+
+  .single-file-set .post-media-frame.portrait-media {
+    height: clamp(430px, 72vh, 560px);
+  }
+
+  .multi-file-set .post-media-image,
+  .multi-file-set .post-media-video {
+    height: 240px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .single-file-set .post-media-frame.portrait-media {
+    height: clamp(480px, 70vh, 620px);
+  }
+
+  .multi-file-set .post-media-image,
+  .multi-file-set .post-media-video {
+    height: 230px;
+  }
+}

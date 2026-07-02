@@ -1,14 +1,14 @@
 <div class="min-h-screen bg-[#f0f2f5]">
   <app-header [showInformation]="true"></app-header>
 
-  <div class="max-w-[1080px] mx-auto px-4 sm:px-6 py-6">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <div class="feed-shell w-full px-3 sm:px-5 lg:px-6 xl:px-8 py-4 sm:py-6">
+    <div class="feed-grid grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,640px)_280px] 2xl:grid-cols-[240px_minmax(0,680px)_300px] gap-4 lg:gap-5 xl:gap-6">
       
       <!-- Left Sidebar (Navigation & Filters) -->
-      <aside class="hidden lg:block lg:col-span-3">
-        <div class="sticky top-20 space-y-4">
+      <aside class="feed-sidebar hidden lg:block">
+        <div class="feed-rail-stack space-y-4">
           <!-- Navigation/Filters -->
-          <nav class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <nav class="feed-panel bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div class="p-2">
               <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors" 
                       [ngClass]="selectedFilter === 'personalized' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'" 
@@ -52,25 +52,64 @@
       </aside>
 
       <!-- Main Feed Area -->
-      <main class="lg:col-span-6 space-y-4">
+      <main class="feed-main space-y-4 min-w-0">
         
         <!-- Mobile Filters (Visible only on small screens) -->
-        <div class="lg:hidden bg-white rounded-xl shadow-sm border border-gray-200 p-2 flex overflow-x-auto hide-scrollbar">
-           <button class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors mr-2" 
+        <div class="mobile-filter-tabs lg:hidden bg-white rounded-lg shadow-sm border border-gray-200 p-1.5 grid grid-cols-3 gap-1">
+           <button class="min-w-0 flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors" 
                     [ngClass]="selectedFilter === 'personalized' ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'" 
                     (click)="onFilterChange('personalized')">
-              <i class="fas fa-magic"></i> Para ti
+              <i class="fas fa-magic flex-shrink-0"></i>
+              <span class="truncate">Para ti</span>
             </button>
-            <button class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors mr-2" 
+            <button class="min-w-0 flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors" 
                     [ngClass]="selectedFilter === 'trending' ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'" 
                     (click)="onFilterChange('trending')">
-              <i class="fas fa-fire"></i> Tendencias
+              <i class="fas fa-fire flex-shrink-0"></i>
+              <span class="truncate">Tendencias</span>
             </button>
-            <button class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors" 
+            <button class="min-w-0 flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors" 
                     [ngClass]="selectedFilter === 'latest' ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-700'" 
                     (click)="onFilterChange('latest')">
-              <i class="fas fa-clock"></i> Recientes
+              <i class="fas fa-clock flex-shrink-0"></i>
+              <span class="truncate">Recientes</span>
             </button>
+        </div>
+
+        <!-- Compact Search (Visible until the right sidebar appears) -->
+        <div class="feed-panel xl:hidden bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
+          <div class="compact-search-grid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_220px_auto] gap-2 sm:items-center">
+            <div class="compact-search-main relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400 text-[13px]"></i>
+              </div>
+              <input type="text" placeholder="Buscar temas, personas..." [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+                class="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-[13px] transition-all placeholder-gray-400 text-gray-900">
+            </div>
+
+            <div class="compact-search-tag relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="text-gray-400 font-medium text-[13px]">#</span>
+              </div>
+              <input type="text" placeholder="Etiqueta (Enter)" [(ngModel)]="tagInput" (keyup.enter)="addSearchTag($event)"
+                class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-[13px] transition-all placeholder-gray-400 text-gray-700">
+            </div>
+
+            <button (click)="onSearch()"
+              class="compact-search-button w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+              Buscar
+            </button>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 mt-3" *ngIf="selectedTags.length > 0">
+            <span *ngFor="let tag of selectedTags; let i = index"
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 text-blue-700">
+              #{{ tag }}
+              <button type="button" (click)="removeSearchTag(i)" class="ml-1 inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600 focus:outline-none transition-colors">
+                <i class="fas fa-times text-[9px]"></i>
+              </button>
+            </span>
+          </div>
         </div>
 
         <!-- Post Creator -->
@@ -78,14 +117,15 @@
           [placeholder]="'¿Qué estás pensando?'" 
           [buttonText]="'Publicar'"
           [showOptions]="true" 
-          [userAvatar]="'/assets/profile.png'" 
+          [userAvatar]="currentUserAvatar"
+          [userName]="currentUserName"
           [isLoading]="isSubmittingPost"
           (postSubmitted)="onPostSubmitted($event)">
         </app-post-creator>
 
         <!-- Search Results Indicator -->
         <div *ngIf="isSearchMode && posts.length > 0"
-          class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center justify-between">
+          class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
               <i class="fas fa-search"></i>
@@ -101,7 +141,7 @@
             </div>
           </div>
           <button (click)="clearSearch()"
-            class="text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
+            class="text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors text-sm font-medium self-start sm:self-auto">
             Limpiar búsqueda
           </button>
         </div>
@@ -125,11 +165,11 @@
         </div>
 
         <!-- Error State -->
-        <div *ngIf="error" class="bg-white rounded-xl shadow-sm border border-red-200 p-10 text-center">
-          <div class="w-20 h-20 mx-auto mb-5 bg-red-50 rounded-full flex items-center justify-center text-red-500 text-3xl">
+        <div *ngIf="error" class="bg-white rounded-lg shadow-sm border border-red-200 p-6 sm:p-10 text-center">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-5 bg-red-50 rounded-full flex items-center justify-center text-red-500 text-2xl sm:text-3xl">
             <i class="fas fa-exclamation-triangle"></i>
           </div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-3">Algo salió mal</h3>
+          <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3">Algo salió mal</h3>
           <p class="text-base text-gray-600 mb-8 max-w-md mx-auto">{{ error }}</p>
           <button class="px-6 py-2.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors shadow-sm"
             (click)="refreshFeed()">
@@ -139,12 +179,12 @@
 
         <!-- Empty State -->
         <div *ngIf="!isLoading && !isSearching && posts.length === 0 && !error"
-          class="bg-white rounded-xl shadow-sm border border-gray-200 p-10 text-center">
-          <div class="w-20 h-20 mx-auto mb-5 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 text-3xl">
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-10 text-center">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-5 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 text-2xl sm:text-3xl">
             <i class="fas fa-newspaper" *ngIf="!isSearchMode"></i>
             <i class="fas fa-search" *ngIf="isSearchMode"></i>
           </div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-3">
+          <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
             {{ isSearchMode ? 'No encontramos resultados' : 'Tu feed está vacío' }}
           </h3>
           <p class="text-base text-gray-500 mb-8 max-w-md mx-auto">
@@ -197,11 +237,11 @@
       </main>
 
       <!-- Right Sidebar (Search & Stats) -->
-      <aside class="hidden lg:block lg:col-span-3">
-        <div class="sticky top-20 space-y-4">
+      <aside class="feed-sidebar hidden xl:block">
+        <div class="feed-rail-stack space-y-4">
           
           <!-- Smart Search -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div class="feed-panel bg-white rounded-lg border border-gray-200 p-4">
             <h3 class="text-gray-900 font-semibold text-[15px] mb-3">Búsqueda</h3>
             
             <!-- Text Search -->
@@ -254,7 +294,7 @@
           </div>
 
           <!-- User Stats -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4" *ngIf="userStats">
+          <div class="feed-panel bg-white rounded-lg border border-gray-200 p-4" *ngIf="userStats">
             <h3 class="text-gray-900 font-semibold text-[15px] mb-3">Tu Impacto</h3>
             <div class="space-y-3">
               <div class="flex items-center justify-between text-[13px]">
