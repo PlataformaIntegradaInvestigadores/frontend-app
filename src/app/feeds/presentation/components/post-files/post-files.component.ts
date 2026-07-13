@@ -14,6 +14,7 @@ export class PostFilesComponent implements OnInit, OnChanges {
 
   // Track image load states
   imageLoadStates: { [key: string]: 'loading' | 'loaded' | 'error' } = {};
+  mediaOrientations: { [key: string]: 'portrait' | 'landscape' | 'square' } = {};
   
   // Cache para evitar recálculos
   private fileTypeCache: { [key: string]: string } = {};
@@ -31,17 +32,19 @@ export class PostFilesComponent implements OnInit, OnChanges {
   }
 
   private processFiles() {
-    this.processedFiles = this.files.map(file => {
+    this.processedFiles = this.files.map((file, index) => {
       const fileType = this.getFileTypeCached(file);
       const imageUrl = this.getImageUrlCached(file);
+      const fileKey = String(file.id || file.file || index);
       
       // Inicializar estado de carga para imágenes
-      if (fileType === 'image' && file.id) {
-        this.imageLoadStates[file.id] = 'loading';
+      if (fileType === 'image') {
+        this.imageLoadStates[fileKey] = 'loading';
       }
       
       return {
         ...file,
+        _fileKey: fileKey,
         _fileType: fileType,
         _imageUrl: imageUrl
       };
@@ -52,12 +55,20 @@ export class PostFilesComponent implements OnInit, OnChanges {
     this.fileOpen.emit(file);
   }
 
-  onImageLoad(file: any): void {
-    this.imageLoadStates[file.id] = 'loaded';
+  onImageLoad(file: any, event: Event): void {
+    const key = file._fileKey || file.id || file.file;
+    const image = event.target as HTMLImageElement;
+    const width = image.naturalWidth || 1;
+    const height = image.naturalHeight || 1;
+
+    this.mediaOrientations[key] = Math.abs(width - height) < 80
+      ? 'square'
+      : width > height ? 'landscape' : 'portrait';
+    this.imageLoadStates[key] = 'loaded';
   }
 
   onImageError(file: any): void {
-    this.imageLoadStates[file.id] = 'error';
+    this.imageLoadStates[file._fileKey || file.id || file.file] = 'error';
   }
 
   onFileOpen(file: any): void {

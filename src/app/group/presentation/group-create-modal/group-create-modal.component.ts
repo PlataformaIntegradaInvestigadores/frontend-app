@@ -46,9 +46,17 @@ export class GroupCreateModalComponent {
   }
 
   loadUsers() {
+    if (!this.authService.isLoggedIn()) {
+      this.users = [];
+      this.filteredUsers = [];
+      return;
+    }
     this.authService.getUsers().subscribe((users: User[]) => {  // Use the User interface
       this.users = users;
       this.filteredUsers = users;
+    }, () => {
+      this.users = [];
+      this.filteredUsers = [];
     });
   }
 

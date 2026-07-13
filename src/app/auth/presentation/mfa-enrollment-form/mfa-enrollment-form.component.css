@@ -1,0 +1,10 @@
+.break-all {
+  word-break: break-all;
+}
+
+.manual-key {
+  display: inline-block;
+  max-width: 18rem;
+  overflow-wrap: anywhere;
+  line-height: 1.25rem;
+}

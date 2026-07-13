@@ -9,12 +9,14 @@ import { environment } from 'src/environments/environment';
 export class LLMSearchService {
   private apiUrl = environment.apiCentinela;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   semanticSearch(query: string, topK: number = 10): Observable<any> {
-    return this.http.post(`${this.apiUrl}/v1/llm-search/semantic-search/`, {
+    return this.http.post(`${this.apiUrl}/v2/search`, {
       query,
-      top_k: topK
+      page: 1,
+      page_size: topK,
+      filters: {}
     });
   }
 }

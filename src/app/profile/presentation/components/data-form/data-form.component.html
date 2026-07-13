@@ -45,6 +45,22 @@
             errorMessages.investigation_camp }}</div>
         </div>
         <div>
+          <label for="interests" class="block text-sm font-medium text-gray-700">Research Interests</label>
+          <input type="text" id="interests" [(ngModel)]="formData.interests" name="interests"
+            placeholder="e.g. Machine Learning, Data Science, AI"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary_tailwind focus:border-primary_tailwind sm:text-sm">
+          <div *ngIf="errorMessages.interests" class="text-red-500 text-sm mt-1">{{
+            errorMessages.interests }}</div>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="skills" class="block text-sm font-medium text-gray-700">Skills</label>
+          <input type="text" id="skills" [(ngModel)]="formData.skills" name="skills"
+            placeholder="e.g. Python, Angular, Data Analysis"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary_tailwind focus:border-primary_tailwind sm:text-sm">
+          <div *ngIf="errorMessages.skills" class="text-red-500 text-sm mt-1">{{
+            errorMessages.skills }}</div>
+        </div>
+        <div>
           <label for="scopus_id" class="block text-sm font-medium text-gray-700">Scopus ID</label>
           <input type="text" id="scopus_id" [(ngModel)]="formData.scopus_id" name="scopus_id"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary_tailwind focus-within:to-blue-500 sm:text-sm"

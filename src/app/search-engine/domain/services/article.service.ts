@@ -1,8 +1,7 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import { map } from 'rxjs/operators';
-import {Article, PaginationArticleResult} from "../../../shared/interfaces/article.interface";
+import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { Article, PaginationArticleResult, SearchFiltersResponse } from "../../../shared/interfaces/article.interface";
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -16,30 +15,39 @@ export class ArticleService {
   }
 
   getArticleById(id: string): Observable<Article> {
-    return this.http.get<Article>(`${this.rootURL}/v1/articles/${id}/`)
+    return this.http.get<Article>(`${this.rootURL}/v2/articles/${id}`)
   }
 
-  getMostRelevantArticlesByQuery(query: string, page: number, size: number, typeFilter?: string, years?: number[]): Observable<PaginationArticleResult> {
+  getSearchFilters(): Observable<SearchFiltersResponse> {
+    return this.http.get<SearchFiltersResponse>(`${this.rootURL}/v2/search/filters`);
+  }
 
-    let bodyParams: any = {
+  getMostRelevantArticlesByQuery(
+    query: string,
+    page: number,
+    size: number,
+    years?: number[]
+  ): Observable<PaginationArticleResult> {
+
+    const bodyParams: any = {
       query,
       page,
-      top_k:size,
+      page_size: size,
+    };
+
+    if (years && years.length > 0) {
+      bodyParams['filters'] = {
+        years: years ?? []
+      };
     }
 
-    if (typeFilter) {
-      bodyParams['type'] = typeFilter
-      bodyParams['years'] = years
-    }
-
-    //return this.http.post<PaginationArticleResult>(`${this.rootURL}/v1/articles/most-relevant-articles-by-topic/`, bodyParams)
     return this.http.post<PaginationArticleResult>(
-      `${this.rootURL}/v1/llm-search/semantic-search/`, 
+      `${this.rootURL}/v2/articles/relevant`,
       bodyParams
     );
   }
+
+  getArticlesByAuthor(authorId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.rootURL}/v2/articles/by-author?author_id=${authorId}`);
+  }
 }
-
-
-
-

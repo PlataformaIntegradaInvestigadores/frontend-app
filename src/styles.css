@@ -83,8 +83,20 @@ app-graph {
   z-index: 100000 !important;
 }
 
-.fixed.inset-0 > .bg-white,
-.fixed.inset-0 > .modal-container,
-.fixed.inset-0 .bg-white.rounded-lg {
-  z-index: 100001 !important;
+
+
+/* Fix material paginator text sizes */
+.mat-mdc-paginator-container {
+  font-size: 0.875rem !important;
+  color: #4b5563 !important;
+}
+.mdc-list-item__primary-text {
+  font-size: 0.875rem !important;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
 }

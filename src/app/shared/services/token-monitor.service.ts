@@ -70,8 +70,8 @@ export class TokenMonitorService implements OnDestroy {
    */
   private handleTokenExpired(): void {
     console.warn('Token has expired, logging out user');
-    this.authService.logout();
-    this.router.navigate(['/admin']);
+    this.authService.clearLocalSession();
+    this.router.navigate(['/login']);
     this.showExpiredMessage();
   }
 
