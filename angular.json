@@ -54,14 +54,6 @@
                   "maximumError": "52kb"
                 }
               ],
-              "optimization": {
-                "scripts": true,
-                "styles": {
-                  "minify": true,
-                  "inlineCritical": false
-                },
-                "fonts": true
-              },
               "outputHashing": "all"
             },
             "development": {
@@ -75,20 +67,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.development.ts"
-                }
-              ]
-            },
-            "local": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local.ts"
                 }
               ]
             }
@@ -107,9 +85,6 @@
             },
             "development": {
               "browserTarget": "centinela-application-frontend:build:development"
-            },
-            "local": {
-              "browserTarget": "centinela-application-frontend:build:local"
             }
           },
           "defaultConfiguration": "development"

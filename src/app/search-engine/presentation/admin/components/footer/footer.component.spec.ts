@@ -1,23 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FooterDashboardComponent } from './footer.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { FooterComponent } from './footer.component';
 
-describe('FooterDashboardComponent', () => {
-  let component: FooterDashboardComponent;
-  let fixture: ComponentFixture<FooterDashboardComponent>;
+describe('FooterComponent', () => {
+  let component: FooterComponent;
+  let fixture: ComponentFixture<FooterComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [FooterDashboardComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      declarations: [FooterComponent]
     });
-    fixture = TestBed.createComponent(FooterDashboardComponent);
+    fixture = TestBed.createComponent(FooterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

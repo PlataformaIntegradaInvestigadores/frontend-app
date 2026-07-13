@@ -1,23 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarDashboardComponent } from './sidebar.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { SidebarComponent } from './sidebar.component';
 
-describe('SidebarDashboardComponent', () => {
-  let component: SidebarDashboardComponent;
-  let fixture: ComponentFixture<SidebarDashboardComponent>;
+describe('SidebarComponent', () => {
+  let component: SidebarComponent;
+  let fixture: ComponentFixture<SidebarComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SidebarDashboardComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      declarations: [SidebarComponent]
     });
-    fixture = TestBed.createComponent(SidebarDashboardComponent);
+    fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

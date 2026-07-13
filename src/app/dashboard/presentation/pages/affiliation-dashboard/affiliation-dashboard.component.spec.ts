@@ -1,10 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AffiliationDashboardComponent } from './affiliation-dashboard.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AffiliationDashboardComponent', () => {
   let component: AffiliationDashboardComponent;
@@ -12,10 +8,7 @@ describe('AffiliationDashboardComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AffiliationDashboardComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      declarations: [AffiliationDashboardComponent]
     });
     fixture = TestBed.createComponent(AffiliationDashboardComponent);
     component = fixture.componentInstance;

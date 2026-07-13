@@ -16,7 +16,7 @@ export const researcherOnlyGuard: CanActivateFn = (
 
   // Verificar si el usuario está autenticado
   if (!authService.isLoggedIn()) {
-    router.navigate(['/login']);
+    router.navigate(['/admin']);
     return false;
   }
 
@@ -37,6 +37,6 @@ export const researcherOnlyGuard: CanActivateFn = (
   }
 
   // En caso de que no sea ni usuario ni empresa, redirigir al login
-  router.navigate(['/login']);
+  router.navigate(['/admin']);
   return false;
 };

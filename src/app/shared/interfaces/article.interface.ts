@@ -25,8 +25,7 @@ export interface ArticleResult {
 export interface PaginationArticleResult {
   data: ArticleResult[];
   total: number;
-  total_results?: number;
-  years?: Array<number | string>;
+  years?: number[];
   timing?: {    // Added for LLM search timing info
     translation_time?: number;
     keybert_time?: number;
@@ -45,8 +44,4 @@ export interface ArticlesResponse {
   title: string;
   publication_date: string;
   scopus_id: string;
-}
-
-export interface SearchFiltersResponse {
-  years: number[];
 }

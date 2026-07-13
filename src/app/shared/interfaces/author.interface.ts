@@ -42,35 +42,25 @@ export interface Data {
 }
 
 export interface Link {
-  source:         string | number;
-  target:         string | number;
+  source:         number;
+  target:         number;
   collabStrength: number;
 }
 
 export interface Coauthors {
   links: Link[]
   nodes: AuthorNode[]
-  affiliations: { scopus_id: string, name: string }[]
-  total_results?: number
-  page?: number
-  page_size?: number
+  affiliations: { scopusId: number, name: string }[]
 }
 
 
 export interface AuthorNode {
-  scopus_id: string | number
+  scopus_id: number
   initials: string
   first_name: string
   last_name: string
-  auth_name?: string
-  affiliations?: string[]
-  articles?: number
-  co_authors?: string[]
-  topics?: string[]
-  citation_count?: number
-  current_affiliation?: string
-  weight?: number
-  rol?: string
+  weight: number
+  rol?:string
 }
 
 export interface RandItem{

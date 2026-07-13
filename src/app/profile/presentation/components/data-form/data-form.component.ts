@@ -20,8 +20,6 @@ export class DataFormComponent implements OnInit {
     institution: '',
     website: '',
     investigation_camp: '',
-    interests: '',
-    skills: '',
     profile_picture: '',
     email_institution: '',
   };
@@ -37,8 +35,6 @@ export class DataFormComponent implements OnInit {
         institution: this.user.institution || '',
         website: this.user.website || '',
         investigation_camp: this.user.investigation_camp || '',
-        interests: this.user.interests || '',
-        skills: this.user.skills || '',
         profile_picture: this.user.profile_picture || '',
         email_institution: this.user.email_institution || '',
       };
@@ -81,8 +77,6 @@ export class DataFormComponent implements OnInit {
     formData.append('institution', this.formData.institution || '');
     formData.append('website', this.formData.website || '');
     formData.append('investigation_camp', this.formData.investigation_camp || '');
-    formData.append('interests', this.formData.interests || '');
-    formData.append('skills', this.formData.skills || '');
     formData.append('email_institution', this.formData.email_institution || '');
 
     if (this.selectedFile) {
