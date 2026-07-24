@@ -4,38 +4,68 @@
       {{ article?.title }}
     </h1>
     <div class="flex w-full justify-end">
-      <a
-        (click)="goToArticle(article?.scopus_id)"
+      <a (click)="goToArticle(article?.scopus_id)"
         class="hover:cursor-pointer h-10 w-2/12 rounded-md flex items-center justify-center color-text">
         VIEW ARTICLE IN SCOPUS
       </a>
     </div>
-    <h2 class="inline">Authors:</h2>
-    <div class="flex flex-wrap gap-x-3">
-      <ng-container
-        class="flex justify-between items-baseline"
-        *ngFor="let au of article?.authors">
-        <h3
-          class="cursor-pointer hover:font-semibold"
-          (click)="goToAuthor(au.scopusId)">
-          {{ au.name }}
-        </h3>
-      </ng-container>
-    </div>
-    <h2 class="inline">Affiliations:</h2>
-    <div class="flex flex-wrap gap-x-3">
-      <ng-container
-        class="flex justify-between items-baseline flex-col"
-        *ngFor="let aff of article?.affiliations">
-        <h3>{{ aff }}</h3>
-      </ng-container>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3">
-      <div class>
-        <h2 class="inline">Publication date:</h2>
-        <h3>
-          {{ article?.publication_date }}
-        </h3>
+
+    <div *ngIf="!isLoading" class="flex flex-col lg:flex-row gap-8">
+      <!-- MAIN COLUMN (Left) -->
+      <div class="lg:w-2/3 flex flex-col gap-6 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+
+        <!-- BACK BUTTON -->
+        <button (click)="goBack()"
+          class="w-fit mb-2 -mt-2 inline-flex items-center text-sm font-bold text-gray-500 hover:text-red-700 transition-colors focus:outline-none">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+            </path>
+          </svg>
+          Back to results
+        </button>
+
+        <!-- TITLE -->
+        <div class="border-l-4 border-red-700 pl-4 mb-2">
+          <h1 class="text-3xl font-extrabold text-gray-900 leading-tight">
+            {{ article?.title }}
+          </h1>
+        </div>
+
+        <!-- AUTHORS -->
+        <div *ngIf="article?.authors?.length">
+          <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Authors</h2>
+          <div class="flex flex-wrap gap-2">
+            <ng-container *ngFor="let au of article?.authors">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-700 cursor-pointer hover:bg-red-100 hover:shadow-sm transition-all border border-red-100"
+                (click)="goToAuthor(au.scopus_id)">
+                <svg class="w-3.5 h-3.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd">
+                  </path>
+                </svg>
+                {{ au.name }}
+              </span>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- AFFILIATIONS -->
+        <div *ngIf="article?.affiliations?.length">
+          <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Affiliations</h2>
+          <ul class="list-disc list-inside space-y-1 text-gray-700 ml-1">
+            <li *ngFor="let aff of article?.affiliations" class="text-sm leading-relaxed">{{ aff }}</li>
+          </ul>
+        </div>
+
+        <!-- ABSTRACT -->
+        <div *ngIf="article?.abstract" class="pt-4 border-t border-gray-100 mt-2">
+          <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Abstract</h2>
+          <p class="text-gray-700 text-justify leading-relaxed">
+            {{ article?.abstract }}
+          </p>
+        </div>
+
       </div>
       <div class>
         <h2 class="inline">Citations:</h2>

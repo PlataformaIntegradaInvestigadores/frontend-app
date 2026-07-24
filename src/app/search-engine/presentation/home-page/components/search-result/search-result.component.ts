@@ -1,11 +1,11 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Search} from "../../../../../shared/interfaces/search-type.interface";
-import {ActivatedRoute} from "@angular/router";
-import {Title} from '@angular/platform-browser';
-import {VisualsService} from "../../../../../shared/domain/services/visuals.service";
-import {DashboardCounts, Word} from "../../../../../shared/interfaces/dashboard.interface";
-import {query} from "@angular/animations";
-import {environment} from "../../../../../../environments/environment";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Search } from "../../../../../shared/interfaces/search-type.interface";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Title } from '@angular/platform-browser';
+import { VisualsService } from "../../../../../shared/domain/services/visuals.service";
+import { DashboardCounts, Word } from "../../../../../shared/interfaces/dashboard.interface";
+import { query } from "@angular/animations";
+import { environment } from "../../../../../../environments/environment";
 
 @Component({
   selector: 'app-search-result',
@@ -25,12 +25,12 @@ export class SearchResultComponent implements OnInit {
   provinces: string = environment.apiCentinela + '/v1/dashboard/province/get_provinces/'
 
 
-  constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title: Title, private visualsService: VisualsService) {
-    const {option, query} = route.snapshot.queryParams
-    if (option && query){
-      this.setSearch = {option, query}
+  constructor(private route: ActivatedRoute, private router: Router, private changeDetector: ChangeDetectorRef, private title: Title, private visualsService: VisualsService) {
+    const { option, query } = route.snapshot.queryParams
+    if (option && query) {
+      this.setSearch = { option, query }
     }
-    this.searchValue = {option: 'au', query: ''}
+    this.searchValue = { option: 'au', query: '' }
   }
 
   onSearch(searchValue: Search) {
@@ -38,6 +38,22 @@ export class SearchResultComponent implements OnInit {
       ...searchValue,
       query: searchValue.query.trim().replace(/\s\s+/g, ' ')
     };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { option: this.searchValue.option, query: this.searchValue.query },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+
+    // Scroll down to results section smoothly
+    setTimeout(() => {
+      const headerHeight = document.querySelector('.custom-bg')?.clientHeight || 500;
+      window.scrollTo({
+        top: headerHeight,
+        behavior: 'smooth'
+      });
+    }, 100);
   }
 
   yearSelected(years: number[]) {
@@ -60,12 +76,12 @@ export class SearchResultComponent implements OnInit {
   }
 
   topicClcked(se: Search) {
-    this.setSearch = {'option': se.option, 'query': se.query}
+    this.setSearch = { 'option': se.option, 'query': se.query }
     this.onSearch(se)
 
   }
 
-  isAuthorSearch(){
+  isAuthorSearch() {
     return this.searchValue.option === 'au'
   }
 }
