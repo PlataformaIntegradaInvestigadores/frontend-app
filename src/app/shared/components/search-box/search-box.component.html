@@ -41,22 +41,19 @@
         <option *ngFor="let item of randItems" [value]="item.value"></option>
       </datalist>
     </div>
-    <div>
-      <button type="button"
-        class="h-9 text-white bg-red-800 hover:bg-red-900 rounded-r-lg text-sm flex items-center justify-start p-2 dropdown-button "
-        (click)="this.search.emit({
-                option: this.selectedOption.code,
-                query: this.inputValue
-})" [disabled]="isLoading">
-        <div *ngIf="isLoading; else normal">
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          <span class="sr-only">Buscando...</span>
-        </div>
-        <ng-template #normal>
-          <fa-icon [icon]="faSearch"></fa-icon>
-        </ng-template>
-        <div class="hidden md:block pl-1"> Buscar</div>
-      </button>
-    </div>
+    
+    <!-- Search Button -->
+    <button type="button"
+      class="text-white bg-red-800 hover:bg-red-900 rounded-r-lg text-sm flex items-center justify-center px-4 dropdown-button transition-colors border-l border-red-900"
+      (click)="triggerSearch()" [disabled]="isLoading">
+      <div *ngIf="isLoading; else normal">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span class="sr-only">Buscando...</span>
+      </div>
+      <ng-template #normal>
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </ng-template>
+      <div class="hidden md:block pl-2"> Search</div>
+    </button>
   </div>
 </div>
