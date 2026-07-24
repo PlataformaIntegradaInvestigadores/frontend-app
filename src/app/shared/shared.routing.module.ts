@@ -27,6 +27,14 @@ const routes: Routes = [
         loadChildren: () => import('src/app/analytics/analytics.module').then(m => m.AnalyticsModule)
       },
       {
+        path: 'recommendations',
+        loadChildren: () =>
+          import('src/app/recommendations/recommendations.module').then(
+            (m) => m.RecommendationsModule
+          )
+
+      },
+      {
         path: 'about-us',
         loadChildren: () => import('src/app/search-engine/presentation/about-us/about-us.module').then(m => m.AboutUsModule)
       }

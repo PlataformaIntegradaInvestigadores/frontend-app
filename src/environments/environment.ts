@@ -3,4 +3,5 @@ export const environment = {
   apiCentinela: "https://centinela.epn.edu.ec/api-se",
   wsUrl: 'wss://centinela.epn.edu.ec/ws',
   apiUrl: 'https://centinela.epn.edu.ec/api',
+  apiPredictiva: 'https://centinela.epn.edu.ec/api-predictiva',
 };
