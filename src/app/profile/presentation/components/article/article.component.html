@@ -1,8 +1,16 @@
 <div class="w-full flex flex-col gap-4 py-4 px-2">
-  <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden w-full">
+
+  <!-- Cargando -->
+  <div *ngIf="loading" class="flex justify-center items-center py-16">
+    <app-mini-loader size="10"></app-mini-loader>
+  </div>
+
+  <!-- Con datos -->
+  <div *ngIf="!loading && articles.length > 0"
+       class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden w-full">
     <table
       mat-table
-      [dataSource]="articles"
+      [dataSource]="pagedArticles"
       class="min-w-full"
     >
       <!-- Title Column -->
@@ -32,9 +40,26 @@
         class="hover:cursor-pointer hover:bg-gray-100 transition-colors"
       ></tr>
     </table>
-    
-    <div *ngIf="articles.length === 0" class="text-center py-10 bg-gray-50">
-      <p class="text-gray-500">No articles found for this author.</p>
+
+    <!-- Paginacion (en cliente) -->
+    <div *ngIf="articles.length > pageSize"
+         class="flex items-center justify-end gap-3 px-4 py-3 bg-white border-t border-gray-200">
+      <span class="text-sm text-gray-600">
+        Página <span class="font-bold text-red-700">{{ pageIndex + 1 }}</span> de {{ totalPages }}
+        <span class="text-gray-400">({{ articles.length }} artículos)</span>
+      </span>
+      <button type="button" (click)="prevPage()" [disabled]="pageIndex === 0"
+              class="px-3 py-1 rounded border border-gray-300 text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed">
+        Anterior
+      </button>
+      <button type="button" (click)="nextPage()" [disabled]="pageIndex >= totalPages - 1"
+              class="px-3 py-1 rounded border border-gray-300 text-sm hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed">
+        Siguiente
+      </button>
     </div>
   </div>
+
+  <!-- Sin datos -->
+  <app-no-results *ngIf="!loading && articles.length === 0"
+                  title="Este autor no tiene artículos registrados"></app-no-results>
 </div>

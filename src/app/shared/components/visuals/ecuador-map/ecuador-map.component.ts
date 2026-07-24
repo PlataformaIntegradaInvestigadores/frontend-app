@@ -88,6 +88,9 @@ export class EcuadorMapComponent implements OnInit, OnChanges {
   }
   private updateMap(): void {
     d3.json(this.response).then(articlesData => {
+      if (!this.geoJson) {
+        return;
+      }
       this.drawMap(this.geoJson, articlesData);
     });
   }

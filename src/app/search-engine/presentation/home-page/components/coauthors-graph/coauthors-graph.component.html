@@ -1,18 +1,74 @@
-<ng-container *ngIf="showGraph">
+<!-- Cargando -->
+<div *ngIf="loading" class="flex justify-center items-center py-16">
+  <app-mini-loader size="10"></app-mini-loader>
+</div>
 
-  <div class="d-flex flex-wrap justify-content-between align-items-center pb-4 gap-3">
-    <div class="d-flex flex-column">
-      <div><b>Nodos/Autores:</b> {{d3Nodes.length}}</div>
-      <div><b>Relaciones:</b> {{d3Links.length}}</div>
+<!-- Sin coautores -->
+<app-no-results *ngIf="!loading && !showGraph"
+                title="Este autor no tiene coautores registrados"></app-no-results>
+
+<div *ngIf="showGraph" class="flex-1 w-full flex flex-col">
+
+  <!-- Barra superior: conteos + acciones -->
+  <div class="flex flex-col justify-between w-full bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+    <div class="flex flex-row flex-wrap justify-between items-center w-full p-4 bg-white border-b border-gray-200 gap-3">
+      <div class="flex items-center gap-6 text-gray-700">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-gray-900">Nodos/Autores:</span>
+          <span class="bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">{{d3Nodes.length}}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-gray-900">Relaciones:</span>
+          <span class="bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">{{d3Links.length}}</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2" *ngIf="d3Nodes.length > 0;">
+        <button type="button"
+                class="bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors font-medium text-sm"
+                (click)="onDownloadGraph()" [disabled]="selectingRegion">
+          <fa-icon [icon]="faDownload"></fa-icon>
+          Descargar todo
+        </button>
+        <button type="button"
+                class="border border-red-700 py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors font-medium text-sm"
+                [ngClass]="selectingRegion ? 'bg-red-700 text-white' : 'text-red-700 hover:bg-red-50'"
+                (click)="toggleRegionSelect()">
+          <fa-icon [icon]="faVectorSquare"></fa-icon>
+          {{ selectingRegion ? 'Cancelar' : 'Seleccionar zona' }}
+        </button>
+      </div>
     </div>
-    <button type="button" class="btn bg-primary_tailwind text-white hover:bg-blue-500" (click)="onDownloadGraph()">
-      <fa-icon [icon]="faDownload"></fa-icon>
-      Descargar
-    </button>
   </div>
 
-  <div class="d-flex justify-content-center text-truncate graph" #downloadEl>
-    <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>
-  </div>
-</ng-container>
+  <!-- Grafo -->
+  <div class="w-full max-w-full overflow-hidden mt-4 mat-elevation-z8">
+    <div class="w-full h-[600px] md:h-[800px] overflow-hidden bg-white rounded relative" #downloadEl>
 
+      <!-- Controles de zoom (z-30 para quedar sobre el overlay de seleccion) -->
+      <div class="absolute top-4 right-4 z-30 flex flex-col gap-2">
+        <button (click)="zoomIn()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">+</button>
+        <button (click)="zoomOut()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-2xl font-bold text-gray-700 select-none">-</button>
+        <button (click)="resetZoom()" class="bg-white border shadow-md w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-700 mt-2" title="Centrar">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Zm40 360q-134 0-227-93T160-400q0-134 93-227t227-93q134 0 227 93t93 227q0 134-93 227t-227 93Zm0-80q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm0-240Z"/></svg>
+        </button>
+      </div>
+
+      <!-- Overlay de seleccion de zona: arrastrar para recortar y exportar solo esa parte -->
+      <div *ngIf="selectingRegion" class="absolute inset-0 z-20 cursor-crosshair select-none"
+           (mousedown)="onRegionMouseDown($event)"
+           (mousemove)="onRegionMouseMove($event)"
+           (mouseup)="onRegionMouseUp()"
+           (mouseleave)="onRegionMouseUp()">
+        <div *ngIf="!regionRect" class="absolute top-3 left-1/2 -translate-x-1/2 text-white text-xs px-3 py-1 rounded-full whitespace-nowrap" style="background: rgba(0,0,0,0.7)">
+          Arrastra para seleccionar la zona a descargar
+        </div>
+        <div *ngIf="regionRect" class="absolute border-2 border-red-600 pointer-events-none"
+             [style.left.px]="regionRect.x" [style.top.px]="regionRect.y"
+             [style.width.px]="regionRect.w" [style.height.px]="regionRect.h"
+             [style.background]="'rgba(220,38,38,0.12)'"></div>
+      </div>
+
+      <graph [nodes]="d3Nodes" [links]="d3Links" [forces]="forces"></graph>
+    </div>
+  </div>
+</div>

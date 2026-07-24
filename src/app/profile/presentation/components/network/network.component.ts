@@ -15,11 +15,11 @@ export class NetworkComponent implements OnInit {
 
   author: Author | undefined;
   scopusId!: number;
+  loading = false;
   private userSubscription: Subscription = new Subscription();
   user: User | null = null;
 
   constructor(private route: ActivatedRoute, private authorService: AuthorService, private userDataService: UserDataService) {
-    console.log(this.author)
   }
 
   ngOnInit(): void {
@@ -27,16 +27,15 @@ export class NetworkComponent implements OnInit {
       let id = parseInt(params?.get('id')!);
       if(this.isNumeric(id.toString())){
         this.scopusId = id;
+        this.getAuthor();
       }else{
         this.userSubscription = this.userDataService.getUser().subscribe((user: User | null) => {
           this.user = user;
           if (this.user?.scopus_id) {
             this.scopusId = parseInt(this.user.scopus_id)
+            this.getAuthor();
           }
         });
-      }
-      if (this.scopusId) {
-        this.getAuthor();
       }
     });
   }
@@ -47,14 +46,17 @@ export class NetworkComponent implements OnInit {
 
   getAuthor(): void {
     if (this.scopusId) {
-      this.authorService.getAuthorById(this.scopusId.toString()).subscribe(
-        data => {
+      this.loading = true;
+      this.authorService.getAuthorById(this.scopusId.toString()).subscribe({
+        next: data => {
           this.author = data;
+          this.loading = false;
         },
-        error => {
+        error: error => {
           console.error('Error fetching author', error);
+          this.loading = false;
         }
-      );
+      });
     }
   }
 }

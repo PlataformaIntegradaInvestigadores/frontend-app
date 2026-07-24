@@ -1,7 +1,7 @@
 import {Component, ElementRef, EventEmitter, Inject, Input, Output, SimpleChanges, ViewChild} from "@angular/core";
 import {Link, Node} from "../../../../../shared/d3";
 import {AuthorNode, Coauthors} from "../../../../../shared/interfaces/author.interface";
-import {faDownload, faVectorSquare} from "@fortawesome/free-solid-svg-icons";
+import {faDownload, faVectorSquare, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import {DOCUMENT} from "@angular/common";
 import {AuthorService} from "../../../../domain/services/author.service";
 import {catchError, EMPTY, of, tap} from "rxjs";
@@ -30,6 +30,7 @@ export class MostRelevantAuthorsGraphComponent {
   authorsNumber: number = 50
   affiliations!: { scopus_id: string, name: string }[]
   selectedAffiliations: string[] = []
+  affiliationSearch: string = ''
   noResults = false;
   isLoadingResults = false;
   isFirstLoad = true;
@@ -38,6 +39,7 @@ export class MostRelevantAuthorsGraphComponent {
   @ViewChild("downloadEl") downloadEl!: ElementRef;
   faDownload = faDownload
   faVectorSquare = faVectorSquare
+  faMagnifyingGlass = faMagnifyingGlass
 
   // Seleccion de zona para exportar solo una parte del grafo
   selectingRegion = false
@@ -57,6 +59,7 @@ export class MostRelevantAuthorsGraphComponent {
       this.isFirstLoad = true;
       this.noResults = false;
       this.selectedAffiliations = [];
+      this.affiliationSearch = '';
       if (this.authorsNumber === 0) {
         this.authorsNumber = 50;
       }
@@ -84,6 +87,7 @@ export class MostRelevantAuthorsGraphComponent {
           this.affiliations = []
           coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
           this.affiliations = coauthors.affiliations;
+          this.sortAffiliations();
           this.setupGraph(coauthors);
           this.showGraph = true;
           this.isFirstLoad = false;
@@ -142,9 +146,22 @@ export class MostRelevantAuthorsGraphComponent {
         const bSelected = this.selectedAffiliations.includes(b.scopus_id);
         if (aSelected && !bSelected) return -1;
         if (!aSelected && bSelected) return 1;
-        return 0;
+        return this.normalize(a.name).localeCompare(this.normalize(b.name));
       });
     }
+  }
+
+  /** Normaliza texto para buscar/ordenar sin importar mayusculas ni acentos. */
+  private normalize(text: string): string {
+    return (text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  /** Afiliaciones visibles segun el texto del buscador (coincidencia parcial, sin acentos/mayusculas). */
+  get filteredAffiliations(): { scopus_id: string, name: string }[] {
+    if (!this.affiliations) return [];
+    const term = this.normalize(this.affiliationSearch);
+    if (!term) return this.affiliations;
+    return this.affiliations.filter(aff => this.normalize(aff.name).includes(term));
   }
 
   onClickAffiliationsFilter(type: string) {
@@ -195,6 +212,7 @@ export class MostRelevantAuthorsGraphComponent {
             coauthors.nodes.length === 0 ? this.noResults = true : this.noResults = false;
             // console.log('dentro2: xd'+ this.authorsNumber)
             this.affiliations = coauthors.affiliations;
+            this.sortAffiliations();
             this.setupGraph(coauthors);
             this.showGraph = true;
             this.isFirstLoad = false;
@@ -381,5 +399,11 @@ export class MostRelevantAuthorsGraphComponent {
       const height = data.svgEl.clientHeight || 600;
       data.svg.transition().duration(750).call(data.zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.3).translate(-width / 2, -height / 2));
     }
+  }
+
+  /** Ajusta zoom y paneo para que TODO el grafo entre en la vista, igual que la
+   *  descarga. Usado por el boton "Ver todo" (antes "Centrar", que solo escalaba a 0.3). */
+  fitAll(): void {
+    this.fitGraphToView(600);
   }
 }

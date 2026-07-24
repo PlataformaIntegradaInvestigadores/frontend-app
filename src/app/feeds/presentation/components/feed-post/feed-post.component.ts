@@ -1,9 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ElementRef, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeedPost } from '../../types/post.types';
 import { Comment } from '../../../domain/entities/feed.interface';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { FeedService } from '../../../domain/services/feed.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-feed-post',
@@ -29,6 +30,9 @@ export class FeedPostComponent implements OnInit, OnDestroy, AfterViewInit {
   showCommentsSection = false;
   isLiking = false;
   showEditModal = false;
+  selectedMediaFile: any | null = null;
+  selectedMediaIndex = 0;
+  showFullMediaContent = false;
   
   private observer: IntersectionObserver | null = null;
   private hasRecordedView = false;
@@ -54,6 +58,26 @@ export class FeedPostComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     if (this.observer) {
       this.observer.disconnect();
+    }
+    this.unlockBodyScroll();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapePressed(): void {
+    this.closeMediaViewer();
+  }
+
+  @HostListener('document:keydown.arrowleft')
+  onArrowLeftPressed(): void {
+    if (this.selectedMediaFile) {
+      this.showPreviousMedia();
+    }
+  }
+
+  @HostListener('document:keydown.arrowright')
+  onArrowRightPressed(): void {
+    if (this.selectedMediaFile) {
+      this.showNextMedia();
     }
   }
 
@@ -265,7 +289,102 @@ export class FeedPostComponent implements OnInit, OnDestroy, AfterViewInit {
    * Abre el archivo en una nueva ventana
    */
   openFile(file: any): void {
-    window.open(file.file, '_blank');
+    if (this.isImageFile(file)) {
+      this.openMediaViewer(file);
+      return;
+    }
+
+    window.open(this.getFileUrl(file), '_blank');
+  }
+
+  openMediaViewer(file: any): void {
+    const images = this.imageFiles;
+    const fileKey = file.id || file.file;
+    const index = images.findIndex(image => (image.id || image.file) === fileKey);
+
+    this.selectedMediaIndex = index >= 0 ? index : 0;
+    this.selectedMediaFile = {
+      ...images[this.selectedMediaIndex],
+      ...file
+    };
+    this.showFullMediaContent = false;
+    document.body.classList.add('modal-open');
+  }
+
+  closeMediaViewer(): void {
+    this.selectedMediaFile = null;
+    this.showFullMediaContent = false;
+    this.unlockBodyScroll();
+  }
+
+  showPreviousMedia(): void {
+    const images = this.imageFiles;
+    if (images.length <= 1) return;
+
+    this.selectedMediaIndex = (this.selectedMediaIndex - 1 + images.length) % images.length;
+    this.selectedMediaFile = images[this.selectedMediaIndex];
+  }
+
+  showNextMedia(): void {
+    const images = this.imageFiles;
+    if (images.length <= 1) return;
+
+    this.selectedMediaIndex = (this.selectedMediaIndex + 1) % images.length;
+    this.selectedMediaFile = images[this.selectedMediaIndex];
+  }
+
+  get imageFiles(): any[] {
+    return (this.post.files || []).filter(file => this.isImageFile(file));
+  }
+
+  get hasMultipleImages(): boolean {
+    return this.imageFiles.length > 1;
+  }
+
+  getSelectedMediaUrl(): string {
+    return this.selectedMediaFile ? this.getFileUrl(this.selectedMediaFile) : '';
+  }
+
+  get shouldTruncateMediaContent(): boolean {
+    return (this.post.content || '').length > 180;
+  }
+
+  get mediaDisplayContent(): string {
+    const content = this.post.content || '';
+    if (!this.shouldTruncateMediaContent || this.showFullMediaContent) {
+      return content;
+    }
+
+    return `${content.substring(0, 180).trim()}...`;
+  }
+
+  toggleMediaContent(): void {
+    this.showFullMediaContent = !this.showFullMediaContent;
+  }
+
+  private isImageFile(file: any): boolean {
+    const type = file?._fileType || file?.file_type || this.getFileType(file);
+    return type === 'image';
+  }
+
+  private getFileUrl(file: any): string {
+    if (!file) return '';
+    if (file._imageUrl) return file._imageUrl;
+
+    let url = (file.file || '').trim();
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    if (!url.startsWith('/')) {
+      url = '/' + url;
+    }
+
+    return `${baseUrl}${url}`;
+  }
+
+  private unlockBodyScroll(): void {
+    document.body.classList.remove('modal-open');
   }
 
   /**

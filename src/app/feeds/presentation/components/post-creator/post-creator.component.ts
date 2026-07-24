@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { PostCreatorData } from '../../types/post.types';
 
 @Component({
@@ -6,7 +6,7 @@ import { PostCreatorData } from '../../types/post.types';
   templateUrl: './post-creator.component.html',
   styleUrls: ['./post-creator.component.css']
 })
-export class PostCreatorComponent {
+export class PostCreatorComponent implements AfterViewInit {
   @Input() placeholder: string = "What's on your mind?";
   @Input() buttonText: string = 'Post';
   @Input() showOptions: boolean = true;
@@ -34,6 +34,10 @@ export class PostCreatorComponent {
   
   // Tags related properties
   showTagInput = false;
+
+  ngAfterViewInit(): void {
+    this.adjustTextAreaHeight();
+  }
 
   /**
    * Verifica si la encuesta actual es válida
@@ -169,6 +173,22 @@ export class PostCreatorComponent {
     if (this.validationMessage && this.newPostContent.trim()) {
       this.validationMessage = null;
     }
+    this.adjustTextAreaHeight();
+  }
+
+  autoGrowTextArea(event?: Event): void {
+    const textarea = event?.target as HTMLTextAreaElement | undefined;
+    this.adjustTextAreaHeight(textarea);
+  }
+
+  private adjustTextAreaHeight(textarea = this.textArea?.nativeElement): void {
+    if (!textarea) return;
+
+    const maxHeight = 280;
+    textarea.style.height = 'auto';
+    const nextHeight = Math.min(textarea.scrollHeight, maxHeight);
+    textarea.style.height = `${nextHeight}px`;
+    textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
   }
 
   /**
@@ -189,6 +209,7 @@ export class PostCreatorComponent {
     if (this.imageInput) this.imageInput.nativeElement.value = '';
     if (this.videoInput) this.videoInput.nativeElement.value = '';
     if (this.documentInput) this.documentInput.nativeElement.value = '';
+    setTimeout(() => this.adjustTextAreaHeight(), 0);
   }
 
   /**

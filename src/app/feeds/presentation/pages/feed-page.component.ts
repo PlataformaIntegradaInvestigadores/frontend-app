@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { FeedService } from '../../domain/services/feed.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
+import { UserService } from 'src/app/profile/domain/services/user.service';
 import {
   FeedPost,
   FeedResponse,
@@ -41,6 +42,8 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   tagInput = '';
   selectedTags: string[] = [];
   currentUserId: string | null = null;
+  currentUserAvatar = '/assets/profile.png';
+  currentUserName = '';
   isSearching = false;
   isSearchMode = false;
 
@@ -50,12 +53,14 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   constructor(
     private feedService: FeedService,
     private authService: AuthService,
+    private userService: UserService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     console.log('FeedPageComponent: Inicializando componente');
     this.currentUserId = this.authService.getCurrentUserId();
+    this.loadCurrentUserProfile();
     this.loadFeed();
     this.loadUserStats();
   }
@@ -441,6 +446,24 @@ export class FeedPageComponent implements OnInit, OnDestroy {
             error,
             'No se pudo crear la publicación. Revisa la descripción y los archivos adjuntos.'
           );
+        }
+      });
+  }
+
+  private loadCurrentUserProfile(): void {
+    if (!this.currentUserId || !this.authService.isUser()) {
+      return;
+    }
+
+    this.userService.getUserById(this.currentUserId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          this.currentUserAvatar = user.profile_picture || '/assets/profile.png';
+          this.currentUserName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+        },
+        error: (error) => {
+          console.error('Error loading current user profile:', error);
         }
       });
   }
