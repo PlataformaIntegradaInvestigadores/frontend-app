@@ -84,6 +84,20 @@
           {{ metrics.avg_score | number: '1.3-3' }}
         </strong>
       </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Equidad entre grupos (Gini)</span>
+        <strong class="metric-value">
+          {{ metrics.fairness_gini | number: '1.3-3' }}
+        </strong>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Brecha por tamaño de grupo</span>
+        <strong class="metric-value">
+          {{ metrics.fairness_score_gap_by_group_size | number: '1.3-3' }}
+        </strong>
+      </article>
     </div>
   </section>
 

@@ -31,6 +31,8 @@ export interface MetricsResponse {
   diversity: number;
   avg_relevance: number;
   avg_score: number;
+  fairness_gini: number;
+  fairness_score_gap_by_group_size: number;
   n_recommendations: number;
 }
 
