@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { FeedService } from '../../domain/services/feed.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
-import { UserService } from 'src/app/profile/domain/services/user.service';
 import {
   FeedPost,
   FeedResponse,
@@ -12,7 +11,6 @@ import {
   UserFeedStats
 } from '../../domain/entities/feed.interface';
 import { PostCreatorData } from '../types/post.types';
-import { PostCreatorComponent } from '../components/post-creator/post-creator.component';
 
 @Component({
   selector: 'app-feed-page',
@@ -21,7 +19,6 @@ import { PostCreatorComponent } from '../components/post-creator/post-creator.co
 })
 export class FeedPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  @ViewChild(PostCreatorComponent) postCreator?: PostCreatorComponent;
 
   // Data
   posts: FeedPost[] = [];
@@ -39,11 +36,8 @@ export class FeedPageComponent implements OnInit, OnDestroy {
 
   // UI State
   searchQuery = '';
-  tagInput = '';
   selectedTags: string[] = [];
   currentUserId: string | null = null;
-  currentUserAvatar = '/assets/profile.png';
-  currentUserName = '';
   isSearching = false;
   isSearchMode = false;
 
@@ -53,14 +47,12 @@ export class FeedPageComponent implements OnInit, OnDestroy {
   constructor(
     private feedService: FeedService,
     private authService: AuthService,
-    private userService: UserService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     console.log('FeedPageComponent: Inicializando componente');
     this.currentUserId = this.authService.getCurrentUserId();
-    this.loadCurrentUserProfile();
     this.loadFeed();
     this.loadUserStats();
   }
@@ -111,7 +103,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('FeedPageComponent: Error loading feed:', error);
-          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo cargar el feed. Intenta de nuevo.');
+          this.error = 'No se pudo cargar el feed. Intenta de nuevo.';
         }
       });
   }
@@ -214,7 +206,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error toggling like:', error);
-          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo procesar el like. Intenta de nuevo.');
+          this.error = 'No se pudo procesar el like. Intenta de nuevo.';
         }
       });
   }
@@ -238,7 +230,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error deleting post:', error);
-          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo eliminar la publicación. Intenta de nuevo.');
+          this.error = 'No se pudo eliminar el post. Intenta de nuevo.';
         }
       });
   }
@@ -267,7 +259,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error updating post:', error);
-          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo editar la publicación. Intenta de nuevo.');
+          this.error = 'No se pudo editar el post. Intenta de nuevo.';
         }
       });
   }
@@ -307,7 +299,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
    * Busca posts usando búsqueda vectorial semántica
    */
   onSearch(): void {
-    if (!this.searchQuery.trim() && this.selectedTags.length === 0) {
+    if (!this.searchQuery.trim()) {
       this.clearSearch();
       return;
     }
@@ -316,7 +308,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
     this.isSearchMode = true;
     this.error = null;
 
-    console.log('🔍 Iniciando búsqueda semántica:', this.searchQuery, 'Tags:', this.selectedTags);
+    console.log('🔍 Iniciando búsqueda semántica:', this.searchQuery);
 
     this.feedService.searchPosts(this.searchQuery, this.selectedTags)
       .pipe(
@@ -332,6 +324,10 @@ export class FeedPageComponent implements OnInit, OnDestroy {
           this.hasMore = false;
           this.nextCursor = null;
           console.log(`🔍 Encontrados ${posts.length} posts para "${this.searchQuery}"`);
+
+          if (posts.length === 0) {
+            this.error = `No se encontraron posts relacionados con "${this.searchQuery}". Intenta con otros términos.`;
+          }
         },
         error: (error) => {
           console.error('Error en búsqueda:', error);
@@ -345,36 +341,11 @@ export class FeedPageComponent implements OnInit, OnDestroy {
    */
   clearSearch(): void {
     this.searchQuery = '';
-    this.tagInput = '';
     this.selectedTags = [];
     this.isSearchMode = false;
     this.error = null;
     console.log('🔍 Limpiando búsqueda, volviendo al feed normal');
     this.loadFeed();
-  }
-
-  /**
-   * Añade un tag a la búsqueda
-   */
-  addSearchTag(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
-    
-    const tag = this.tagInput.trim().replace(/^#/, '');
-    if (tag && !this.selectedTags.includes(tag) && this.selectedTags.length < 5) {
-      this.selectedTags.push(tag);
-      this.tagInput = '';
-      this.onSearch();
-    }
-  }
-
-  /**
-   * Elimina un tag de la búsqueda
-   */
-  removeSearchTag(index: number): void {
-    this.selectedTags.splice(index, 1);
-    this.onSearch();
   }
 
   /**
@@ -436,34 +407,12 @@ export class FeedPageComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (newPost) => {
-          this.postCreator?.clearForm();
           this.posts = [newPost, ...this.posts];
           this.loadUserStats();
         },
         error: (error) => {
           console.error('Error creando post:', error);
-          this.error = this.feedService.getFriendlyErrorMessage(
-            error,
-            'No se pudo crear la publicación. Revisa la descripción y los archivos adjuntos.'
-          );
-        }
-      });
-  }
-
-  private loadCurrentUserProfile(): void {
-    if (!this.currentUserId || !this.authService.isUser()) {
-      return;
-    }
-
-    this.userService.getUserById(this.currentUserId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (user) => {
-          this.currentUserAvatar = user.profile_picture || '/assets/profile.png';
-          this.currentUserName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-        },
-        error: (error) => {
-          console.error('Error loading current user profile:', error);
+          this.error = 'No se pudo crear el post. Intenta de nuevo.';
         }
       });
   }

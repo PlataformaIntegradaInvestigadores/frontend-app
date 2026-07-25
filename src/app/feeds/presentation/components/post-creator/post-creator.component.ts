@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { PostCreatorData } from '../../types/post.types';
 
 @Component({
@@ -6,7 +6,7 @@ import { PostCreatorData } from '../../types/post.types';
   templateUrl: './post-creator.component.html',
   styleUrls: ['./post-creator.component.css']
 })
-export class PostCreatorComponent implements AfterViewInit {
+export class PostCreatorComponent {
   @Input() placeholder: string = "What's on your mind?";
   @Input() buttonText: string = 'Post';
   @Input() showOptions: boolean = true;
@@ -23,21 +23,11 @@ export class PostCreatorComponent implements AfterViewInit {
 
   newPostContent = '';
   selectedFiles: File[] = [];
-  tags: string[] = [];
-  newTag: string = '';
-  validationMessage: string | null = null;
   
   // Poll related properties
   showPollCreator = false;
   pollQuestion = '';
   pollOptions: string[] = ['', ''];
-  
-  // Tags related properties
-  showTagInput = false;
-
-  ngAfterViewInit(): void {
-    this.adjustTextAreaHeight();
-  }
 
   /**
    * Verifica si la encuesta actual es válida
@@ -101,7 +91,7 @@ export class PostCreatorComponent implements AfterViewInit {
    * Envía el post
    */
   submitPost(): void {
-    if (!this.validateBeforeSubmit()) return;
+    if (!this.canSubmit()) return;
 
     // Validación específica para encuestas
     if (this.showPollCreator) {
@@ -125,7 +115,6 @@ export class PostCreatorComponent implements AfterViewInit {
 
     const postData: PostCreatorData = {
       content: content,
-      tags: this.tags.length > 0 ? this.tags : undefined,
       files: this.selectedFiles.length > 0 ? this.selectedFiles : undefined,
       poll: this.showPollCreator ? {
         question: this.pollQuestion.trim(),
@@ -134,61 +123,7 @@ export class PostCreatorComponent implements AfterViewInit {
     };
 
     this.postSubmitted.emit(postData);
-  }
-
-  /**
-   * Valida el formulario y muestra un mensaje claro para el usuario.
-   */
-  validateBeforeSubmit(): boolean {
-    this.validationMessage = null;
-
-    if (!this.newPostContent.trim()) {
-      this.validationMessage = 'Escribe una descripción para publicar. Puedes agregar imágenes o archivos, pero el texto es obligatorio.';
-      this.focusPostInput();
-      return false;
-    }
-
-    if (this.newPostContent.trim().length > 5000) {
-      this.validationMessage = 'La descripción no puede superar los 5000 caracteres.';
-      this.focusPostInput();
-      return false;
-    }
-
-    if (this.showPollCreator) {
-      if (!this.pollQuestion.trim()) {
-        this.validationMessage = 'Escribe una pregunta para la encuesta.';
-        return false;
-      }
-
-      if (this.validPollOptionsCount < 2) {
-        this.validationMessage = 'Agrega al menos dos opciones válidas para la encuesta.';
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  onContentChanged(): void {
-    if (this.validationMessage && this.newPostContent.trim()) {
-      this.validationMessage = null;
-    }
-    this.adjustTextAreaHeight();
-  }
-
-  autoGrowTextArea(event?: Event): void {
-    const textarea = event?.target as HTMLTextAreaElement | undefined;
-    this.adjustTextAreaHeight(textarea);
-  }
-
-  private adjustTextAreaHeight(textarea = this.textArea?.nativeElement): void {
-    if (!textarea) return;
-
-    const maxHeight = 280;
-    textarea.style.height = 'auto';
-    const nextHeight = Math.min(textarea.scrollHeight, maxHeight);
-    textarea.style.height = `${nextHeight}px`;
-    textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
+    this.clearForm(); // Limpiar después de enviar
   }
 
   /**
@@ -197,10 +132,6 @@ export class PostCreatorComponent implements AfterViewInit {
   clearForm(): void {
     this.newPostContent = '';
     this.selectedFiles = [];
-    this.tags = [];
-    this.newTag = '';
-    this.validationMessage = null;
-    this.showTagInput = false;
     this.showPollCreator = false;
     this.pollQuestion = '';
     this.pollOptions = ['', ''];
@@ -209,7 +140,6 @@ export class PostCreatorComponent implements AfterViewInit {
     if (this.imageInput) this.imageInput.nativeElement.value = '';
     if (this.videoInput) this.videoInput.nativeElement.value = '';
     if (this.documentInput) this.documentInput.nativeElement.value = '';
-    setTimeout(() => this.adjustTextAreaHeight(), 0);
   }
 
   /**
@@ -222,9 +152,6 @@ export class PostCreatorComponent implements AfterViewInit {
       const newFiles = Array.from(files) as File[];
       this.selectedFiles = [...this.selectedFiles, ...newFiles];
       console.log('Archivos seleccionados:', newFiles.map(f => f.name));
-      if (!this.newPostContent.trim()) {
-        this.validationMessage = 'Agrega una descripción antes de publicar el archivo.';
-      }
     }
     
     // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
@@ -241,7 +168,7 @@ export class PostCreatorComponent implements AfterViewInit {
   /**
    * Maneja opciones adicionales (photo, video, file, poll)
    */
-  onOptionClick(option: 'photo' | 'video' | 'file' | 'poll' | 'tag'): void {
+  onOptionClick(option: 'photo' | 'video' | 'file' | 'poll'): void {
     switch(option) {
       case 'photo':
         this.imageInput.nativeElement.click();
@@ -259,34 +186,7 @@ export class PostCreatorComponent implements AfterViewInit {
           this.pollOptions = ['', ''];
         }
         break;
-      case 'tag':
-        this.showTagInput = !this.showTagInput;
-        break;
     }
-  }
-
-  /**
-   * Agrega un tag
-   */
-  addTag(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
-    
-    const tag = this.newTag.trim().toLowerCase();
-    if (tag && !this.tags.includes(tag)) {
-      // Remove # if user typed it
-      const cleanTag = tag.startsWith('#') ? tag.substring(1) : tag;
-      this.tags.push(cleanTag);
-    }
-    this.newTag = '';
-  }
-
-  /**
-   * Remueve un tag
-   */
-  removeTag(index: number): void {
-    this.tags.splice(index, 1);
   }
 
   /**
@@ -378,6 +278,12 @@ export class PostCreatorComponent implements AfterViewInit {
    * Verifica si se puede enviar el post
    */
   canSubmit(): boolean {
-    return !this.isLoading;
+    // Si no hay encuesta, debe tener contenido o archivos
+    if (!this.showPollCreator) {
+      return this.newPostContent.trim() !== '' || this.selectedFiles.length > 0;
+    }
+    
+    // Si hay encuesta, debe ser válida (la encuesta puede existir sin contenido de texto)
+    return this.isPollValid;
   }
 }

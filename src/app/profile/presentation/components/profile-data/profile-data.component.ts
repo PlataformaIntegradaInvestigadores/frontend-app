@@ -3,8 +3,7 @@ import { UserProfile, ScopusData } from 'src/app/profile/domain/entities/user.in
 import { Author } from 'src/app/shared/interfaces/author.interface';
 import { LineChartInfo, Year } from "../../../../shared/interfaces/dashboard.interface";
 import { AuthorService } from "../../../../search-engine/domain/services/author.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from '@angular/common';
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'app-profile-data',
@@ -24,17 +23,10 @@ export class ProfileDataComponent implements OnChanges, OnInit {
 
   years: LineChartInfo[] | undefined
   charged: boolean = false
-  isLoading: boolean = true;
-  chartError: boolean = false;
 
   name!: string
 
-  constructor(
-    private authorService: AuthorService, 
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location
-  ) {
+  constructor(private authorService: AuthorService, private route: ActivatedRoute) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -48,10 +40,7 @@ export class ProfileDataComponent implements OnChanges, OnInit {
       this.authorService.getAuthorById(this.user.scopus_id).subscribe(data => {
         this.scopusData.citations = data.citation_count;
         this.scopusData.articles = data.articles;
-        this.isLoading = false;
       });
-    } else {
-      setTimeout(() => this.isLoading = false, 500); // Falback if no scopus ID
     }
   }
 
@@ -59,30 +48,13 @@ export class ProfileDataComponent implements OnChanges, OnInit {
     this.route.parent?.paramMap.subscribe(params => {
       this.idRoute = params?.get('id')!;
       if (this.idRoute && this.isNumeric(this.idRoute)) {
-        this.authorService.getAuthorById(this.idRoute).subscribe({
-          next: (data) => {
-            this.name = data.auth_name
-            this.authorService.getLineChartInfo(this.idRoute, this.name).subscribe({
-              next: (chartData) => {
-                this.years = chartData
-                this.charged = true
-                this.isLoading = false;
-              },
-              error: (err) => {
-                console.error("Chart data not available", err);
-                this.chartError = true;
-                this.isLoading = false;
-              }
-            })
-          },
-          error: (err) => {
-            console.error("Error fetching author data", err);
-            this.chartError = true;
-            this.isLoading = false;
-          }
+        this.authorService.getAuthorById(this.idRoute).subscribe(data => {
+          this.name = data.auth_name
+          this.authorService.getLineChartInfo(this.idRoute, this.name).subscribe(data => {
+            this.years = data
+            this.charged = true
+          })
         })
-      } else {
-        this.isLoading = false;
       }
     });
     this.isAuthor = this.isNumeric(this.idRoute);
@@ -101,9 +73,10 @@ export class ProfileDataComponent implements OnChanges, OnInit {
    */
   checkLoginStatus(): void {
     const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
     const userId = localStorage.getItem('userId');
 
-    this.isLoggedIn = !!(accessToken && userId);
+    this.isLoggedIn = !!(accessToken && refreshToken && userId);
   }
 
   /**
@@ -130,14 +103,4 @@ export class ProfileDataComponent implements OnChanges, OnInit {
     window.open(`https://www.scopus.com/authid/detail.uri?authorId=${scopus_id}`, '_blank');
   }
 
-  goBack() {
-    this.location.back();
-  }
-  
-  goToArticle(scopus_id: string) {
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['article/', scopus_id])
-    );
-    window.open(url, '_blank');
-  }
 }

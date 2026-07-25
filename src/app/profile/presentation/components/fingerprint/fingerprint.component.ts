@@ -21,23 +21,23 @@ export class FingerprintComponent implements OnInit {
   user: User | null = null;
   // author!:Author
   scopusId!: number
-  words: NameValue[] = []
-  loading = false
+  words!: NameValue[]
 
   ngOnInit() {
     this.route.parent?.paramMap.subscribe(params => {
       let id = parseInt(params?.get('id')!);
       if(this.isNumeric(id.toString())){
         this.scopusId = id;
-        this.getTopics()
       }else{
         this.userSubscription = this.userDataService.getUser().subscribe((user: User | null) => {
           this.user = user;
           if (this.user?.scopus_id) {
             this.scopusId = parseInt(this.user.scopus_id)
-            this.getTopics()
           }
         });
+      }
+      if (this.scopusId) {
+        this.getTopics()
       }
     });
   }
@@ -46,18 +46,11 @@ export class FingerprintComponent implements OnInit {
   }
 
   getTopics() {
-    if (!this.scopusId) { return; }
-    this.loading = true;
-    this.authorService.getTopicsById(this.scopusId).subscribe({
-      next: data => {
-        this.words = data || [];
-        this.loading = false;
-      },
-      error: () => {
-        this.words = [];
-        this.loading = false;
+    this.authorService.getTopicsById(this.scopusId).subscribe(
+      data => {
+        this.words = data
       }
-    })
+    )
   }
 
 

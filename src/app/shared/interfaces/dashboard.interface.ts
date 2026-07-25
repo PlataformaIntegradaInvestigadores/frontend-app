@@ -99,3 +99,29 @@ export interface TopicResponse {
   year:           number;
   total_articles: number;
 }
+
+export interface SystemHealth {
+  authors_no_updated:     number;
+  total_authors:          number;
+  articles_pending:       number;
+  stale_collections:      number;
+  stale_collection_names: string[];
+}
+
+export interface EtlStatusResponse {
+  status:           string;
+  last_run_at:      string | null;
+  last_run_status:  string | null;
+}
+
+export interface HeatmapCell {
+  scopus_id:      number;
+  topic_name:     string;
+  total_articles: number;
+}
+
+export interface HeatmapResponse {
+  affiliations: AffiliationInfo[];
+  topics:       string[];
+  cells:        HeatmapCell[];
+}

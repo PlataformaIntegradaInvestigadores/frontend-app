@@ -16,9 +16,10 @@
 
 /* Transiciones suaves para interacciones */
 .post-item {
-  transition: box-shadow 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .post-item:hover {
-  box-shadow: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

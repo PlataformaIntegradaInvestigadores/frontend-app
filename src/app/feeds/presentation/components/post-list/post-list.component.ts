@@ -10,7 +10,6 @@ export class PostListComponent {
   @Input() posts: FeedPost[] = [];
   @Input() isLoading: boolean = false;
   @Input() emptyMessage: string = 'No hay publicaciones disponibles';
-  @Input() showEmptyState: boolean = true;
   @Input() showActions: boolean = true;
   @Input() currentUserId: string | null = null;
   
