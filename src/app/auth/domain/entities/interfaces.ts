@@ -53,6 +53,7 @@ export interface UserUpdate {
   institution?: string;
   website?: string;
   investigation_camp?: string;
+  interests?: string;
   profile_picture?: string;
   email_institution?: string;
 }
@@ -77,8 +78,25 @@ export interface CompanyUpdate {
  */
 export interface AuthResponse {
   access: string;
-  refresh: string;
+  refresh?: string;
   user_id?: string;
   company_id?: string;
   user_type?: UserType;
+  detail?: string;
+}
+
+export type MfaLoginStatus = 'mfa_required' | 'mfa_enrollment_required';
+
+export interface MfaChallengeResponse {
+  status: MfaLoginStatus;
+  mfa_challenge: string;
+  expires_in: number;
+}
+
+export type LoginResponse = AuthResponse | MfaChallengeResponse;
+
+export interface MfaSetupResponse {
+  otpauth_uri: string;
+  manual_key: string;
+  qr_code?: string;
 }

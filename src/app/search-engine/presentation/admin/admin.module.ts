@@ -16,12 +16,10 @@ import { FooterDashboardComponent } from './components/footer/footer.component';
 import { HeaderDashboardComponent } from './components/header/header.component';
 import { MainContentComponent } from './components/main-content/main-content.component';
 import { UpdateCentinelaComponent } from './components/update-centinela/update-centinela.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { LoggerComponent } from './components/logger/logger.component';
-import { StrategicAnalyticsComponent } from './components/strategic-analytics/strategic-analytics.component';
 import { FairnessDashboardComponent } from './pages/fairness-dashboard/fairness-dashboard.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -38,8 +36,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     MatProgressSpinnerModule,
     FormsModule,
-    NgxChartsModule,
-    SharedModule
+    NgxChartsModule
   ],
   exports: [],
   declarations: [
@@ -51,8 +48,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MainContentComponent,
     UpdateCentinelaComponent,
     LoggerComponent,
-    FairnessDashboardComponent,
-    StrategicAnalyticsComponent
+    FairnessDashboardComponent
   ],
   providers: [],
 })

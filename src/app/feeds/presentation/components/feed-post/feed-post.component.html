@@ -1,4 +1,4 @@
-<div class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+<div class="feed-post-card bg-white rounded-lg border border-gray-200 overflow-hidden">
   
   <!-- Post Header -->
   <app-post-header
@@ -66,4 +66,126 @@
     (close)="onCloseEditModal()"
     (save)="onSaveEdit($event)">
   </app-post-editor>
+
+  <!-- Media Viewer Modal -->
+  <div
+    *ngIf="selectedMediaFile"
+    class="media-viewer fixed inset-0 z-[200000]"
+    role="dialog"
+    aria-modal="true"
+    (click)="closeMediaViewer()">
+    <div class="media-viewer-shell" (click)="$event.stopPropagation()">
+      <section class="media-stage">
+        <button
+          type="button"
+          class="media-close media-close-mobile"
+          aria-label="Cerrar imagen"
+          (click)="closeMediaViewer()">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <button
+          *ngIf="hasMultipleImages"
+          type="button"
+          class="media-nav media-nav-prev"
+          aria-label="Imagen anterior"
+          (click)="showPreviousMedia()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <img
+          [src]="getSelectedMediaUrl()"
+          [alt]="selectedMediaFile.original_filename || 'Imagen de la publicación'"
+          class="media-viewer-image">
+
+        <button
+          *ngIf="hasMultipleImages"
+          type="button"
+          class="media-nav media-nav-next"
+          aria-label="Siguiente imagen"
+          (click)="showNextMedia()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </section>
+
+      <aside class="media-context">
+        <div class="media-context-header">
+          <div class="flex items-center gap-3 min-w-0">
+            <img
+              [src]="post.author.profile_picture || '/assets/profile.png'"
+              [alt]="post.author.first_name + ' ' + post.author.last_name"
+              class="w-10 h-10 rounded object-cover border border-gray-200"
+              onerror="this.src='/assets/profile.png'">
+            <div class="min-w-0">
+              <h3 class="text-sm font-semibold text-gray-950 truncate">
+                {{ post.author.first_name }} {{ post.author.last_name }}
+              </h3>
+              <p class="text-xs text-gray-500">{{ formattedDate }}</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="media-close"
+            aria-label="Cerrar imagen"
+            (click)="closeMediaViewer()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="media-context-body">
+          <div class="media-post-copy">
+            <p class="text-sm text-gray-900 leading-relaxed whitespace-pre-wrap break-words">
+              {{ mediaDisplayContent }}
+            </p>
+            <button
+              *ngIf="shouldTruncateMediaContent"
+              type="button"
+              class="media-see-more"
+              (click)="toggleMediaContent()">
+              {{ showFullMediaContent ? 'Ver menos' : 'Ver más' }}
+            </button>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 mt-3" *ngIf="post.tags && post.tags.length > 0">
+            <span
+              *ngFor="let tag of post.tags"
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+              #{{ tag }}
+            </span>
+          </div>
+
+          <div class="media-context-stats">
+            <span *ngIf="post.likes_count > 0">
+              <i class="fas fa-heart text-red-500"></i>
+              {{ post.likes_count }}
+            </span>
+            <span *ngIf="post.comments_count > 0">
+              <i class="far fa-comment"></i>
+              {{ post.comments_count }}
+            </span>
+          </div>
+
+          <div class="media-comments" *ngIf="showComments">
+            <app-post-comments
+              [postId]="post.id"
+              [commentsCount]="post.comments_count"
+              (commentAdded)="onCommentAdded($event)"
+              (commentsCountUpdated)="onCommentsCountUpdated($event)">
+            </app-post-comments>
+          </div>
+        </div>
+
+        <div class="media-context-actions" *ngIf="showActions">
+          <button
+            type="button"
+            [class.media-action-active]="post.is_liked"
+            (click)="onLikeClick()">
+            <i [ngClass]="post.is_liked ? 'fas fa-heart' : 'far fa-heart'"></i>
+            Me gusta
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
 </div>

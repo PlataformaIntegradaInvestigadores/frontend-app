@@ -30,6 +30,7 @@ export class SearchBoxComponent implements OnInit{
 
   selectedOption!: SearchOption;
   inputValue: string = ""
+  showError: boolean = false;
 
   @Output() search: EventEmitter<Search> = new EventEmitter<Search>()
   @Input()
@@ -67,16 +68,26 @@ export class SearchBoxComponent implements OnInit{
     }
   }
 
-  onEnter(event: KeyboardEvent) {
-    if (event.code === 'Enter')
-      this.triggerSearch()
-  }
-
   triggerSearch() {
+    const normalized = (this.inputValue || '').trim().replace(/\s\s+/g, ' ');
+    // Validacion espejo del agregado Consulta: mismo contrato que el 422
+    // CONTRACT_VALIDATION del microservicio v2. Requiere al menos un token
+    // alfabetico significativo (>= 2 letras); de lo contrario es semanticamente
+    // vacia. Da feedback inmediato y cierra el defecto UX-05 de Fase 1.
+    if (!normalized || !/\p{L}{2,}/u.test(normalized)) {
+      this.showError = true;
+      return;
+    }
+    this.showError = false;
     this.search.emit({
       option: this.selectedOption.code,
-      query: this.inputValue
-    })
+      query: normalized
+    });
+  }
+
+  onEnter(event: KeyboardEvent) {
+    if (event.code === 'Enter')
+      this.triggerSearch();
   }
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {

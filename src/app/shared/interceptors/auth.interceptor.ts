@@ -24,8 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Verificar si es un error 401 por token expirado
-        if (error.status === 401 && this.isTokenExpiredError(error)) {
+        if (error.status === 401 && this.shouldAttemptRefresh(request, error)) {
           return this.handle401Error(request, next);
         }
         
@@ -47,34 +46,55 @@ export class AuthInterceptor implements HttpInterceptor {
            error.error?.detail?.includes('expired');
   }
 
+  private shouldAttemptRefresh(request: HttpRequest<any>, error: HttpErrorResponse): boolean {
+    if (this.isAuthEndpoint(request.url) || error.status !== 401) {
+      return false;
+    }
+
+    if (this.isTokenExpiredError(error)) {
+      return true;
+    }
+
+    // Social consensus endpoints may return 401 for their own auth model.
+    // Do not clear the identity session when a non-identity endpoint rejects a request.
+    return this.isIdentityProtectedEndpoint(request.url);
+  }
+
+  private isIdentityProtectedEndpoint(url: string): boolean {
+    return url.includes('/api/users') ||
+           url.includes('/api/groups') ||
+           url.includes('/api/test/user/groups') ||
+           url.includes('/api/test/users/groups') ||
+           url.includes('/api/profile-information');
+  }
+
+  private isAuthEndpoint(url: string): boolean {
+    return url.includes('/token/') ||
+           url.includes('/token/refresh/') ||
+           url.includes('/auth/mfa/') ||
+           url.includes('/register/') ||
+           url.includes('/logout/');
+  }
+
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
 
-      const refreshToken = localStorage.getItem('refreshToken');
-      
-      if (refreshToken) {
-        return this.authService.refreshToken().pipe(
-          switchMap((tokenResponse: any) => {
-            this.isRefreshing = false;
-            this.refreshTokenSubject.next(tokenResponse.access);
-            
-            return next.handle(this.addTokenHeader(request, tokenResponse.access));
-          }),
-          catchError((error) => {
-            this.isRefreshing = false;
-            this.authService.logout();
-            this.router.navigate(['/admin']);
-            return throwError(() => error);
-          })
-        );
-      } else {
-        this.isRefreshing = false;
-        this.authService.logout();
-        this.router.navigate(['/admin']);
-        return throwError(() => new Error('No refresh token available'));
-      }
+      return this.authService.refreshToken().pipe(
+        switchMap((tokenResponse: any) => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(tokenResponse.access);
+
+          return next.handle(this.addTokenHeader(request, tokenResponse.access));
+        }),
+        catchError((error) => {
+          this.isRefreshing = false;
+          this.authService.clearLocalSession();
+          this.router.navigate(['/login']);
+          return throwError(() => error);
+        })
+      );
     }
 
     return this.refreshTokenSubject.pipe(
