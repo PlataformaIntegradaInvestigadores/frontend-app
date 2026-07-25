@@ -21,7 +21,6 @@ import { LoggerComponent } from './components/logger/logger.component';
 import { StrategicAnalyticsComponent } from './components/strategic-analytics/strategic-analytics.component';
 import { FairnessDashboardComponent } from './pages/fairness-dashboard/fairness-dashboard.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -39,7 +38,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MatProgressSpinnerModule,
     FormsModule,
     NgxChartsModule,
-    SharedModule
   ],
   exports: [],
   declarations: [
