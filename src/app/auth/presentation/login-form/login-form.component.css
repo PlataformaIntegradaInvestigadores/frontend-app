@@ -3,6 +3,27 @@
   animation: spin 1s linear infinite;
 }
 
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  color: #6b7280;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #1f2937;
+  background-color: #f3f4f6;
+}
+
+.password-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(191, 219, 254, 1);
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

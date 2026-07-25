@@ -86,10 +86,6 @@ export class GeneralComponent implements OnInit {
                 this.lineS[0].series = this.lineChartInfo[0].series.slice(-10);
             }
         );
-        this.dashboardService.getCounts(this.year).subscribe(data => {
-            this.counts = data;
-            console.log(this.counts);
-        });
         this.dashboardService.getTreeMap().subscribe(data => {
             this.treeMapInfo = data;
         });
@@ -99,7 +95,7 @@ export class GeneralComponent implements OnInit {
             // this.barS = this.barChartInfo.slice(-10)
             // console.log('asd' + this.barS)
         });
-        this.provinces = environment.apiCentinela + 'api/v1/dashboard/province/get_provinces/'
+        this.provinces = environment.apiCentinela + '/v1/dashboard/province/get_provinces/'
 
     }
 

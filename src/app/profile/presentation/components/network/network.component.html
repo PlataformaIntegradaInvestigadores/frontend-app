@@ -1,3 +1,13 @@
-<div class="px-10 pb-10" *ngIf="author">
-  <app-coauthors-graph [author]="author"></app-coauthors-graph>
+<div class="px-10 pb-10">
+  <!-- Cargando -->
+  <div *ngIf="loading" class="flex justify-center items-center py-16">
+    <app-mini-loader size="10"></app-mini-loader>
+  </div>
+
+  <!-- Con datos -->
+  <app-coauthors-graph *ngIf="!loading && author" [author]="author"></app-coauthors-graph>
+
+  <!-- Sin datos -->
+  <app-no-results *ngIf="!loading && !author"
+                  title="No se pudo cargar la red de coautores de este autor"></app-no-results>
 </div>

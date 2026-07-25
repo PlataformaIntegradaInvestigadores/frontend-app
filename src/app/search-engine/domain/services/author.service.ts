@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { map, Observable } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {
   Author,
@@ -26,6 +26,21 @@ export class AuthorService {
   rootURL: string = environment.apiCentinela;
   // dashURL: string = environment.apiDashboard;
 
+  // Slice 2 (API Composition): cache por autor del perfil compuesto. shareReplay
+  // hace que las multiples secciones (coautores, topics, anios) que consumen
+  // distintos componentes compartan UNA sola peticion a /v2/authors/{id}/profile.
+  private profileCache = new Map<string, Observable<any>>();
+
+  getAuthorProfile(id: string | number): Observable<any> {
+    const key = id.toString();
+    if (!this.profileCache.has(key)) {
+      this.profileCache.set(
+        key,
+        this.http.get<any>(`${this.rootURL}/v2/authors/${key}/profile`).pipe(shareReplay(1))
+      );
+    }
+    return this.profileCache.get(key)!;
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -34,9 +49,16 @@ export class AuthorService {
     page?: number,
     size?: number
   ): Observable<PaginationAuthorResult> {
+    const bodyParams = {
+      query: query,
+      page: page ?? 1,
+      page_size: size ?? 10
+    };
+
     return this.http
-      .get<PaginationAuthorResult>(
-        `${this.rootURL}/v1/authors/authors/find_by_query/?query=${query}&page=${page}&page_size=${size}`
+      .post<PaginationAuthorResult>(
+        `${this.rootURL}/v2/authors/search`,
+        bodyParams
       )
       .pipe(
         map((response) => {
@@ -49,33 +71,37 @@ export class AuthorService {
   }
 
   getAuthorById(id: string): Observable<Author> {
-    return this.http.get<Author>(`${this.rootURL}/v1/authors/authors/${id}`);
+    return this.http.get<Author>(`${this.rootURL}/v2/authors/${id}`);
   }
 
   getCoauthorsById(id: number): Observable<CoauthorInfo> {
-    return this.http.get<CoauthorInfo>(`${this.rootURL}/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
+    // Slice 2: deriva de la composicion v2 en vez de llamar directo a v1.
+    return this.getAuthorProfile(id).pipe(map(p => p.coauthors as CoauthorInfo));
   }
 
   getMostRelevantAuthors(
     topic: string,
     authors_number?: number,
     typeFilter?: string,
-    affiliations?: number[]
+    affiliations?: string[]
   ): Observable<Coauthors> {
-    let bodyParams: any = {
-      topic: topic,
-      authors_number: authors_number,
+    const bodyParams: any = {
+      query: topic,
+      page: 1,
+      page_size: authors_number
     };
 
-    if (typeFilter) {
-      bodyParams['type'] = typeFilter;
-      bodyParams['affiliations'] = affiliations;
+    if (typeFilter || (affiliations && affiliations.length > 0)) {
+      bodyParams['filters'] = {
+        mode: typeFilter,
+        affiliations: affiliations ?? []
+      };
     }
-    let data = this.http.post<Coauthors>(
-      `${this.rootURL}/v1/authors/authors/most_relevant_authors/`,
+
+    return this.http.post<Coauthors>(
+      `${this.rootURL}/v2/authors/relevant`,
       bodyParams
     );
-    return data;
   }
 
   mapAuthorTopics(author: AuthorResult) {
@@ -94,20 +120,18 @@ export class AuthorService {
     return this.http.get<RandItem[]>(`${this.rootURL}random-topics`);
   }
   getTopicsById(scopus_id:number): Observable<NameValue[]> {
-    let params = new HttpParams().set('scopus_id', scopus_id.toString());
-    return this.http.get<Word[]>(`${this.rootURL}/v1/dashboard/author/get_topics/`, {params}).pipe(
-      map(response => {
-        const series: NameValue[] = response.map(t => ({
-          name: t.text.toString(),
-          value: t.size
-        }));
-        return series
-      }));
+    // Slice 2: las topics ahora vienen de la composicion v2 (misma forma {text,size}).
+    return this.getAuthorProfile(scopus_id).pipe(
+      map(p => ((p.topics || []) as Word[]).map(t => ({
+        name: t.text.toString(),
+        value: t.size
+      })))
+    );
   }
 
   getYears(scopus_id: string): Observable<AuthorYears[]> {
-    let params = new HttpParams().set('scopus_id', scopus_id.toString())
-    return this.http.get<AuthorYears[]>(`${this.rootURL}/v1/dashboard/author/get_author_years/`, {params});
+    // Slice 2: los anios ahora vienen de la composicion v2.
+    return this.getAuthorProfile(scopus_id).pipe(map(p => (p.years || []) as AuthorYears[]));
   }
 
   getLineChartInfo(scopus_id:string, name: string): Observable<LineChartInfo[]> {
@@ -129,7 +153,7 @@ export class AuthorService {
 
   getArticles(scopus_id:string):Observable<ArticlesResponse[]>{
     let params = new HttpParams().set('author_id', scopus_id.toString())
-    return this.http.get<ArticlesResponse[]>(`${this.rootURL}/v1/articles/find-articles-by-author-id/`, {params});
+    return this.http.get<ArticlesResponse[]>(`${this.rootURL}/v2/articles/by-author`, {params});
   }
 
 }

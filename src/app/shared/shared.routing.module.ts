@@ -24,10 +24,6 @@ const routes: Routes = [
         loadChildren: () => import('src/app/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
-        path: 'predictive-analytics',
-        loadChildren: () => import('src/app/analytics/analytics.module').then(m => m.AnalyticsModule)
-      },
-      {
         path: 'recommendations',
         loadChildren: () =>
           import('src/app/recommendations/recommendations.module').then(

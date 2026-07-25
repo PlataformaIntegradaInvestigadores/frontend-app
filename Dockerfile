@@ -12,7 +12,7 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-RUN npm run build
+RUN npm run build -- --configuration=local
 
 
 FROM nginx:latest
