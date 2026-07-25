@@ -1,10 +1,100 @@
-/* Progress bar animation */
-.poll-progress-bar {
-  animation: progressBarGrow 0.3s ease;
+/* ══════════════════════════════════════════════════
+   Poll Component – Modern Minimal Design
+   ══════════════════════════════════════════════════ */
+
+/* Container */
+.poll-container {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
 }
 
-@keyframes progressBarGrow {
-  from {
-    width: 0;
+/* Header */
+.poll-header {
+  border-bottom: 1px solid #e8edf2;
+}
+
+.poll-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Options ── */
+.poll-option {
+  border: 1.5px solid transparent;
+  background: white;
+  min-height: 40px;
+}
+
+/* Clickable state (before voting) */
+.poll-option--clickable {
+  cursor: pointer;
+  border-color: #e5e7eb;
+}
+.poll-option--clickable:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  transform: translateX(2px);
+}
+.poll-option--clickable:active {
+  transform: scale(0.995);
+}
+
+/* Revealed state (after voting) */
+.poll-option--revealed {
+  border-color: #e5e7eb;
+  cursor: default;
+  background: #fcfcfd;
+}
+
+/* User-voted option */
+.poll-option--voted {
+  border-color: #93c5fd !important;
+  background: #f0f7ff !important;
+}
+
+/* Winning option (highest %) */
+.poll-option--winner:not(.poll-option--voted) {
+  border-color: #c4b5fd;
+  background: #faf5ff;
+}
+
+/* ── Background progress bar ── */
+.poll-option__bar {
+  background: #f1f5f9;
+  border-radius: 0;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  animation: pollBarGrow 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.poll-option__bar--user {
+  background: linear-gradient(90deg, #dbeafe 0%, #bfdbfe 100%);
+}
+
+.poll-option__bar--winner {
+  background: linear-gradient(90deg, #ede9fe 0%, #ddd6fe 100%);
+}
+
+@keyframes pollBarGrow {
+  from { width: 0 !important; }
+}
+
+/* ── Footer ── */
+.poll-footer {
+  border-top: 1px solid #e8edf2;
+  background: rgba(248, 250, 252, 0.8);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .poll-option {
+    min-height: 36px;
   }
 }

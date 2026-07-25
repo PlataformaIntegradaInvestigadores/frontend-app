@@ -1,30 +1,37 @@
 <!-- Post Files -->
-<div class="mt-3" *ngIf="processedFiles && processedFiles.length > 0">
+<div
+  class="post-files mt-3"
+  [class.single-file-set]="processedFiles.length === 1"
+  [class.multi-file-set]="processedFiles.length > 1"
+  *ngIf="processedFiles && processedFiles.length > 0">
   
-  <div class="grid gap-2" 
+  <div class="post-files-grid grid gap-2" 
        [ngClass]="{
          'grid-cols-1': processedFiles.length === 1,
-         'grid-cols-2': processedFiles.length > 1
+         'grid-cols-1 sm:grid-cols-2': processedFiles.length > 1
        }">
     <div 
       *ngFor="let file of processedFiles; let i = index"
-      class="relative rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+      class="post-file-tile relative rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
       
       <!-- Image Files -->
       <div *ngIf="file._fileType === 'image'" 
-           class="cursor-pointer relative" 
+           class="post-media-frame cursor-pointer relative"
+           [class.landscape-media]="mediaOrientations[file._fileKey] === 'landscape'"
+           [class.portrait-media]="mediaOrientations[file._fileKey] === 'portrait'"
+           [class.square-media]="mediaOrientations[file._fileKey] === 'square'"
            (click)="onImageClick(file)">
         
         <!-- Imagen -->
         <img 
           [src]="file._imageUrl" 
           [alt]="file.original_filename || 'Imagen del post'"
-          class="w-full h-48 object-contain bg-gray-50"
-          (load)="onImageLoad(file)"
+          class="post-media-image w-full object-contain bg-gray-50"
+          (load)="onImageLoad(file, $event)"
           (error)="onImageError(file)">
         
         <!-- Error placeholder -->
-        <div *ngIf="imageLoadStates[file.id] === 'error'" 
+        <div *ngIf="imageLoadStates[file._fileKey] === 'error'" 
              class="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-500 cursor-pointer"
              (click)="onImageClick(file)">
           <div class="text-center p-4">
@@ -41,7 +48,7 @@
         <video 
           [src]="file._imageUrl" 
           controls 
-          class="w-full h-48 object-cover"
+          class="post-media-video w-full object-contain bg-black"
           preload="metadata">
           Tu navegador no soporta videos.
         </video>
