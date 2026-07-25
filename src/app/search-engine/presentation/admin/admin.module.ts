@@ -18,6 +18,8 @@ import { MainContentComponent } from './components/main-content/main-content.com
 import { UpdateCentinelaComponent } from './components/update-centinela/update-centinela.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { LoggerComponent } from './components/logger/logger.component';
+import { FairnessDashboardComponent } from './pages/fairness-dashboard/fairness-dashboard.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   imports: [
@@ -33,7 +35,8 @@ import { LoggerComponent } from './components/logger/logger.component';
     AdminRoutingModule,
     CommonModule,
     MatProgressSpinnerModule,
-    FormsModule
+    FormsModule,
+    NgxChartsModule
   ],
   exports: [],
   declarations: [
@@ -44,7 +47,8 @@ import { LoggerComponent } from './components/logger/logger.component';
     SidebarDashboardComponent,
     MainContentComponent,
     UpdateCentinelaComponent,
-    LoggerComponent
+    LoggerComponent,
+    FairnessDashboardComponent
   ],
   providers: [],
 })

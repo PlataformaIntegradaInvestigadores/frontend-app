@@ -1,0 +1,336 @@
+<div class="px-2">
+  <h1 class="text-2xl font-bold text-gray-800">Dashboard de equidad (fairness)</h1>
+  <p class="text-sm text-gray-500 mb-6">
+    Resultados consolidados de la mitigacion de sesgos del Proyecto Centinela.
+  </p>
+
+  <!-- Estado de carga / error -->
+  <div *ngIf="loading" class="flex items-center gap-3 text-gray-500 py-10">
+    <mat-progress-spinner mode="indeterminate" diameter="28"></mat-progress-spinner>
+    <span>Cargando resultados de equidad...</span>
+  </div>
+  <div *ngIf="error" class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">
+    {{ error }}
+  </div>
+
+  <ng-container *ngIf="data && !loading">
+    <!-- Umbrales de aceptacion -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white rounded-xl shadow p-4 border-l-4 border-blue-500">
+        <p class="text-xs uppercase text-gray-400">Impacto desigual (DI)</p>
+        <p class="text-xl font-bold text-gray-800">&ge; {{ data.meta.thresholds.di_min }}</p>
+        <p class="text-xs text-gray-400">regla de los 4/5</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-4 border-l-4 border-blue-500">
+        <p class="text-xs uppercase text-gray-400">Paridad estadistica (SPD)</p>
+        <p class="text-xl font-bold text-gray-800">
+          [{{ data.meta.thresholds.spd[0] }}, {{ data.meta.thresholds.spd[1] }}]
+        </p>
+        <p class="text-xs text-gray-400">banda aceptable</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-4 border-l-4 border-blue-500">
+        <p class="text-xs uppercase text-gray-400">Degradacion de utilidad</p>
+        <p class="text-xl font-bold text-gray-800">&le; {{ data.meta.thresholds.util_max_drop * 100 }}%</p>
+        <p class="text-xs text-gray-400">respecto a la linea base</p>
+      </div>
+    </div>
+
+    <!-- SHAP: origen del sesgo institucional -->
+    <section class="bg-white rounded-xl shadow p-5 mb-8">
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">Origen del sesgo: importancia de variables (SHAP)</h2>
+      <p class="text-sm text-gray-500 mb-3">
+        El sesgo institucional es indirecto: lo domina <b>publication_count</b>, no la afiliacion.
+      </p>
+      <ngx-charts-bar-horizontal
+        [view]="[760, 260]"
+        [results]="shapData"
+        [scheme]="schemeMetric"
+        [xAxis]="true"
+        [yAxis]="true"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="false"
+        xAxisLabel="% de importancia"
+        [showDataLabel]="true"
+        [roundDomains]="true">
+      </ngx-charts-bar-horizontal>
+    </section>
+
+    <!-- Linea base (S5) -->
+    <section class="bg-white rounded-xl shadow p-5 mb-8">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">Linea base de equidad (diagnostico inicial)</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b">
+              <th class="py-2 pr-4">Atributo</th>
+              <th class="py-2 pr-4">Metrica</th>
+              <th class="py-2 pr-4">Valor</th>
+              <th class="py-2 pr-4">Umbral</th>
+              <th class="py-2 pr-4">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of data.baseline" class="border-b last:border-0">
+              <td class="py-2 pr-4">{{ r['Atributo'] }}</td>
+              <td class="py-2 pr-4">{{ r['Metrica'] }}</td>
+              <td class="py-2 pr-4">{{ r['Valor'] }}</td>
+              <td class="py-2 pr-4 text-gray-500">{{ r['Umbral'] }}</td>
+              <td class="py-2 pr-4" [ngClass]="estadoClass(r['Estado'] + '')">{{ r['Estado'] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Antes/despues -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="font-semibold text-gray-800 mb-1">Modelo predictivo: DI antes/despues</h3>
+        <p class="text-xs text-gray-400 mb-2">Ajuste de umbrales (alpha={{ data.model_mitigation.alpha_optimo }})</p>
+        <ngx-charts-bar-vertical
+          [view]="[360, 240]"
+          [results]="antesDespuesModelo"
+          [scheme]="schemeBeforeAfter"
+          [xAxis]="true"
+          [yAxis]="true"
+          [showDataLabel]="true"
+          [roundDomains]="true">
+        </ngx-charts-bar-vertical>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="font-semibold text-gray-800 mb-1">Motor de busqueda: diversidad antes/despues</h3>
+        <p class="text-xs text-gray-400 mb-2">xQUAD (lambda={{ data.search_mitigation.lambda_optimo }}); # areas en top-50</p>
+        <ngx-charts-bar-vertical
+          [view]="[360, 240]"
+          [results]="antesDespuesBuscador"
+          [scheme]="schemeBeforeAfter"
+          [xAxis]="true"
+          [yAxis]="true"
+          [showDataLabel]="true"
+          [roundDomains]="true">
+        </ngx-charts-bar-vertical>
+      </div>
+    </section>
+
+    <!-- Sensibilidad alpha (modelo predictivo) -->
+    <section class="bg-white rounded-xl shadow p-5 mb-8">
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">Sensibilidad del modelo al parametro &alpha;</h2>
+      <p class="text-sm text-gray-500 mb-4">
+        Mueva el control para recorrer el compromiso equidad-utilidad y ver el punto de operacion.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2">
+          <ngx-charts-line-chart
+            [view]="[520, 280]"
+            [results]="alphaDiSpd"
+            [scheme]="schemeMetric"
+            [xAxis]="true"
+            [yAxis]="true"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="alpha"
+            yAxisLabel="DI / SPD"
+            [legend]="true"
+            legendTitle="Metrica"
+            [referenceLines]="diRef"
+            [showRefLines]="true"
+            [showRefLabels]="true"
+            [roundDomains]="true">
+          </ngx-charts-line-chart>
+          <ngx-charts-line-chart
+            class="block mt-2"
+            [view]="[520, 200]"
+            [results]="alphaUtil"
+            [scheme]="schemeUtil"
+            [xAxis]="true"
+            [yAxis]="true"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="alpha"
+            yAxisLabel="caida util (%)"
+            [referenceLines]="utilRef5"
+            [showRefLines]="true"
+            [showRefLabels]="true"
+            [roundDomains]="true">
+          </ngx-charts-line-chart>
+        </div>
+
+        <!-- Panel del punto seleccionado (control interactivo) -->
+        <div class="bg-gray-50 rounded-lg p-4 border">
+          <label class="text-sm font-medium text-gray-700">
+            alpha = <span class="text-indigo-600 font-bold">{{ alphaPoint?.alpha | number: '1.1-1' }}</span>
+          </label>
+          <input type="range" min="0" max="10" step="1" [(ngModel)]="alphaIdx" class="w-full mt-2" />
+
+          <div class="mt-3 space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-500">DI</span>
+              <span class="font-semibold">{{ alphaPoint?.DI | number: '1.3-3' }}</span>
+              <span [ngClass]="alphaPoint?.di_ok ? 'text-green-600' : 'text-red-600'">
+                {{ alphaPoint?.di_ok ? 'CUMPLE' : 'NO' }}
+              </span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">SPD</span>
+              <span class="font-semibold">{{ alphaPoint?.SPD | number: '1.3-3' }}</span>
+              <span [ngClass]="alphaPoint?.spd_ok ? 'text-green-600' : 'text-red-600'">
+                {{ alphaPoint?.spd_ok ? 'CUMPLE' : 'NO' }}
+              </span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Caida util.</span>
+              <span class="font-semibold">{{ alphaPoint?.caida_util | number: '1.1-1' }}%</span>
+              <span [ngClass]="alphaUtilOk ? 'text-green-600' : 'text-red-600'">
+                {{ alphaUtilOk ? 'CUMPLE' : 'NO' }}
+              </span>
+            </div>
+            <div class="flex justify-between border-t pt-2">
+              <span class="text-gray-500">Tasa inst. pequenas</span>
+              <span class="font-semibold">{{ alphaPoint?.tasa_pequena | number: '1.1-1' }}%</span>
+              <span></span>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 mt-3">
+            Ventana de equidad: alpha &isin; [0,3 ; 0,6]. Ningun alpha cumple equidad y utilidad a la vez.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sensibilidad lambda (motor de busqueda) -->
+    <section class="bg-white rounded-xl shadow p-5 mb-8">
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">Sensibilidad del buscador al parametro &lambda;</h2>
+      <p class="text-sm text-gray-500 mb-4">
+        Compromiso entre diversidad tematica y relevancia (NDCG).
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2">
+          <ngx-charts-line-chart
+            [view]="[520, 240]"
+            [results]="lambdaAreas"
+            [scheme]="schemeAreas"
+            [xAxis]="true"
+            [yAxis]="true"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="lambda"
+            yAxisLabel="# areas"
+            [roundDomains]="true">
+          </ngx-charts-line-chart>
+          <ngx-charts-line-chart
+            class="block mt-2"
+            [view]="[520, 200]"
+            [results]="lambdaNdcg"
+            [scheme]="schemeUtil"
+            [xAxis]="true"
+            [yAxis]="true"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="lambda"
+            yAxisLabel="caida NDCG (%)"
+            [referenceLines]="utilRef5"
+            [showRefLines]="true"
+            [showRefLabels]="true"
+            [roundDomains]="true">
+          </ngx-charts-line-chart>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4 border">
+          <label class="text-sm font-medium text-gray-700">
+            lambda = <span class="text-indigo-600 font-bold">{{ lambdaPoint?.lambda | number: '1.1-1' }}</span>
+          </label>
+          <input type="range" min="0" max="10" step="1" [(ngModel)]="lambdaIdx" class="w-full mt-2" />
+
+          <div class="mt-3 space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-500"># areas</span>
+              <span class="font-semibold">{{ lambdaPoint?.n_areas | number: '1.1-1' }}</span>
+              <span></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">NDCG</span>
+              <span class="font-semibold">{{ lambdaPoint?.ndcg | number: '1.3-3' }}</span>
+              <span></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Caida NDCG</span>
+              <span class="font-semibold">{{ lambdaPoint?.caida_ndcg | number: '1.1-1' }}%</span>
+              <span [ngClass]="lambdaUtilOk ? 'text-green-600' : 'text-red-600'">
+                {{ lambdaUtilOk ? 'CUMPLE' : 'NO' }}
+              </span>
+            </div>
+            <div class="flex justify-between border-t pt-2">
+              <span class="text-gray-500">Gini areas</span>
+              <span class="font-semibold">{{ lambdaPoint?.gini | number: '1.3-3' }}</span>
+              <span></span>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 mt-3">
+            lambda=0,7 maximiza diversidad (al limite del 5%); lambda=0,6 es el punto conservador.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- xQUAD por consulta -->
+    <section class="bg-white rounded-xl shadow p-5 mb-8">
+      <h2 class="text-lg font-semibold text-gray-800 mb-1">Diversidad por consulta: BM25 vs xQUAD</h2>
+      <p class="text-sm text-gray-500 mb-3"># de areas unicas en el top-50 (mayor es mas diverso).</p>
+      <ngx-charts-bar-vertical-2d
+        [view]="[760, 300]"
+        [results]="queryData"
+        [scheme]="schemeQuery"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="true"
+        legendTitle="Metodo"
+        [showDataLabel]="true"
+        [roundDomains]="true">
+      </ngx-charts-bar-vertical-2d>
+    </section>
+
+    <!-- Veredicto contra umbrales (H2 - S10) -->
+    <section class="bg-white rounded-xl shadow p-5 mb-8">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">Veredicto frente a los umbrales de aceptacion</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-gray-500 border-b">
+              <th *ngFor="let c of verdictCols" class="py-2 pr-4">{{ c }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of data.verdict" class="border-b last:border-0">
+              <td *ngFor="let c of verdictCols" class="py-2 pr-4"
+                  [ngClass]="c === 'Veredicto' ? estadoClass(r[c] + '') : 'text-gray-700'">
+                {{ r[c] }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Seleccion fundamentada -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-indigo-500">
+        <h3 class="font-semibold text-gray-800">Modelo predictivo</h3>
+        <p class="text-sm text-indigo-600 font-medium mb-2">{{ data.selection.modelo_predictivo.parametro }}</p>
+        <p class="text-sm text-gray-600"><b>Equidad:</b> {{ data.selection.modelo_predictivo.equidad }}</p>
+        <p class="text-sm text-gray-600"><b>Utilidad:</b> {{ data.selection.modelo_predictivo.utilidad }}</p>
+        <p class="text-sm text-gray-600"><b>Decision:</b> {{ data.selection.modelo_predictivo.decision }}</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-indigo-500">
+        <h3 class="font-semibold text-gray-800">Motor de busqueda</h3>
+        <p class="text-sm text-indigo-600 font-medium mb-2">{{ data.selection.motor_busqueda.parametro }}</p>
+        <p class="text-sm text-gray-600"><b>Equidad:</b> {{ data.selection.motor_busqueda.equidad }}</p>
+        <p class="text-sm text-gray-600"><b>Utilidad:</b> {{ data.selection.motor_busqueda.utilidad }}</p>
+        <p class="text-sm text-gray-600"><b>Decision:</b> {{ data.selection.motor_busqueda.decision }}</p>
+      </div>
+    </section>
+
+    <p class="text-xs text-gray-400 mt-6">Datos generados: {{ data.meta.generated }}.</p>
+  </ng-container>
+</div>
