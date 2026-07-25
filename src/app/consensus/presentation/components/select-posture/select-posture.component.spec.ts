@@ -12,10 +12,11 @@ describe('SelectPostureComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SelectPostureComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [SelectPostureComponent]
     });
     fixture = TestBed.createComponent(SelectPostureComponent);
     component = fixture.componentInstance;

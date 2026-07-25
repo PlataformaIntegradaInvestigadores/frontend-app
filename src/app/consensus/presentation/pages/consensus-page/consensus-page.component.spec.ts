@@ -12,10 +12,11 @@ describe('ConsensusPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConsensusPageComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [ConsensusPageComponent]
     });
     fixture = TestBed.createComponent(ConsensusPageComponent);
     component = fixture.componentInstance;
