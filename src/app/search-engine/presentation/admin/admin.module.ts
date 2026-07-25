@@ -19,6 +19,7 @@ import { UpdateCentinelaComponent } from './components/update-centinela/update-c
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { LoggerComponent } from './components/logger/logger.component';
 import { FairnessDashboardComponent } from './pages/fairness-dashboard/fairness-dashboard.component';
+import { StrategicAnalyticsComponent } from './components/strategic-analytics/strategic-analytics.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
@@ -48,7 +49,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     MainContentComponent,
     UpdateCentinelaComponent,
     LoggerComponent,
-    FairnessDashboardComponent
+    FairnessDashboardComponent,
+    StrategicAnalyticsComponent
   ],
   providers: [],
 })
