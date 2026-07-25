@@ -12,11 +12,10 @@ describe('CreateDebateComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
-
-      schemas: [NO_ERRORS_SCHEMA],
-
-      declarations: [CreateDebateComponent]
+      declarations: [CreateDebateComponent],
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
+    ,
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(CreateDebateComponent);
     component = fixture.componentInstance;

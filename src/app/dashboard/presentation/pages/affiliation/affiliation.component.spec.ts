@@ -12,11 +12,10 @@ describe('AffiliationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
-
-      schemas: [NO_ERRORS_SCHEMA],
-
-      declarations: [AffiliationComponent]
+      declarations: [AffiliationComponent],
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
+    ,
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(AffiliationComponent);
     component = fixture.componentInstance;

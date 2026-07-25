@@ -12,11 +12,10 @@ describe('SidebarDashboardComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
-
-      schemas: [NO_ERRORS_SCHEMA],
-
-      declarations: [SidebarDashboardComponent]
+      declarations: [SidebarDashboardComponent],
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
+    ,
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(SidebarDashboardComponent);
     component = fixture.componentInstance;

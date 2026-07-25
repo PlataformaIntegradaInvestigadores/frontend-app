@@ -34,7 +34,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
     imports: [
@@ -59,8 +58,7 @@ import { MatSliderModule } from '@angular/material/slider';
         MatTooltipModule,
         MatSidenavModule,
         MatToolbarModule,
-        MatListModule,
-        MatSliderModule
+        MatListModule
 
     ],
     exports: [

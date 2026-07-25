@@ -44,12 +44,11 @@ export class ForceDirectedGraph {
           // @ts-ignore
           return d['id']
         })
-        .distance((d: any) => {
-          const sourceR = d.source?.r || 35;
-          const targetR = d.target?.r || 35;
-          return sourceR + targetR + 80; // Distancia dinámica que garantiza que los nodos jamás pisen ni oculten sus aristas
-        })
-        .iterations(4)
+      /*.strength(d =>{
+        return d['strokeWidth'] / 100
+      })*/
+      // .strength(FORCES.LINKS)
+      // .strength(1 / (this.nodes.length * 10))
     );
   }
 
@@ -58,36 +57,26 @@ export class ForceDirectedGraph {
       throw new Error('missing options when initializing simulation');
     }
 
-    // Anclar firmemente el nodo central (autor principal buscado, level === 0) al centro del lienzo
-    const centerX = options.width / 2;
-    const centerY = options.height / 2;
-    if (this.nodes && this.nodes.length > 0) {
-      this.nodes.forEach(n => {
-        if (n.level === 0) {
-          n.fx = centerX;
-          n.fy = centerY;
-        }
-      });
-    }
-
     /** Creating the simulation */
     if (!this.simulation) {
       const ticker = this.ticker;
 
       this.simulation = d3.forceSimulation()
-        .velocityDecay(0.45) // Damping suave para que el movimiento sea fluido y no pierda equilibrio
         .force('charge',
           d3.forceManyBody()
-            .strength(() => -150) // Fuerza repulsiva suave: permite mover nodos cómodamente sin dispersar violentamente la red
+            .strength(d => {
+              // @ts-ignore
+              return FORCES.CHARGE * d['r'] * this.forces.manyBody
+            })
         )
         .force('collide',
           d3.forceCollide()
             .strength(FORCES.COLLISION)
             .radius(d => {
               // @ts-ignore
-              return (d['r'] || 35) + 15; // Radio del nodo + 15px de margen limpio
+              return d['r'] + this.forces.collide
             })
-            .iterations(4)
+            .iterations(2)
         );
 
       // Connecting the d3 ticker to an angular event emitter

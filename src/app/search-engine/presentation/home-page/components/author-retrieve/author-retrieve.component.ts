@@ -77,6 +77,7 @@ export class AuthorRetrieveComponent {
   }
 
   goToAuthor(scopus_id: string) {
-    this.router.navigate(['/profile', scopus_id]);
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/profile', scopus_id]));
+    window.open(url, '_blank');
   }
 }

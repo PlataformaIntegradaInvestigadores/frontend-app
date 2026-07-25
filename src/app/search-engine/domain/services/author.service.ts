@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { map, Observable } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {
   Author,
   AuthorResult, CoauthorInfo,
@@ -17,7 +17,7 @@ import {
   Word,
   YearsResponse
 } from "../../../shared/interfaces/dashboard.interface";
-import { ArticlesResponse } from "../../../shared/interfaces/article.interface";
+import {ArticlesResponse} from "../../../shared/interfaces/article.interface";
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +27,7 @@ export class AuthorService {
   // dashURL: string = environment.apiDashboard;
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAuthorsByQuery(
     query: string,
@@ -52,9 +52,8 @@ export class AuthorService {
     return this.http.get<Author>(`${this.rootURL}/v1/authors/authors/${id}`);
   }
 
-  getCoauthorsById(id: string | number): Observable<CoauthorInfo> {
-    // Slice 2: deriva de la composicion v2 en vez de llamar directo a v1.
-    return this.getAuthorProfile(id).pipe(map(p => p.coauthors as CoauthorInfo));
+  getCoauthorsById(id: number): Observable<CoauthorInfo> {
+    return this.http.get<CoauthorInfo>(`${this.rootURL}/v1/coauthors/coauthors/${id}/coauthors_by_id/`);
   }
 
   getMostRelevantAuthors(
@@ -94,9 +93,9 @@ export class AuthorService {
   getRandomTopics(): Observable<RandItem[]> {
     return this.http.get<RandItem[]>(`${this.rootURL}random-topics`);
   }
-  getTopicsById(scopus_id: number): Observable<NameValue[]> {
+  getTopicsById(scopus_id:number): Observable<NameValue[]> {
     let params = new HttpParams().set('scopus_id', scopus_id.toString());
-    return this.http.get<Word[]>(`${this.rootURL}/v1/dashboard/author/get_topics/`, { params }).pipe(
+    return this.http.get<Word[]>(`${this.rootURL}/v1/dashboard/author/get_topics/`, {params}).pipe(
       map(response => {
         const series: NameValue[] = response.map(t => ({
           name: t.text.toString(),
@@ -108,10 +107,10 @@ export class AuthorService {
 
   getYears(scopus_id: string): Observable<AuthorYears[]> {
     let params = new HttpParams().set('scopus_id', scopus_id.toString())
-    return this.http.get<AuthorYears[]>(`${this.rootURL}/v1/dashboard/author/get_author_years/`, { params });
+    return this.http.get<AuthorYears[]>(`${this.rootURL}/v1/dashboard/author/get_author_years/`, {params});
   }
 
-  getLineChartInfo(scopus_id: string, name: string): Observable<LineChartInfo[]> {
+  getLineChartInfo(scopus_id:string, name: string): Observable<LineChartInfo[]> {
     return this.getYears(scopus_id).pipe(
       map(response => {
         console.log(response);
@@ -128,9 +127,9 @@ export class AuthorService {
     );
   }
 
-  getArticles(scopus_id: string): Observable<ArticlesResponse[]> {
+  getArticles(scopus_id:string):Observable<ArticlesResponse[]>{
     let params = new HttpParams().set('author_id', scopus_id.toString())
-    return this.http.get<ArticlesResponse[]>(`${this.rootURL}/v1/articles/find-articles-by-author-id/`, { params });
+    return this.http.get<ArticlesResponse[]>(`${this.rootURL}/v1/articles/find-articles-by-author-id/`, {params});
   }
 
 }

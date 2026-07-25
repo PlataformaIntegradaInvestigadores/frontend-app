@@ -12,16 +12,13 @@ describe('WordCloudComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
-
-      schemas: [NO_ERRORS_SCHEMA],
-
-      declarations: [WordCloudComponent]
+      declarations: [WordCloudComponent],
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
+    ,
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(WordCloudComponent);
     component = fixture.componentInstance;
-    component.words = [];
-    fixture.detectChanges();
   });
 
   it('should create', () => {

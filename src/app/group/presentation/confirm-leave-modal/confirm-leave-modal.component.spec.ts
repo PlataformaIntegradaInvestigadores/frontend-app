@@ -12,11 +12,10 @@ describe('ConfirmLeaveModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
-
-      schemas: [NO_ERRORS_SCHEMA],
-
-      declarations: [ConfirmLeaveModalComponent]
+      declarations: [ConfirmLeaveModalComponent],
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
+    ,
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(ConfirmLeaveModalComponent);
     component = fixture.componentInstance;

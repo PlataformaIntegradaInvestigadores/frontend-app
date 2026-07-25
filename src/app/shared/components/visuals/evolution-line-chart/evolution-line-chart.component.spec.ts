@@ -11,18 +11,14 @@ describe('EvolutionLineChartComponent', () => {
   let fixture: ComponentFixture<EvolutionLineChartComponent>;
 
   beforeEach(() => {
-    spyOn(localStorage, 'getItem').and.returnValue('"test"');
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
-
-      schemas: [NO_ERRORS_SCHEMA],
-
-      declarations: [EvolutionLineChartComponent]
+      declarations: [EvolutionLineChartComponent],
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
+    ,
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(EvolutionLineChartComponent);
     component = fixture.componentInstance;
-    component.evolutionData = [];
-    fixture.detectChanges();
   });
 
   it('should create', () => {

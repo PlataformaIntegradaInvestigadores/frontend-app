@@ -1,5 +1,5 @@
 <div class="flex flex-col md:flex-row justify-center">
-  <div class="col-lg-2  px-0 mt-3">
+  <div  class="col-lg-2  px-0 mt-3">
     <div class="rounded mx-4 mat-elevation-z8" *ngIf="!isLoadingResults">
 
       <!-- Title -->
@@ -11,49 +11,10 @@
       <div class="py-2 px-3 font-semibold border-b-gray-400 border-b-2">
         Publication year
       </div>
-      <div class="py-3 px-4 flex flex-col gap-2 bg-white">
-        <div class="cursor-pointer hover:underline text-sm text-blue-600" [class.font-bold]="activeFilter === 'any'"
-          [class.text-red-700]="activeFilter === 'any'" (click)="applyScholarFilter('any')">
-          Any time
-        </div>
-        <div class="cursor-pointer hover:underline text-sm text-blue-600" [class.font-bold]="activeFilter === 'year0'"
-          [class.text-red-700]="activeFilter === 'year0'" (click)="applyScholarFilter('year0')">
-          Since {{currentYear}}
-        </div>
-        <div class="cursor-pointer hover:underline text-sm text-blue-600" [class.font-bold]="activeFilter === 'year1'"
-          [class.text-red-700]="activeFilter === 'year1'" (click)="applyScholarFilter('year1')">
-          Since {{currentYear - 1}}
-        </div>
-        <div class="cursor-pointer hover:underline text-sm text-blue-600" [class.font-bold]="activeFilter === 'year2'"
-          [class.text-red-700]="activeFilter === 'year2'" (click)="applyScholarFilter('year2')">
-          Since {{currentYear - 2}}
-        </div>
-        <div class="cursor-pointer hover:underline text-sm text-blue-600" [class.font-bold]="activeFilter === 'custom'"
-          [class.text-red-700]="activeFilter === 'custom'" (click)="applyScholarFilter('custom')">
-          Custom range...
-        </div>
-
-        <div *ngIf="showCustomRange" class="mt-2 flex flex-col gap-2 p-2 bg-gray-50 border rounded text-sm">
-          <div class="flex flex-row justify-between items-center gap-2 mb-2">
-            <input type="number" [(ngModel)]="startYear" [min]="minAvailableYear" [max]="endYear"
-              class="w-full text-center border-gray-300 rounded p-1 text-sm focus:ring-red-500 focus:border-red-500"
-              placeholder="Start">
-            <span class="text-gray-500">-</span>
-            <input type="number" [(ngModel)]="endYear" [min]="startYear" [max]="maxAvailableYear"
-              class="w-full text-center border-gray-300 rounded p-1 text-sm focus:ring-red-500 focus:border-red-500"
-              placeholder="End">
-          </div>
-          <div class="flex flex-col mb-1">
-            <mat-slider [min]="minAvailableYear" [max]="maxAvailableYear" discrete>
-              <input [(ngModel)]="startYear" matSliderStartThumb>
-              <input [(ngModel)]="endYear" matSliderEndThumb>
-            </mat-slider>
-            <div class="flex justify-between text-xs font-semibold text-gray-500 px-2 mt-[-15px]">
-              <span>{{minAvailableYear}}</span>
-              <span>{{maxAvailableYear}}</span>
-            </div>
-          </div>
-          <button mat-stroked-button color="primary" class="w-full mt-2" (click)="applyCustomRange()">Search</button>
+      <div class="py-3 px-3 flex md:flex-col gap-3 max-h-100 overflow-y-scroll">
+        <div class="flex gap-3" *ngFor="let year of years">
+          <input [id]="year" type="checkbox" (click)="onClickCheckbox($event)" class="form-checkbox h-5 w-5">
+          <label [for]="year" class="ml-2">{{year}}</label>
         </div>
       </div>
 
@@ -66,8 +27,14 @@
     </div>
     <div class="table-container mat-elevation-z8">
       <div *ngIf="articles$ | async as response">
-        <table mat-table [dataSource]="response.data" matSort matSortActive="publication_date" matSortDisableClear
-          matSortDirection="desc">
+        <table
+          mat-table
+          [dataSource]="response.data"
+          matSort
+          matSortActive="publication_date"
+          matSortDisableClear
+          matSortDirection="desc"
+        >
           <!-- Title Column -->
           <ng-container matColumnDef="title">
             <th mat-header-cell *matHeaderCellDef>Title</th>
@@ -104,18 +71,29 @@
 
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="clickedRows(row)"
-            class="hover:cursor-pointer hover:bg-gray-200"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            (click)="clickedRows(row)"
+            class="hover:cursor-pointer hover:bg-gray-200"
+          ></tr>
         </table>
       </div>
     </div>
 
-    <mat-paginator [length]="total" [pageSize]="size" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page"
-      class="w-full" (page)="onChangePagination($event)" *ngIf="!isLoadingResults">
+    <mat-paginator
+      [length]="total"
+      [pageSize]="size"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page"
+      class="w-full"
+      (page)="onChangePagination($event)"
+      *ngIf="!isLoadingResults"
+    >
     </mat-paginator>
     <ng-container *ngIf="!isLoadingResults && total === 0">
       <div class="flex justify-center text-center">
-        <mat-icon>sentiment_very_dissatisfied</mat-icon>
+        <mat-icon >sentiment_very_dissatisfied</mat-icon>
         <p class="text-2xl">No results found</p>
       </div>
 
