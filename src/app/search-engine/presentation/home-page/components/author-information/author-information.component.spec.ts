@@ -12,13 +12,16 @@ describe('AuthorInformationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AuthorInformationComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [AuthorInformationComponent]
     });
     fixture = TestBed.createComponent(AuthorInformationComponent);
     component = fixture.componentInstance;
+    component.author = { auth_name: '' } as any;
+    fixture.detectChanges();
   });
 
   it('should create', () => {

@@ -12,10 +12,11 @@ describe('TopicDashboardComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TopicDashboardComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [TopicDashboardComponent]
     });
     fixture = TestBed.createComponent(TopicDashboardComponent);
     component = fixture.componentInstance;

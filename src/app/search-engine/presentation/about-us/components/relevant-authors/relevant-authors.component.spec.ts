@@ -12,10 +12,11 @@ describe('RelevantAuthorsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RelevantAuthorsComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [RelevantAuthorsComponent]
     });
     fixture = TestBed.createComponent(RelevantAuthorsComponent);
     component = fixture.componentInstance;

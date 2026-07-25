@@ -12,10 +12,11 @@ describe('AffiliationDashboardComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AffiliationDashboardComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [AffiliationDashboardComponent]
     });
     fixture = TestBed.createComponent(AffiliationDashboardComponent);
     component = fixture.componentInstance;

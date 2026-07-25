@@ -12,10 +12,11 @@ describe('RelevantArticlesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RelevantArticlesComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [RelevantArticlesComponent]
     });
     fixture = TestBed.createComponent(RelevantArticlesComponent);
     component = fixture.componentInstance;

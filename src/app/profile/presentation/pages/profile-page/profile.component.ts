@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/auth/domain/services/auth.service';
 import { UserService } from 'src/app/profile/domain/services/user.service';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { Location } from '@angular/common';
 import { UserDataService } from 'src/app/profile/domain/services/user_data.service';
 import { UserProfile, User } from 'src/app/profile/domain/entities/user.interfaces';
 import { AuthorService } from 'src/app/search-engine/domain/services/author.service';
@@ -29,10 +30,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userDataService: UserDataService,
     private titleService: Title,
-    private authorService: AuthorService
+    private authorService: AuthorService,
+    private router: Router,
+    private location: Location
   ) { }
 
   ngOnInit(): void {
+    // Scroll al tope de la página al abrir un perfil desde el buscador
+    window.scrollTo(0, 0);
+
     this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
       this.loadUserData();
@@ -114,5 +120,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Aquí deberías emitir un evento o llamar a un servicio para actualizar el post
     // y luego cerrar el modal. Puedes personalizar según tu lógica.
     this.closeEditModal();
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

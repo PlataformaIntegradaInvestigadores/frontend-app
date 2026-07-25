@@ -12,10 +12,11 @@ describe('SatisfactionLevelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SatisfactionLevelComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, RouterTestingModule, FormsModule],
+
+      schemas: [NO_ERRORS_SCHEMA],
+
+      declarations: [SatisfactionLevelComponent]
     });
     fixture = TestBed.createComponent(SatisfactionLevelComponent);
     component = fixture.componentInstance;

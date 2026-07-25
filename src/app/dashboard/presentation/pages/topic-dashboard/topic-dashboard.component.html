@@ -1,7 +1,7 @@
 <h1 class="flex items-center justify-center">Knowledge Area Search</h1>
 <app-search-bar (entity)="onSearch($event)" code="topic" ph="Enter a knowledge area"></app-search-bar>
-<div class="w-full h-full flex justify-center items-center" *ngIf="!isCharged()">
-  <mat-spinner></mat-spinner>
+<div class="w-full flex justify-center items-center py-10" *ngIf="!isCharged()">
+  <app-dashboard-loader></app-dashboard-loader>
 </div>
 <div class="flex justify-center items-center p-3" *ngIf="isCharged()">
   <div class="gap-y-3">
