@@ -37,8 +37,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     MatProgressSpinnerModule,
     FormsModule,
-    NgxChartsModule,
-    SharedModule,
+    NgxChartsModule
   ],
   exports: [],
   declarations: [
@@ -50,7 +49,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MainContentComponent,
     UpdateCentinelaComponent,
     LoggerComponent,
-    StrategicAnalyticsComponent,
+    FairnessDashboardComponent
   ],
   providers: [],
 })

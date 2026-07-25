@@ -4,6 +4,7 @@ import { SearchResultComponent } from "../search-engine/presentation/home-page/c
 import { AnaliticaComponent } from "../search-engine/presentation/home-page/components/analitica/analitica.component";
 import { NgModule } from "@angular/core";
 import {ArticlePageComponent} from "../search-engine/presentation/home-page/pages/article-page/article-page.component";
+import { researcherOnlyGuard } from "src/guards/researcher-only.guard";
 
 const routes: Routes = [
   {
@@ -23,8 +24,12 @@ const routes: Routes = [
         loadChildren: () => import('src/app/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
-        path: 'predictive-analytics',
-        loadChildren: () => import('src/app/analytics/analytics.module').then(m => m.AnalyticsModule)
+        path: 'recommendations',
+        loadChildren: () =>
+          import('src/app/recommendations/recommendations.module').then(
+            (m) => m.RecommendationsModule
+          ),
+        canActivate: [researcherOnlyGuard],
       },
       {
         path: 'about-us',

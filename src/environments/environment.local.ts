@@ -3,4 +3,5 @@ export const environment = {
   apiCentinela: '/api-se',
   wsUrl: 'ws://localhost:8082/ws',
   apiUrl: '/api',
+  apiPredictiva: '/api-predictiva',
 };

@@ -6,7 +6,7 @@ import { UpdateCentinelaComponent } from "./components/update-centinela/update-c
 import { MainContentComponent } from "./components/main-content/main-content.component";
 import { loginGuard } from "src/guards/login.guard";
 import { LoggerComponent } from "./components/logger/logger.component";
-import { StrategicAnalyticsComponent } from "./components/strategic-analytics/strategic-analytics.component";
+import { FairnessDashboardComponent } from "./pages/fairness-dashboard/fairness-dashboard.component";
 
 const routes: Routes = [
   {
@@ -31,8 +31,8 @@ const routes: Routes = [
         component:LoggerComponent
       },
       {
-        path:'analytics',
-        component:StrategicAnalyticsComponent
+        path:'fairness',
+        component:FairnessDashboardComponent
       },
       {
         path:'',
