@@ -69,10 +69,14 @@ export class SearchBoxComponent implements OnInit{
 
   onEnter(event: KeyboardEvent) {
     if (event.code === 'Enter')
-      this.search.emit({
-        option: this.selectedOption.code,
-        query: this.inputValue
-      })
+      this.triggerSearch()
+  }
+
+  triggerSearch() {
+    this.search.emit({
+      option: this.selectedOption.code,
+      query: this.inputValue
+    })
   }
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {

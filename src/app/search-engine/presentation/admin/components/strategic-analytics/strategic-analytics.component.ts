@@ -368,16 +368,6 @@ export class StrategicAnalyticsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── Nube de Palabras (silueta de búho) — country_topics ────────────────
-  wordCloudWords: Word[] = [];
-
-  private loadWordCloud(): void {
-    this.dashboardAdminService.getCountryTopics(30).subscribe({
-      next: (words: Word[]) => { this.wordCloudWords = words; },
-      error: (err) => console.error('Error cargando nube de palabras:', err),
-    });
-  }
-
   private lerpColor(a: string, b: string, t: number): string {
     const ah = parseInt(a.slice(1), 16);
     const bh = parseInt(b.slice(1), 16);
@@ -402,7 +392,6 @@ export class StrategicAnalyticsComponent implements OnInit, OnDestroy {
   private refreshAllData(): void {
     this.loadAvailableYears();
     this.buildTopicsTreemap();
-    this.loadWordCloud();
   }
 
   protected readonly window = window;

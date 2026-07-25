@@ -19,6 +19,7 @@ import { UpdateCentinelaComponent } from './components/update-centinela/update-c
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoggerComponent } from './components/logger/logger.component';
 import { StrategicAnalyticsComponent } from './components/strategic-analytics/strategic-analytics.component';
+import { FairnessDashboardComponent } from './pages/fairness-dashboard/fairness-dashboard.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SharedModule } from 'src/app/shared/shared.module';
 
@@ -37,7 +38,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     MatProgressSpinnerModule,
     FormsModule,
-    NgxChartsModule
+    NgxChartsModule,
+    SharedModule
   ],
   exports: [],
   declarations: [
@@ -49,7 +51,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MainContentComponent,
     UpdateCentinelaComponent,
     LoggerComponent,
-    FairnessDashboardComponent
+    FairnessDashboardComponent,
+    StrategicAnalyticsComponent
   ],
   providers: [],
 })

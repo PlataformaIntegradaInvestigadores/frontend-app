@@ -7,6 +7,7 @@ import { MainContentComponent } from "./components/main-content/main-content.com
 import { loginGuard } from "src/guards/login.guard";
 import { LoggerComponent } from "./components/logger/logger.component";
 import { FairnessDashboardComponent } from "./pages/fairness-dashboard/fairness-dashboard.component";
+import { StrategicAnalyticsComponent } from "./components/strategic-analytics/strategic-analytics.component";
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
       {
         path:'fairness',
         component:FairnessDashboardComponent
+      },
+      {
+        path:'analytics',
+        component:StrategicAnalyticsComponent
       },
       {
         path:'',
