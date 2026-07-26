@@ -37,6 +37,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    window.scrollTo({top: 0, left: 0, behavior: 'auto'});
     this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
       this.loadUserData();

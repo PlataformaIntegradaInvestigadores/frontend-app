@@ -66,3 +66,13 @@
   border: 1px solid #000000;
   background-color: #ffffff;
 }
+
+.publication-range-slider {
+  --mdc-slider-active-track-color: #6f42c1;
+  --mdc-slider-handle-color: #6f42c1;
+  --mdc-slider-focus-handle-color: #6f42c1;
+  --mdc-slider-hover-handle-color: #6f42c1;
+  --mdc-slider-inactive-track-color: #d8c8ee;
+  --mdc-slider-with-tick-marks-active-container-color: #ffffff;
+  --mdc-slider-with-tick-marks-inactive-container-color: #6f42c1;
+}

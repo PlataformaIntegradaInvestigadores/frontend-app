@@ -26,6 +26,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-b
 import {TreeMapChartComponent} from "./components/visuals/tree-map-chart/tree-map-chart.component";
 import {SummaryComponent} from "./components/visuals/summary/summary.component";
 import {CountUpModule} from "ngx-countup";
+import {DashboardLoaderComponent} from "./components/loader/dashboard-loader/dashboard-loader.component";
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import {CountUpModule} from "ngx-countup";
     MiniLoaderComponent,
     FiltersSidebarComponent,
     NoResultsComponent,
+    DashboardLoaderComponent,
   ],
   exports: [
     SearchBoxComponent,
@@ -63,6 +65,7 @@ import {CountUpModule} from "ngx-countup";
     MiniLoaderComponent,
     FiltersSidebarComponent,
     NoResultsComponent,
+    DashboardLoaderComponent,
   ],
   imports: [
     MatButtonModule,

@@ -1,10 +1,9 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Search} from "../../../../../shared/interfaces/search-type.interface";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Title} from '@angular/platform-browser';
 import {VisualsService} from "../../../../../shared/domain/services/visuals.service";
 import {DashboardCounts, Word} from "../../../../../shared/interfaces/dashboard.interface";
-import {query} from "@angular/animations";
 import {environment} from "../../../../../../environments/environment";
 
 @Component({
@@ -25,7 +24,13 @@ export class SearchResultComponent implements OnInit {
   provinces: string = environment.apiCentinela + '/v1/dashboard/province/get_provinces/'
 
 
-  constructor(private route: ActivatedRoute, private changeDetector: ChangeDetectorRef, private title: Title, private visualsService: VisualsService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private changeDetector: ChangeDetectorRef,
+    private title: Title,
+    private visualsService: VisualsService
+  ) {
     const {option, query} = route.snapshot.queryParams
     if (option && query){
       this.setSearch = {option, query}
@@ -34,10 +39,29 @@ export class SearchResultComponent implements OnInit {
   }
 
   onSearch(searchValue: Search) {
-    this.searchValue = {
+    const normalizedSearch = {
       ...searchValue,
       query: searchValue.query.trim().replace(/\s\s+/g, ' ')
     };
+    const currentParams = this.route.snapshot.queryParamMap
+    const isRestoredSearch =
+      currentParams.get('option') === normalizedSearch.option &&
+      currentParams.get('query') === normalizedSearch.query
+
+    this.searchValue = normalizedSearch
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        option: normalizedSearch.option,
+        query: normalizedSearch.query,
+        page: isRestoredSearch ? currentParams.get('page') : null,
+        size: isRestoredSearch ? currentParams.get('size') : null,
+        activeFilter: isRestoredSearch ? currentParams.get('activeFilter') : null,
+        years: isRestoredSearch ? currentParams.get('years') : null
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    })
     
     // Scroll down to results section smoothly
     setTimeout(() => {
@@ -70,8 +94,6 @@ export class SearchResultComponent implements OnInit {
 
   topicClcked(se: Search) {
     this.setSearch = {'option': se.option, 'query': se.query}
-    this.onSearch(se)
-
   }
 
   isAuthorSearch(){

@@ -39,6 +39,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
   constructor(private d3Service: D3Service, private ref: ChangeDetectorRef) {
   }
 
+  refreshView(): void {
+    this.ref.markForCheck();
+  }
+
   ngOnInit() {
     /** Receiving an initialized simulated graph from our custom d3 service */
     this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options, this.forces);
@@ -81,4 +85,3 @@ export class GraphComponent implements OnInit, AfterViewInit {
     };
   }
 }
-

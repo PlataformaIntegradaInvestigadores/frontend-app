@@ -1,21 +1,42 @@
 <div class="min-h-full bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-6xl mx-auto flex flex-col gap-6">
+  <div class="max-w-7xl mx-auto flex flex-col gap-6">
 
-    <div *ngIf="isLoading" class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden w-full">
-      <app-loader [rows]="10"></app-loader>
-    </div>
+    <section
+      class="w-full rounded-2xl border border-gray-200 bg-white px-7 py-8 shadow-sm sm:px-12 sm:py-10"
+      aria-labelledby="article-title">
+      <button type="button" (click)="backToResults()"
+              class="inline-flex items-center gap-3 rounded text-base font-bold text-gray-500 transition-colors hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to results
+      </button>
 
-    <div *ngIf="!isLoading" class="flex flex-col lg:flex-row gap-8">
+      <div *ngIf="article" class="mt-10 border-l-[5px] border-red-700 pl-6">
+        <h1 id="article-title" class="text-2xl font-normal leading-snug text-gray-900 sm:text-3xl lg:text-4xl">
+          {{ article.title }}
+        </h1>
+      </div>
+
+      <div *ngIf="isLoading" class="mt-10 border-l-[5px] border-red-200 pl-6" aria-live="polite">
+        <div class="h-9 w-11/12 animate-pulse rounded bg-gray-200"></div>
+        <div class="mt-3 h-9 w-3/5 animate-pulse rounded bg-gray-100"></div>
+        <span class="sr-only">Loading article details</span>
+      </div>
+
+      <div *ngIf="loadError" class="mt-10 rounded-xl border border-red-200 bg-red-50 p-5" role="alert">
+        <p class="font-semibold text-red-800">{{ loadError }}</p>
+        <p class="mt-1 text-sm text-red-700">Go back to the results or try loading the article again.</p>
+        <button type="button" (click)="retrieveArticle()"
+                class="mt-4 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-bold text-red-700 transition-colors hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600">
+          Try again
+        </button>
+      </div>
+    </section>
+
+    <div *ngIf="article && !isLoading" class="flex flex-col lg:flex-row gap-8">
       <!-- MAIN COLUMN (Left) -->
       <div class="lg:w-2/3 flex flex-col gap-6 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        
-        <!-- TITLE -->
-        <div class="border-l-4 border-red-700 pl-4 mb-2">
-          <h1 class="text-3xl font-extrabold text-gray-900 leading-tight">
-            {{ article?.title }}
-          </h1>
-        </div>
-
         <!-- AUTHORS -->
         <div *ngIf="article?.authors?.length">
           <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Authors</h2>
@@ -43,7 +64,7 @@
         <div *ngIf="article?.abstract" class="pt-4 border-t border-gray-100 mt-2">
           <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Abstract</h2>
           <p class="text-gray-700 text-justify leading-relaxed">
-            {{ article?.abstract }}
+            {{ article.abstract }}
           </p>
         </div>
 
@@ -60,7 +81,7 @@
           <h3 class="text-lg font-bold text-gray-900 mb-2">View Original Document</h3>
           <p class="text-sm text-gray-500 mb-6">Read the full article and explore related metrics directly on Scopus.</p>
           <button 
-            (click)="goToArticle(article?.scopus_id)" 
+            (click)="goToArticle(article.scopus_id)" 
             class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all duration-200 transform hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:ring-4 focus:ring-red-200">
             <span>View in Scopus</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -75,14 +96,14 @@
               <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Publication Date</p>
               <p class="text-sm text-gray-900 font-medium flex items-center gap-2">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                {{ article?.publication_date | date:'longDate' }}
+                {{ article.publication_date | date:'longDate' }}
               </p>
             </div>
             <div>
               <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Citations</p>
               <p class="text-sm text-gray-900 font-medium flex items-center gap-2">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                <span class="bg-red-50 text-red-700 text-xs font-bold px-2 py-0.5 rounded-md border border-red-100">{{ article?.citations || 0 }}</span>
+                <span class="bg-red-50 text-red-700 text-xs font-bold px-2 py-0.5 rounded-md border border-red-100">{{ article.citations || 0 }}</span>
               </p>
             </div>
           </div>

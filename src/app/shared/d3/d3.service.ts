@@ -45,29 +45,31 @@ export class D3Service {
       /** Preventing propagation of dragstart to parent elements */
       e.sourceEvent.stopPropagation();
 
-      if (!e.active) {
-        graph.simulation.alphaTarget(0.3).restart();
-      }
+      if (!e.active) graph.simulation.alphaTarget(0.2).restart();
+      node.fx = node.x;
+      node.fy = node.y;
+    }
 
-      e.on('drag', dragged).on('end', ended);
+    function dragged(e: any) {
+      node.fx = e.x;
+      node.fy = e.y;
+    }
 
-      function dragged(e: any) {
-        node.fx = e.x;
-        node.fy = e.y;
-      }
-
-      function ended(e: any) {
-        if (!e.active) {
-          graph.simulation.alphaTarget(0);
-        }
-
+    function ended(e: any) {
+      if (!e.active) graph.simulation.alphaTarget(0);
+      if (node.level === 0) {
+        node.fx = node.x;
+        node.fy = node.y;
+      } else {
         node.fx = null;
         node.fy = null;
       }
     }
 
     d3element.call(d3.drag()
-      .on('start', started));
+      .on('start', started)
+      .on('drag', dragged)
+      .on('end', ended));
   }
 
   applyDraggableBehavior(element: any) {

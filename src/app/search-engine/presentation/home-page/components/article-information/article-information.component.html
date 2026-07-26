@@ -2,19 +2,60 @@
   <div class="md:w-72 w-full flex-shrink-0">
     <app-filters-sidebar [isFirstLoad]="isFirstLoad" [isLoading]="isFiltering">
       <!-- Years -->
-      <div class="py-2 px-4 font-semibold border-b border-gray-200 text-gray-700 bg-gray-50 text-sm tracking-wide">
+      <div class="py-4 px-6 font-bold border-b border-gray-200 text-gray-700 bg-gray-50 text-lg tracking-wide">
         Publication year
       </div>
-      <div class="py-3 px-4 flex md:flex-col gap-3 max-h-100 overflow-y-auto bg-white">
-        <div class="flex gap-3 items-center hover:bg-gray-50 p-1 rounded transition-colors" *ngFor="let year of years">
-          <input
-            [id]="year"
-            type="checkbox"
-            [checked]="selectedYears.includes(year)"
-            (change)="onYearToggle(year, $any($event.target).checked)"
-            class="form-checkbox h-4 w-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
-          >
-          <label [for]="year" class="ml-2 text-sm text-gray-600 cursor-pointer flex-1">{{year}}</label>
+      <div class="py-5 px-6 flex flex-col gap-3 bg-white">
+        <button type="button" class="rounded text-left text-lg leading-tight hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                [ngClass]="activeFilter === 'any' ? 'font-bold text-red-700' : 'text-blue-600'"
+                (click)="applyScholarFilter('any')">
+          Any time
+        </button>
+        <button type="button" class="rounded text-left text-lg leading-tight hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                [ngClass]="activeFilter === 'year0' ? 'font-bold text-red-700' : 'text-blue-600'"
+                (click)="applyScholarFilter('year0')">
+          Since {{ currentYear }}
+        </button>
+        <button type="button" class="rounded text-left text-lg leading-tight hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                [ngClass]="activeFilter === 'year1' ? 'font-bold text-red-700' : 'text-blue-600'"
+                (click)="applyScholarFilter('year1')">
+          Since {{ currentYear - 1 }}
+        </button>
+        <button type="button" class="rounded text-left text-lg leading-tight hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                [ngClass]="activeFilter === 'year2' ? 'font-bold text-red-700' : 'text-blue-600'"
+                (click)="applyScholarFilter('year2')">
+          Since {{ currentYear - 2 }}
+        </button>
+        <button type="button" class="rounded text-left text-lg leading-tight hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                [ngClass]="activeFilter === 'custom' ? 'font-bold text-red-700' : 'text-blue-600'"
+                (click)="applyScholarFilter('custom')">
+          Custom range...
+        </button>
+
+        <div *ngIf="showCustomRange" class="mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <div class="flex items-center gap-3">
+            <label class="sr-only" for="startYear">Start year</label>
+            <input id="startYear" type="number" [(ngModel)]="startYear"
+                   [min]="minAvailableYear" [max]="endYear"
+                   class="w-full rounded-lg border-gray-300 bg-white px-2 py-2 text-center text-lg text-gray-800 focus:border-purple-600 focus:ring-purple-600">
+            <span class="font-medium text-gray-500" aria-hidden="true">-</span>
+            <label class="sr-only" for="endYear">End year</label>
+            <input id="endYear" type="number" [(ngModel)]="endYear"
+                   [min]="startYear" [max]="maxAvailableYear"
+                   class="w-full rounded-lg border-gray-300 bg-white px-2 py-2 text-center text-lg text-gray-800 focus:border-purple-600 focus:ring-purple-600">
+          </div>
+          <mat-slider class="publication-range-slider mt-5 w-full" [min]="minAvailableYear" [max]="maxAvailableYear" discrete>
+            <input [(ngModel)]="startYear" matSliderStartThumb aria-label="Start year">
+            <input [(ngModel)]="endYear" matSliderEndThumb aria-label="End year">
+          </mat-slider>
+          <div class="-mt-2 flex justify-between px-1 text-sm font-bold text-gray-500">
+            <span>{{ minAvailableYear }}</span>
+            <span>{{ maxAvailableYear }}</span>
+          </div>
+          <button type="button" (click)="applyCustomRange()"
+                  class="mt-7 w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-lg font-medium tracking-widest text-purple-700 hover:border-purple-400 hover:bg-purple-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600">
+            Search
+          </button>
         </div>
       </div>
     </app-filters-sidebar>

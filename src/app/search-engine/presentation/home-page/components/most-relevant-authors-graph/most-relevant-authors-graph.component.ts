@@ -227,7 +227,7 @@ export class MostRelevantAuthorsGraphComponent {
     return this.apiNodes.map((node, index) => {
       return new Node(node.scopus_id, this.apiNodes.length, this.truncateString(node.first_name) + " \n" + this.truncateString(node.last_name), {
         enablePopover: true,
-        title: 'Autor',
+        title: 'Author',
         content: node.first_name + " " + node.last_name,
         link: 'profile/' + node.scopus_id
       }, this.apiNodes.length - index)

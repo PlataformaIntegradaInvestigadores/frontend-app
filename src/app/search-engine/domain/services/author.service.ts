@@ -74,7 +74,7 @@ export class AuthorService {
     return this.http.get<Author>(`${this.rootURL}/v2/authors/${id}`);
   }
 
-  getCoauthorsById(id: number): Observable<CoauthorInfo> {
+  getCoauthorsById(id: string | number): Observable<CoauthorInfo> {
     // Slice 2: deriva de la composicion v2 en vez de llamar directo a v1.
     return this.getAuthorProfile(id).pipe(map(p => p.coauthors as CoauthorInfo));
   }

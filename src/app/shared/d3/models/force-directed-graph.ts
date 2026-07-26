@@ -44,6 +44,12 @@ export class ForceDirectedGraph {
           // @ts-ignore
           return d['id']
         })
+        .distance((d: any) => {
+          const sourceR = d.source?.r || 35;
+          const targetR = d.target?.r || 35;
+          return sourceR + targetR + 80;
+        })
+        .iterations(4)
       /*.strength(d =>{
         return d['strokeWidth'] / 100
       })*/
@@ -57,26 +63,33 @@ export class ForceDirectedGraph {
       throw new Error('missing options when initializing simulation');
     }
 
+    const centerX = options.width / 2;
+    const centerY = options.height / 2;
+    this.nodes.forEach(node => {
+      if (node.level === 0) {
+        node.fx = centerX;
+        node.fy = centerY;
+      }
+    });
+
     /** Creating the simulation */
     if (!this.simulation) {
       const ticker = this.ticker;
 
       this.simulation = d3.forceSimulation()
+        .velocityDecay(0.45)
         .force('charge',
           d3.forceManyBody()
-            .strength(d => {
-              // @ts-ignore
-              return FORCES.CHARGE * d['r'] * this.forces.manyBody
-            })
+            .strength(() => -150)
         )
         .force('collide',
           d3.forceCollide()
             .strength(FORCES.COLLISION)
             .radius(d => {
               // @ts-ignore
-              return d['r'] + this.forces.collide
+              return (d['r'] || 35) + 15
             })
-            .iterations(2)
+            .iterations(4)
         );
 
       // Connecting the d3 ticker to an angular event emitter

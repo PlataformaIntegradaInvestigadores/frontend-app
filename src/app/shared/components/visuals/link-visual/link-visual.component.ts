@@ -5,10 +5,10 @@ import {NgbPopover} from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: '[linkVisual]',
   template: `
-    <ng-template #popTitle>Arista</ng-template>
+    <ng-template #popTitle>Relation</ng-template>
 
     <ng-template #popContent>
-      <b>Fuerza de colaboración:</b> {{link.strokeWidth / 5}}
+      <b>Collaboration strength:</b> {{link.strokeWidth / 5}}
     </ng-template>
 
     <svg:line class="line"

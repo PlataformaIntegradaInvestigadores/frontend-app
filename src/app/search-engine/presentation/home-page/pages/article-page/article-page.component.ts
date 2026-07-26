@@ -13,6 +13,7 @@ import { Article } from 'src/app/shared/interfaces/article.interface';
 export class ArticlePageComponent {
   article!: Article | undefined;
   isLoading: boolean = true;
+  loadError: string | null = null;
 
   scopusId: string = '';
 
@@ -28,6 +29,7 @@ export class ArticlePageComponent {
   }
 
   ngOnInit(): void {
+    window.scrollTo({top: 0, left: 0, behavior: 'auto'});
     this.route.params.subscribe((params) => {
       this.scopusId = params['scopusId'];
     });
@@ -36,11 +38,21 @@ export class ArticlePageComponent {
 
   retrieveArticle() {
     this.isLoading = true;
-    this.articleService.getArticleById(this.scopusId).subscribe((article) => {
-      console.log(article);
-      this.article = article;
-      this.setArticleTitle();
-      this.isLoading = false;
+    this.loadError = null;
+    this.articleService.getArticleById(this.scopusId).subscribe({
+      next: (article) => {
+        this.article = article;
+        this.setArticleTitle();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching article detail', error);
+        this.article = undefined;
+        this.loadError = error?.status === 404
+          ? 'The requested article could not be found.'
+          : 'Article details are temporarily unavailable.';
+        this.isLoading = false;
+      }
     });
   }
   goToArticle(scopus: string | undefined) {
@@ -51,9 +63,10 @@ export class ArticlePageComponent {
   }
 
   goToAuthor(scopus_id: string) {
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['profile/', scopus_id])
-    );
-    window.open(url, '_self');
+    this.router.navigate(['/profile', scopus_id]);
+  }
+
+  backToResults() {
+    this.location.back();
   }
 }

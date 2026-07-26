@@ -1,10 +1,11 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges, Inject} from '@angular/core';
-import {BehaviorSubject, catchError, Observable, switchMap, tap} from "rxjs";
+import {BehaviorSubject, catchError, Observable, of, switchMap, tap} from "rxjs";
 import {Article, ArticleResult, PaginationArticleResult} from "../../../../../shared/interfaces/article.interface";
 import {ArticleService} from "../../../../domain/services/article.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PageEvent} from '@angular/material/paginator';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+
+type PublicationDateFilter = 'any' | 'year0' | 'year1' | 'year2' | 'custom';
 
 @Component({
   selector: 'app-article-information',
@@ -40,13 +41,22 @@ export class ArticleInformationComponent {
   setYears = true
 
   selectedYears: number[] = []
+  activeFilter: PublicationDateFilter = 'custom'
+  currentYear = new Date().getFullYear()
+  showCustomRange = true
+  minAvailableYear = 2000
+  maxAvailableYear = this.currentYear
+  startYear = this.minAvailableYear
+  endYear = this.maxAvailableYear
+  private hasSearchFilterYears = false
 
   constructor(private articleService: ArticleService,
-              private modalService: NgbModal,
+              private route: ActivatedRoute,
               @Inject(Router) private router: Router) {
   }
 
   ngOnInit() {
+    this.restoreStateFromUrl()
     this.loadSearchFilters();
     this.articles$ = this.refreshTable$
       .pipe(
@@ -67,26 +77,33 @@ export class ArticleInformationComponent {
           this.isFirstLoad = false;
           this.total = response.total_results ?? response.total;
           
-          if (this.setYears && response.years && this.years.length === 0) {
-            this.years = response.years.map((year) => Number(year)).sort((a, b) => b - a);
+          if (this.setYears && response.years && !this.hasSearchFilterYears) {
+            this.updateAvailableYears(response.years.map((year) => Number(year)));
           }
         }),
         catchError((error) => {
           console.error('Error fetching data', error)
           this.isFiltering = false;
           this.isPaginating = false;
+          this.isFirstLoad = false;
+          this.isServerOnline = error?.status !== 0;
           this.loading.emit(false)
-          return []
+          this.total = 0
+          return of({data: [], total: 0} as PaginationArticleResult)
         })
       )
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['query']) {
+    if (changes['query'] && !changes['query'].isFirstChange()) {
       this.setYears = true
       this.selectedYears = []
+      this.page = 1
+      this.activeFilter = 'custom'
+      this.showCustomRange = true
       this.isFirstLoad = true
       this.refreshTable$.next({page: this.page, size: this.size})
+      this.updateQueryParams()
     }
   }
 
@@ -117,16 +134,40 @@ asi es como esta haciendo la paginacion
 
     this.isPaginating = true;
     this.refreshTable$.next(payload);
+    this.updateQueryParams();
   }
 
-  onYearToggle(year: number, isChecked: boolean) {
-    if (isChecked) {
-      if (!this.selectedYears.includes(year)) {
-        this.selectedYears = [...this.selectedYears, year]
-      }
-    } else {
-      this.selectedYears = this.selectedYears.filter((item) => item !== year)
+  applyScholarFilter(filter: PublicationDateFilter) {
+    this.activeFilter = filter
+    this.showCustomRange = filter === 'custom'
+
+    if (filter === 'custom') {
+      return
     }
+
+    if (filter === 'any') {
+      this.selectedYears = []
+      this.applyFilters()
+      return
+    }
+
+    const offset = filter === 'year0' ? 0 : filter === 'year1' ? 1 : 2
+    const start = this.currentYear - offset
+    this.selectedYears = Array.from({length: this.currentYear - start + 1}, (_, index) => start + index)
+    this.applyFilters()
+  }
+
+  applyCustomRange() {
+    const start = Math.max(this.minAvailableYear, Number(this.startYear))
+    const end = Math.min(this.maxAvailableYear, Number(this.endYear))
+
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start > end) {
+      return
+    }
+
+    this.startYear = start
+    this.endYear = end
+    this.selectedYears = Array.from({length: end - start + 1}, (_, index) => start + index)
     this.applyFilters()
   }
 
@@ -144,12 +185,17 @@ asi es como esta haciendo la paginacion
 
     this.isFiltering = true;
     this.refreshTable$.next(payload)
+    this.updateQueryParams()
   }
 
   private loadSearchFilters() {
     this.articleService.getSearchFilters().subscribe({
       next: (filters) => {
-        this.years = (filters.years ?? []).map((year) => Number(year)).sort((a, b) => b - a)
+        const filterYears = filters.years ?? []
+        if (filterYears.length > 0) {
+          this.hasSearchFilterYears = true
+          this.updateAvailableYears(filterYears)
+        }
       },
       error: (error) => {
         console.error('Error fetching filters', error)
@@ -157,12 +203,78 @@ asi es como esta haciendo la paginacion
     })
   }
 
+  private updateAvailableYears(years: number[]) {
+    const validYears = years
+      .map(Number)
+      .filter(Number.isFinite)
+      .sort((a, b) => b - a)
+
+    this.years = [...new Set(validYears)]
+    if (this.years.length === 0) {
+      return
+    }
+
+    this.minAvailableYear = Math.min(...this.years)
+    this.maxAvailableYear = Math.max(...this.years)
+
+    if (this.activeFilter !== 'custom' || this.selectedYears.length === 0) {
+      this.startYear = this.minAvailableYear
+      this.endYear = this.maxAvailableYear
+    } else {
+      this.startYear = Math.max(this.minAvailableYear, this.startYear)
+      this.endYear = Math.min(this.maxAvailableYear, this.endYear)
+    }
+  }
+
+  private restoreStateFromUrl() {
+    const params = this.route.snapshot.queryParamMap
+    const page = Number(params.get('page'))
+    const size = Number(params.get('size'))
+    const activeFilter = params.get('activeFilter') as PublicationDateFilter | null
+    const validFilters: PublicationDateFilter[] = ['any', 'year0', 'year1', 'year2', 'custom']
+
+    if (Number.isInteger(page) && page > 0) this.page = page
+    if (Number.isInteger(size) && size > 0) this.size = size
+    if (activeFilter && validFilters.includes(activeFilter)) {
+      this.activeFilter = activeFilter
+      this.showCustomRange = activeFilter === 'custom'
+    }
+
+    const years = (params.get('years') ?? '')
+      .split(',')
+      .filter(year => year.trim() !== '')
+      .map(Number)
+      .filter(Number.isFinite)
+
+    this.selectedYears = [...new Set(years)]
+    if (this.activeFilter === 'custom' && this.selectedYears.length > 0) {
+      this.startYear = Math.min(...this.selectedYears)
+      this.endYear = Math.max(...this.selectedYears)
+    }
+
+    this.refreshTable$.next({
+      page: this.page,
+      size: this.size,
+      years: this.selectedYears.length > 0 ? this.selectedYears : undefined
+    })
+  }
+
+  private updateQueryParams() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.page > 1 ? this.page : null,
+        size: this.size !== 10 ? this.size : null,
+        activeFilter: this.activeFilter !== 'any' ? this.activeFilter : null,
+        years: this.selectedYears.length > 0 ? this.selectedYears.join(',') : null
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    })
+  }
+
   seeMoreInformation(scopusId: string) {
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['home/article', scopusId])
-    );
-    window.open(url, '_blank');
+    this.router.navigate(['home/article', scopusId]);
   }
 
 }
-
