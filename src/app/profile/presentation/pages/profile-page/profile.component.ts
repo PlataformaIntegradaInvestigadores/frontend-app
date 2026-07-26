@@ -21,6 +21,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isOwnProfile: boolean = false;
   private routeSub: Subscription = new Subscription();
   authorCentinela: Author | undefined;
+  returnToResultsUrl: string | null = null;
   editModalVisible: boolean = false;
   postToEdit: any = null;
 
@@ -38,6 +39,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.returnToResultsUrl = returnUrl?.startsWith('/home') ? returnUrl : null;
+
     this.routeSub = this.route.params.subscribe(params => {
       this.userId = params['id'];
       this.loadUserData();
@@ -131,6 +135,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } else if (this.authorCentinela) {
       const title = `${this.authorCentinela.first_name} ${this.authorCentinela.last_name}`;
       this.titleService.setTitle(title);
+    }
+  }
+
+  backToResults(): void {
+    if (this.returnToResultsUrl) {
+      this.router.navigateByUrl(this.returnToResultsUrl);
     }
   }
 

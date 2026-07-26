@@ -85,6 +85,10 @@ export class AuthorRetrieveComponent {
   }
 
   goToAuthor(scopus_id: string) {
-    this.router.navigate(['/profile', scopus_id]);
+    this.router.navigate(['/profile', scopus_id], {
+      queryParams: {
+        returnUrl: this.router.url
+      }
+    });
   }
 }
