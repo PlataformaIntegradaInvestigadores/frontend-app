@@ -223,7 +223,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
    * Maneja la eliminación de un post
    */
   onDeletePost(postId: string): void {
-    if (!confirm('¿Estás seguro de que quieres eliminar este post?')) {
+    if (!confirm('Are you sure you want to delete this post?')) {
       return;
     }
 
@@ -238,7 +238,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error deleting post:', error);
-          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo eliminar la publicación. Intenta de nuevo.');
+          this.error = this.feedService.getFriendlyErrorMessage(error, 'Could not delete the post. Please try again.');
         }
       });
   }
@@ -267,7 +267,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error updating post:', error);
-          this.error = this.feedService.getFriendlyErrorMessage(error, 'No se pudo editar la publicación. Intenta de nuevo.');
+          this.error = this.feedService.getFriendlyErrorMessage(error, 'Could not edit the post. Please try again.');
         }
       });
   }
@@ -335,7 +335,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error en búsqueda:', error);
-          this.error = 'No se pudo realizar la búsqueda. Intenta de nuevo.';
+          this.error = 'Could not perform the search. Please try again.';
         }
       });
   }
@@ -444,7 +444,7 @@ export class FeedPageComponent implements OnInit, OnDestroy {
           console.error('Error creando post:', error);
           this.error = this.feedService.getFriendlyErrorMessage(
             error,
-            'No se pudo crear la publicación. Revisa la descripción y los archivos adjuntos.'
+            'Could not create the post. Please check the description and attached files.'
           );
         }
       });
