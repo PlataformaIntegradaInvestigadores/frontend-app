@@ -47,7 +47,7 @@ jobs:
       - name: Reconstruir contenedor
         run: |
           cd /opt/centinela
-          docker compose up -d --build angular-app
+          docker compose up -d --build --no-deps angular-app
 
       - name: Health check con rollback automático
         run: |
@@ -64,7 +64,7 @@ jobs:
           if [ "$HEALTHY" = "false" ]; then
             echo "Health check fallido — rollback al commit anterior"
             cd /opt/centinela/frontend-app && git reset --hard HEAD~1
-            cd /opt/centinela && docker compose up -d --build angular-app
+            cd /opt/centinela && docker compose up -d --build --no-deps angular-app
             exit 1
           fi
           echo "Deploy exitoso — frontend-app en producción"
