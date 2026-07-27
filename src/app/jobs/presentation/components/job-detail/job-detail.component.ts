@@ -100,7 +100,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
       },
       error: (error: any) => {
         console.error('Error updating application status:', error);
-        alert('Error al actualizar el estado de la postulación');
+        alert('Error updating the application status');
       }
     });
   }
@@ -221,7 +221,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
     if (file && file.type === 'application/pdf') {
       this.selectedFile = file;
     } else if (file) {
-      alert('Por favor selecciona un archivo PDF válido.');
+      alert('Please select a valid PDF file.');
       event.target.value = '';
       this.selectedFile = null;
     } else {
@@ -233,7 +233,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
     if (!this.job?.id) return;
 
     if (!this.selectedFile) {
-      alert('El CV es obligatorio para postular a este trabajo.');
+      alert('A resume is required to apply for this job.');
       return;
     }
 
@@ -250,7 +250,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
         this.isSubmitting = false;
         this.closeApplicationModal();
         this.applicationSubmitted.emit();
-        alert('¡Aplicación enviada exitosamente!');
+        alert('Application submitted successfully!');
       },
       error: (error: any) => {
         this.isSubmitting = false;
@@ -258,7 +258,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
         if (error.error?.detail) {
           alert(`Error: ${error.error.detail}`);
         } else {
-          alert('Error al enviar la aplicación. Por favor intenta de nuevo.');
+          alert('Error submitting the application. Please try again.');
         }
       }
     });

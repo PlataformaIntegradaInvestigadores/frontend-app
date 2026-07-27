@@ -64,7 +64,7 @@ export class RecommendationsPageComponent implements OnInit, OnDestroy {
                 );
 
                 this.groupDetailError =
-                  'No se pudieron cargar las recomendaciones del grupo.';
+                  'Could not load the group recommendations.';
 
                 return of(null);
               })
@@ -113,7 +113,7 @@ export class RecommendationsPageComponent implements OnInit, OnDestroy {
           );
 
           this.groupsError =
-            'No se pudieron cargar los grupos de investigación.';
+            'Could not load the research groups.';
 
           this.loadingGroups = false;
         },
@@ -138,7 +138,7 @@ export class RecommendationsPageComponent implements OnInit, OnDestroy {
           );
 
           this.metricsError =
-            'No se pudieron cargar las métricas del GRS.';
+            'Could not load the GRS metrics.';
 
           this.loadingMetrics = false;
         },

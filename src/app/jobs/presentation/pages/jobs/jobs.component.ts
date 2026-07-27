@@ -226,7 +226,7 @@ export class JobsComponent implements OnInit {
           },
           error: (error: any) => {
             console.error('Error updating application status:', error);
-            alert('Error al actualizar el estado de la postulación');
+            alert('Error updating the application status');
           }
         });
       },
@@ -307,12 +307,12 @@ export class JobsComponent implements OnInit {
    */
   private getStatusDisplayName(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'pending': 'Pendiente',
-      'reviewing': 'En revisión',
-      'interviewed': 'Entrevistado',
-      'accepted': 'Aceptado',
-      'rejected': 'Cancelado',
-      'withdrawn': 'Retirado'
+      'pending': 'Pending',
+      'reviewing': 'Under review',
+      'interviewed': 'Interviewed',
+      'accepted': 'Accepted',
+      'rejected': 'Cancelled',
+      'withdrawn': 'Withdrawn'
     };
     return statusMap[status] || status;
   }
