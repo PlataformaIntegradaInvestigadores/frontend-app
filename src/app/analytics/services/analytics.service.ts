@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 // --- Interfaces que coinciden con los Schemas de FastAPI ---
 
@@ -54,8 +55,7 @@ export interface ModelDetailsResponse {
   providedIn: 'root'
 })
 export class AnalyticsService {
-  // Ajusta esta URL a la de tu backend.
-  private apiUrl = 'https://centinela.epn.edu.ec/api-predictiva'; 
+  private apiUrl = environment.apiPredictiva;
 
   constructor(private http: HttpClient) { }
 
