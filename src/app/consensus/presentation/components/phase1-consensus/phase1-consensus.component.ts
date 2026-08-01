@@ -510,6 +510,7 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
     this.rangeValues = new Array(this.recommendedTopics.length).fill(0);
     this.showLabel = new Array(this.recommendedTopics.length).fill(false);
     this.showCheckTopics = new Array(this.recommendedTopics.length).fill(false);
+    this.combinedChecksState = new Array(this.recommendedTopics.length).fill(false);
   }
 
   showLabels(index: number) {

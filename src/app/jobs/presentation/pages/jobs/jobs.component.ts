@@ -54,11 +54,8 @@ export class JobsComponent implements OnInit {
   }
 
   private checkUserType(): void {
-    const userId = this.authService.getUserId();
-    const companyId = this.authService.getCompanyId();
-
-    this.isCompany = !!companyId;
-    this.isResearcher = !!userId && !companyId;
+    this.isCompany = this.authService.isCompany();
+    this.isResearcher = this.authService.isUser();
 
     if (this.isCompany) {
       this.activeTab = 'my-jobs';

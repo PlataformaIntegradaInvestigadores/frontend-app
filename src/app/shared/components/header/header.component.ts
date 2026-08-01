@@ -94,7 +94,7 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.showLogin = !this.authService.isLoggedIn();
-    if (!this.showLogin) {
+    if (!this.showLogin && this.authService.isUser()) {
       this.loadUsers();
     }
   }
