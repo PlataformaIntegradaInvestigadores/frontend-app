@@ -84,8 +84,8 @@
       <app-no-results [isServerOnline]="true" title="No results found"></app-no-results>
     </ng-container>
 
-    <div class="w-full max-w-full overflow-hidden mt-4 mat-elevation-z8" *ngIf="showGraph && !noResults">
-      <div class="w-full h-[600px] md:h-[800px] overflow-hidden bg-white rounded relative" #downloadEl>
+    <div class="w-full max-w-full overflow-hidden mt-4 mat-elevation-z8 rounded-2xl" *ngIf="showGraph && !noResults">
+      <div class="w-full h-[600px] md:h-[800px] overflow-hidden bg-white rounded-2xl relative" #downloadEl>
         
         <!-- Zoom Controls Overlay (z-30 para quedar sobre el overlay de seleccion y seguir clickeables) -->
         <div class="absolute top-4 right-4 z-30 flex flex-col gap-2">

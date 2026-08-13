@@ -2,7 +2,7 @@
   <div class="container mx-auto max-w-screen-xl">
     <div class="flex items-center justify-between p-4">
       <!-- Logo Section -->
-      <a href="/home" class="flex items-center space-x-3 group">
+      <a routerLink="/home" class="flex items-center space-x-3 group">
         <img src="/assets/logo.svg"
           class="h-10 md:h-12 bg-white/10 backdrop-blur-sm rounded-full p-1.5 transition-all duration-300 group-hover:scale-105 group-hover:bg-white/20"
           alt="Centinela Logo" />
@@ -45,28 +45,29 @@
             <span>Jobs</span>
           </a>
         </div> <!-- Analytics -->
-        <div class="nav-item" *ngIf="showInformation">
+        <div class="nav-item" *ngIf="showInformation && isUser()">
           <a routerLink="/home/analitica" routerLinkActive="active" class="nav-link">
             <fa-icon [icon]="faChartBar" class="nav-icon"></fa-icon>
             <span>Analytics</span>
           </a>
         </div>
         <!-- Group Recommendations-->
-        <div class="nav-item">
-          <a routerLink="./recommendations" routerLinkActive="active" class="nav-link">
+        <div class="nav-item" *ngIf="!showLogin && isUser()">
+          <a routerLink="/home/recommendations" routerLinkActive="active" class="nav-link">
             <fa-icon [icon]="faUsers" class="nav-icon"></fa-icon>
             <span>Group Recommendations</span>
           </a>
         </div>
         <!-- About -->
-        <div class="nav-item" *ngIf="showInformation">
+        <div class="nav-item" *ngIf="showInformation && !isCompany()">
           <a routerLink="/home/about-us/getting-started" routerLinkActive="active" class="nav-link">
             <fa-icon [icon]="faInfoCircle" class="nav-icon"></fa-icon>
             <span>About</span>
           </a>
         </div>
       </div> <!-- Search Bar (Center) -->
-      <div class="search-container order-first md:order-none" (clickOutside)="closeSearch()" *ngIf="!showInformation">
+      <div class="search-container order-first md:order-none" (clickOutside)="closeSearch()"
+        *ngIf="!showInformation && (showLogin || isUser())">
         <div class="search-wrapper">
           <input type="text" [(ngModel)]="searchQuery" (focus)="openSearch()" (input)="filterUsers()"
             placeholder="Search researchers..." class="search-input"> <fa-icon *ngIf="!searchQuery" [icon]="faSearch"

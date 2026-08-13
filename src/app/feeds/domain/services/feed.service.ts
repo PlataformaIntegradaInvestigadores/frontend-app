@@ -228,7 +228,11 @@ export class FeedService {
     const headers = this.getHeaders();
     let params = new HttpParams().set('q', query);
 
-    if (tags && tags.length > 0) params = params.set('tags', tags.join(','));
+    if (tags && tags.length > 0) {
+      tags.forEach(tag => {
+        params = params.append('tags', tag);
+      });
+    }
     if (author) params = params.set('author', author);
     
     // Parámetro para habilitar/deshabilitar búsqueda vectorial

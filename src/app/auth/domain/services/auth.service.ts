@@ -208,7 +208,6 @@ export class AuthService {
     return this.http.get<Users[]>(`${this.apiUrl}/users/`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
-          this.clearLocalSession();
           return of([]);
         }
         return this.handleError(error);
@@ -403,7 +402,7 @@ export class AuthService {
       { withCredentials: true }
     ).pipe(
       tap(response => {
-        this.setSession(response, 'user');
+        this.setSession(response, response.user_type || 'user');
         this.notifyTokenRefresh();
       }),
       catchError(this.handleError)

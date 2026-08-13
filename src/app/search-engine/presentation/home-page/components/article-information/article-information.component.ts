@@ -48,6 +48,8 @@ export class ArticleInformationComponent {
   maxAvailableYear = this.currentYear
   startYear = this.minAvailableYear
   endYear = this.maxAvailableYear
+  appliedStartYear: number | null = null
+  appliedEndYear: number | null = null
   private hasSearchFilterYears = false
 
   constructor(private articleService: ArticleService,
@@ -167,6 +169,8 @@ asi es como esta haciendo la paginacion
 
     this.startYear = start
     this.endYear = end
+    this.appliedStartYear = start
+    this.appliedEndYear = end
     this.selectedYears = Array.from({length: end - start + 1}, (_, index) => start + index)
     this.applyFilters()
   }
@@ -250,6 +254,8 @@ asi es como esta haciendo la paginacion
     if (this.activeFilter === 'custom' && this.selectedYears.length > 0) {
       this.startYear = Math.min(...this.selectedYears)
       this.endYear = Math.max(...this.selectedYears)
+      this.appliedStartYear = this.startYear
+      this.appliedEndYear = this.endYear
     }
 
     this.refreshTable$.next({

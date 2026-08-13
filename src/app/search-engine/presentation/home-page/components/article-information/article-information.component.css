@@ -75,4 +75,5 @@
   --mdc-slider-inactive-track-color: #d8c8ee;
   --mdc-slider-with-tick-marks-active-container-color: #ffffff;
   --mdc-slider-with-tick-marks-inactive-container-color: #6f42c1;
+  display: block;
 }

@@ -22,6 +22,10 @@ export class GettingStartedComponent implements OnInit {
 
   collaborators: Collaborator[] = [
     {
+      name: 'PhD. Gabriela Lorena Suntaxi Oña',
+      role: 'Academic Advisor'
+    },
+    {
       name: 'Ing. Fernando Sangopanta',
       role: 'Contributed with the information retrieval system'
     },
@@ -49,6 +53,54 @@ export class GettingStartedComponent implements OnInit {
       name: 'Ing. Marco Quichimbo',
       role: 'Contributed with improving the search engine model'
     },
+    {
+      name: 'Ing. Mateo Dávalos',
+      role: 'Contributed with the Jobs Recommender'
+    },
+    {
+      name: 'Ing. Christian Hernández',
+      role: 'Contributed with the Software Security Framework'
+    },
+    {
+      name: 'Ing. Kenny Pinchao',
+      role: 'Contributed with the Feeds Recommender'
+    },
+    {
+      name: 'Ing. Alejandro Chávez',
+      role: 'Contributed with the Search Engine based on RAG models'
+    },
+    {
+      name: 'Ing. Andrés Quillupangui',
+      role: 'Contributed with the Search and Retrieval module Re-engineering'
+    },
+    {
+      name: 'Ing. Marlow Armijo',
+      role: 'Contributed with the Social Network module Re-engineering'
+    },
+    {
+      name: 'Ing. Ángel Chuncho',
+      role: 'Contributed with the Data Life-Cicle Re-engineering'
+    },
+    {
+      name: 'Ing. Cristopher Bonilla',
+      role: 'Contributed with the Admin Decision Support module Re-engineering'
+    },
+    {
+      name: 'Ing. Stuart Palma',
+      role: 'Contributed with the CI/CD development for Centinela'
+    },
+    {
+      name: 'Ing. Andrés Suárez',
+      role: 'Contributed with the Group Recommender of Topics'
+    },
+    {
+      name: 'Ing. César Sarango',
+      role: 'Contributed with the Bias Mitigation Framework'
+    },
+    {
+      name: 'Ing. Ariel Amaguaña',
+      role: 'Contributed with the Software Security Framework Implementation'
+    }
   ];
 
   ngOnInit() {
