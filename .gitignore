@@ -38,6 +38,9 @@ certs/
 /.angular/cache
 .sass-cache/
 /connect.lock
+
+# Agent configuration (local only, not committed)
+AGENTS.md
 /coverage
 /libpeerconnection.log
 testem.log
