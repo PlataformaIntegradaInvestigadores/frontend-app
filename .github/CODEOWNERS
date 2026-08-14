@@ -1,0 +1,7 @@
+# Default owners: whole repo requires review from the active team.
+* @PlataformaIntegradaInvestigadores/tic_2025a
+
+# Critical infrastructure paths.
+/nginx.conf @PlataformaIntegradaInvestigadores/tic_2025a
+/docker-compose.yaml @PlataformaIntegradaInvestigadores/tic_2025a
+/docker-compose_produccion.yaml @PlataformaIntegradaInvestigadores/tic_2025a
