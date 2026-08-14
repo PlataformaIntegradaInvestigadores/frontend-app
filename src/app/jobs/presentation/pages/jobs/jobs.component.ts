@@ -553,7 +553,7 @@ export class JobsComponent implements OnInit {
     }
 
     // Construir la URL completa
-    const baseUrl = environment.apiUrl.replace('/api', '');
+    const baseUrl = '';
     let url = relativePath;
 
     // Asegurar que la URL comience con '/'

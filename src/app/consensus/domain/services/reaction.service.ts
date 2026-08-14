@@ -8,7 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class ReactionService {
 
-  private apiUrl = `${environment.apiUrl}/v1/reactions`;
+  private apiUrl = `${environment.apiSocial}/v1/reactions`;
 
   constructor(private http: HttpClient) {}
 

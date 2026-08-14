@@ -375,7 +375,7 @@ export class FeedPostComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!url) return '';
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
-    const baseUrl = environment.apiUrl.replace('/api', '');
+    const baseUrl = '';
     if (!url.startsWith('/')) {
       url = '/' + url;
     }

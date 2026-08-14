@@ -8,7 +8,7 @@ import {environment} from "../../../../environments/environment";
   providedIn: 'root'
 })
 export class SuggestionService {
-  private apiUrl = environment.apiCentinela+'/v1/dashboard/';
+  private apiUrl = environment.apiSearch+'/v1/dashboard/';
   constructor(private http: HttpClient) { }
 
   searchAffiliations(query: string): Observable<AffiliationInfo[]> {

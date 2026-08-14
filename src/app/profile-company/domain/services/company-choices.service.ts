@@ -17,7 +17,7 @@ export interface CompanyChoices {
   providedIn: 'root'
 })
 export class CompanyChoicesService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiIdentity;
 
   constructor(private http: HttpClient) { }
 

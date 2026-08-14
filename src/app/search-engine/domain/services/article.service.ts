@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ArticleService {
 
-  rootURL: string = environment.apiCentinela;
+  rootURL: string = environment.apiSearch;
 
   constructor(private http: HttpClient) {
   }

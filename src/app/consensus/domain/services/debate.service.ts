@@ -20,7 +20,7 @@ export class DebateService {
 
   // URL de la API
 
-  private apiUrl = `${environment.apiUrl}/v1/groups/`;
+  private apiUrl = `${environment.apiSocial}/v1/groups/`;
   private validateDebateStatusSubject = new Subject<void>();
   validateDebateStatus$ = this.validateDebateStatusSubject.asObservable();
   

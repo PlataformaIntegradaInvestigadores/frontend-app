@@ -9,7 +9,7 @@ import { NotificationGeneral } from '../entities/notificationAdd.interface';
   providedIn: 'root'
 })
 export class GetNotificationAddTopicService {
-  private apiUrl = `${environment.apiUrl}/v1/groups/`;
+  private apiUrl = `${environment.apiSocial}/v1/groups/`;
 
   constructor(private http: HttpClient) { }
 

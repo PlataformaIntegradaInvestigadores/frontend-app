@@ -8,7 +8,7 @@ import { UserInfo } from '../entities/user.interfaces';
   providedIn: 'root'
 })
 export class InformationService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiIdentity;
 
   constructor(private http: HttpClient) { }
 

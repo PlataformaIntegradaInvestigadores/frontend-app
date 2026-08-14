@@ -14,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class FairnessService {
-  private rootURL: string = environment.apiCentinela;
+  private rootURL: string = environment.apiSearch;
 
   constructor(private httpClient: HttpClient) {}
 

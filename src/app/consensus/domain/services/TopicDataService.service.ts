@@ -12,7 +12,7 @@ import { RESTConsensusResult, Result } from '../repositories/rest-consensus-resu
   providedIn: 'root'
 })
 export class TopicService {
-  private apiUrl = `${environment.apiUrl}/v1/groups/`;
+  private apiUrl = `${environment.apiSocial}/v1/groups/`;
   private topicsSubject = new BehaviorSubject<TopicAddedUser[]>([]);
   topics$ = this.topicsSubject.asObservable();
 

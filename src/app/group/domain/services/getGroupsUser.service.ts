@@ -12,7 +12,7 @@ import { LoadingService } from './loadingService.service';
   providedIn: 'root'})
 export class GetGroupsService {
 
-  private apiUrl = `${environment.apiUrl}/test/user/groups/`; // Base URL para las peticiones a /test/user/groups/
+  private apiUrl = `${environment.apiIdentity}/test/user/groups/`; // Base URL para las peticiones a /test/user/groups/
 
   constructor(
     private http: HttpClient,

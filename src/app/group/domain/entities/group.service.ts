@@ -11,9 +11,9 @@ import { Group } from './group.interface';
     providedIn: 'root'
 })
 export class GroupService {
-    private apiUrl = `${environment.apiUrl}/groups/`;
-    private apiUrl2 = `${environment.apiUrl}/test/user/groups/`; //obtener los grupos propietario e invitado, en base al id del usuario o autenticado
-    private userOwnGroupApiUrl = `${environment.apiUrl}/test/users/groups/`; 
+    private apiUrl = `${environment.apiIdentity}/groups/`;
+    private apiUrl2 = `${environment.apiIdentity}/test/user/groups/`; //obtener los grupos propietario e invitado, en base al id del usuario o autenticado
+    private userOwnGroupApiUrl = `${environment.apiIdentity}/test/users/groups/`; 
 
     constructor(private http: HttpClient, private authService: AuthService) { }
 

@@ -8,7 +8,7 @@ import { UserPosture } from '../entities/user-posture.interface';
   providedIn: 'root'
 })
 export class UserPostureService {
-  private apiUrl = `${environment.apiUrl}/v1/postures`;
+  private apiUrl = `${environment.apiSocial}/v1/postures`;
   private headers = new HttpHeaders({
     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
     'Content-Type': 'application/json',

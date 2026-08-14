@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class DebateStatisticsService {
 
-  private apiUrl = `${environment.apiUrl}/v1/debates`;
+  private apiUrl = `${environment.apiSocial}/v1/debates`;
   private debateIdSubject = new Subject<number>(); // Emitirá el debateId
   debateId$ = this.debateIdSubject.asObservable();
 

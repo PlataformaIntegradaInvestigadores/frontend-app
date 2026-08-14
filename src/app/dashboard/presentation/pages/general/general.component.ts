@@ -95,7 +95,7 @@ export class GeneralComponent implements OnInit {
             // this.barS = this.barChartInfo.slice(-10)
             // console.log('asd' + this.barS)
         });
-        this.provinces = environment.apiCentinela + '/v1/dashboard/province/get_provinces/'
+        this.provinces = environment.apiSearch + '/v1/dashboard/province/get_provinces/'
 
     }
 

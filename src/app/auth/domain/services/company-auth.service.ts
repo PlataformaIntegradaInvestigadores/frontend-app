@@ -9,7 +9,7 @@ import { Company, LoginCredentials, AuthResponse, CompanyUpdate } from '../entit
   providedIn: 'root'
 })
 export class CompanyAuthService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiIdentity;
 
   constructor(private http: HttpClient) {}
 

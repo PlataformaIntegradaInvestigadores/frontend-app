@@ -16,7 +16,7 @@ import {
   providedIn: 'root'
 })
 export class DashboardAdminService {
-  rootURL: string = environment.apiCentinela;
+  rootURL: string = environment.apiSearch;
   constructor(private httpClient: HttpClient) { }
 
   getAuthorComparator(): Observable<AuthorComparator> {
