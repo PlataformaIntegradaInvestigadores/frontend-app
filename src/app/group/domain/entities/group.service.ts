@@ -88,8 +88,4 @@ export class GroupService {
         return throwError(() => new Error(errorMessage));
     }
 
-
-    private baseUrl = 'http://localhost:8000/api/groups'; // Ajusta esto a la URL de tu API
-
-  
 }
