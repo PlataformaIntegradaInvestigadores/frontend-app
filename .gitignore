@@ -48,3 +48,6 @@ testem.log
 Thumbs.db
 src/environments/environment.development.ts
 # ci-test
+
+# Agent configuration (local only, not committed)
+AGENTS.md
