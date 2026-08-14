@@ -10,8 +10,8 @@ import { Group } from 'src/app/group/domain/entities/group.interface';
   providedIn: 'root'
 })
 export class ConsensusService {
-  //private apiUrl = `${environment.apiUrl}/groups/`; // Ajusta la URL según tu configuración
-  private apiUrl = `${environment.apiUrl}/groups/`; 
+  //private apiUrl = `${environment.apiSocial}/groups/`; // Ajusta la URL según tu configuración
+  private apiUrl = `${environment.apiSocial}/groups/`; 
 
   constructor(private http: HttpClient) { }
 

@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class LLMSearchService {
-  private apiUrl = environment.apiCentinela;
+  private apiUrl = environment.apiSearch;
 
   constructor(private http: HttpClient) { }
 

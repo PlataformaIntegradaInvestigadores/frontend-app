@@ -125,7 +125,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
       return relativePath;
     }
 
-    const baseUrl = environment.apiUrl.replace('/api', '');
+    const baseUrl = '';
     let url = relativePath;
 
     if (!url.startsWith('/')) {

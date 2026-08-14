@@ -130,7 +130,7 @@ export class PostFilesComponent implements OnInit, OnChanges {
       return url;
     }
     
-    const baseUrl = environment.apiUrl.replace('/api', '');
+    const baseUrl = '';
     if (!url.startsWith('/')) {
       url = '/' + url;
     }

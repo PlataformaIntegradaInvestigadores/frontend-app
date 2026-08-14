@@ -55,7 +55,7 @@ export interface ModelDetailsResponse {
   providedIn: 'root'
 })
 export class AnalyticsService {
-  private apiUrl = environment.apiPredictiva;
+  private apiUrl = environment.apiPredictive;
 
   constructor(private http: HttpClient) { }
 

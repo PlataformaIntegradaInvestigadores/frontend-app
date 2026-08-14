@@ -1,7 +1,8 @@
 export const environment = {
   production: false,
-  apiCentinela: '/api-se',
-  wsUrl: 'ws://localhost:8082/ws',
-  apiUrl: '/api',
-  apiPredictiva: '/api-predictiva',
+  apiIdentity: '/api/identity',
+  apiSocial: '/api/social',
+  apiSearch: '/api/search',
+  apiPredictive: '/api/predictive',
+  wsUrl: `${window.location.protocol === 'https:' ? 'wss://' : 'ws://'}${window.location.host}/ws`,
 };

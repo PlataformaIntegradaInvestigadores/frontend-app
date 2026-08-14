@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators'; // Add this line
 
 @Injectable({providedIn: 'root'})
 export class SummaryService {
-  rootURL: string = environment.apiCentinela;
+  rootURL: string = environment.apiSearch;
 
   constructor(private http:HttpClient) { }
 

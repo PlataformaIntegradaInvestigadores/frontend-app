@@ -9,7 +9,7 @@ import { Comment, CreateCommentData, CommentsResponse } from '../entities/feed.i
   providedIn: 'root'
 })
 export class CommentService {
-  private readonly baseUrl = `${environment.apiUrl}/v1`;
+  private readonly baseUrl = `${environment.apiSocial}/v1`;
 
   constructor(private http: HttpClient) {}
 

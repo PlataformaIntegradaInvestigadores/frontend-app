@@ -10,7 +10,7 @@ import { AuthService } from 'src/app/auth/domain/services/auth.service';
   providedIn: 'root'
 })
 export class ApplicationService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiSocial;
 
   constructor(
     private http: HttpClient,

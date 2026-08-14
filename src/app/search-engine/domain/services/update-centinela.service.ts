@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UpdateCentinelaService {
-  RootUrl = environment.apiCentinela;
+  RootUrl = environment.apiSearch;
   constructor(private httpClient:HttpClient) { }
 
 

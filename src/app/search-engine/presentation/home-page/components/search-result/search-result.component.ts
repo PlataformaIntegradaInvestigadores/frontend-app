@@ -21,7 +21,7 @@ export class SearchResultComponent implements OnInit {
 
   counts!: DashboardCounts
   words!: Word[]
-  provinces: string = environment.apiCentinela + '/v1/dashboard/province/get_provinces/'
+  provinces: string = environment.apiSearch + '/v1/dashboard/province/get_provinces/'
 
 
   constructor(

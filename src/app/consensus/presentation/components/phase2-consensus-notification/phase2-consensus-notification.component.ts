@@ -171,7 +171,7 @@ export class Phase2ConsensusNotificationComponent implements OnInit{
   }
 
   getProfilePictureUrl(url: string | undefined): string {
-    const baseUrl = environment.apiUrl.replace('/api', '');
+    const baseUrl = '';
     return url ? `${baseUrl}${url}` : '../../../../../assets/profile.png';
   }
 }

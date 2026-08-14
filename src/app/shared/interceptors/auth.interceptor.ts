@@ -61,11 +61,11 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private isIdentityProtectedEndpoint(url: string): boolean {
-    return url.includes('/api/users') ||
-           url.includes('/api/groups') ||
-           url.includes('/api/test/user/groups') ||
-           url.includes('/api/test/users/groups') ||
-           url.includes('/api/profile-information');
+    return url.includes('/api/identity/users') ||
+           url.includes('/api/identity/groups') ||
+           url.includes('/api/identity/test/user/groups') ||
+           url.includes('/api/identity/test/users/groups') ||
+           url.includes('/api/identity/profile-information');
   }
 
   private isAuthEndpoint(url: string): boolean {

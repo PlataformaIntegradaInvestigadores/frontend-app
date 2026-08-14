@@ -21,7 +21,7 @@ import { CompanyAuthService } from './company-auth.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiIdentity;
   private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   private userTypeSubject: BehaviorSubject<UserType | null> = new BehaviorSubject<UserType | null>(null);
   private tokenRefreshSubject: Subject<void> = new Subject<void>();

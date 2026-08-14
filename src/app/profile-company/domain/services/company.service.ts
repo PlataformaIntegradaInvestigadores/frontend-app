@@ -10,7 +10,7 @@ import { AuthService } from 'src/app/auth/domain/services/auth.service';
   providedIn: 'root'
 })
 export class CompanyService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiIdentity;
 
   constructor(
     private http: HttpClient,

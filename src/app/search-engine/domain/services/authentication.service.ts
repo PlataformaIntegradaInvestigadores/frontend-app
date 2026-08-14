@@ -5,7 +5,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
-  rootURL:string = environment.apiCentinela;
+  rootURL:string = environment.apiSearch;
   constructor(private httpClient: HttpClient) {
    }
 

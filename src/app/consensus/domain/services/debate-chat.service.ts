@@ -75,7 +75,7 @@ export class DebateChatService {
       Authorization: `Bearer ${token}`, // Incluye el token en el encabezado
     };
   
-    return this.http.get<any[]>(`${environment.apiUrl}/v1/messages/${debateId}/`, { headers });
+    return this.http.get<any[]>(`${environment.apiSocial}/v1/messages/${debateId}/`, { headers });
   }
   
 

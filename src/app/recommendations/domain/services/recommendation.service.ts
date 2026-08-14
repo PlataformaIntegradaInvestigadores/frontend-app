@@ -14,10 +14,10 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class RecommendationService {
-  // Mismo backend y convención de proxy que AnalyticsService: environment.apiPredictiva
+  // Mismo backend y convención de proxy que AnalyticsService: environment.apiPredictive
   // ya resuelve al prefijo /api/v1 del backend, así que aquí solo se añade el path del router.
   private readonly apiUrl =
-    `${environment.apiPredictiva}/recommendations`;
+    `${environment.apiPredictive}/recommendations`;
 
   constructor(private http: HttpClient) { }
 

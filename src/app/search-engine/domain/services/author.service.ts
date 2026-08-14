@@ -23,7 +23,7 @@ import {ArticlesResponse} from "../../../shared/interfaces/article.interface";
   providedIn: 'root',
 })
 export class AuthorService {
-  rootURL: string = environment.apiCentinela;
+  rootURL: string = environment.apiSearch;
   // dashURL: string = environment.apiDashboard;
 
   // Slice 2 (API Composition): cache por autor del perfil compuesto. shareReplay
