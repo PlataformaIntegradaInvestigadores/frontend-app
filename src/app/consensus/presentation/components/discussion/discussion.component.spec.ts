@@ -13,9 +13,8 @@ describe('DiscussionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [DiscussionComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(DiscussionComponent);
     component = fixture.componentInstance;

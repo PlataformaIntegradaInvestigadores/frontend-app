@@ -13,9 +13,8 @@ describe('BarChartComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [BarChartComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;

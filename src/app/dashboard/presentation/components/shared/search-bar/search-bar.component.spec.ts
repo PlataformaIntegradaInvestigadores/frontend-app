@@ -13,9 +13,8 @@ describe('SearchBarComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [SearchBarComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(SearchBarComponent);
     component = fixture.componentInstance;

@@ -13,9 +13,8 @@ describe('BtnMenuGroupComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [BtnMenuGroupComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(BtnMenuGroupComponent);
     component = fixture.componentInstance;

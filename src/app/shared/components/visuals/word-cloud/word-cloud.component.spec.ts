@@ -13,9 +13,8 @@ describe('WordCloudComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [WordCloudComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(WordCloudComponent);
     component = fixture.componentInstance;

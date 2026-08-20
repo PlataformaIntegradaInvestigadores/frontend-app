@@ -13,9 +13,8 @@ describe('MemberItemComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [MemberItemComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(MemberItemComponent);
     component = fixture.componentInstance;

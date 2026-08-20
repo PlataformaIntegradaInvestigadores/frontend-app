@@ -1,13 +1,12 @@
 <div class="container mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
-
   <!-- Header -->
   <div class="page-header">
     <div>
       <p class="page-eyebrow">GRS System</p>
       <h1 class="page-title">Group Recommendations</h1>
       <p class="page-description">
-        Explore persistent groups of researchers and the topics
-        recommended by Centinela's hybrid model.
+        Explore persistent groups of researchers and the topics recommended by Centinela's hybrid
+        model.
       </p>
     </div>
 
@@ -39,10 +38,7 @@
       {{ metricsError }}
     </div>
 
-    <div
-      *ngIf="metrics && !loadingMetrics"
-      class="metrics-grid"
-    >
+    <div *ngIf="metrics && !loadingMetrics" class="metrics-grid">
       <article class="metric-card">
         <span class="metric-label">Persistent groups</span>
         <strong class="metric-value">
@@ -59,23 +55,17 @@
 
       <article class="metric-card">
         <span class="metric-label">Novelty rate</span>
-        <strong class="metric-value">
-          {{ metrics.novelty_rate | number: '1.0-1' }}%
-        </strong>
+        <strong class="metric-value"> {{ metrics.novelty_rate | number: '1.0-1' }}% </strong>
       </article>
 
       <article class="metric-card">
         <span class="metric-label">Coverage</span>
-        <strong class="metric-value">
-          {{ metrics.coverage | number: '1.0-2' }}%
-        </strong>
+        <strong class="metric-value"> {{ metrics.coverage | number: '1.0-2' }}% </strong>
       </article>
 
       <article class="metric-card">
         <span class="metric-label">Diversity</span>
-        <strong class="metric-value">
-          {{ metrics.diversity | number: '1.0-2' }}%
-        </strong>
+        <strong class="metric-value"> {{ metrics.diversity | number: '1.0-2' }}% </strong>
       </article>
 
       <article class="metric-card">
@@ -103,20 +93,15 @@
 
   <!-- Main content -->
   <div class="content-grid">
-
     <!-- Groups list -->
     <section class="section-card groups-section">
       <div class="section-heading">
         <div>
           <h2>Researcher groups</h2>
-          <p>
-            Select a group to view its recommendations.
-          </p>
+          <p>Select a group to view its recommendations.</p>
         </div>
 
-        <span class="counter-badge">
-          {{ groups.length }} groups
-        </span>
+        <span class="counter-badge"> {{ groups.length }} groups </span>
       </div>
 
       <div *ngIf="loadingGroups" class="status-container">
@@ -128,41 +113,30 @@
         {{ groupsError }}
       </div>
 
-      <div
-        *ngIf="!loadingGroups && !groupsError && groups.length === 0"
-        class="empty-state"
-      >
+      <div *ngIf="!loadingGroups && !groupsError && groups.length === 0" class="empty-state">
         No groups available.
       </div>
 
-      <div
-        *ngIf="!loadingGroups && groups.length > 0"
-        class="groups-list"
-      >
+      <div *ngIf="!loadingGroups && groups.length > 0" class="groups-list">
         <button
           type="button"
           *ngFor="
             let group of groups
-              | paginate: {
-                  itemsPerPage: itemsPerPage,
-                  currentPage: currentPage
-                };
+              | paginate
+                : {
+                    itemsPerPage: itemsPerPage,
+                    currentPage: currentPage,
+                  };
             trackBy: trackGroupById
           "
           class="group-item"
-          [class.group-item-active]="
-            selectedGroup?.group_id === group.group_id
-          "
+          [class.group-item-active]="selectedGroup?.group_id === group.group_id"
           (click)="selectGroup(group)"
         >
           <div class="group-item-header">
-            <span class="group-id">
-              Group {{ group.group_id }}
-            </span>
+            <span class="group-id"> Group {{ group.group_id }} </span>
 
-            <span class="recommendation-count">
-              {{ group.count }} recommendations
-            </span>
+            <span class="recommendation-count"> {{ group.count }} recommendations </span>
           </div>
 
           <div class="group-item-details">
@@ -201,13 +175,10 @@
           <h2>Recommendations</h2>
 
           <p *ngIf="selectedGroup">
-            Group {{ selectedGroup.group_id }} ·
-            {{ selectedGroup.n_members }} members
+            Group {{ selectedGroup.group_id }} · {{ selectedGroup.n_members }} members
           </p>
 
-          <p *ngIf="!selectedGroup">
-            Select a group to view its topics.
-          </p>
+          <p *ngIf="!selectedGroup">Select a group to view its topics.</p>
         </div>
       </div>
 
@@ -216,30 +187,19 @@
         <span>Generating recommendations...</span>
       </div>
 
-      <div
-        *ngIf="groupDetailError && !loadingGroupDetail"
-        class="error-message"
-      >
+      <div *ngIf="groupDetailError && !loadingGroupDetail" class="error-message">
         {{ groupDetailError }}
       </div>
 
       <div
-        *ngIf="
-          !loadingGroupDetail &&
-          selectedGroup &&
-          selectedGroup.recommendations.length === 0
-        "
+        *ngIf="!loadingGroupDetail && selectedGroup && selectedGroup.recommendations.length === 0"
         class="empty-state"
       >
         This group has no recommendations available.
       </div>
 
       <div
-        *ngIf="
-          selectedGroup &&
-          !loadingGroupDetail &&
-          selectedGroup.recommendations.length > 0
-        "
+        *ngIf="selectedGroup && !loadingGroupDetail && selectedGroup.recommendations.length > 0"
         class="recommendations-list"
       >
         <article
@@ -250,9 +210,7 @@
           class="recommendation-card"
         >
           <div class="recommendation-header">
-            <span class="rank-badge">
-              #{{ recommendation.rank }}
-            </span>
+            <span class="rank-badge"> #{{ recommendation.rank }} </span>
 
             <h3>{{ recommendation.topic }}</h3>
           </div>
@@ -275,10 +233,7 @@
             <div class="score-item">
               <span>Collaborative signal</span>
               <strong>
-                {{
-                  recommendation.collaborative_signal
-                    | number: '1.3-3'
-                }}
+                {{ recommendation.collaborative_signal | number: '1.3-3' }}
               </strong>
             </div>
 
@@ -292,6 +247,5 @@
         </article>
       </div>
     </section>
-
   </div>
 </div>

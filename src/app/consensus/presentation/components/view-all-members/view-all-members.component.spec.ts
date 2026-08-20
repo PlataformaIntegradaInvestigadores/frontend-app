@@ -13,9 +13,8 @@ describe('ViewAllMembersComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ViewAllMembersComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(ViewAllMembersComponent);
     component = fixture.componentInstance;

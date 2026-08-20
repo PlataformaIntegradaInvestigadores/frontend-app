@@ -13,9 +13,8 @@ describe('EcuadorMapComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [EcuadorMapComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(EcuadorMapComponent);
     component = fixture.componentInstance;

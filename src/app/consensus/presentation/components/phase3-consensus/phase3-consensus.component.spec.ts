@@ -13,9 +13,8 @@ describe('Phase3ConsensusComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [Phase3ConsensusComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(Phase3ConsensusComponent);
     component = fixture.componentInstance;

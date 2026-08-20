@@ -13,9 +13,8 @@ describe('MemberDeleteBtnComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [MemberDeleteBtnComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(MemberDeleteBtnComponent);
     component = fixture.componentInstance;

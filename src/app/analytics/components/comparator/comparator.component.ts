@@ -9,7 +9,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-comparator',
   templateUrl: './comparator.component.html',
-  styleUrls: ['./comparator.component.css']
+  styleUrls: ['./comparator.component.css'],
 })
 export class ComparatorComponent implements OnInit, OnDestroy {
   @ViewChild('comparisonChart') private chartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -18,17 +18,17 @@ export class ComparatorComponent implements OnInit, OnDestroy {
   public filteredAffiliations: string[] = [];
   public comparedAffiliations: string[] = [];
   public searchTerm: string = '';
-  
+
   public isLoading: boolean = true;
   public errorMessage: string | null = null;
   public showDropdown: boolean = false;
 
   private chart: Chart | undefined;
   private subscriptions = new Subscription();
-  
+
   private colors = ['#3B82F6', '#16A34A', '#F97316', '#9333EA', '#E11D48', '#FBBF24'];
 
-  constructor(private analyticsService: AnalyticsService) { }
+  constructor(private analyticsService: AnalyticsService) {}
 
   ngOnInit(): void {
     this.loadInitialData();
@@ -48,7 +48,10 @@ export class ComparatorComponent implements OnInit, OnDestroy {
           this.filteredAffiliations = [...this.allAffiliations];
           if (this.allAffiliations.length >= 2) {
             // Por defecto, seleccionamos dos afiliaciones que sabemos que tienen datos
-            this.comparedAffiliations = ["Universidad de Guayaquil", "Universidad San Francisco de Quito"];
+            this.comparedAffiliations = [
+              'Universidad de Guayaquil',
+              'Universidad San Francisco de Quito',
+            ];
             this.fetchAndRenderComparison();
           } else {
             this.isLoading = false;
@@ -58,8 +61,8 @@ export class ComparatorComponent implements OnInit, OnDestroy {
           this.errorMessage = 'No se pudo cargar la lista de afiliaciones.';
           this.isLoading = false;
           console.error(err);
-        }
-      })
+        },
+      }),
     );
   }
 
@@ -70,8 +73,8 @@ export class ComparatorComponent implements OnInit, OnDestroy {
       this.filteredAffiliations = [...this.allAffiliations];
       return;
     }
-    this.filteredAffiliations = this.allAffiliations.filter(aff =>
-      aff.toLowerCase().includes(term.toLowerCase())
+    this.filteredAffiliations = this.allAffiliations.filter((aff) =>
+      aff.toLowerCase().includes(term.toLowerCase()),
     );
   }
 
@@ -86,7 +89,9 @@ export class ComparatorComponent implements OnInit, OnDestroy {
   }
 
   removeAffiliation(affiliationToRemove: string): void {
-    this.comparedAffiliations = this.comparedAffiliations.filter(aff => aff !== affiliationToRemove);
+    this.comparedAffiliations = this.comparedAffiliations.filter(
+      (aff) => aff !== affiliationToRemove,
+    );
     this.fetchAndRenderComparison();
   }
 
@@ -100,18 +105,21 @@ export class ComparatorComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
 
     this.subscriptions.add(
-      this.analyticsService.getComparison(this.comparedAffiliations, 15).pipe(
-        catchError(err => {
-          this.errorMessage = 'Error al obtener los datos de comparación.';
-          console.error(err);
-          return of(null);
-        })
-      ).subscribe(response => {
-        if (response) {
-          setTimeout(() => this.renderChart(response), 0);
-        }
-        this.isLoading = false;
-      })
+      this.analyticsService
+        .getComparison(this.comparedAffiliations, 15)
+        .pipe(
+          catchError((err) => {
+            this.errorMessage = 'Error al obtener los datos de comparación.';
+            console.error(err);
+            return of(null);
+          }),
+        )
+        .subscribe((response) => {
+          if (response) {
+            setTimeout(() => this.renderChart(response), 0);
+          }
+          this.isLoading = false;
+        }),
     );
   }
 
@@ -119,7 +127,7 @@ export class ComparatorComponent implements OnInit, OnDestroy {
     if (!this.chartCanvas) return;
 
     if (!response.results || response.results.length === 0) {
-      this.errorMessage = "No se encontraron datos históricos para las afiliaciones seleccionadas.";
+      this.errorMessage = 'No se encontraron datos históricos para las afiliaciones seleccionadas.';
       if (this.chart) {
         this.chart.destroy();
         this.chart = undefined;
@@ -129,13 +137,13 @@ export class ComparatorComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
 
     const allYears = new Set<number>();
-    response.results.forEach(res => res.data.forEach(dp => allYears.add(dp.year)));
+    response.results.forEach((res) => res.data.forEach((dp) => allYears.add(dp.year)));
     const labels = Array.from(allYears).sort();
 
     const datasets = response.results.map((result, index) => {
-      const dataMap = new Map(result.data.map(p => [p.year, p.publications]));
-      const chartData = labels.map(year => dataMap.get(year) || null);
-      
+      const dataMap = new Map(result.data.map((p) => [p.year, p.publications]));
+      const chartData = labels.map((year) => dataMap.get(year) || null);
+
       return {
         label: result.affiliation_name,
         data: chartData,
@@ -144,7 +152,7 @@ export class ComparatorComponent implements OnInit, OnDestroy {
         tension: 0.1,
         fill: false,
         pointRadius: 4, // Hacemos los puntos un poco más visibles
-        pointHoverRadius: 6
+        pointHoverRadius: 6,
       };
     });
 
@@ -154,28 +162,28 @@ export class ComparatorComponent implements OnInit, OnDestroy {
       type: 'line', // Siempre será un gráfico de líneas
       data: {
         labels: labels,
-        datasets: datasets
+        datasets: datasets,
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
           x: { title: { display: true, text: 'Año' } },
-          y: { title: { display: true, text: 'Número de Publicaciones' }, beginAtZero: true }
+          y: { title: { display: true, text: 'Número de Publicaciones' }, beginAtZero: true },
         },
         plugins: {
           legend: {
             position: 'top',
           },
-        }
-      }
+        },
+      },
     };
     // ===================================
 
     if (this.chart) {
       this.chart.destroy();
     }
-    
+
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
     if (ctx) {
       this.chart = new Chart(ctx, chartConfig);

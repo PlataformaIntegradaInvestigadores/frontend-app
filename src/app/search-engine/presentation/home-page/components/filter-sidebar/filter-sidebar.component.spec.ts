@@ -13,9 +13,8 @@ describe('FilterSidebarComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [FilterSidebarComponent],
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule]
-    ,
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(FilterSidebarComponent);
     component = fixture.componentInstance;

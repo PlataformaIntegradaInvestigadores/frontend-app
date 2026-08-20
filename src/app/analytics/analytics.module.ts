@@ -18,7 +18,7 @@ import { ModelDetailsComponent } from './components/model-details/model-details.
     ProjectionComponent,
     ComparatorComponent,
     RankingComponent,
-    ModelDetailsComponent
+    ModelDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -26,7 +26,7 @@ import { ModelDetailsComponent } from './components/model-details/model-details.
     FormsModule,
     HttpClientModule,
     NgxPaginationModule,
-    FontAwesomeModule
-  ]
+    FontAwesomeModule,
+  ],
 })
-export class AnalyticsModule { }
+export class AnalyticsModule {}

@@ -6,16 +6,15 @@ import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 @Component({
   selector: 'app-ranking',
   templateUrl: './ranking.component.html',
-  styleUrls: ['./ranking.component.css']
+  styleUrls: ['./ranking.component.css'],
 })
 export class RankingComponent implements OnInit {
-
   public allRankingData: RankingItem[] = [];
   public filteredRankingData: RankingItem[] = [];
-  
+
   public isLoading: boolean = true;
   public errorMessage: string | null = null;
-  
+
   private searchTerm: string = '';
 
   // Propiedades para la paginación
@@ -31,7 +30,7 @@ export class RankingComponent implements OnInit {
   faSortUp = faSortUp;
   faSortDown = faSortDown;
 
-  constructor(private analyticsService: AnalyticsService) { }
+  constructor(private analyticsService: AnalyticsService) {}
 
   ngOnInit(): void {
     this.fetchRankingData();
@@ -50,7 +49,7 @@ export class RankingComponent implements OnInit {
         this.errorMessage = 'No se pudo cargar el ranking de afiliaciones.';
         this.isLoading = false;
         console.error(err);
-      }
+      },
     });
   }
 
@@ -64,8 +63,8 @@ export class RankingComponent implements OnInit {
     if (!this.searchTerm) {
       this.filteredRankingData = [...this.allRankingData];
     } else {
-      this.filteredRankingData = this.allRankingData.filter(item => 
-        item.affiliation_name.toLowerCase().includes(this.searchTerm)
+      this.filteredRankingData = this.allRankingData.filter((item) =>
+        item.affiliation_name.toLowerCase().includes(this.searchTerm),
       );
     }
     // Mantenemos el orden actual después de filtrar

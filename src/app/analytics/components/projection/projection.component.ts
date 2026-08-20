@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Chart, registerables, ChartConfiguration, ChartDataset, TooltipItem } from 'chart.js';
+import { Chart, registerables, ChartDataset, TooltipItem } from 'chart.js';
 import { AnalyticsService, ProjectionResponse, DataPoint } from '../../services/analytics.service';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError, tap } from 'rxjs/operators';
@@ -14,26 +14,26 @@ type CustomChartDataset = ChartDataset<'line', (number | null)[]> & {
 @Component({
   selector: 'app-projection',
   templateUrl: './projection.component.html',
-  styleUrls: ['./projection.component.css']
+  styleUrls: ['./projection.component.css'],
 })
 export class ProjectionComponent implements OnInit, OnDestroy {
   @ViewChild('projectionChart') private chartCanvas!: ElementRef<HTMLCanvasElement>;
-  
+
   public affiliations: string[] = [];
   public filteredAffiliations: string[] = [];
   public selectedAffiliation: string = '';
   public affiliationSearchTerm: string = '';
-  
+
   public projectionYears: number = 5;
   public hypotheticalAuthors: number = 350;
-  
+
   public kpi = {
     lastActualYear: 0,
     lastActualPubs: 0,
     firstPredictedYear: 0,
     firstPredictedPubs: 0,
     growth: 0,
-    growthPercent: 0
+    growthPercent: 0,
   };
 
   public isLoading: boolean = true;
@@ -60,57 +60,62 @@ export class ProjectionComponent implements OnInit, OnDestroy {
 
   private loadInitialData(): void {
     this.isLoading = true;
-    this.analyticsService.getAffiliations().pipe(
-      tap(response => {
-        this.affiliations = response.affiliations;
-        this.filteredAffiliations = [...this.affiliations]; 
-        if (this.affiliations.length > 0) {
-          this.selectAffiliation("Universidad de Guayaquil"); // Seleccionamos una con datos por defecto
+    this.analyticsService
+      .getAffiliations()
+      .pipe(
+        tap((response) => {
+          this.affiliations = response.affiliations;
+          this.filteredAffiliations = [...this.affiliations];
+          if (this.affiliations.length > 0) {
+            this.selectAffiliation('Universidad de Guayaquil'); // Seleccionamos una con datos por defecto
+          }
+        }),
+        switchMap((response) => {
+          if (response.affiliations.length > 0) {
+            return this.analyticsService.getProjection(
+              'Universidad de Guayaquil',
+              this.projectionYears,
+            );
+          }
+          return of(null);
+        }),
+        catchError((err) => {
+          this.errorMessage = 'No se pudieron cargar los datos iniciales.';
+          console.error(err);
+          return of(null);
+        }),
+      )
+      .subscribe((projection) => {
+        if (projection) {
+          setTimeout(() => this.updateDashboard(projection), 0);
         }
-      }),
-      switchMap(response => {
-        if (response.affiliations.length > 0) {
-          return this.analyticsService.getProjection("Universidad de Guayaquil", this.projectionYears);
-        }
-        return of(null);
-      }),
-      catchError(err => {
-        this.errorMessage = 'No se pudieron cargar los datos iniciales.';
-        console.error(err);
-        return of(null);
-      })
-    ).subscribe(projection => {
-      if (projection) {
-        setTimeout(() => this.updateDashboard(projection), 0);
-      }
-      this.isLoading = false;
-    });
+        this.isLoading = false;
+      });
   }
 
   private handleSearchInput(): void {
     this.subscriptions.add(
-      this.searchSubject.pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      ).subscribe(term => {
+      this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe((term) => {
         if (!term) {
           this.filteredAffiliations = [...this.affiliations];
         } else {
-          this.filteredAffiliations = this.affiliations.filter(aff => 
-            aff.toLowerCase().includes(term.toLowerCase())
+          this.filteredAffiliations = this.affiliations.filter((aff) =>
+            aff.toLowerCase().includes(term.toLowerCase()),
           );
         }
-      })
+      }),
     );
   }
-  
+
   private handleSliderInput(): void {
     this.subscriptions.add(
-        this.sliderSubject.pipe(
-            debounceTime(500) // Un pequeño debounce para no saturar de peticiones
-        ).subscribe(values => {
-            this.fetchProjectionData();
-        })
+      this.sliderSubject
+        .pipe(
+          debounceTime(500), // Un pequeño debounce para no saturar de peticiones
+        )
+        .subscribe(() => {
+          this.fetchProjectionData();
+        }),
     );
   }
 
@@ -121,7 +126,7 @@ export class ProjectionComponent implements OnInit, OnDestroy {
   }
 
   onSliderChange(): void {
-      this.sliderSubject.next({ years: this.projectionYears, authors: this.hypotheticalAuthors });
+    this.sliderSubject.next({ years: this.projectionYears, authors: this.hypotheticalAuthors });
   }
 
   selectAffiliation(affiliation: string): void {
@@ -137,19 +142,22 @@ export class ProjectionComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = null;
     this.subscriptions.add(
-      this.analyticsService.getProjection(this.selectedAffiliation, this.projectionYears, this.hypotheticalAuthors).pipe(
-        catchError(err => {
-          this.errorMessage = `Error al obtener la proyección para ${this.selectedAffiliation}.`;
-          console.error(err);
+      this.analyticsService
+        .getProjection(this.selectedAffiliation, this.projectionYears, this.hypotheticalAuthors)
+        .pipe(
+          catchError((err) => {
+            this.errorMessage = `Error al obtener la proyección para ${this.selectedAffiliation}.`;
+            console.error(err);
+            this.isLoading = false;
+            return of(null);
+          }),
+        )
+        .subscribe((projection) => {
+          if (projection) {
+            setTimeout(() => this.updateDashboard(projection), 0);
+          }
           this.isLoading = false;
-          return of(null);
-        })
-      ).subscribe(projection => {
-        if (projection) {
-          setTimeout(() => this.updateDashboard(projection), 0);
-        }
-        this.isLoading = false;
-      })
+        }),
     );
   }
 
@@ -159,8 +167,8 @@ export class ProjectionComponent implements OnInit, OnDestroy {
   }
 
   private updateKPIs(data: DataPoint[]): void {
-    const lastActual = data.filter(d => d.type === 'actual').pop();
-    const firstPredicted = data.filter(d => d.type === 'predicted')[0];
+    const lastActual = data.filter((d) => d.type === 'actual').pop();
+    const firstPredicted = data.filter((d) => d.type === 'predicted')[0];
 
     if (lastActual && firstPredicted) {
       const growth = firstPredicted.publications - lastActual.publications;
@@ -170,46 +178,56 @@ export class ProjectionComponent implements OnInit, OnDestroy {
         firstPredictedYear: firstPredicted.year,
         firstPredictedPubs: firstPredicted.publications,
         growth: growth,
-        growthPercent: lastActual.publications > 0 ? (growth / lastActual.publications) * 100 : 0
+        growthPercent: lastActual.publications > 0 ? (growth / lastActual.publications) * 100 : 0,
       };
     } else {
       // Reseteamos los KPIs si no hay datos
-      this.kpi = { lastActualYear: 0, lastActualPubs: 0, firstPredictedYear: 0, firstPredictedPubs: 0, growth: 0, growthPercent: 0 };
+      this.kpi = {
+        lastActualYear: 0,
+        lastActualPubs: 0,
+        firstPredictedYear: 0,
+        firstPredictedPubs: 0,
+        growth: 0,
+        growthPercent: 0,
+      };
     }
   }
 
   private renderChart(projection: ProjectionResponse): void {
     if (!this.chartCanvas) return;
 
-    const labels = projection.data.map(d => d.year);
-    const actualData = projection.data.filter(d => d.type === 'actual');
-    const predictedData = projection.data.filter(d => d.type === 'predicted');
+    const labels = projection.data.map((d) => d.year);
+    const actualData = projection.data.filter((d) => d.type === 'actual');
+    const predictedData = projection.data.filter((d) => d.type === 'predicted');
 
     const datasets: CustomChartDataset[] = [
       {
         label: 'Histórico',
-        data: actualData.map(d => d.publications),
+        data: actualData.map((d) => d.publications),
         borderColor: 'rgb(59, 130, 246)',
         tension: 0.1,
-        customPointType: actualData.map(() => 'actual')
+        customPointType: actualData.map(() => 'actual'),
       },
       {
         label: 'Predicción',
         data: [
-          ...Array(actualData.length - 1).fill(null), 
-          actualData[actualData.length-1]?.publications, 
-          ...predictedData.map(d => d.publications)
+          ...Array(actualData.length - 1).fill(null),
+          actualData[actualData.length - 1]?.publications,
+          ...predictedData.map((d) => d.publications),
         ],
         borderColor: 'rgb(22, 163, 74)',
         borderDash: [5, 5],
         tension: 0.1,
-        customPointType: [...Array(actualData.length).fill('actual'), ...predictedData.map(() => 'predicted')]
-      }
+        customPointType: [
+          ...Array(actualData.length).fill('actual'),
+          ...predictedData.map(() => 'predicted'),
+        ],
+      },
     ];
 
     const chartData = {
       labels: labels,
-      datasets: datasets
+      datasets: datasets,
     };
 
     // ===== LA CORRECCIÓN CLAVE ESTÁ AQUÍ =====
@@ -218,7 +236,7 @@ export class ProjectionComponent implements OnInit, OnDestroy {
       this.chart.destroy();
     }
     // =======================================
-    
+
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
     if (ctx) {
       this.chart = new Chart(ctx, {
@@ -229,29 +247,31 @@ export class ProjectionComponent implements OnInit, OnDestroy {
           maintainAspectRatio: false,
           scales: {
             x: { title: { display: true, text: 'Año' } },
-            y: { title: { display: true, text: 'Número de Publicaciones' }, beginAtZero: true }
+            y: { title: { display: true, text: 'Número de Publicaciones' }, beginAtZero: true },
           },
           plugins: {
             tooltip: {
               callbacks: {
                 label: (context: TooltipItem<'line'>) => {
                   let label = context.dataset.label || '';
-                  if (label) { label += ': '; }
+                  if (label) {
+                    label += ': ';
+                  }
                   if (context.parsed.y !== null) {
                     label += context.parsed.y;
                   }
-                  
+
                   const customDataset = context.dataset as CustomChartDataset;
                   const type = customDataset.customPointType?.[context.dataIndex];
                   if (type) {
                     return `${label} (${type})`;
                   }
                   return label;
-                }
-              }
-            }
-          }
-        }
+                },
+              },
+            },
+          },
+        },
       });
     }
   }

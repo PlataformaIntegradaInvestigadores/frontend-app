@@ -14,7 +14,7 @@ describe('RecommendationsPageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [RecommendationsPageComponent],
       imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, RouterTestingModule],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     });
     fixture = TestBed.createComponent(RecommendationsPageComponent);
     component = fixture.componentInstance;

@@ -1,16 +1,15 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Job } from 'src/app/jobs/domain/entities/job.interface';
 import { Application, ApplicationCreate } from 'src/app/jobs/domain/entities/application.interface';
 import { ApplicationService } from 'src/app/jobs/domain/services/application.service';
 import { AuthService } from 'src/app/auth/domain/services/auth.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-job-detail',
   templateUrl: './job-detail.component.html',
-  styleUrls: ['./job-detail.component.css']
+  styleUrls: ['./job-detail.component.css'],
 })
-export class JobDetailComponent implements OnInit, OnChanges {
+export class JobDetailComponent implements OnChanges {
   @Input() job: Job | null = null;
   @Input() showCompanyActions: boolean = false;
 
@@ -30,12 +29,8 @@ export class JobDetailComponent implements OnInit, OnChanges {
 
   constructor(
     private applicationService: ApplicationService,
-    private authService: AuthService
-  ) { }
-
-  ngOnInit(): void {
-    // Initialization logic if needed
-  }
+    private authService: AuthService,
+  ) {}
 
   // ✅ NUEVO: Detectar cambios en el trabajo
   ngOnChanges(changes: SimpleChanges): void {
@@ -60,7 +55,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
         console.error('Error loading job applications:', error);
         this.jobApplications = [];
         this.applicationsLoading = false;
-      }
+      },
     });
   }
 
@@ -87,22 +82,24 @@ export class JobDetailComponent implements OnInit, OnChanges {
 
   // ✅ NUEVO: Actualizar estado de aplicación
   private updateApplicationStatus(applicationId: number, newStatus: string): void {
-    this.applicationService.updateApplication(applicationId, {
-      status: newStatus as any
-    }).subscribe({
-      next: (updatedApplication: Application) => {
-        // Actualizar la aplicación en la lista local
-        const index = this.jobApplications.findIndex(app => app.id === applicationId);
-        if (index !== -1) {
-          this.jobApplications[index] = updatedApplication;
-        }
-        console.log('Application status updated:', updatedApplication);
-      },
-      error: (error: any) => {
-        console.error('Error updating application status:', error);
-        alert('Error updating the application status');
-      }
-    });
+    this.applicationService
+      .updateApplication(applicationId, {
+        status: newStatus as any,
+      })
+      .subscribe({
+        next: (updatedApplication: Application) => {
+          // Actualizar la aplicación en la lista local
+          const index = this.jobApplications.findIndex((app) => app.id === applicationId);
+          if (index !== -1) {
+            this.jobApplications[index] = updatedApplication;
+          }
+          console.log('Application status updated:', updatedApplication);
+        },
+        error: (error: any) => {
+          console.error('Error updating application status:', error);
+          alert('Error updating the application status');
+        },
+      });
   }
 
   // Propiedades computadas
@@ -185,12 +182,12 @@ export class JobDetailComponent implements OnInit, OnChanges {
 
   getRequirementsArray(requirements?: string): string[] {
     if (!requirements) return [];
-    return requirements.split('\n').filter(req => req.trim() !== '');
+    return requirements.split('\n').filter((req) => req.trim() !== '');
   }
 
   getBenefitsArray(benefits?: string): string[] {
     if (!benefits) return [];
-    return benefits.split('\n').filter(benefit => benefit.trim() !== '');
+    return benefits.split('\n').filter((benefit) => benefit.trim() !== '');
   }
 
   openApplicationModal(): void {
@@ -199,7 +196,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
     this.applicationData = {
       job: this.job.id!,
       cover_letter: '',
-      resume_file: undefined
+      resume_file: undefined,
     };
     this.selectedFile = null;
     this.showApplicationModal = true;
@@ -242,7 +239,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
     const applicationData: ApplicationCreate = {
       job: this.job.id,
       cover_letter: this.applicationData.cover_letter,
-      resume_file: this.selectedFile
+      resume_file: this.selectedFile,
     };
 
     this.applicationService.createApplication(applicationData).subscribe({
@@ -260,7 +257,7 @@ export class JobDetailComponent implements OnInit, OnChanges {
         } else {
           alert('Error submitting the application. Please try again.');
         }
-      }
+      },
     });
   }
 
@@ -285,6 +282,10 @@ export class JobDetailComponent implements OnInit, OnChanges {
   }
 
   hasNoApplications(): boolean {
-    return this.isCompany && (!this.jobApplications || this.jobApplications.length === 0) && !this.applicationsLoading;
+    return (
+      this.isCompany &&
+      (!this.jobApplications || this.jobApplications.length === 0) &&
+      !this.applicationsLoading
+    );
   }
 }
