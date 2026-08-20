@@ -14,8 +14,9 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - name: Verificar prefijo (feature/*, hotfix/*, chore/*)
+        env:
+          BRANCH: ${{ github.head_ref }}
         run: |
-          BRANCH="${{ github.head_ref }}"
           case "$BRANCH" in
             feature/*|hotfix/*|chore/*) echo "OK: $BRANCH"; exit 0 ;;
             *) echo "Rama '$BRANCH' no cumple convención (feature/*, hotfix/*, chore/*)"; exit 1 ;;
