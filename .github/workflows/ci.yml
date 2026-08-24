@@ -13,13 +13,26 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - name: Verificar prefijo (feature/*, hotfix/*, chore/*)
+      - name: Verificar prefijo + destino (ver docs/PR-GUIDELINES.md §6.2)
         env:
           BRANCH: ${{ github.head_ref }}
+          TARGET: ${{ github.base_ref }}
         run: |
-          case "$BRANCH" in
-            feature/*|hotfix/*|chore/*) echo "OK: $BRANCH"; exit 0 ;;
-            *) echo "Rama '$BRANCH' no cumple convención (feature/*, hotfix/*, chore/*)"; exit 1 ;;
+          case "$TARGET" in
+            develop)
+              case "$BRANCH" in
+                feature/*|chore/*) echo "OK: $BRANCH -> $TARGET"; exit 0 ;;
+                *) echo "Rama '$BRANCH' invalida para destino develop (usar feature/* o chore/*)"; exit 1 ;;
+              esac
+              ;;
+            main)
+              case "$BRANCH" in
+                develop|hotfix/*) echo "OK: $BRANCH -> $TARGET"; exit 0 ;;
+                *) echo "Rama '$BRANCH' invalida para destino main (usar develop o hotfix/*)"; exit 1 ;;
+              esac
+              ;;
+            *)
+              echo "Destino desconocido: $TARGET"; exit 1 ;;
           esac
 
   # ── Tests Angular ──────────────────────────────────────────────────────────

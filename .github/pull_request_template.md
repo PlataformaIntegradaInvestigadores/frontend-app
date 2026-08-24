@@ -1,27 +1,29 @@
-## What changed?
+## What was done?
 
-Brief description of the change.
+Short, clear description of the change.
 
 ## Why?
 
-Problem / requirement / need that originated this.
+The problem, requirement, or need that triggered this.
 
-## How?
+## How was it solved?
 
-Solution + main technical changes (bullets).
+- Bullet list of the main technical changes, file by file when it adds clarity.
 
 ## Notes
 
-Review / deploy / ops considerations (only if applicable).
+Test count (required) and coverage % (whenever `ng test --code-coverage` reports it).
 
 ## Link
 
-<Ticket URL (Jira / Linear / etc.)>
+<Ticket URL, once a tracker exists — omit this section until then>
 
 ## Checklist
 
-- [ ] Branch named `feature/*` (→ develop) or `hotfix/*` (→ main)
-- [ ] Quality gate passes locally
-- [ ] Entity change → migration included in same PR
-- [ ] New config → variables in ALL environments (local + prod)
+- [ ] Branch named `feature/*`/`chore/*` (→ develop) or `hotfix/*` (→ main)
+- [ ] `ng test --code-coverage` passes locally
+- [ ] Behavior change includes tests that verify the result, not just execution
+- [ ] Bug fix includes a test that fails without the fix
 - [ ] No secrets, tokens, or production URLs in code
+
+See `docs/PR-GUIDELINES.md` for the full convention.
