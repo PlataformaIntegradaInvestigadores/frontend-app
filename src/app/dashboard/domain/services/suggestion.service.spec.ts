@@ -24,12 +24,12 @@ describe('SuggestionService', () => {
   });
 
   it('searchAffiliations GETs with the query param', () => {
-    service.searchAffiliations('espol').subscribe();
+    service.searchAffiliations('espol').subscribe((res) => expect(res).toEqual([]));
     httpMock.expectOne(`${apiUrl}affiliation/search/?query=espol`).flush([]);
   });
 
   it('searchTopics GETs with the query param', () => {
-    service.searchTopics('ai').subscribe();
+    service.searchTopics('ai').subscribe((res) => expect(res).toEqual([]));
     httpMock.expectOne(`${apiUrl}country/search/?query=ai`).flush([]);
   });
 });

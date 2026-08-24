@@ -86,7 +86,10 @@ describe('DebateService', () => {
   });
 
   it('triggerValidateDebateStatus emits on validateDebateStatus$', (done) => {
-    service.validateDebateStatus$.subscribe(() => done());
+    service.validateDebateStatus$.subscribe(() => {
+      expect(true).toBeTrue();
+      done();
+    });
     service.triggerValidateDebateStatus();
   });
 

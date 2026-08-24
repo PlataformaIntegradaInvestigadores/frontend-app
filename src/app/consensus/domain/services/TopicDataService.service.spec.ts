@@ -49,22 +49,22 @@ describe('TopicService', () => {
   });
 
   it('getRecommendedTopicsByGroup GETs the recommended-topics endpoint', () => {
-    service.getRecommendedTopicsByGroup('g-1').subscribe();
+    service.getRecommendedTopicsByGroup('g-1').subscribe((res) => expect(res).toEqual([]));
     httpMock.expectOne(`${apiUrl}g-1/recommended-topics/`).flush([]);
   });
 
   it('getFinalsTopicsByGroup GETs the finals-topics endpoint', () => {
-    service.getFinalsTopicsByGroup('g-1').subscribe();
+    service.getFinalsTopicsByGroup('g-1').subscribe((res) => expect(res).toEqual({}));
     httpMock.expectOne(`${apiUrl}g-1/finals-topics/`).flush({});
   });
 
   it('getTopicsAddedByGroup GETs the added-topics endpoint', () => {
-    service.getTopicsAddedByGroup('g-1').subscribe();
+    service.getTopicsAddedByGroup('g-1').subscribe((res) => expect(res).toEqual([]));
     httpMock.expectOne(`${apiUrl}g-1/added-topics/`).flush([]);
   });
 
   it('getGroupTopics GETs the combined topics endpoint', () => {
-    service.getGroupTopics('g-1').subscribe();
+    service.getGroupTopics('g-1').subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}g-1/topics/`).flush({ recommended_topics: [], added_topics: [] });
   });
 
@@ -179,7 +179,7 @@ describe('TopicService', () => {
   });
 
   it('getConsensusResults GETs the calculations endpoint', () => {
-    service.getConsensusResults('g-1').subscribe();
+    service.getConsensusResults('g-1').subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}g-1/execute_consensus_calculations/`).flush({});
   });
 
@@ -226,17 +226,17 @@ describe('TopicService', () => {
   });
 
   it('getUserSatisfactionNotifications GETs the satisfaction notifications endpoint', () => {
-    service.getUserSatisfactionNotifications('g-1').subscribe();
+    service.getUserSatisfactionNotifications('g-1').subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}g-1/satisfaction/notifications/`).flush({});
   });
 
   it('getSatisfactionCounts GETs the satisfaction-counts endpoint', () => {
-    service.getSatisfactionCounts('g-1').subscribe();
+    service.getSatisfactionCounts('g-1').subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}g-1/satisfaction-counts/`).flush({});
   });
 
   it('getUserCurrentPhase GETs the current-phase endpoint', () => {
-    service.getUserCurrentPhase('g-1').subscribe();
+    service.getUserCurrentPhase('g-1').subscribe((res: any) => expect(res.phase).toBe(1));
     httpMock.expectOne(`${apiUrl}g-1/current-phase/`).flush({ phase: 1 });
   });
 

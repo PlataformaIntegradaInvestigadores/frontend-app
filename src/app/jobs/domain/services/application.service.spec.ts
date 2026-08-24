@@ -48,7 +48,7 @@ describe('ApplicationService', () => {
   });
 
   it('getApplication GETs a single application', () => {
-    service.getApplication(9).subscribe();
+    service.getApplication(9).subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}/v1/applications/9/`).flush({});
   });
 
@@ -117,7 +117,7 @@ describe('ApplicationService', () => {
   });
 
   it('checkApplicationStatus GETs the application-status endpoint', () => {
-    service.checkApplicationStatus(7).subscribe();
+    service.checkApplicationStatus(7).subscribe((res) => expect(res.has_applied).toBeFalse());
     httpMock
       .expectOne(`${apiUrl}/v1/jobs/7/application-status/`)
       .flush({ has_applied: false, application: null });

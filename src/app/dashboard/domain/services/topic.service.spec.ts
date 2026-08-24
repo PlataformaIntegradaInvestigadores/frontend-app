@@ -25,22 +25,22 @@ describe('TopicService (dashboard)', () => {
   });
 
   it('getOptionYears GETs with the topic param', () => {
-    service.getOptionYears('ai').subscribe();
+    service.getOptionYears('ai').subscribe((res) => expect(res).toEqual([]));
     httpMock.expectOne(`${apiUrl}/country/get_topics_years/?topic=ai`).flush([]);
   });
 
   it('getSummary GETs the topic summary', () => {
-    service.getSummary('ai').subscribe();
+    service.getSummary('ai').subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}/country/get_topics_summary/?topic=ai`).flush({});
   });
 
   it('getSummaryYear GETs the yearly topic summary', () => {
-    service.getSummaryYear('ai', 2020).subscribe();
+    service.getSummaryYear('ai', 2020).subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}/country/get_topics_summary_year/?topic=ai&year=2020`).flush({});
   });
 
   it('getSummaryAcumulated GETs the accumulated topic summary', () => {
-    service.getSummaryAcumulated('ai', 2020).subscribe();
+    service.getSummaryAcumulated('ai', 2020).subscribe((res) => expect(res).toBeTruthy());
     httpMock
       .expectOne(`${apiUrl}/country/get_topics_summary_acumulated/?topic=ai&year=2020`)
       .flush({});

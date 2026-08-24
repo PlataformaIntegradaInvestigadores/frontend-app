@@ -25,27 +25,37 @@ describe('AffiliationService', () => {
   });
 
   it('getOptionYears GETs with the scopus_id param', () => {
-    service.getOptionYears('sc-1').subscribe();
+    service.getOptionYears('sc-1').subscribe((years) => {
+      expect(years).toEqual([]);
+    });
     httpMock.expectOne(`${apiUrl}/affiliation/get_years/?scopus_id=sc-1`).flush([]);
   });
 
   it('getSummary GETs the articles/topics summary', () => {
-    service.getSummary('sc-1').subscribe();
-    httpMock.expectOne(`${apiUrl}/affiliation/get_articles_topics/?scopus_id=sc-1`).flush({});
+    service.getSummary('sc-1').subscribe((summary) => {
+      expect(summary).toEqual({ articles: 1, topics: 2 } as any);
+    });
+    httpMock
+      .expectOne(`${apiUrl}/affiliation/get_articles_topics/?scopus_id=sc-1`)
+      .flush({ articles: 1, topics: 2 });
   });
 
   it('getSummaryYear GETs the yearly summary', () => {
-    service.getSummaryYear('sc-1', 2020).subscribe();
+    service.getSummaryYear('sc-1', 2020).subscribe((summary) => {
+      expect(summary).toEqual({ articles: 1, topics: 2 } as any);
+    });
     httpMock
       .expectOne(`${apiUrl}/affiliation/get_articles_topics_year/?scopus_id=sc-1&year=2020`)
-      .flush({});
+      .flush({ articles: 1, topics: 2 });
   });
 
   it('getSummaryAcumulated GETs the accumulated summary', () => {
-    service.getSummaryAcumulated('sc-1', 2020).subscribe();
+    service.getSummaryAcumulated('sc-1', 2020).subscribe((summary) => {
+      expect(summary).toEqual({ articles: 1, topics: 2 } as any);
+    });
     httpMock
       .expectOne(`${apiUrl}/affiliation/get_articles_topics_acumulated/?scopus_id=sc-1&year=2020`)
-      .flush({});
+      .flush({ articles: 1, topics: 2 });
   });
 
   const affiliations: Affiliation[] = [
@@ -120,7 +130,9 @@ describe('AffiliationService', () => {
   });
 
   it('getId GETs the affiliation lookup-by-name endpoint', () => {
-    service.getId('ESPOL').subscribe();
-    httpMock.expectOne(`${apiUrl}/affiliation/get_by_name/?name=ESPOL`).flush({});
+    service.getId('ESPOL').subscribe((res) => {
+      expect(res).toEqual({ scopus_id: 'sc-1' } as any);
+    });
+    httpMock.expectOne(`${apiUrl}/affiliation/get_by_name/?name=ESPOL`).flush({ scopus_id: 'sc-1' });
   });
 });

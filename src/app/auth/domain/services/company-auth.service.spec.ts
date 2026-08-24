@@ -35,7 +35,9 @@ describe('CompanyAuthService', () => {
   });
 
   it('logs a company in', () => {
-    service.login({ username: 'a', password: 'b' }).subscribe();
+    service.login({ username: 'a', password: 'b' }).subscribe((res) => {
+      expect(res.access).toBe('tok');
+    });
     const req = httpMock.expectOne(`${apiUrl}/companies/token/`);
     req.flush({ access: 'tok' });
   });
@@ -94,13 +96,17 @@ describe('CompanyAuthService', () => {
   });
 
   it('lists companies with the verified_only param', () => {
-    service.listCompanies(true).subscribe();
+    service.listCompanies(true).subscribe((companies) => {
+      expect(companies).toEqual([]);
+    });
     const req = httpMock.expectOne(`${apiUrl}/companies/?verified_only=true`);
     req.flush([]);
   });
 
   it('lists companies without params by default', () => {
-    service.listCompanies().subscribe();
+    service.listCompanies().subscribe((companies) => {
+      expect(companies).toEqual([]);
+    });
     const req = httpMock.expectOne(`${apiUrl}/companies/`);
     req.flush([]);
   });

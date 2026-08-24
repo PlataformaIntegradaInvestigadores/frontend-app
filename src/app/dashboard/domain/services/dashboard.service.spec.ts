@@ -70,17 +70,17 @@ describe('DashboardService', () => {
   });
 
   it('getCounts GETs the accumulated country counts with the year param', () => {
-    service.getCounts(2020).subscribe();
+    service.getCounts(2020).subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}/country/get_acumulated/?year=2020`).flush({});
   });
 
   it('getCountsYear GETs the yearly country counts', () => {
-    service.getCountsYear(2020).subscribe();
+    service.getCountsYear(2020).subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}/country/get_year/?year=2020`).flush({});
   });
 
   it('getYears GETs the last-years endpoint', () => {
-    service.getYears().subscribe();
+    service.getYears().subscribe((res) => expect(res).toEqual([]));
     httpMock.expectOne(`${apiUrl}/country/get_last_years/`).flush([]);
   });
 
