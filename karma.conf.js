@@ -25,10 +25,10 @@ module.exports = function (config) {
       reporters: [{ type: 'html' }, { type: 'text-summary' }, { type: 'lcovonly' }],
       check: {
         global: {
-          statements: 58,
-          branches: 40,
-          functions: 56,
-          lines: 58,
+          statements: 59,
+          branches: 41,
+          functions: 57,
+          lines: 59,
         },
       },
     },
