@@ -39,10 +39,10 @@ describe('AuthorService', () => {
     });
 
     it('issues a separate request for a different id', () => {
-      service.getAuthorProfile('1').subscribe();
+      service.getAuthorProfile('1').subscribe((p) => expect(p).toBeTruthy());
       httpMock.expectOne(`${rootURL}/v2/authors/1/profile`).flush({});
 
-      service.getAuthorProfile('2').subscribe();
+      service.getAuthorProfile('2').subscribe((p) => expect(p).toBeTruthy());
       httpMock.expectOne(`${rootURL}/v2/authors/2/profile`).flush({});
     });
   });
@@ -63,7 +63,7 @@ describe('AuthorService', () => {
   });
 
   it('getAuthorById GETs the author endpoint', () => {
-    service.getAuthorById('a-1').subscribe();
+    service.getAuthorById('a-1').subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${rootURL}/v2/authors/a-1`).flush({});
   });
 
@@ -109,7 +109,7 @@ describe('AuthorService', () => {
   });
 
   it('getRandomTopics GETs the random-topics endpoint', () => {
-    service.getRandomTopics().subscribe();
+    service.getRandomTopics().subscribe((res) => expect(res).toEqual([]));
     httpMock.expectOne(`${rootURL}random-topics`).flush([]);
   });
 
