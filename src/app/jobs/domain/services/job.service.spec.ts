@@ -54,12 +54,37 @@ describe('JobsService', () => {
     req.flush([]);
   });
 
+  it('getJobs works without any filters', () => {
+    authServiceSpy.getToken.and.returnValue(of('tok-1'));
+    service.getJobs().subscribe();
+    const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/jobs/`);
+    expect(req.request.params.keys().length).toBe(0);
+    req.flush([]);
+  });
+
+  function expectsNoToken(call: () => void) {
+    authServiceSpy.getToken.and.returnValue(of(null));
+    call();
+    httpMock.expectNone(() => true);
+  }
+
   it('getJob GETs a single job by id', () => {
     authServiceSpy.getToken.and.returnValue(of('tok-1'));
     service.getJob(5).subscribe((job) => {
       expect(job).toEqual({ id: 5 } as any);
     });
     httpMock.expectOne(`${apiUrl}/v1/jobs/5/`).flush({ id: 5 });
+  });
+
+  it('getJob errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.getJob(5).subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
   });
 
   it('createJob POSTs the job payload', () => {
@@ -70,12 +95,34 @@ describe('JobsService', () => {
     req.flush({});
   });
 
+  it('createJob errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.createJob({ title: 'Dev' } as any).subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
+  });
+
   it('updateJob PUTs the partial job payload', () => {
     authServiceSpy.getToken.and.returnValue(of('tok-1'));
     service.updateJob(5, { title: 'Senior Dev' } as any).subscribe();
     const req = httpMock.expectOne(`${apiUrl}/v1/jobs/5/`);
     expect(req.request.method).toBe('PUT');
     req.flush({});
+  });
+
+  it('updateJob errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.updateJob(5, { title: 'Senior Dev' } as any).subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
   });
 
   it('deleteJob DELETEs the job', () => {
@@ -86,12 +133,34 @@ describe('JobsService', () => {
     req.flush(null);
   });
 
+  it('deleteJob errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.deleteJob(5).subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
+  });
+
   it('getRecommendedJobs GETs with a limit param', () => {
     authServiceSpy.getToken.and.returnValue(of('tok-1'));
     service.getRecommendedJobs(3).subscribe();
     const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/jobs/recommendations/`);
     expect(req.request.params.get('limit')).toBe('3');
     req.flush({ count: 0, results: [] });
+  });
+
+  it('getRecommendedJobs errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.getRecommendedJobs().subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
   });
 
   it('getTrendingJobs GETs with a limit param', () => {
@@ -102,6 +171,17 @@ describe('JobsService', () => {
     req.flush({ count: 0, results: [] });
   });
 
+  it('getTrendingJobs errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.getTrendingJobs().subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
+  });
+
   it('semanticSearch POSTs the query', () => {
     authServiceSpy.getToken.and.returnValue(of('tok-1'));
     service.semanticSearch('ai researcher').subscribe();
@@ -110,12 +190,34 @@ describe('JobsService', () => {
     req.flush([]);
   });
 
+  it('semanticSearch errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.semanticSearch('ai researcher').subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
+  });
+
   it('getJobsByCompany GETs with a company param', () => {
     authServiceSpy.getToken.and.returnValue(of('tok-1'));
     service.getJobsByCompany('c-1').subscribe();
     const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/jobs/`);
     expect(req.request.params.get('company')).toBe('c-1');
     req.flush([]);
+  });
+
+  it('getJobsByCompany errors without hitting the API when there is no token', (done) => {
+    expectsNoToken(() => {
+      service.getJobsByCompany('c-1').subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+    });
   });
 
   describe('handleError', () => {

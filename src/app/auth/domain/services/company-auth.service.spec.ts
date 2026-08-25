@@ -81,6 +81,32 @@ describe('CompanyAuthService', () => {
     retry.flush({});
   });
 
+  it('fetches its own profile with auth headers', () => {
+    localStorage.setItem('accessToken', 'tok-1');
+    service.getMyProfile().subscribe();
+    const req = httpMock.expectOne(`${apiUrl}/companies/profile/`);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer tok-1');
+    req.flush({});
+  });
+
+  it('refreshes and retries updateProfile on a 401', () => {
+    localStorage.setItem('accessToken', 'stale');
+    localStorage.setItem('refreshToken', 'refresh-1');
+    const formData = new FormData();
+
+    service.updateProfile('c-2', formData).subscribe();
+
+    const first = httpMock.expectOne(`${apiUrl}/companies/c-2/update/`);
+    first.flush('unauthorized', { status: 401, statusText: 'Unauthorized' });
+
+    const refresh = httpMock.expectOne(`${apiUrl}/token/refresh/`);
+    refresh.flush({ access: 'new-tok' });
+
+    const retry = httpMock.expectOne(`${apiUrl}/companies/c-2/update/`);
+    expect(retry.request.headers.get('Authorization')).toBe('Bearer new-tok');
+    retry.flush({});
+  });
+
   it('errors immediately on refresh when there is no stored refresh token', (done) => {
     localStorage.setItem('accessToken', 'stale');
 
@@ -121,6 +147,17 @@ describe('CompanyAuthService', () => {
   });
 
   describe('handleError formatting', () => {
+    it('formats a client-side ErrorEvent', (done) => {
+      service.register({} as any).subscribe({
+        error: (err: Error) => {
+          expect(err.message).toContain('Error:');
+          done();
+        },
+      });
+      const req = httpMock.expectOne(`${apiUrl}/companies/register/`);
+      req.error(new ErrorEvent('error', { message: 'network down' }));
+    });
+
     it('joins validation errors by field', (done) => {
       service.register({} as any).subscribe({
         error: (err: Error) => {

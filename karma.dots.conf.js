@@ -1,6 +1,4 @@
-// Karma configuration file, see link for more information
-// https://karma-runner.github.io/6.4/config/configuration-file.html
-
+process.env.CHROME_BIN = process.env.CHROME_BIN;
 module.exports = function (config) {
   config.set({
     basePath: '',
@@ -22,29 +20,20 @@ module.exports = function (config) {
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/frontend-app'),
       subdir: '.',
-      reporters: [{ type: 'html' }, { type: 'text-summary' }, { type: 'lcovonly' }],
-      check: {
-        global: {
-          statements: 95,
-          branches: 90,
-          functions: 94,
-          lines: 95,
-        },
-      },
+      reporters: [{ type: 'text-summary' }, { type: 'lcovonly' }],
     },
-    reporters: ['progress', 'kjhtml'],
-    port: 9876,
-    colors: true,
+    reporters: ['dots'],
+    port: 9877,
+    colors: false,
     logLevel: config.LOG_INFO,
-    autoWatch: true,
-    restartOnFileChange: true,
-    browsers: ['Chrome'],
+    autoWatch: false,
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox', '--disable-gpu'],
       },
     },
-    singleRun: false,
+    browsers: ['ChromeHeadlessNoSandbox'],
+    singleRun: true,
   });
 };

@@ -278,5 +278,191 @@ describe('FeedService', () => {
         'custom fallback',
       );
     });
+
+    it('returns a string payload verbatim', () => {
+      expect(service.getFriendlyErrorMessage({ error: 'plain failure' })).toBe('plain failure');
+    });
+
+    it('detects an oversized file by the 50mb marker', () => {
+      const msg = service.getFriendlyErrorMessage({ error: { detail: 'max 50mb exceeded' } });
+      expect(msg).toContain('10 MB');
+    });
+
+    it('detects an oversized file by the 10mb marker', () => {
+      const msg = service.getFriendlyErrorMessage({ error: { detail: 'limit 10mb' } });
+      expect(msg).toContain('10 MB');
+    });
+  });
+
+  describe('remaining HTTP methods', () => {
+    it('getHeaders attaches the bearer token when present', () => {
+      localStorage.setItem('accessToken', 'tok-123');
+      service.getFeed().subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/feed/`);
+      expect(req.request.headers.get('Authorization')).toBe('Bearer tok-123');
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+      localStorage.removeItem('accessToken');
+    });
+
+    it('getTrendingPosts defaults time range and limit', () => {
+      service.getTrendingPosts().subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/feed/trending/`);
+      expect(req.request.params.get('time_range')).toBe('week');
+      expect(req.request.params.get('limit')).toBe('20');
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+    });
+
+    it('getTrendingPosts honours custom args', () => {
+      service.getTrendingPosts('month', 5).subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/feed/trending/`);
+      expect(req.request.params.get('time_range')).toBe('month');
+      expect(req.request.params.get('limit')).toBe('5');
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+    });
+
+    it('getRecommendations defaults the limit', () => {
+      service.getRecommendations().subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/feed/recommendations/`);
+      expect(req.request.params.get('limit')).toBe('20');
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+    });
+
+    it('getRecommendations honours a custom limit', () => {
+      service.getRecommendations(8).subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/feed/recommendations/`);
+      expect(req.request.params.get('limit')).toBe('8');
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+    });
+
+    it('updatePost PATCHes the post', () => {
+      service.updatePost('p-1', { content: 'edit' }).subscribe();
+      const req = httpMock.expectOne(`${apiUrl}/posts/p-1/`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({ content: 'edit' });
+      req.flush(rawPost);
+    });
+
+    it('getPostStats GETs the stats endpoint', () => {
+      service.getPostStats('p-1').subscribe();
+      const req = httpMock.expectOne(`${apiUrl}/posts/p-1/stats/`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ likes: 1 });
+    });
+
+    it('getComments converts dates and honours page/limit', (done) => {
+      service.getComments('p-1', 2, 15).subscribe((comments) => {
+        expect(comments[0].created_at instanceof Date).toBeTrue();
+        done();
+      });
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/posts/p-1/comments/`);
+      expect(req.request.params.get('page')).toBe('2');
+      expect(req.request.params.get('limit')).toBe('15');
+      req.flush([
+        { id: 'c', content: 'x', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
+      ]);
+    });
+
+    it('getComments defaults page and limit', () => {
+      service.getComments('p-1').subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/posts/p-1/comments/`);
+      expect(req.request.params.get('page')).toBe('1');
+      expect(req.request.params.get('limit')).toBe('20');
+      req.flush([]);
+    });
+
+    it('toggleLikeComment POSTs to the comment like endpoint', () => {
+      service.toggleLikeComment('c-1').subscribe();
+      const req = httpMock.expectOne(`${apiUrl}/likes/comments/c-1/`);
+      expect(req.request.method).toBe('POST');
+      req.flush({ liked: true, likes_count: 3 });
+    });
+
+    it('getUserFeedStats GETs the feed stats endpoint', () => {
+      service.getUserFeedStats().subscribe();
+      const req = httpMock.expectOne(`${apiUrl}/feed/stats/`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ posts_count: 0 });
+    });
+
+    it('getUserPosts passes author and limit and converts dates', (done) => {
+      service.getUserPosts('u-9', 12).subscribe((res) => {
+        expect(res.posts[0].created_at instanceof Date).toBeTrue();
+        done();
+      });
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/feed/`);
+      expect(req.request.params.get('author')).toBe('u-9');
+      expect(req.request.params.get('limit')).toBe('12');
+      req.flush({ posts: [rawPost], has_next: false, total_count: 1 });
+    });
+
+    it('getUserPosts appends cursor when supplied', () => {
+      service.getUserPosts('u-9', 12, 'cur').subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/feed/`);
+      expect(req.request.params.get('cursor')).toBe('cur');
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+    });
+
+    it('getCurrentUserPosts uses the user/posts endpoint and honours cursor', () => {
+      service.getCurrentUserPosts(7, 'c2').subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/user/posts/`);
+      expect(req.request.params.get('limit')).toBe('7');
+      expect(req.request.params.get('cursor')).toBe('c2');
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+    });
+
+    it('getCurrentUserPosts defaults limit and cursor', () => {
+      service.getCurrentUserPosts().subscribe();
+      const req = httpMock.expectOne((r) => r.url === `${apiUrl}/user/posts/`);
+      expect(req.request.params.get('limit')).toBe('20');
+      expect(req.request.params.has('cursor')).toBeFalse();
+      req.flush({ posts: [], has_next: false, total_count: 0 });
+    });
+
+    it('recordUserInteraction POSTs the interaction payload', () => {
+      service.recordUserInteraction('p-1', 'like').subscribe();
+      const req = httpMock.expectOne(`${apiUrl}/interactions/`);
+      expect(req.request.body).toEqual({ post_id: 'p-1', interaction_type: 'like' });
+      req.flush(null);
+    });
+
+    it('removePollVote DELETEs the poll vote', () => {
+      service.removePollVote('poll-1').subscribe();
+      const req = httpMock.expectOne(`${apiUrl}/polls/poll-1/remove-vote/`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush({});
+    });
+
+    it('removePollVote propagates errors through catchError', (done) => {
+      spyOn(console, 'error');
+      service.removePollVote('poll-1').subscribe({
+        error: (err: any) => {
+          expect(err.status).toBe(500);
+          done();
+        },
+      });
+      httpMock
+        .expectOne(`${apiUrl}/polls/poll-1/remove-vote/`)
+        .flush('boom', { status: 500, statusText: 'Server Error' });
+    });
+
+    it('getPollDetails GETs the poll detail endpoint', () => {
+      service.getPollDetails('poll-1').subscribe();
+      const req = httpMock.expectOne(`${apiUrl}/polls/poll-1/`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ question: 'Q?' });
+    });
+
+    it('getPollDetails propagates errors through catchError', (done) => {
+      spyOn(console, 'error');
+      service.getPollDetails('poll-1').subscribe({
+        error: (err: any) => {
+          expect(err.status).toBe(404);
+          done();
+        },
+      });
+      httpMock
+        .expectOne(`${apiUrl}/polls/poll-1/`)
+        .flush('nf', { status: 404, statusText: 'Not Found' });
+    });
   });
 });

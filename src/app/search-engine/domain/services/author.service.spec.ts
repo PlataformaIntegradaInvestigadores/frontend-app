@@ -62,6 +62,13 @@ describe('AuthorService', () => {
     });
   });
 
+  it('getAuthorsByQuery uses the given page/page_size when provided', () => {
+    service.getAuthorsByQuery('ai', 3, 25).subscribe();
+    const req = httpMock.expectOne(`${rootURL}/v2/authors/search`);
+    expect(req.request.body).toEqual({ query: 'ai', page: 3, page_size: 25 });
+    req.flush({ data: [], total: 0 });
+  });
+
   it('getAuthorById GETs the author endpoint', () => {
     service.getAuthorById('a-1').subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${rootURL}/v2/authors/a-1`).flush({});
@@ -89,6 +96,20 @@ describe('AuthorService', () => {
       service.getMostRelevantAuthors('ai', 5, 'strict', ['espol']).subscribe();
       const req = httpMock.expectOne(`${rootURL}/v2/authors/relevant`);
       expect(req.request.body.filters).toEqual({ mode: 'strict', affiliations: ['espol'] });
+      req.flush({});
+    });
+
+    it('omits filters when affiliations is given but empty', () => {
+      service.getMostRelevantAuthors('ai', 5, undefined, []).subscribe();
+      const req = httpMock.expectOne(`${rootURL}/v2/authors/relevant`);
+      expect(req.request.body.filters).toBeUndefined();
+      req.flush({});
+    });
+
+    it('defaults affiliations to [] when only typeFilter is given', () => {
+      service.getMostRelevantAuthors('ai', 5, 'strict').subscribe();
+      const req = httpMock.expectOne(`${rootURL}/v2/authors/relevant`);
+      expect(req.request.body.filters).toEqual({ mode: 'strict', affiliations: [] });
       req.flush({});
     });
   });
@@ -123,6 +144,14 @@ describe('AuthorService', () => {
       .flush({ topics: [{ text: 'AI', size: 3 }] });
   });
 
+  it('getTopicsById defaults to [] when the profile has no topics', (done) => {
+    service.getTopicsById(9).subscribe((topics) => {
+      expect(topics).toEqual([]);
+      done();
+    });
+    httpMock.expectOne(`${rootURL}/v2/authors/9/profile`).flush({});
+  });
+
   it('getYears derives years from the composed profile', (done) => {
     service.getYears('9').subscribe((years) => {
       expect(years).toEqual([{ year: 2020, total_articles: 3 } as any]);
@@ -131,6 +160,14 @@ describe('AuthorService', () => {
     httpMock
       .expectOne(`${rootURL}/v2/authors/9/profile`)
       .flush({ years: [{ year: 2020, total_articles: 3 }] });
+  });
+
+  it('getYears defaults to [] when the profile has no years', (done) => {
+    service.getYears('9').subscribe((years) => {
+      expect(years).toEqual([]);
+      done();
+    });
+    httpMock.expectOne(`${rootURL}/v2/authors/9/profile`).flush({});
   });
 
   it('getLineChartInfo wraps years into a named series', (done) => {

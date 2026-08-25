@@ -1,7 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { of, throwError } from 'rxjs';
+import * as d3 from 'd3';
 import { MostRelevantAuthorsGraphComponent } from './most-relevant-authors-graph.component';
 import { AuthorService } from '../../../../domain/services/author.service';
 import { AuthorNode, Coauthors } from '../../../../../shared/interfaces/author.interface';
@@ -40,7 +41,9 @@ describe('MostRelevantAuthorsGraphComponent', () => {
     // dereferences it with no null-guard (unlike getSvgAndZoom's `if (!this.downloadEl)`),
     // so a real DOM stub whose querySelector reports "no graph svg" avoids a spurious
     // TypeError while still exercising the real "nothing to export yet" code path.
-    (component as any).downloadEl = { nativeElement: { querySelector: () => null } };
+    const dlEl = document.createElement('div');
+    dlEl.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
+    (component as any).downloadEl = { nativeElement: dlEl };
   });
 
   it('should create', () => {
@@ -138,6 +141,13 @@ describe('MostRelevantAuthorsGraphComponent', () => {
       expect(component.selectedAffiliations).not.toContain('a1');
     });
 
+    it('does not duplicate an affiliation that is already selected', () => {
+      component.selectedAffiliations = ['a1'];
+      const event = { target: { id: 'a1', checked: true } };
+      component.onClickCheckbox(event);
+      expect(component.selectedAffiliations).toEqual(['a1']);
+    });
+
     it('filteredAffiliations returns all when the search term is blank', () => {
       component.affiliationSearch = '';
       expect(component.filteredAffiliations.length).toBe(2);
@@ -151,6 +161,25 @@ describe('MostRelevantAuthorsGraphComponent', () => {
     it('filteredAffiliations returns [] when affiliations is not set', () => {
       component.affiliations = undefined as any;
       expect(component.filteredAffiliations).toEqual([]);
+    });
+
+    it('sortAffiliations orders selected items first, then falls back to name comparison', () => {
+      component.affiliations = [
+        { scopus_id: 'a1', name: 'Zeta' },
+        { scopus_id: 'a2', name: 'Alpha' },
+        { scopus_id: 'a3', name: 'Beta' },
+      ];
+      component.selectedAffiliations = ['a3'];
+      component.sortAffiliations();
+      expect(component.affiliations[0].scopus_id).toBe('a3'); // selected bubbles to top
+      // the two unselected items fall back to locale-aware name comparison
+      const unselected = component.affiliations.slice(1).map((a) => a.scopus_id);
+      expect(unselected).toEqual(['a2', 'a1']); // Alpha before Zeta
+    });
+
+    it('sortAffiliations is a no-op when affiliations is unset', () => {
+      component.affiliations = undefined as any;
+      expect(() => component.sortAffiliations()).not.toThrow();
     });
   });
 
@@ -191,12 +220,21 @@ describe('MostRelevantAuthorsGraphComponent', () => {
       component.onClickAffiliationsFilter('include');
       expect(component.noResults).toBeTrue();
     });
+
+    it('flags noResults on the unfiltered fallback path when zero nodes come back', () => {
+      component.selectedAffiliations = [];
+      authorServiceSpy.getMostRelevantAuthors.and.returnValue(
+        of({ ...coauthors, nodes: [], links: [] } as Coauthors),
+      );
+      component.onClickAffiliationsFilter('include');
+      expect(component.noResults).toBeTrue();
+    });
   });
 
   describe('truncateString', () => {
-    it('truncates at the earlier of a space or dash', () => {
-      expect(component.truncateString('Ana Maria')).toBe('Ana');
-      expect(component.truncateString('Jean-Paul')).toBe('Jean');
+    it('truncates at whichever separator (space or dash) comes first when both exist', () => {
+      expect(component.truncateString('Ana-Maria Perez')).toBe('Ana');
+      expect(component.truncateString('Jean Paul-Marc')).toBe('Jean');
     });
 
     it('truncates at a space when no dash exists', () => {
@@ -291,11 +329,45 @@ describe('MostRelevantAuthorsGraphComponent', () => {
   });
 
   describe('zoom controls without a bound graph element', () => {
-    it('zoomIn/zoomOut/resetZoom/fitAll are safe no-ops when downloadEl is unset', () => {
+    it('zoomIn/zoomOut/resetZoom/fitAll are safe no-ops when there is no graph SVG', () => {
       expect(() => component.zoomIn()).not.toThrow();
       expect(() => component.zoomOut()).not.toThrow();
       expect(() => component.resetZoom()).not.toThrow();
       expect(() => component.fitAll()).not.toThrow();
     });
+
+    it('are also safe no-ops when downloadEl itself is unset', () => {
+      (component as any).downloadEl = undefined;
+      expect(() => component.zoomIn()).not.toThrow();
+      expect(() => component.zoomOut()).not.toThrow();
+      expect(() => component.resetZoom()).not.toThrow();
+    });
   });
+
+  describe('zoom controls with a bound graph SVG', () => {
+    it('call the d3 zoom behaviour when a graph svg with __zoomBehavior is present', () => {
+      const graphEl = document.createElement('graph');
+      const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as any;
+      svgEl.setAttribute('width', '800');
+      svgEl.setAttribute('height', '600');
+      svgEl.__zoomBehavior = d3.zoom();
+      graphEl.appendChild(svgEl);
+      const dlEl = document.createElement('div');
+      dlEl.appendChild(graphEl);
+      (component as any).downloadEl = { nativeElement: dlEl };
+
+      expect(() => component.zoomIn()).not.toThrow();
+      expect(() => component.zoomOut()).not.toThrow();
+      expect(() => component.resetZoom()).not.toThrow();
+    });
+  });
+
+  describe('setupGraph setTimeout', () => {
+    it('schedules a resetZoom when the graph has nodes', fakeAsync(() => {
+      component.ngOnInit();
+      tick(200);
+      expect(() => component.resetZoom()).not.toThrow();
+    }));
+  });
+
 });

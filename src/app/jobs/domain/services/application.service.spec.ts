@@ -47,12 +47,41 @@ describe('ApplicationService', () => {
     req.flush([]);
   });
 
+  it('getApplications works without any filters', () => {
+    service.getApplications().subscribe();
+    const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/applications/`);
+    expect(req.request.params.keys().length).toBe(0);
+    req.flush([]);
+  });
+
+  it('getApplication errors without hitting the API when there is no token', (done) => {
+    authServiceSpy.getToken.and.returnValue(of(null));
+    service.getApplication(1).subscribe({
+      error: (err: Error) => {
+        expect(err.message).toBe('No authentication token found');
+        done();
+      },
+    });
+    httpMock.expectNone(() => true);
+  });
+
   it('getApplication GETs a single application', () => {
     service.getApplication(9).subscribe((res) => expect(res).toBeTruthy());
     httpMock.expectOne(`${apiUrl}/v1/applications/9/`).flush({});
   });
 
   describe('createApplication', () => {
+    it('errors without hitting the API when there is no token', (done) => {
+      authServiceSpy.getToken.and.returnValue(of(null));
+      service.createApplication({ job: 1 } as any).subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+      httpMock.expectNone(() => true);
+    });
+
     it('sends JSON when there is no resume file', () => {
       service.createApplication({ job: 1, cover_letter: 'hi' } as any).subscribe();
       const req = httpMock.expectOne(`${apiUrl}/v1/applications/`);
@@ -76,6 +105,17 @@ describe('ApplicationService', () => {
   });
 
   describe('updateApplication', () => {
+    it('errors without hitting the API when there is no token', (done) => {
+      authServiceSpy.getToken.and.returnValue(of(null));
+      service.updateApplication(1, { status: 'accepted' } as any).subscribe({
+        error: (err: Error) => {
+          expect(err.message).toBe('No authentication token found');
+          done();
+        },
+      });
+      httpMock.expectNone(() => true);
+    });
+
     it('sends JSON when there is no resume file', () => {
       service.updateApplication(1, { status: 'accepted' } as any).subscribe();
       const req = httpMock.expectOne(`${apiUrl}/v1/applications/1/`);
@@ -109,6 +149,17 @@ describe('ApplicationService', () => {
     req.flush(null);
   });
 
+  it('deleteApplication errors without hitting the API when there is no token', (done) => {
+    authServiceSpy.getToken.and.returnValue(of(null));
+    service.deleteApplication(1).subscribe({
+      error: (err: Error) => {
+        expect(err.message).toBe('No authentication token found');
+        done();
+      },
+    });
+    httpMock.expectNone(() => true);
+  });
+
   it('getJobApplications delegates to getApplications with a job_id filter', () => {
     service.getJobApplications(7).subscribe();
     const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/applications/`);
@@ -123,11 +174,40 @@ describe('ApplicationService', () => {
       .flush({ has_applied: false, application: null });
   });
 
+  it('checkApplicationStatus errors without hitting the API when there is no token', (done) => {
+    authServiceSpy.getToken.and.returnValue(of(null));
+    service.checkApplicationStatus(7).subscribe({
+      error: (err: Error) => {
+        expect(err.message).toBe('No authentication token found');
+        done();
+      },
+    });
+    httpMock.expectNone(() => true);
+  });
+
   it('getCompanyApplications applies filters against the company endpoint', () => {
     service.getCompanyApplications({ status: 'pending' } as any).subscribe();
     const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/company/applications/`);
     expect(req.request.params.get('status')).toBe('pending');
     req.flush([]);
+  });
+
+  it('getCompanyApplications works without any filters', () => {
+    service.getCompanyApplications().subscribe();
+    const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/company/applications/`);
+    expect(req.request.params.keys().length).toBe(0);
+    req.flush([]);
+  });
+
+  it('getCompanyApplications errors without hitting the API when there is no token', (done) => {
+    authServiceSpy.getToken.and.returnValue(of(null));
+    service.getCompanyApplications().subscribe({
+      error: (err: Error) => {
+        expect(err.message).toBe('No authentication token found');
+        done();
+      },
+    });
+    httpMock.expectNone(() => true);
   });
 
   it('getUserApplications applies an optional status filter', () => {
@@ -142,6 +222,17 @@ describe('ApplicationService', () => {
     const req = httpMock.expectOne((r) => r.url === `${apiUrl}/v1/user/applications/`);
     expect(req.request.params.has('status')).toBeFalse();
     req.flush([]);
+  });
+
+  it('getUserApplications errors without hitting the API when there is no token', (done) => {
+    authServiceSpy.getToken.and.returnValue(of(null));
+    service.getUserApplications().subscribe({
+      error: (err: Error) => {
+        expect(err.message).toBe('No authentication token found');
+        done();
+      },
+    });
+    httpMock.expectNone(() => true);
   });
 
   it('handleError logs and rethrows the original error', (done) => {

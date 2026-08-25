@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { of, throwError } from 'rxjs';
+import * as d3 from 'd3';
 import { CoauthorsGraphComponent } from './coauthors-graph.component';
 import { AuthorService } from '../../../../domain/services/author.service';
 import { Author, AuthorNode, CoauthorInfo } from '../../../../../shared/interfaces/author.interface';
@@ -44,7 +45,9 @@ describe('CoauthorsGraphComponent', () => {
     // downloadEl (@ViewChild) never resolves without a rendered template; several methods
     // dereference it directly, so stub it with a "no graph svg yet" DOM fake — mirrors the
     // pattern established for MostRelevantAuthorsGraphComponent in batch 22.
-    (component as any).downloadEl = { nativeElement: { querySelector: () => null } };
+    const dlEl = document.createElement('div');
+    dlEl.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
+    (component as any).downloadEl = { nativeElement: dlEl };
   });
 
   it('should create', () => {
@@ -88,6 +91,24 @@ describe('CoauthorsGraphComponent', () => {
       expect(component.showGraph).toBeFalse();
       expect(component.loading).toBeFalse();
     });
+
+    it('falls back to the last name only when the first name is missing', () => {
+      authorServiceSpy.getCoauthorsById.and.returnValue(
+        of({ data: { nodes: [makeNode({ first_name: '', last_name: 'Solo' })], links: [] } }),
+      );
+      component.ngOnInit();
+      const node = component.d3Nodes.find((n) => String(n.id) === '2');
+      expect((node as any).popover.content).toBe('Solo');
+    });
+
+    it('falls back to an empty string when both names are missing', () => {
+      authorServiceSpy.getCoauthorsById.and.returnValue(
+        of({ data: { nodes: [makeNode({ first_name: '', last_name: '' })], links: [] } }),
+      );
+      component.ngOnInit();
+      const node = component.d3Nodes.find((n) => String(n.id) === '2');
+      expect((node as any).popover.content).toBe('');
+    });
   });
 
   it('toggleLegend flips the flag', () => {
@@ -121,9 +142,9 @@ describe('CoauthorsGraphComponent', () => {
   });
 
   describe('truncarCadena', () => {
-    it('truncates at the earlier of a space or dash', () => {
-      expect(component.truncarCadena('Ana Maria')).toBe('Ana');
-      expect(component.truncarCadena('Jean-Paul')).toBe('Jean');
+    it('truncates at whichever separator (space or dash) comes first when both exist', () => {
+      expect(component.truncarCadena('Ana-Maria Perez')).toBe('Ana');
+      expect(component.truncarCadena('Jean Paul-Marc')).toBe('Jean');
     });
 
     it('truncates at a space when no dash exists', () => {
@@ -192,6 +213,23 @@ describe('CoauthorsGraphComponent', () => {
       component.showAllCollaborators = false;
       component.toggleShowAllCollaborators();
       expect(component.showAllCollaborators).toBeTrue();
+    });
+
+    it('reads source/target from resolved d3 simulation objects (not just raw ids)', () => {
+      // After d3's force simulation runs, link.source/target become node object references
+      // instead of raw string ids — exercise that branch explicitly.
+      const link = component.d3Links[0];
+      (link as any).source = { id: '1' };
+      (link as any).target = { id: '2' };
+      component.selectNode('1');
+      expect(component.selectedNode?.collaborators.length).toBe(1);
+      expect(component.selectedNode?.collaborators[0].id).toBe('2');
+    });
+
+    it('skips a link whose collaborator node cannot be found', () => {
+      component.d3Links.push({ source: '1', target: 'ghost', strokeWidth: 5 } as any);
+      component.selectNode('1');
+      expect(component.selectedNode?.collaborators.length).toBe(1); // only the real link '1'-'2'
     });
   });
 
@@ -302,6 +340,54 @@ describe('CoauthorsGraphComponent', () => {
       expect(component.expandedNodeIds.has('2')).toBeFalse();
       expect(component.notificationType).toBe('error');
     });
+
+    it('defaults the new level via the fallback parent level when the parent node is unknown', () => {
+      const expandResponse: CoauthorInfo = {
+        data: { nodes: [makeNode({ scopus_id: '9' })], links: [] },
+      };
+      authorServiceSpy.getCoauthorsById.and.returnValue(of(expandResponse));
+      expect(() => component.expandGraph('unknown-parent')).not.toThrow();
+      const newNode = component.d3Nodes.find((n) => String(n.id) === '9');
+      expect(newNode?.level).toBe(2); // (parentNode?.level ?? 1) + 1, with no parent found
+    });
+
+    it('skips a link whose source node is unknown', () => {
+      const expandResponse: CoauthorInfo = {
+        data: {
+          nodes: [makeNode({ scopus_id: '3' })],
+          links: [{ source: 'ghost', target: '3', collabStrength: 1 } as any],
+        },
+      };
+      authorServiceSpy.getCoauthorsById.and.returnValue(of(expandResponse));
+      const linksBefore = component.d3Links.length;
+      component.expandGraph('2');
+      expect(component.d3Links.length).toBe(linksBefore);
+    });
+
+    it('skips a duplicate link stored in the reverse direction', () => {
+      const expandResponse: CoauthorInfo = {
+        data: {
+          nodes: [makeNode({ scopus_id: '3' })],
+          links: [{ source: '2', target: '1', collabStrength: 9 } as any], // reverse of ngOnInit's 1->2 link
+        },
+      };
+      authorServiceSpy.getCoauthorsById.and.returnValue(of(expandResponse));
+      const linksBefore = component.d3Links.length;
+      component.expandGraph('2');
+      expect(component.d3Links.length).toBe(linksBefore);
+    });
+
+    it('pluralizes the notification when more than one coauthor is discovered', () => {
+      const expandResponse: CoauthorInfo = {
+        data: {
+          nodes: [makeNode({ scopus_id: '3' }), makeNode({ scopus_id: '4' })],
+          links: [],
+        },
+      };
+      authorServiceSpy.getCoauthorsById.and.returnValue(of(expandResponse));
+      component.expandGraph('2');
+      expect(component.notificationMessage).toContain('2 new coauthors');
+    });
   });
 
   describe('downloadDataUrl', () => {
@@ -372,6 +458,73 @@ describe('CoauthorsGraphComponent', () => {
       expect(() => component.zoomIn()).not.toThrow();
       expect(() => component.zoomOut()).not.toThrow();
       expect(() => component.resetZoom()).not.toThrow();
+    });
+
+    it('are also safe no-ops when downloadEl itself is unset', () => {
+      (component as any).downloadEl = undefined;
+      expect(() => component.zoomIn()).not.toThrow();
+      expect(() => component.zoomOut()).not.toThrow();
+    });
+  });
+
+  describe('zoom controls with a bound graph SVG', () => {
+    it('call the d3 zoom behaviour when a graph svg with __zoomBehavior is present', () => {
+      const graphEl = document.createElement('graph');
+      const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as any;
+      svgEl.setAttribute('width', '800');
+      svgEl.setAttribute('height', '600');
+      svgEl.__zoomBehavior = d3.zoom();
+      graphEl.appendChild(svgEl);
+      const dlEl = document.createElement('div');
+      dlEl.appendChild(graphEl);
+      (component as any).downloadEl = { nativeElement: dlEl };
+
+      expect(() => component.zoomIn()).not.toThrow();
+      expect(() => component.zoomOut()).not.toThrow();
+    });
+  });
+
+  describe('expandGraph with a bound GraphComponent', () => {
+    const graphComponentStub = () => ({
+      refreshView: jasmine.createSpy('refreshView'),
+      graph: {
+        initNodes: jasmine.createSpy('initNodes'),
+        initLinks: jasmine.createSpy('initLinks'),
+        simulation: {
+          alpha: jasmine.createSpy('alpha').and.returnValue({ restart: jasmine.createSpy('restart') }),
+        },
+      },
+      onResize: jasmine.createSpy('onResize'),
+    });
+
+    it('re-initialises the simulation after adding new nodes', () => {
+      (component as any).graphComponent = graphComponentStub();
+      component.ngOnInit();
+      component.selectNode('2');
+      authorServiceSpy.getCoauthorsById.and.returnValue(
+        of({
+          data: {
+            nodes: [makeNode({ scopus_id: '3' })],
+            links: [],
+          },
+        } as any),
+      );
+
+      component.expandGraph('2');
+
+      expect((component as any).graphComponent.graph.initNodes).toHaveBeenCalled();
+      expect((component as any).graphComponent.graph.initLinks).toHaveBeenCalled();
+      expect((component as any).graphComponent.graph.simulation.alpha).toHaveBeenCalledWith(0.3);
+      expect((component as any).graphComponent.onResize).toHaveBeenCalled();
+    });
+
+    it('refreshView is invoked when selecting a node while a graph is bound', () => {
+      const stub = graphComponentStub();
+      (component as any).graphComponent = stub;
+      component.ngOnInit();
+      stub.refreshView.calls.reset();
+      component.selectNode('1');
+      expect(stub.refreshView).toHaveBeenCalled();
     });
   });
 });

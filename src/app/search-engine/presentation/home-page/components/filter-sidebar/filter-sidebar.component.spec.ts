@@ -24,4 +24,29 @@ describe('FilterSidebarComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('adds a checked year and emits the updated selection', () => {
+    const emitted: number[][] = [];
+    component.yearsSelected.subscribe((years) => emitted.push(years));
+    component.onYearChange(2020, true);
+    expect(component.selectedYears).toEqual([2020]);
+    expect(emitted).toEqual([[2020]]);
+  });
+
+  it('removes an unchecked year from the selection', () => {
+    component.selectedYears = [2020, 2021];
+    component.onYearChange(2020, false);
+    expect(component.selectedYears).toEqual([2021]);
+  });
+
+  it('unchecking a year not in the selection is a no-op', () => {
+    component.selectedYears = [2021];
+    component.onYearChange(2020, false);
+    expect(component.selectedYears).toEqual([2021]);
+  });
+
+  it('yearSelected updates the years input', () => {
+    component.yearSelected([2019, 2020]);
+    expect(component.years).toEqual([2019, 2020]);
+  });
 });
