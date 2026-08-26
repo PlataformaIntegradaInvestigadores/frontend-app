@@ -1,5 +1,17 @@
 name: CI — frontend-app
 
+# The `branch-name` job below enforces an ORGANIZATION-wide branching convention
+# (not a rule specific to this repo) — documented locally in docs/PR-GUIDELINES.md
+# §6.2 because there's no central place for it yet. This job's logic is duplicated
+# repo-by-repo and has already drifted out of sync between repos (see plan.md §10,
+# "PR-GUIDELINES / branch convention duplicated per repo"). It's the one job here
+# that's actually stack-agnostic (plain bash, no npm/pip involved), so it's the one
+# worth moving into a `PlataformaIntegradaInvestigadores/.github` repo as a reusable
+# workflow (`workflow_call`) and referencing from here instead of repeating it.
+# The `test`/`build-docker`/`deploy-staging` jobs below stay local to this repo —
+# they're Angular/npm-specific and have no equivalent shape in the Django/FastAPI
+# backend repos, so there's nothing generic to extract from them.
+
 on:
   push:
     branches: [develop]
@@ -7,24 +19,37 @@ on:
     branches: [develop, main]
 
 jobs:
-  # ── Validación de nombre de rama ───────────────────────────────────────────
+  # ── Branch name validation (org-wide convention, see note above) ───────────
   branch-name:
-    name: Validar nombre de rama
+    name: Validate branch name
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - name: Verificar prefijo (feature/*, hotfix/*, chore/*)
+      - name: Check prefix + target (org-wide convention — docs/PR-GUIDELINES.md §6.2)
         env:
           BRANCH: ${{ github.head_ref }}
+          TARGET: ${{ github.base_ref }}
         run: |
-          case "$BRANCH" in
-            feature/*|hotfix/*|chore/*) echo "OK: $BRANCH"; exit 0 ;;
-            *) echo "Rama '$BRANCH' no cumple convención (feature/*, hotfix/*, chore/*)"; exit 1 ;;
+          case "$TARGET" in
+            develop)
+              case "$BRANCH" in
+                feature/*|chore/*) echo "OK: $BRANCH -> $TARGET"; exit 0 ;;
+                *) echo "Branch '$BRANCH' is invalid for target develop (use feature/* or chore/*)"; exit 1 ;;
+              esac
+              ;;
+            main)
+              case "$BRANCH" in
+                develop|hotfix/*) echo "OK: $BRANCH -> $TARGET"; exit 0 ;;
+                *) echo "Branch '$BRANCH' is invalid for target main (use develop or hotfix/*)"; exit 1 ;;
+              esac
+              ;;
+            *)
+              echo "Unknown target: $TARGET"; exit 1 ;;
           esac
 
-  # ── Tests Angular ──────────────────────────────────────────────────────────
+  # ── Angular tests ────────────────────────────────────────────────────────────
   test:
-    name: Pruebas unitarias (Karma/Jasmine)
+    name: Unit tests (Karma/Jasmine)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,50 +57,51 @@ jobs:
         with:
           node-version: '18'
           cache: npm
-      - name: Instalar Chromium
-        run: sudo apt-get install -y chromium-browser
-      - name: Instalar dependencias
-        run: npm ci
-      - name: Ejecutar tests
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Run tests
+        # ubuntu-latest ships Google Chrome pre-installed — installing chromium-browser
+        # via apt was pure dead weight (package-list update + ~100MB download on every
+        # run, no cache). Point Karma at the runner's existing browser instead.
         env:
-          CHROME_BIN: /usr/bin/chromium-browser
+          CHROME_BIN: /usr/bin/google-chrome-stable
         run: |
           npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox \
             --no-progress --code-coverage
-      - name: Subir reporte de cobertura
+      - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report
           path: coverage/
 
-  # ── Docker build ───────────────────────────────────────────────────────────
+  # ── Docker build ─────────────────────────────────────────────────────────────
   build-docker:
-    name: Build imagen Docker
+    name: Build Docker image
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
-      - name: Build imagen
+      - name: Build image
         run: docker build -t frontend-app:${{ github.sha }} .
-      - name: Verificar imagen
+      - name: Verify image
         run: docker images frontend-app
 
-  # ── Deploy staging ─────────────────────────────────────────────────────────
+  # ── Deploy staging ───────────────────────────────────────────────────────────
   deploy-staging:
-    name: Deploy a servidor staging
+    name: Deploy to staging server
     runs-on: [self-hosted, staging]
     needs: test
     if: github.ref == 'refs/heads/develop'
     steps:
-      - name: Actualizar codigo
+      - name: Update code
         run: |
           cd /opt/centinela/frontend-app
           git fetch origin develop
           git reset --hard origin/develop
 
-      - name: Reconstruir contenedor
+      - name: Rebuild container
         run: |
           cd /opt/centinela
           docker compose up -d --build --no-deps angular-app
@@ -86,14 +112,14 @@ jobs:
           HEALTHY=false
           for i in 1 2 3 4 5; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:8082 || echo "000")
-            echo "Intento $i: HTTP $STATUS"
+            echo "Attempt $i: HTTP $STATUS"
             if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ]; then
               HEALTHY=true; break
             fi
             sleep 6
           done
           if [ "$HEALTHY" = "false" ]; then
-            echo "Health check fallido — rollback"
+            echo "Health check failed — rolling back"
             cd /opt/centinela/frontend-app && git reset --hard HEAD~1
             cd /opt/centinela && docker compose up -d --build --no-deps angular-app
             exit 1
