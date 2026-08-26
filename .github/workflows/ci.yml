@@ -52,8 +52,8 @@ jobs:
     name: Unit tests (Karma/Jasmine)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: '18'
           cache: npm
@@ -69,7 +69,7 @@ jobs:
           npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox \
             --no-progress --code-coverage
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage-report
@@ -82,7 +82,7 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build image
         run: docker build -t frontend-app:${{ github.sha }} .
       - name: Verify image
