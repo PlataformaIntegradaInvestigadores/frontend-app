@@ -1,163 +1,104 @@
 # Centinela — frontend-app
 
-Angular 16 single-page app for the Centinela research platform. Part of the
-`PlataformaIntegradaInvestigadores` multi-repo org — this repo is UI only; it
-never talks to a backend port directly, only through a reverse proxy
-(`api-gateway` in staging/production, or your own local instance — see
-[Architecture](#architecture)).
+SPA en Angular 16 de la plataforma de investigación Centinela. Repo solo de UI — nunca habla directo con un puerto de backend, siempre a través de un reverse proxy.
 
-## Requirements
+Parte del org multi-repo `PlataformaIntegradaInvestigadores`. En staging/producción, ese proxy es `api-gateway`; en desarrollo local, el proxy de `ng serve`.
 
-- Node 18 (`.nvmrc` pins the exact version; the Docker build image uses
-  `node:18.18-alpine3.18`)
-- npm (this repo uses `package-lock.json` — not pnpm/yarn, despite what you
-  might find referenced elsewhere)
-- Docker Desktop — only needed for the Docker workflow below
-- A running backend stack if you need real API responses (see
-  [Running the full stack](#running-the-full-stack-optional)) — not required
-  for isolated UI/component work
+## Stack
 
-## Architecture
+- Angular 16, basado en NgModules (no standalone components)
+- Node 18 (`.nvmrc` fija la versión exacta; la imagen Docker usa `node:18.18-alpine3.18`)
+- npm (`package-lock.json` — no pnpm/yarn)
+- Tailwind + Flowbite (nuevo trabajo); Bootstrap CSS + Angular Material (legacy, no agregar más UI dependiente de esto)
+- D3.js para visualizaciones de red/gráficos (`src/app/shared/d3/`)
 
-- **Angular 16, NgModule-based** (not standalone components). Each feature
-  area lives at `src/app/<feature>/`, split into:
-  - `domain/` — business logic: `services/` (HTTP calls + state) and
-    `entities/` (TypeScript interfaces for API payloads/models).
-  - `presentation/` — UI: `pages/` (routed top-level views) and
-    `components/` (reusable pieces within the feature).
-- **`src/app/shared/`** — anything reused across 2+ features: `components/`,
-  `domain/services/`, `interceptors/` (`AuthInterceptor` attaches the bearer
-  token to every outgoing request), `interfaces/`, and `d3/` (shared D3.js
-  graph/visualization helpers used by the various network/chart components).
-- **`src/guards/`** — route guards (`auth.guard`, `phase.guard`,
-  `researcher-only.guard`, etc.), deliberately kept outside `src/app/` so
-  they stay a single shared, discoverable set rather than duplicated per
-  feature.
-- **Routing**: `app-routing.module.ts` defines the top-level paths. Most
-  feature areas are lazy-loaded via `loadChildren` (code-split per feature);
-  a few older ones are still eagerly imported into `AppModule` (auth
-  components, home-page, about-us). Lazy loading is the expectation for
-  anything new — see [Building a new module](#building-a-new-modulefeature).
-- **State**: no NgRx/global store. Services expose state via RxJS
-  `BehaviorSubject`/`Subject` and are injected as Angular singletons
-  (`providedIn: 'root'`, or listed in a feature module's `providers`) — see
-  `AuthService` or `WebSocketService` for the pattern.
-- **Networking**: every backend call goes through a *relative* path —
-  `environment.apiIdentity` / `apiSocial` / `apiSearch` / `apiPredictive` /
-  `wsUrl` (see `src/environments/`) resolve to `/api/identity`, `/api/social`,
-  etc., same-origin, never an absolute URL to a backend port. The app assumes
-  something in front of it (an `api-gateway` reverse proxy in
-  staging/production, or `ng serve`'s dev proxy locally) does the actual
-  routing to each backend service. This is why the frontend alone, with
-  nothing in front of it, can reach the UI but every API call will fail.
-- **Styling**: mixed stack — Tailwind (+ Flowbite) is the primary one for new
-  work (`src/styles.css`, `tailwind.config.js`); Bootstrap CSS and an Angular
-  Material theme are also globally loaded (`angular.json` → `styles`) for
-  older components that predate the Tailwind adoption. Don't add more
-  Bootstrap-dependent UI — use Tailwind/Flowbite for anything new.
+## Arquitectura
 
-## Running locally
+- Cada feature vive en `src/app/<feature>/`, dividido en:
+  - `domain/` — lógica de negocio: `services/` (llamadas HTTP + estado) y `entities/` (interfaces TS de payloads/modelos de la API).
+  - `presentation/` — UI: `pages/` (vistas ruteadas de primer nivel) y `components/` (piezas reusables dentro del feature).
+- `src/app/shared/` — todo lo reusado por 2+ features: `components/`, `domain/services/`, `interceptors/` (`AuthInterceptor` adjunta el bearer token a cada request saliente), `interfaces/`, `d3/`.
+- `src/guards/` — route guards (`auth.guard`, `phase.guard`, `researcher-only.guard`, etc.), deliberadamente fuera de `src/app/` para mantenerse como un solo set compartido y descubrible.
+- **Routing**: `app-routing.module.ts` define los paths de primer nivel. La mayoría de features se cargan lazy vía `loadChildren`; unos pocos legacy siguen importados eager en `AppModule` (auth, home, about-us). Lazy loading es lo esperado para cualquier feature nuevo.
+- **Estado**: sin NgRx/store global. Los servicios exponen estado vía RxJS `BehaviorSubject`/`Subject`, inyectados como singletons de Angular (`providedIn: 'root'`, o en `providers` del módulo del feature) — ver `AuthService` o `WebSocketService`.
+- **Networking**: cada llamada a backend usa un path *relativo* — `environment.apiIdentity` / `apiSocial` / `apiSearch` / `apiPredictive` / `wsUrl` (ver `src/environments/`) resuelven a `/api/identity`, `/api/social`, etc., mismo origen, nunca una URL absoluta a un puerto de backend. La app asume que algo delante de ella (un `api-gateway` en staging/producción, o el proxy de dev de `ng serve` en local) hace el ruteo real hacia cada servicio backend.
 
-### Option A — Docker (closest to production, no hot reload)
+## Estructura del proyecto
 
-```sh
+```
+src/
+├── app/
+│   ├── <feature>/
+│   │   ├── domain/{entities,services}/
+│   │   └── presentation/{pages,components}/
+│   ├── shared/{components,domain/services,interceptors,interfaces,d3}/
+│   ├── app.module.ts
+│   └── app-routing.module.ts
+├── guards/                    # route guards compartidos
+└── environments/              # apiIdentity/apiSocial/apiSearch/apiPredictive/wsUrl
+```
+
+Features actuales: `analytics`, `auth`, `consensus`, `dashboard`, `feeds`, `group`, `jobs`, `profile`, `profile-company`, `recommendations`, `search-engine`.
+
+## Requisitos previos
+
+- Node 18 + npm
+- Docker Desktop (solo si se usa el flujo Docker)
+- Un stack de backend corriendo si se necesitan respuestas reales de API (no requerido para trabajo aislado de UI/componentes)
+
+## Levantar en local
+
+### Con Docker (más cercano a producción, sin hot reload)
+
+```bash
 docker compose build
 docker compose up
 ```
 
-Serves the built app at **http://localhost:8082** through the bundled
-`nginx.conf`. This only builds and serves *this* repo — it does not start
-`api-gateway` or any backend, so API calls will fail unless those are also
-running (see below).
+Sirve el build en **http://localhost:8082** vía el `nginx.conf` incluido. Solo levanta este repo — no levanta `api-gateway` ni ningún backend, así que las llamadas a la API fallarán a menos que esos también estén corriendo.
 
-To add a new npm dependency in this workflow: find the running container id
-with `docker ps`, then `docker exec -it <container_id> /bin/sh` and
-`npm install <package>` inside it — then rebuild (`docker compose up --build`)
-so the change actually lands in the image.
+Para agregar una dependencia npm en este flujo: `docker ps` para el id del contenedor, `docker exec -it <container_id> /bin/sh`, `npm install <paquete>` adentro, y luego `docker compose up --build` para que el cambio quede en la imagen.
 
-### Option B — `ng serve` (fast dev loop, hot reload)
+### Sin Docker (loop de desarrollo rápido, hot reload)
 
-```sh
+```bash
 npm install
 npm start        # = ng serve, http://localhost:4200
 ```
 
-`ng serve` proxies `/api`, `/ws`, and `/media` to `http://localhost:8080`
-(see `proxy.conf.json`, wired into `angular.json`'s `serve` config) — that's
-the host port `api-gateway` listens on when it's run via Docker. To get real
-API responses while iterating with hot reload:
+`ng serve` proxea `/api`, `/ws` y `/media` a `http://localhost:8080` (ver `proxy.conf.json`, referenciado en `angular.json` → `serve`) — ese es el puerto host donde escucha `api-gateway` corrido vía Docker. Para respuestas reales de API con hot reload: levantar el stack de backend necesario (al menos `api-gateway` en `127.0.0.1:8080`), luego `npm start`, y abrir `http://localhost:4200`.
 
-1. Start the backend stack you need (at minimum `api-gateway`, plus whichever
-   services you're working against) — see each backend repo's own README, or
-   `centinela-ops` for the full-stack compose. `api-gateway` needs to end up
-   reachable at `127.0.0.1:8080` for the proxy above to work.
-2. `npm start` here.
-3. Open **http://localhost:4200** — API calls now flow through the proxy to
-   `:8080` the same way they'd flow through the real gateway in
-   staging/production.
+Para trabajo aislado de UI/presentación, `ng serve` funciona sin ningún backend corriendo — las llamadas a la API simplemente devuelven 404.
 
-If you're only doing isolated UI/presentation work, `ng serve` still works
-without any backend running — API calls just 404, which is fine when you're
-not exercising that code path.
+## Variables de entorno
 
-### Running the full stack (optional)
+Ver `.env.example`. Variable clave:
 
-This repo doesn't orchestrate the other 12 services — that lives in
-`centinela-ops` (or by running each backend repo's own `docker compose up`
-individually, exposing `api-gateway` on `127.0.0.1:8080`). See that repo, or
-`plan.md` at the root of the multi-repo checkout, for the current
-orchestration approach.
+| Variable | Descripción |
+|---|---|
+| `BASE_URL` | URL base usada en build/despliegue (ver `.env.example`) |
 
-## Testing & coverage
+Las URLs por ambiente de cada backend (identity/social/search/predictive/websocket) se configuran en `src/environments/`, no en `.env`.
 
-```sh
-npm test              # ng test — Karma/Jasmine, opens a real Chrome window
+## Tests
+
+```bash
+npm test              # ng test — Karma/Jasmine
 ```
 
-CI runs `ng test --code-coverage`. `karma.conf.js`'s
-`coverageReporter.check.global` enforces a **90% floor on statements,
-branches, functions, and lines** — a PR that drops any one of those below
-90% fails CI outright. When adding tests, prefer covering the actual missing
-branches (error paths, `??`/`||` fallbacks, edge cases) over padding trivial
-assertions that don't move branch coverage.
+CI corre `ng test --code-coverage`. `karma.conf.js`'s `coverageReporter.check.global` exige un piso de **90% en statements, branches, functions y lines** — un PR que baje cualquiera de esas métricas por debajo de 90% falla CI directamente. Al agregar tests, priorizar cubrir ramas realmente faltantes (rutas de error, fallbacks `??`/`||`, edge cases) sobre agregar aserciones triviales que no mueven la cobertura de ramas.
 
-## Building a new module/feature
+## CI/CD
 
-Follow the existing convention under `src/app/<feature-name>/`:
+GitHub Actions (`.github/workflows/ci.yml` + `cd-production.yml`): build + tests con gate de cobertura 90% → build de imagen Docker → deploy a staging (runner self-hosted `ticcd`).
 
-```
-src/app/<feature>/
-├── domain/
-│   ├── entities/                 # TS interfaces for API payloads/models
-│   └── services/                 # HTTP calls + RxJS state, providedIn:'root' or module-level
-├── presentation/
-│   ├── pages/                    # routed top-level views
-│   └── components/               # reusable pieces used within this feature
-├── <feature>.module.ts           # declarations / imports / exports / providers
-└── <feature>-routing.module.ts   # feature-local routes
-```
+## Convenciones
 
-1. Scaffold with the Angular CLI (`ng generate module <feature> --routing`,
-   `ng generate component <feature>/presentation/pages/...`, etc.) inside
-   that structure rather than hand-rolling the boilerplate.
-2. Wire the feature into `app-routing.module.ts` via `loadChildren` (lazy)
-   unless there's a specific reason it must load eagerly (e.g. it's needed
-   on first paint, like auth). Lazy is the default for anything new.
-3. Put anything genuinely reused by 2+ features into `src/app/shared/`
-   instead of duplicating it — components, services, interfaces, or the
-   `d3/` helpers as appropriate.
-4. If the feature needs a route guard, add it to `src/guards/`, not inside
-   the feature folder, so it stays part of the same discoverable set as the
-   existing guards.
-5. Write specs alongside each new file (`*.component.spec.ts`,
-   `*.service.spec.ts`) as you go, not at the end — the 90% coverage gate
-   means untested new code drags the whole build under threshold fast, since
-   it adds to both the statement and branch denominators.
-6. If the feature needs a new backend route, that's an `api-gateway` change
-   (see that repo's `nginx.conf`), not something to work around in the
-   frontend — this app should only ever call relative `/api/...` paths that
-   an environment file (`src/environments/`) already knows about.
+- Branches: `feature/*` → `develop`, `hotfix/*` → `main`.
+- Commits: [Conventional Commits](https://www.conventionalcommits.org/), inglés, con el *por qué* en el cuerpo.
+- Nuevo feature: seguir la estructura `domain/{entities,services}` + `presentation/{pages,components}` bajo `src/app/<feature>/`, generar con Angular CLI, ruteo lazy vía `loadChildren` salvo razón específica para eager, poner lo compartido entre 2+ features en `src/app/shared/`, guards nuevos en `src/guards/`, specs junto a cada archivo nuevo (`*.component.spec.ts`, `*.service.spec.ts`) a medida que se escribe el código — no al final.
+- Ruta nueva de backend: cambio en `api-gateway` (`nginx.conf`), no un workaround en el frontend — esta app solo debe llamar paths relativos `/api/...` ya conocidos por un archivo de `src/environments/`.
 
-## Notes
+## Notas
 
-- `/admin/` — Scopus data extraction panel/process.
+- `/admin/` — panel/proceso de extracción de datos de Scopus.
