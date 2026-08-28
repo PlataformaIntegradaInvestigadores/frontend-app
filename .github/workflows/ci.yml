@@ -59,7 +59,7 @@ jobs:
     steps:
       - name: Actualizar codigo
         run: |
-          cd /opt/centinela/frontend-app
+          cd /opt/centinela/centinela-front
           git fetch origin develop
           git reset --hard origin/develop
 
@@ -82,7 +82,7 @@ jobs:
           done
           if [ "$HEALTHY" = "false" ]; then
             echo "Health check fallido — rollback"
-            cd /opt/centinela/frontend-app && git reset --hard HEAD~1
+            cd /opt/centinela/centinela-front && git reset --hard HEAD~1
             cd /opt/centinela && docker compose up -d --build --no-deps centinela-front
             exit 1
           fi
