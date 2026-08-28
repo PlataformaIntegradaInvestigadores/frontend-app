@@ -1,8 +1,8 @@
-# Centinela — frontend-app
+# Centinela — centinela-front
 
 SPA en Angular 16 de la plataforma de investigación Centinela. Repo solo de UI — nunca habla directo con un puerto de backend, siempre a través de un reverse proxy.
 
-Parte del org multi-repo `PlataformaIntegradaInvestigadores`. En staging/producción, ese proxy es `api-gateway`; en desarrollo local, el proxy de `ng serve`.
+Parte del org multi-repo `PlataformaIntegradaInvestigadores`. En staging/producción, ese proxy es `gateway-service`; en desarrollo local, el proxy de `ng serve`.
 
 ## Stack
 
@@ -21,7 +21,7 @@ Parte del org multi-repo `PlataformaIntegradaInvestigadores`. En staging/producc
 - `src/guards/` — route guards (`auth.guard`, `phase.guard`, `researcher-only.guard`, etc.), deliberadamente fuera de `src/app/` para mantenerse como un solo set compartido y descubrible.
 - **Routing**: `app-routing.module.ts` define los paths de primer nivel. La mayoría de features se cargan lazy vía `loadChildren`; unos pocos legacy siguen importados eager en `AppModule` (auth, home, about-us). Lazy loading es lo esperado para cualquier feature nuevo.
 - **Estado**: sin NgRx/store global. Los servicios exponen estado vía RxJS `BehaviorSubject`/`Subject`, inyectados como singletons de Angular (`providedIn: 'root'`, o en `providers` del módulo del feature) — ver `AuthService` o `WebSocketService`.
-- **Networking**: cada llamada a backend usa un path *relativo* — `environment.apiIdentity` / `apiSocial` / `apiSearch` / `apiPredictive` / `wsUrl` (ver `src/environments/`) resuelven a `/api/identity`, `/api/social`, etc., mismo origen, nunca una URL absoluta a un puerto de backend. La app asume que algo delante de ella (un `api-gateway` en staging/producción, o el proxy de dev de `ng serve` en local) hace el ruteo real hacia cada servicio backend.
+- **Networking**: cada llamada a backend usa un path *relativo* — `environment.apiIdentity` / `apiSocial` / `apiSearch` / `apiPredictive` / `wsUrl` (ver `src/environments/`) resuelven a `/api/identity`, `/api/social`, etc., mismo origen, nunca una URL absoluta a un puerto de backend. La app asume que algo delante de ella (un `gateway-service` en staging/producción, o el proxy de dev de `ng serve` en local) hace el ruteo real hacia cada servicio backend.
 
 ## Estructura del proyecto
 
@@ -55,7 +55,7 @@ docker compose build
 docker compose up
 ```
 
-Sirve el build en **http://localhost:8082** vía el `nginx.conf` incluido. Solo levanta este repo — no levanta `api-gateway` ni ningún backend, así que las llamadas a la API fallarán a menos que esos también estén corriendo.
+Sirve el build en **http://localhost:8082** vía el `nginx.conf` incluido. Solo levanta este repo — no levanta `gateway-service` ni ningún backend, así que las llamadas a la API fallarán a menos que esos también estén corriendo.
 
 Para agregar una dependencia npm en este flujo: `docker ps` para el id del contenedor, `docker exec -it <container_id> /bin/sh`, `npm install <paquete>` adentro, y luego `docker compose up --build` para que el cambio quede en la imagen.
 
@@ -66,7 +66,7 @@ npm install
 npm start        # = ng serve, http://localhost:4200
 ```
 
-`ng serve` proxea `/api`, `/ws` y `/media` a `http://localhost:8080` (ver `proxy.conf.json`, referenciado en `angular.json` → `serve`) — ese es el puerto host donde escucha `api-gateway` corrido vía Docker. Para respuestas reales de API con hot reload: levantar el stack de backend necesario (al menos `api-gateway` en `127.0.0.1:8080`), luego `npm start`, y abrir `http://localhost:4200`.
+`ng serve` proxea `/api`, `/ws` y `/media` a `http://localhost:8080` (ver `proxy.conf.json`, referenciado en `angular.json` → `serve`) — ese es el puerto host donde escucha `gateway-service` corrido vía Docker. Para respuestas reales de API con hot reload: levantar el stack de backend necesario (al menos `gateway-service` en `127.0.0.1:8080`), luego `npm start`, y abrir `http://localhost:4200`.
 
 Para trabajo aislado de UI/presentación, `ng serve` funciona sin ningún backend corriendo — las llamadas a la API simplemente devuelven 404.
 
@@ -97,7 +97,7 @@ GitHub Actions (`.github/workflows/ci.yml` + `cd-production.yml`): build + tests
 - Branches: `feature/*` → `develop`, `hotfix/*` → `main`.
 - Commits: [Conventional Commits](https://www.conventionalcommits.org/), inglés, con el *por qué* en el cuerpo.
 - Nuevo feature: seguir la estructura `domain/{entities,services}` + `presentation/{pages,components}` bajo `src/app/<feature>/`, generar con Angular CLI, ruteo lazy vía `loadChildren` salvo razón específica para eager, poner lo compartido entre 2+ features en `src/app/shared/`, guards nuevos en `src/guards/`, specs junto a cada archivo nuevo (`*.component.spec.ts`, `*.service.spec.ts`) a medida que se escribe el código — no al final.
-- Ruta nueva de backend: cambio en `api-gateway` (`nginx.conf`), no un workaround en el frontend — esta app solo debe llamar paths relativos `/api/...` ya conocidos por un archivo de `src/environments/`.
+- Ruta nueva de backend: cambio en `gateway-service` (`nginx.conf`), no un workaround en el frontend — esta app solo debe llamar paths relativos `/api/...` ya conocidos por un archivo de `src/environments/`.
 
 ## Notas
 

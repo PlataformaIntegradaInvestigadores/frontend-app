@@ -66,7 +66,7 @@ jobs:
       - name: Reconstruir contenedor
         run: |
           cd /opt/centinela
-          docker compose up -d --build --no-deps angular-app
+          docker compose up -d --build --no-deps centinela-front
 
       - name: Health check
         run: |
@@ -83,6 +83,6 @@ jobs:
           if [ "$HEALTHY" = "false" ]; then
             echo "Health check fallido — rollback"
             cd /opt/centinela/frontend-app && git reset --hard HEAD~1
-            cd /opt/centinela && docker compose up -d --build --no-deps angular-app
+            cd /opt/centinela && docker compose up -d --build --no-deps centinela-front
             exit 1
           fi
