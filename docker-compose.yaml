@@ -1,7 +1,7 @@
 services:
-  angular-app:
+  centinela-front:
     build: .
-    container_name: angular-app
+    container_name: centinela-front
     ports:
       - '127.0.0.1:8082:80'
     extra_hosts:

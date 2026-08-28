@@ -1,13 +1,13 @@
-name: 'CD — frontend-app → Production'
+name: "CD — frontend-app → Producción"
 
 on:
   push:
     branches: [main]
 
 jobs:
-  # ── Angular tests ────────────────────────────────────────────────────────────
+  # ── Tests ──────────────────────────────────────────────────────────────────
   test:
-    name: Unit tests (Karma/Jasmine)
+    name: Pruebas unitarias (Karma/Jasmine)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -15,56 +15,54 @@ jobs:
         with:
           node-version: '18'
           cache: npm
-      - name: Install dependencies
+      - name: Instalar dependencias
         run: npm ci --no-audit --no-fund
-      - name: Run tests
-        # ubuntu-latest ships Google Chrome pre-installed — no need to apt-install
-        # chromium-browser (that was an uncached ~100MB download on every run).
+      - name: Ejecutar tests
         env:
           CHROME_BIN: /usr/bin/google-chrome-stable
         run: |
           npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox \
             --no-progress --code-coverage
-      - name: Upload coverage report
+      - name: Subir reporte de cobertura
         uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage-report-prod
           path: coverage/
 
-  # ── Deploy production ────────────────────────────────────────────────────────
+  # ── Deploy producción ────────────────────────────────────────────────────────
   deploy-production:
-    name: Deploy to production server
+    name: Deploy a servidor producción
     runs-on: [self-hosted, production]
     needs: test
     steps:
-      - name: Update code
+      - name: Actualizar código
         run: |
           cd /opt/centinela/frontend-app
           git fetch origin main
           git reset --hard origin/main
 
-      - name: Rebuild container
+      - name: Reconstruir contenedor
         run: |
           cd /opt/centinela
-          docker compose up -d --build --no-deps angular-app
+          docker compose up -d --build --no-deps centinela-front
 
-      - name: Health check with automatic rollback
+      - name: Health check con rollback automático
         run: |
           sleep 15
           HEALTHY=false
           for i in 1 2 3 4 5; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 http://localhost:8082 || echo "000")
-            echo "Attempt $i: HTTP $STATUS"
+            echo "Intento $i: HTTP $STATUS"
             if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ]; then
               HEALTHY=true; break
             fi
             sleep 6
           done
           if [ "$HEALTHY" = "false" ]; then
-            echo "Health check failed — rolling back to previous commit"
+            echo "Health check fallido — rollback al commit anterior"
             cd /opt/centinela/frontend-app && git reset --hard HEAD~1
-            cd /opt/centinela && docker compose up -d --build --no-deps angular-app
+            cd /opt/centinela && docker compose up -d --build --no-deps centinela-front
             exit 1
           fi
-          echo "Deploy succeeded — frontend-app is live in production"
+          echo "Deploy exitoso — frontend-app en producción"
