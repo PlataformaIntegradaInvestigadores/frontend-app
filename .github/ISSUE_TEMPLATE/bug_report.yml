@@ -10,13 +10,6 @@ body:
       description: Qué pasó vs qué esperabas
     validations:
       required: true
-  - type: input
-    id: service
-    attributes:
-      label: Servicio/repo afectado
-      placeholder: ej. identity-service
-    validations:
-      required: true
   - type: textarea
     id: steps
     attributes:
