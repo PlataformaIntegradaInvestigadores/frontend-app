@@ -80,7 +80,7 @@ export class DashboardService {
 
   getTopicsAcumulated(year: number): Observable<Word[]> {
     const params = new HttpParams().set('year', year.toString());
-    return this.http.get<Word[]>(`${this.apiUrl}/country/get_top_topics`, { params });
+    return this.http.get<Word[]>(`${this.apiUrl}/country/get_top_topics/`, { params });
   }
 
   getAffiliationInfoAcumulated(year: number): Observable<Word[]> {

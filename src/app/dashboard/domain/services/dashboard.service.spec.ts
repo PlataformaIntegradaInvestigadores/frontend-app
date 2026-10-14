@@ -50,7 +50,7 @@ describe('DashboardService', () => {
       expect(info[0]).toEqual({ name: 'AI', value: 10 });
       done();
     });
-    httpMock.expectOne(`${apiUrl}/country/get_top_topics?year=2020`).flush(words);
+    httpMock.expectOne(`${apiUrl}/country/get_top_topics/?year=2020`).flush(words);
   });
 
   it('getLineChartInfo wraps years into a single Ecuador series', (done) => {

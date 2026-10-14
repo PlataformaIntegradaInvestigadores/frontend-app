@@ -20,7 +20,7 @@ export class ReactionService {
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       'Content-Type': 'application/json',
     });
-    return this.http.post(this.apiUrl, data, { headers });
+    return this.http.post(`${this.apiUrl}/`, data, { headers });
   }
 
   /**
