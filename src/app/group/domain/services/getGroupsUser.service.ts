@@ -57,7 +57,7 @@ export class GetGroupsService {
         const headers = new HttpHeaders({
           Authorization: `Bearer ${token}`,
         });
-        return this.http.delete<void>(`${this.apiUrl}${groupId}/delet8e/`, { headers });
+        return this.http.delete<void>(`${this.apiUrl}${groupId}/delete/`, { headers });
       }),
       catchError((error) => {
         this.errorService.handleError();
@@ -75,7 +75,7 @@ export class GetGroupsService {
         const headers = new HttpHeaders({
           Authorization: `Bearer ${token}`,
         });
-        return this.http.post<void>(`${this.apiUrl}${groupId}/leave7/`, {}, { headers });
+        return this.http.post<void>(`${this.apiUrl}${groupId}/leave/`, {}, { headers });
       }),
       catchError((error) => {
         this.errorService.handleError();
