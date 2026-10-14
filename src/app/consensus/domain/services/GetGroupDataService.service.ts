@@ -10,8 +10,9 @@ import { Group } from 'src/app/group/domain/entities/group.interface';
   providedIn: 'root',
 })
 export class ConsensusService {
-  //private apiUrl = `${environment.apiSocial}/groups/`; // Ajusta la URL según tu configuración
-  private apiUrl = `${environment.apiSocial}/groups/`;
+  // Grupo, admin_id, users y voting_type viven en identity (profile_identity_backend);
+  // social-service retiró esta ruta legacy y responde 410 Gone.
+  private apiUrl = `${environment.apiIdentity}/groups/`;
 
   constructor(private http: HttpClient) {}
 

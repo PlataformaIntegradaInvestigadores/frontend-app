@@ -85,7 +85,7 @@ describe('GetGroupsService', () => {
     it('DELETEs with a bearer token', () => {
       authServiceSpy.getToken.and.returnValue(of('t'));
       service.deleteGroup('7').subscribe();
-      const req = httpMock.expectOne(`${apiUrl}7/delet8e/`);
+      const req = httpMock.expectOne(`${apiUrl}7/delete/`);
       expect(req.request.method).toBe('DELETE');
       expect(req.request.headers.get('Authorization')).toBe('Bearer t');
       req.flush(null);
@@ -103,7 +103,7 @@ describe('GetGroupsService', () => {
       authServiceSpy.getToken.and.returnValue(of('t'));
       let err: any;
       service.deleteGroup('7').subscribe({ error: (e) => (err = e) });
-      httpMock.expectOne(`${apiUrl}7/delet8e/`).flush('x', { status: 500, statusText: 'e' });
+      httpMock.expectOne(`${apiUrl}7/delete/`).flush('x', { status: 500, statusText: 'e' });
       expect(errorServiceSpy.handleError).toHaveBeenCalled();
       expect(err.message).toContain('Error deleting group:');
     });
@@ -113,7 +113,7 @@ describe('GetGroupsService', () => {
     it('POSTs with a bearer token', () => {
       authServiceSpy.getToken.and.returnValue(of('t'));
       service.leaveGroup('7').subscribe();
-      const req = httpMock.expectOne(`${apiUrl}7/leave7/`);
+      const req = httpMock.expectOne(`${apiUrl}7/leave/`);
       expect(req.request.method).toBe('POST');
       expect(req.request.headers.get('Authorization')).toBe('Bearer t');
       req.flush(null);
@@ -131,7 +131,7 @@ describe('GetGroupsService', () => {
       authServiceSpy.getToken.and.returnValue(of('t'));
       let err: any;
       service.leaveGroup('7').subscribe({ error: (e) => (err = e) });
-      httpMock.expectOne(`${apiUrl}7/leave7/`).flush('x', { status: 500, statusText: 'e' });
+      httpMock.expectOne(`${apiUrl}7/leave/`).flush('x', { status: 500, statusText: 'e' });
       expect(errorServiceSpy.handleError).toHaveBeenCalled();
       expect(err.message).toContain('Error leaving group:');
     });
