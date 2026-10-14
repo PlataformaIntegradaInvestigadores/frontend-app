@@ -18,6 +18,6 @@ export class UserService {
    * @returns Un Observable que emite la información del usuario.
    */
   getUserById(userId: string): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${this.apiUrl}/users/${userId}`);
+    return this.http.get<UserProfile>(`${this.apiUrl}/users/${userId}/`);
   }
 }

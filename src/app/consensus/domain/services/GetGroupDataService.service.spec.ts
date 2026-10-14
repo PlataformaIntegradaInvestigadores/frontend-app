@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 describe('ConsensusService', () => {
   let service: ConsensusService;
   let httpMock: HttpTestingController;
-  const apiUrl = `${environment.apiSocial}/groups/`;
+  const apiUrl = `${environment.apiIdentity}/groups/`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
