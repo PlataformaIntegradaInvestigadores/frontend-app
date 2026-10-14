@@ -224,7 +224,30 @@ describe('Phase1ConsensusComponent', () => {
     component.onSubmitDebate();
     expect(debateService.createDebate).toHaveBeenCalled();
     expect(component.isModalOpenPosture).toBeTrue();
-    expect(component.debateTitle).toBe('');
+    // resetForm() clears the create-debate form fields it owns, but NOT the
+    // title the just-opened posture modal is bound to (see next test).
+    expect(component.debateDescription).toBe('');
+    expect(component.durationHours).toBe(0);
+    expect(component.durationMinutes).toBe(0);
+  });
+
+  it('keeps the just-created title visible on the posture modal after resetForm() runs', () => {
+    // Regression: resetForm() used to run AFTER openSelectPostureModal, in
+    // the same synchronous callback, clearing this.debateTitle back to ''
+    // before Angular ever rendered it -- "Your current position on :"
+    // always showed no title. resetForm() now runs first, and
+    // openSelectPostureModal (called with a title captured before the
+    // reset) is the last write, so it's what survives to render.
+    component.groupId = '123';
+    component.debateTitle = 'Real debate title';
+    debateService.createDebate.and.returnValue(of({ id: 7 }));
+    component.onSubmitDebate();
+    expect(component.debateTitle).toBe('Real debate title');
+    expect(component.selectedPostureComponent.debateId).toBe(7);
+    expect(debateService.createDebate).toHaveBeenCalledWith(
+      '123',
+      jasmine.objectContaining({ title: 'Real debate title' }),
+    );
   });
 
   it('should handle onSubmitDebate error', () => {
