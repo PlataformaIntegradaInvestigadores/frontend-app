@@ -172,6 +172,9 @@ export class SelectPostureComponent {
           next: (response) => {
             this.postureSelected.emit(response);
             this.showDiscussionPrompt = true; // Mostrar modal después de registrar postura
+            // Sin esto, Posture Statistics (Fase 3) nunca se entera de este
+            // voto -- este flujo (dropdown + Confirm) nunca lo disparaba.
+            this.triggerSendDebateId();
           },
           error: (error) => console.error('Error updating posture:', error),
         });
@@ -180,6 +183,7 @@ export class SelectPostureComponent {
         next: (response) => {
           this.postureSelected.emit(response);
           this.showDiscussionPrompt = true; // Mostrar modal después de registrar postura
+          this.triggerSendDebateId();
         },
         error: (error) => console.error('Error registering posture:', error),
       });
@@ -322,6 +326,11 @@ export class SelectPostureComponent {
           console.log('Postura registrada:', response);
           this.existingPosture = response; // Actualiza la postura localmente
           this.postureSelected.emit(response); // Notifica al componente padre
+          // Sin esto, Posture Statistics (Fase 3) nunca se entera de un voto
+          // de postura nuevo -- solo escuchaba este evento tras actualizar
+          // una postura ya existente, nunca tras la primera creacion, que
+          // es el caso comun.
+          this.triggerSendDebateId();
         },
         error: (error) => {
           console.error('Error registrando postura:', error);

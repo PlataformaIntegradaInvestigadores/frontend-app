@@ -170,10 +170,15 @@ describe('SelectPostureComponent', () => {
     component.postureSelected.subscribe(() => (emitted = true));
     component.selectedPosture = 'agree';
     component.existingPostureId = null;
+    component.debateId = 7;
     postureService.createUserPosture.and.returnValue(of({ id: 7, posture: 'agree' }));
     component.submitPosture();
     expect(emitted).toBeTrue();
     expect(component.showDiscussionPrompt).toBeTrue();
+    // Regression: Posture Statistics (phase 3) never found out about a
+    // posture vote cast on its FIRST submission -- sendDebateId() was only
+    // wired up for the update-an-existing-posture branch.
+    expect(debateStatisticsService.sendDebateId).toHaveBeenCalledWith(7);
   });
 
   it('should close discussion prompt', () => {
