@@ -31,7 +31,7 @@ describe('ReactionService', () => {
     localStorage.setItem('accessToken', 'tok-1');
     service.addReaction({ message_id: 5 }).subscribe();
 
-    const req = httpMock.expectOne(apiUrl);
+    const req = httpMock.expectOne(`${apiUrl}/`);
     expect(req.request.method).toBe('POST');
     expect(req.request.headers.get('Authorization')).toBe('Bearer tok-1');
     expect(req.request.headers.get('Content-Type')).toBe('application/json');
