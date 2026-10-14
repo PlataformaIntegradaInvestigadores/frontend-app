@@ -119,20 +119,6 @@
             {{ errorMessages.interests }}
           </div>
         </div>
-        <div class="sm:col-span-2">
-          <label for="skills" class="block text-sm font-medium text-gray-700">Skills</label>
-          <input
-            type="text"
-            id="skills"
-            [(ngModel)]="formData.skills"
-            name="skills"
-            placeholder="e.g. Python, Angular, Data Analysis"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary_tailwind focus:border-primary_tailwind sm:text-sm"
-          />
-          <div *ngIf="errorMessages.skills" class="text-red-500 text-sm mt-1">
-            {{ errorMessages.skills }}
-          </div>
-        </div>
         <div>
           <label for="scopus_id" class="block text-sm font-medium text-gray-700">Scopus ID</label>
           <input
