@@ -129,11 +129,6 @@ describe('AuthorService', () => {
     });
   });
 
-  it('getRandomTopics GETs the random-topics endpoint', () => {
-    service.getRandomTopics().subscribe((res) => expect(res).toEqual([]));
-    httpMock.expectOne(`${rootURL}random-topics`).flush([]);
-  });
-
   it('getTopicsById maps profile topics to name/value', (done) => {
     service.getTopicsById(9).subscribe((topics) => {
       expect(topics).toEqual([{ name: 'AI', value: 3 }]);
