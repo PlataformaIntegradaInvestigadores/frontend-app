@@ -184,9 +184,10 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
    */
   onSubmitDebate(): void {
     const end_time = this.calculateInterval(this.durationHours, this.durationMinutes);
+    const title = this.debateTitle;
     const newDebate: Debate = {
       group: this.groupId,
-      title: this.debateTitle,
+      title,
       description: this.debateDescription,
       end_time: end_time,
     };
@@ -195,19 +196,27 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
       next: (response: { id?: number }) => {
         console.log('Debate creado exitosamente:', response);
 
+        // resetForm() va antes de abrir el modal de postura: pone
+        // this.debateTitle a '', y openSelectPostureModal lo vuelve a
+        // asignar con el titulo real (capturado en `title` antes del reset).
+        // Al reves (como estaba antes) resetForm() corria despues, en el
+        // mismo callback sincrono, y volvia a vaciar this.debateTitle justo
+        // antes de que Angular pintara el modal -- por eso "Your current
+        // position on :" salia siempre sin titulo.
+        this.resetForm(); // Limpia el formulario
+
         if (response.id !== undefined) {
           // Abre el modal de postura
           this.openSelectPostureModal(
             Number(response.id),
             {} as UserPosture,
             Number(response.id),
-            this.debateTitle,
+            title,
           );
         } else {
           console.error('El ID del debate no está definido en la respuesta.');
         }
 
-        this.resetForm(); // Limpia el formulario
         this.toggleDebate(); // Cierra el modal
       },
       error: (error) => {
@@ -219,7 +228,11 @@ export class Phase1ConsensusComponent implements OnInit, OnDestroy {
   onPostureSaved(args: UserPosture) {
     console.log('Postura guardada:', args);
     this.activeDebateId = args.debate;
-    this.openSelectPostureModal(args.debate, args, args.debate, this.debateTitle);
+    // this.debateTitle solo tiene valor real justo tras crear un debate (y
+    // se vacia en resetForm()); para cualquier otro debate hay que buscar
+    // el titulo en la lista ya cargada, igual que hace joinDebate().
+    const debate = this.debates.find((d) => d.id === args.debate);
+    this.openSelectPostureModal(args.debate, args, args.debate, debate?.title ?? this.debateTitle);
   }
 
   toggleDebate() {

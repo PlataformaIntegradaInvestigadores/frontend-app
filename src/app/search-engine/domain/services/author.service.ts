@@ -8,7 +8,6 @@ import {
   CoauthorInfo,
   Coauthors,
   PaginationAuthorResult,
-  RandItem,
 } from '../../../shared/interfaces/author.interface';
 import { environment } from 'src/environments/environment';
 import {
@@ -119,13 +118,6 @@ export class AuthorService {
     return author;
   }
 
-  // getRandomAuthors(): Observable<RandItem[]> {
-  //   return this.http.get<RandItem[]>(`${this.rootURL}random-authors`);
-  // }
-
-  getRandomTopics(): Observable<RandItem[]> {
-    return this.http.get<RandItem[]>(`${this.rootURL}random-topics`);
-  }
   getTopicsById(scopus_id: number): Observable<NameValue[]> {
     // Slice 2: las topics ahora vienen de la composicion v2 (misma forma {text,size}).
     return this.getAuthorProfile(scopus_id).pipe(
