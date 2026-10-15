@@ -1,4 +1,8 @@
-<div *ngIf="boolean" class="flex justify-center items-start overflow-hidden w-full h-[200px]">
+<div
+  *ngIf="boolean"
+  class="flex justify-center items-start overflow-hidden w-full h-[200px]"
+  #ContainerRef
+>
   <ngx-charts-line-chart
     [view]="[width, height]"
     [showXAxisLabel]="showXAxisLabel"

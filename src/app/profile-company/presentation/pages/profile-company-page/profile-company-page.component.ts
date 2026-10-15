@@ -13,6 +13,7 @@ export class CompanyProfilePageComponent implements OnInit {
   company: Company | null = null;
   activeTab = 'about' as const; // Solo mantenemos la pestaña "about"
   loading = false;
+  loadError = false;
   companyId: string | null = null;
   showEditModal = false;
 
@@ -36,6 +37,7 @@ export class CompanyProfilePageComponent implements OnInit {
     if (!this.companyId) return;
 
     this.loading = true;
+    this.loadError = false;
     // Si es la empresa autenticada, usar getMyProfile, sino getCompanyProfile
     const currentCompanyId = this.authService.getCompanyId();
 
@@ -48,6 +50,7 @@ export class CompanyProfilePageComponent implements OnInit {
         error: (error: any) => {
           console.error('Error loading company profile:', error);
           this.loading = false;
+          this.loadError = true;
         },
       });
     } else {
@@ -59,6 +62,7 @@ export class CompanyProfilePageComponent implements OnInit {
         error: (error: any) => {
           console.error('Error loading company profile:', error);
           this.loading = false;
+          this.loadError = true;
         },
       });
     }
