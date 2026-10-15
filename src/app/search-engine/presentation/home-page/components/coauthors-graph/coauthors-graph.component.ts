@@ -64,7 +64,12 @@ export class CoauthorsGraphComponent implements OnInit {
     this.loading = true;
     this.authorService.getCoauthorsById(this.author.scopus_id).subscribe({
       next: (coauthors) => {
-        this.apiNodes = [...(coauthors.data.nodes || [])];
+        // El backend degrada con gracia a coauthors: null cuando esa seccion
+        // del profile falla (ver search-bff-service degraded[]); sin este
+        // guard, leer .data de null tiraba un TypeError sincrono dentro de
+        // next() que RxJS nunca enruta al callback error(), dejando
+        // loading=true para siempre (spinner infinito).
+        this.apiNodes = [...(coauthors?.data?.nodes || [])];
         // Si el autor no tiene coautores reales solo quedaria su propio nodo
         // suelto; en ese caso mostramos un mensaje en vez de un grafo vacio.
         const hasCoauthors = this.apiNodes.length > 0;
@@ -80,7 +85,7 @@ export class CoauthorsGraphComponent implements OnInit {
           });
         }
         this.setupNodes();
-        this.setupLinks(coauthors.data.links);
+        this.setupLinks(coauthors?.data?.links || []);
         const rootId = String(this.author.scopus_id);
         this.expandedNodeIds.add(rootId);
         const rootNode = this.d3Nodes.find((node) => String(node.id) === rootId);
@@ -232,8 +237,8 @@ export class CoauthorsGraphComponent implements OnInit {
     this.expanding = true;
     this.authorService.getCoauthorsById(scopusId).subscribe({
       next: (coauthors) => {
-        const newApiNodes = [...(coauthors.data.nodes || [])];
-        const newLinks = [...(coauthors.data.links || [])];
+        const newApiNodes = [...(coauthors?.data?.nodes || [])];
+        const newLinks = [...(coauthors?.data?.links || [])];
         const parentNode = this.d3Nodes.find((node) => String(node.id) === id);
         const newLevel = (parentNode?.level ?? 1) + 1;
         let addedNodes = 0;
