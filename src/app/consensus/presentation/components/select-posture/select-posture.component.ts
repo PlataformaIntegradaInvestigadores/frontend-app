@@ -63,7 +63,9 @@ export class SelectPostureComponent {
       this.checkExistingPosture();
       console.log('ID del debate:', this.debateId);
       console.log('ID del grupo:', this.groupId);
-    } else {
+    } else if (this.debateId != null) {
+      // debateId == null es el estado normal antes de que el grupo tenga un
+      // debate creado (grupo recien creado) -- no es un error real.
       console.error('Faltan valores para debateId o groupId');
     }
   }

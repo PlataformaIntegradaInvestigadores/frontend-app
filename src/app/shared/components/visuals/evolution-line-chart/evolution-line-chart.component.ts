@@ -60,7 +60,7 @@ export class EvolutionLineChartComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.view = [this.cont.nativeElement.offsetWidth, this.height];
+    this.view = [this.cont?.nativeElement.offsetWidth ?? this.width ?? 0, this.height];
     this.drawed = true;
   }
 

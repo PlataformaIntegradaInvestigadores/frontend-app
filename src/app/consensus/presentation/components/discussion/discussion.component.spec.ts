@@ -75,11 +75,12 @@ describe('DiscussionComponent', () => {
     expect(chatService.connect).toHaveBeenCalled();
   });
 
-  it('should error when debateId missing on ngOnInit', () => {
+  it('should not initialize chat and should not log an error when debateId is missing on ngOnInit (expected state for a group with no debate yet)', () => {
     spyOn(console, 'error');
     component.debateIdInput = undefined as any;
     component.ngOnInit();
-    expect(console.error).toHaveBeenCalled();
+    expect(chatService.connect).not.toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
   });
 
   it('should handle ngOnChanges without debateId change', () => {

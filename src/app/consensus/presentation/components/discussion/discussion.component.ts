@@ -54,9 +54,9 @@ export class DiscussionComponent implements OnInit, OnDestroy, OnChanges {
       this.initializeChat();
       this.fetchUserPosture();
       this.loadMessageHistory();
-    } else {
-      console.error('debateId no está definido en ngOnInit');
     }
+    // debateIdInput ausente es el estado normal antes de que el grupo tenga
+    // un debate creado (grupo recien creado) -- no es un error real.
   }
 
   ngOnChanges(changes: SimpleChanges): void {
