@@ -85,6 +85,19 @@ describe('CoauthorsGraphComponent', () => {
       expect(component.showGraph).toBeFalse();
     });
 
+    it('hides the graph and clears loading instead of hanging when coauthors is null', () => {
+      // Regresion: search-bff-service degrada con gracia a coauthors: null
+      // cuando esa seccion del profile falla upstream (ver author_profile_
+      // usecase.py). Antes de este fix, leer .data de null tiraba un
+      // TypeError sincrono dentro de next() que RxJS nunca enrutaba a
+      // error(), dejando loading=true para siempre (spinner infinito en
+      // /profile/:id/network).
+      authorServiceSpy.getCoauthorsById.and.returnValue(of(null as unknown as CoauthorInfo));
+      component.ngOnInit();
+      expect(component.showGraph).toBeFalse();
+      expect(component.loading).toBeFalse();
+    });
+
     it('hides the graph and clears loading on failure', () => {
       authorServiceSpy.getCoauthorsById.and.returnValue(throwError(() => new Error('boom')));
       component.ngOnInit();
