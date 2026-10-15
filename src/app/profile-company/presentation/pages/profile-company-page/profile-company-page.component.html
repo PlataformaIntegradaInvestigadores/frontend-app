@@ -258,6 +258,17 @@
   </div>
 </div>
 
+<!-- Error State -->
+<div
+  *ngIf="loadError && !loading"
+  class="min-h-screen bg-gray-50 flex items-center justify-center"
+>
+  <div class="text-center">
+    <p class="text-xl font-semibold text-gray-900 mb-2">No se pudo cargar esta empresa</p>
+    <p class="text-gray-600">El perfil no existe o no está disponible.</p>
+  </div>
+</div>
+
 <!-- Edit Profile Modal -->
 <app-edit-company-profile-modal
   [company]="company"
