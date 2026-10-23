@@ -55,6 +55,17 @@ select:focus-visible {
   outline: 3px solid #b45309;
   outline-offset: 3px;
 }
+.table-scroll:focus-visible {
+  outline: 3px solid #b45309;
+  outline-offset: 3px;
+}
+.filters label {
+  min-width: 0;
+  max-width: 100%;
+}
+main {
+  overflow-wrap: anywhere;
+}
 .metrics {
   display: flex;
   flex-wrap: wrap;
@@ -113,6 +124,7 @@ li {
   overflow-wrap: anywhere;
 }
 .identifier {
+  color: #172033;
   overflow-wrap: anywhere;
 }
 @media (max-width: 640px) {

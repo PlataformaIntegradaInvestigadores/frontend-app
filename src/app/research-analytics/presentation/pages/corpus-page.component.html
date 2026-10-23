@@ -86,7 +86,12 @@
       <h2 id="articles-heading" class="text-xl font-bold">
         Artículos encontrados: {{ data.total | number }}
       </h2>
-      <div class="table-scroll">
+      <div
+        class="table-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="Tabla de artículos desplazable"
+      >
         <table *ngIf="data.items.length">
           <caption>
             Resultados de la consulta documental
