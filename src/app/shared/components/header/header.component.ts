@@ -20,6 +20,7 @@ import {
   faTimes,
   faChartBar,
   faInfoCircle,
+  faPeopleGroup,
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -55,6 +56,7 @@ export class HeaderComponent implements OnInit {
   faTimes = faTimes;
   faChartBar = faChartBar;
   faInfoCircle = faInfoCircle;
+  faPeopleGroup = faPeopleGroup;
 
   constructor(
     private router: Router,

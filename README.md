@@ -68,6 +68,15 @@ npm start        # = ng serve, http://localhost:4200
 
 `ng serve` proxea `/api`, `/ws` y `/media` a `http://localhost:8080` (ver `proxy.conf.json`, referenciado en `angular.json` → `serve`) — ese es el puerto host donde escucha `gateway-service` corrido vía Docker. Para respuestas reales de API con hot reload: levantar el stack de backend necesario (al menos `gateway-service` en `127.0.0.1:8080`), luego `npm start`, y abrir `http://localhost:4200`.
 
+### Conformar equipo (recomendación ética de investigadores)
+
+La página `/home/team-builder` consume `ethical-recommender-service` (FastAPI) vía
+`environment.apiRecommender` (`/api/recommender`). En local, `proxy.conf.json` reenvía
+`/api/recommender/*` a `http://localhost:8000/*` (regla declarada antes de la genérica `/api`), así
+que basta con levantar ese servicio (`python -m uvicorn infrastructure.api.main:app --port 8000`) y
+`npm start`; no requiere `gateway-service`, `identity-service` ni sesión iniciada. En
+staging/producción falta la ruta equivalente en `gateway-service`.
+
 Para trabajo aislado de UI/presentación, `ng serve` funciona sin ningún backend corriendo — las llamadas a la API simplemente devuelven 404.
 
 ## Variables de entorno
